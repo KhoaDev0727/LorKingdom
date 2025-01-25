@@ -1,0 +1,385 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Main content styles */
+.hero-banner img {
+    width: 100%;
+    height: auto;
+}
+
+.product-section {
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.product-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-around;
+}
+
+.product-item {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    width: calc(25% - 20px);
+    text-align: center;
+}
+
+.product-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.product-item h3 {
+    margin: 10px 0;
+    font-size: 18px;
+}
+
+.product-item p {
+    color: #007bff;
+    font-weight: bold;
+}
+
+.carousel-inner {
+   padding-top: 15px;
+}
+
+
+
+
+/* Banner section styles */
+.banner-section {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  overflow: hidden;
+}
+
+#horizontalBannerCarousel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+#horizontalBannerCarousel .carousel-inner {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s ease-in-out;
+}
+
+#horizontalBannerCarousel .carousel-item {
+  width: 100%;
+  height: 100%;
+  flex-shrink: 0;
+}
+
+#horizontalBannerCarousel .carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Adjusts the image to fit without distortion */
+  filter: brightness(90%); /* Optional: Add a slight dark overlay */
+  transition: filter 0.3s ease-in-out;
+}
+
+#horizontalBannerCarousel .carousel-item img:hover {
+  filter: brightness(100%);
+}
+
+/* Navigation arrows */
+#horizontalBannerCarousel .carousel-control-prev,
+#horizontalBannerCarousel .carousel-control-next {
+  position: absolute;
+  top: 60%; /* Ensure the controls are vertically centered */
+  transform: translateY(-50%);
+  z-index: 5;
+  width: 50px;
+  height: 50px;
+  background-color: rgba(0, 0, 0, 0.5); 
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#horizontalBannerCarousel .carousel-control-prev:hover,
+#horizontalBannerCarousel .carousel-control-next:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+#horizontalBannerCarousel .carousel-control-prev-icon,
+#horizontalBannerCarousel .carousel-control-next-icon {
+  filter: invert(1); /* White arrows */
+  width: 20px;
+  height: 20px;
+}
+
+/* Indicators (dots) */
+#horizontalBannerCarousel .carousel-indicators {
+  position: absolute;
+  bottom: 20px; /* Adjust the position to align properly */
+  left: 35%;
+  transform: translateX(-50%); /* Center the indicators */
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  z-index: 10;
+}
+
+#horizontalBannerCarousel .carousel-indicators button {
+  width: 12px;
+  height: 12px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: none;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+#horizontalBannerCarousel .carousel-indicators .active {
+  background-color: rgba(255, 255, 255, 1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .banner-section {
+    height: 400px;
+  }
+
+  #horizontalBannerCarousel .carousel-control-prev,
+  #horizontalBannerCarousel .carousel-control-next {
+    width: 40px;
+    height: 40px;
+  }
+
+  #horizontalBannerCarousel .carousel-indicators button {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+
+
+
+/* Section Category */
+.category-section {
+  margin: 20px 0;
+}
+
+.category-btn {
+  background-color: transparent;
+  border: 2px solid red;
+  border-radius: 20px;
+  color: red;
+  padding: 10px 20px;
+  margin: 0 10px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.category-btn:hover,
+.category-btn.active {
+  background-color: red;
+  color: white;
+}
+
+/* Cart Items */
+.cart-items {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.cart-item {
+  border: 1px solid red;
+  border-radius: 10px;
+  overflow: hidden;
+  width: 250px;
+  text-align: center;
+  position: relative;
+}
+
+.item-image {
+  position: relative;
+}
+
+.item-image img {
+  width: 100%;
+  border-bottom: 1px solid red;
+}
+
+.discount-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: red;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.item-info {
+  padding: 10px;
+}
+
+.exclusive-tag {
+  background-color: orange;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 12px;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.item-info h4 {
+  font-size: 16px;
+  font-weight: bold;
+  color: black;
+  margin: 10px 0;
+}
+
+.item-info p {
+  font-size: 12px;
+  color: gray;
+}
+
+.price {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.new-price {
+  font-size: 18px;
+  font-weight: bold;
+  color: red;
+}
+
+.old-price {
+  font-size: 14px;
+  color: gray;
+  text-decoration: line-through;
+}
+
+.add-to-cart-btn {
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-to-cart-btn:hover {
+  background-color: darkred;
+}
+
+
+
+
+
+
+
+.product-carousel {
+  text-align: center;
+  margin: 20px;
+}
+
+.product-carousel h2 {
+  color: #001FFF;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.view-more {
+  margin: 10px 0;
+  padding: 10px 20px;
+  border: 2px solid #001FFF;
+  background-color: white;
+  color: #001FFF;
+  font-weight: bold;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.product-items {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.product-item {
+  width: 200px;
+  border: 2px solid #FF0000;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+}
+
+.product-item img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.product-info p {
+  margin: 5px 0;
+}
+
+.price {
+  font-size: 18px;
+  font-weight: bold;
+  color: #FF0000;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: gray;
+}
+
+.gift-button,
+.cart-button {
+  background-color: #FF0000;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.gift-button:hover,
+.cart-button:hover {
+  background-color: #CC0000;
+}
+
+
+footer h5 {
+  margin-bottom: 1rem;
+}
+
+footer ul li {
+  margin-bottom: 0.5rem;
+}
+
+footer .bi {
+  margin-right: 0.5rem;
+  color: #ff0000;
+}
