@@ -7,7 +7,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> <!-- Bootstrap Import -->
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="./css/styleHeader.css"/>
+        <link rel="stylesheet" href="./assets/styleUser/styleHeader.css"/>
         <title>header page</title>
     </head>
     <body>
@@ -16,7 +16,7 @@
             <div class="header_first">
                 <div class="header-left d-flex align-items-center gap-3">
                     <a href="home.jsp" class="logo">
-                        <img src="./img/logo.png" alt="Lor Travel Logo">
+                        <img src="./assets/img/logo.png" alt="Lor Travel Logo">
                     </a>
                     <div class="input-group search-container">
                         <span class="input-group-text bg-white border-end-0">
@@ -47,7 +47,7 @@
 
                     <div class="avatar-container">
                         <div class="avatar">
-                            <img src="./img/profile.png" alt="logo">
+                            <img src="./assets/img/profile.png" alt="logo">
                         </div>
                         <div class="menu-avatar">
                             <a href="login.jsp" class="menu-item-avatar text-dark p-3">Login</a>

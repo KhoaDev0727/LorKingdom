@@ -17,7 +17,7 @@
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
-        <link rel="stylesheet" href="./css/styleaboutus.css"/>       
+        <link rel="stylesheet" href="./assets/styleUser/styleaboutus.css"/>       
     </head>
 
     <body>

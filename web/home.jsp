@@ -7,15 +7,15 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="./css/styleHome.css">
-        <link rel="stylesheet" href="./css/styleheader.css">
+        <link rel="stylesheet" href="./assets/styleUser/styleHome.css">
+        <link rel="stylesheet" href="./assets/styleUser/styleheader.css">
         <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css"
               rel="stylesheet">
         <!-- Bootstrap JS Bundle -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="./js/script.js"></script>
+        <script src="./assets/js/script.js"></script>
         <title>LorKingdom</title>
 
     </head>
@@ -41,13 +41,13 @@
                 <!-- Slides -->
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img src="./img/banner1.png" class="d-block w-100" alt="Banner 1">
+                        <img src="./assets/img/banner1.png" class="d-block w-100" alt="Banner 1">
                     </div>
                     <div class="carousel-item">
-                        <img src="./img/banner2.png" class="d-block w-100" alt="Banner 2">
+                        <img src="./assets/img/banner2.png" class="d-block w-100" alt="Banner 2">
                     </div>
                     <div class="carousel-item">
-                        <img src="./img/banner3.png" class="d-block w-100" alt="Banner 3">
+                        <img src="./assets/img/banner3.png" class="d-block w-100" alt="Banner 3">
                     </div>
                 </div>
 
@@ -122,7 +122,7 @@
             <button class="view-more">Xem Thêm</button>
             <div class="product-items">
                 <div class="product-item">
-                    <img src="./img/lego1.png" alt="Product 1">
+                    <img src="./assets/img/lego1.png" alt="Product 1">
                     <div class="product-info">
                         <p>LEGO MARKETING</p>
                         <p>SKU:MKT-5008978</p>
@@ -132,7 +132,7 @@
                     </div>
                 </div>
                 <div class="product-item">
-                    <img src="./img/lego2.png" alt="Product 2">
+                    <img src="./assets/img/lego2.png" alt="Product 2">
                     <div class="product-info">
                         <p>LEGO TECHNIC</p>
                         <p>SKU:42154</p>
@@ -143,7 +143,7 @@
                     </div>
                 </div>
                 <div class="product-item">
-                    <img src="./img/lego3.png" alt="Product 2">
+                    <img src="./assets/img/lego3.png" alt="Product 2">
                     <div class="product-info">
                         <p>LEGO TECHNIC</p>
                         <p>SKU:42154</p>
@@ -154,7 +154,7 @@
                     </div>
                 </div>
                 <div class="product-item">
-                    <img src="./img/lego4.png" alt="Product 2">
+                    <img src="./assets/img/lego4.png" alt="Product 2">
                     <div class="product-info">
                         <p>LEGO TECHNIC</p>
                         <p>SKU:42154</p>
@@ -176,49 +176,49 @@
                 <!-- Card 1 -->
                 <div class="col-6 col-md-3">
                     <div class="brand-card">
-                        <img src="./img/brand1.png" alt="brand1">
+                        <img src="./assets/img/brand1.png" alt="brand1">
                     </div>
                 </div>
                 <!-- Card 2 -->
                 <div class="col-6 col-md-3">
                     <div class="brand-card">
-                        <img src="./img/brand2.png" alt="brand2">
+                        <img src="./assets/img/brand2.png" alt="brand2">
                     </div>
                 </div>
                 <!-- Card 3 -->
                 <div class="col-6 col-md-3">
                     <div class="brand-card">
-                        <img src="./img/brand3.png" alt="brand3">
+                        <img src="./assets/img/brand3.png" alt="brand3">
                     </div>
                 </div>
                 <!-- Card 4 -->
                 <div class="col-6 col-md-3">
                     <div class="brand-card">
-                        <img src="./img/brand4.png" alt="brand4">
+                        <img src="./assets/img/brand4.png" alt="brand4">
                     </div>
                 </div>
                 <!-- Card 5 -->
                 <div class="col-6 col-md-3">
                     <div class="brand-card">
-                        <img src="./img/brand5.png" alt="brand5">
+                        <img src="./assets/img/brand5.png" alt="brand5">
                     </div>
                 </div>
                 <!-- Card 6 -->
                 <div class="col-6 col-md-3">
                     <div class="brand-card">
-                        <img src="./img/brand6.png" alt="brand6">
+                        <img src="./assets/img/brand6.png" alt="brand6">
                     </div>
                 </div>
                 <!-- Card 7 -->
                 <div class="col-6 col-md-3">
                     <div class="brand-card">
-                        <img src="./img/brand7.png" alt="brand7">
+                        <img src="./assets/img/brand7.png" alt="brand7">
                     </div>
                 </div>
                 <!-- Card 8 -->
                 <div class="col-6 col-md-3">
                     <div class="brand-card">
-                        <img src="./img/brand8.png" alt="brand8">
+                        <img src="./assets/img/brand8.png" alt="brand8">
                     </div>
                 </div>
             </div>

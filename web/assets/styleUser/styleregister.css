@@ -7,7 +7,7 @@ body {
   
   /* Banner styles */
   .banner {
-    background-image: url('../img/bannerlogin.jpg'); 
+    background-image: url('../assets/img/bannerlogin.jpg'); 
     background-size: cover;
     background-position: center;
     height: 500px;
@@ -15,8 +15,8 @@ body {
     margin-top: 250px;
   }
   
-  /* Login container styling */
-  .login-container {
+  /* Register container styling */
+  .register-container {
     position: absolute;
     top: 50%;
     right: 10%;
@@ -30,7 +30,7 @@ body {
   }
   
   /* Title styles */
-  .login-container h3 {
+  .register-container h3 {
     font-size: 24px;
     margin-bottom: 20px;
     color: #333;
@@ -46,24 +46,24 @@ body {
     text-decoration: underline;
   }
   
-  .forgot-password {
+  .login-link {
     padding: 10px;
   }
 
-  .login-btn {
-     background-color: #20a52b;
+  .register-btn {
+    background-color: #20a52b;
      font-size: 20px;
      width: 100px;
      font-weight: 250;
   }
-  
+
   /* Footer styles */
-  footer {
-    background-color: #f5f5f5;
-    padding: 20px 50px;
-    margin-top: 150px;
-    border-top: 2px solid black;
-  }
+footer {
+  background-color: #f5f5f5;
+  padding: 20px 50px;
+  margin-top: 150px;
+  border-top: 2px solid black;
+}
 
 .footer-container {
   display: flex;
@@ -107,9 +107,8 @@ body {
   
   /* Mobile responsiveness */
   @media (max-width: 768px) {
-    .login-container {
+    .register-container {
       width: 90%;
       right: 5%;
     }
   }
-  

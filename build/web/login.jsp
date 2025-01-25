@@ -9,7 +9,7 @@
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="./css/stylelogin.css">
+  <link rel="stylesheet" href="./assets/styleUser/stylelogin.css">
 </head>
 <body>
 
@@ -92,20 +92,20 @@
       <div class="footer-section">
         <h4>THANH TOÁN</h4>
         <div class="payment-methods">
-          <img src="./img/pay1.png" alt="Visa">
-          <img src="./img/pay2.png" alt="Mastercard">
-          <img src="./img/pay3.png" alt="JCB">
+          <img src="./assets/img/pay1.png" alt="Visa">
+          <img src="./assets/img/pay2.png" alt="Mastercard">
+          <img src="./assets/img/pay3.png" alt="JCB">
           <br>
-          <img src="./img/pay4.png" alt="AE">
-          <img src="./img/pay5.png" alt="tra_gop">       
+          <img src="./assets/img/pay4.png" alt="AE">
+          <img src="./assets/img/pay5.png" alt="tra_gop">       
         </div>
         <h4>ĐƠN VỊ VẬN CHUYỂN</h4>
         <div class="shipping-partners">
-          <img src="./img/ship1.png" alt="Giao Hàng Nhanh">
-          <img src="./img/ship2.png" alt="Viettel Post">
+          <img src="./assets/img/ship1.png" alt="Giao Hàng Nhanh">
+          <img src="./assets/img/ship2.png" alt="Viettel Post">
           <br>
-          <img src="./img/ship3.png" alt="J&T Express">
-          <img src="./img/ship4.png" alt="J&T Express">        
+          <img src="./assets/img/ship3.png" alt="J&T Express">
+          <img src="./assets/img/ship4.png" alt="J&T Express">        
         </div>
       </div>
       <div class="footer-section">
