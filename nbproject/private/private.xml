@@ -3,10 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/F:/SPRING_2025/SWP/LorKingdom/web/login.jsp</file>
+            <file>file:/F:/SPRING_2025/SWP/LorKingdom/web/header.jsp</file>
+            <file>file:/F:/SPRING_2025/SWP/LorKingdom/web/assets/styleUser/cart.css</file>
             <file>file:/F:/SPRING_2025/SWP/LorKingdom/web/assets/styleUser/footer.css</file>
+            <file>file:/F:/SPRING_2025/SWP/LorKingdom/web/cart.jsp</file>
+            <file>file:/F:/SPRING_2025/SWP/LorKingdom/web/PointPage.jsp</file>
+            <file>file:/F:/SPRING_2025/SWP/LorKingdom/web/assets/styleUser/PointPage.css</file>
             <file>file:/F:/SPRING_2025/SWP/LorKingdom/web/assets/styleUser/stylelogin.css</file>
-            <file>file:/F:/SPRING_2025/SWP/LorKingdom/web/register.jsp</file>
         </group>
     </open-files>
 </project-private>
