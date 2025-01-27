@@ -181,22 +181,7 @@
         </section>
         
         <!-- Footer Section -->
-        <footer>
-            <div class="footer-content">
-                <div class="footer-links">
-                    <a href="#">Trang Chủ</a>
-                    <a href="#">Sản Phẩm</a>
-                    <a href="#">Giới Thiệu</a>
-                    <a href="#">Liên Hệ</a>
-                </div>
-                <div class="footer-info">
-                    <p>&copy; 2025 LorKingdom. Tất cả các quyền được bảo lưu.</p>
-                    <p>Địa chỉ: Ninh Kiều, Cần Thơ, Việt Nam</p>
-                    <p>Điện thoại: +84 123 456 789</p>
-                </div>
-            </div>
-        </footer>
-        
+        <%@include file="footer.jsp" %>
 
         <!-- Swiper Script -->
         <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>

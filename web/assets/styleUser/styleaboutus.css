@@ -168,23 +168,7 @@ body {
     text-align: justify;
 }
 
-footer {
-    background-color: #333;
-    color: white;
-    padding: 20px 0;
-    text-align: center;
-}
-.footer-links a {
-    color: white;
-    margin: 0 15px;
-    text-decoration: none;
-}
-.footer-links a:hover {
-    text-decoration: underline;
-}
-.footer-info p {
-    margin: 5px 0;
-}
+
 
 @media (min-width: 768px) {
     .section-history {

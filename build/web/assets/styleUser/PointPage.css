@@ -1,0 +1,60 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Jan 27, 2025, 9:39:53 PM
+    Author     : admin1
+*/
+
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.rewards-banner {
+    background-color: #FCE4D6;
+    width: 100%;
+    height: 500px; /* Adjust based on your preference and the size of the image */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.reward-image {
+    position: absolute;
+    left: 20px; /* Adjust as needed */
+    bottom: 10px; /* Adjust as needed */
+    height: 200px; /* Adjust based on your actual image size */
+}
+
+.content {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    margin: 120px 0 0 0;
+}
+
+h1 {
+    color: #FF4500;
+    font-size: 24px;
+}
+
+p {
+    color: #555;
+    font-size: 16px;
+}
+
+.rewards-banner button {
+    background-color: #FF4500;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 10px;
+    margin-top: 10px;
+   
+}

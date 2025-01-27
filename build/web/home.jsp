@@ -226,61 +226,6 @@
 
 
 
-        <!-- Footer Section -->
-        <footer class="bg-light text-dark pt-5">
-            <div class="container">
-                <div class="row">
-                    <!-- Thông tin liên hệ -->
-                    <div class="col-lg-4 col-md-6 mb-4">
-                        <h5 class="fw-bold text-danger">Thông tin liên hệ</h5>
-                        <ul class="list-unstyled">
-                            <li><i class="bi bi-geo-alt-fill"></i> 33–35 đường số D4, khu Đô thị mới Him Lam, Phường Tân
-                                Hưng, Quận 7, TP. Hồ Chí Minh</li>
-                            <li><i class="bi bi-telephone-fill"></i> 19001208</li>
-                            <li><i class="bi bi-envelope-fill"></i> hotro@mykingdom.com.vn</li>
-                            <li><i class="bi bi-clock-fill"></i> Thứ 2 - Thứ 7 • 8:00 - 17:00</li>
-                            <li><i class="bi bi-clock-fill"></i> Chủ nhật • 8:00 - 12:00</li>
-                        </ul>
-                    </div>
-
-                    <!-- Điều khoản và chính sách -->
-                    <div class="col-lg-4 col-md-6 mb-4">
-                        <h5 class="fw-bold text-danger">Điều khoản và chính sách</h5>
-                        <ul class="list-unstyled">
-                            <li>Chính sách giao hàng</li>
-                            <li>Chính sách bảo mật</li>
-                            <li>Chính sách bảo hành và đổi trả hàng hóa</li>
-                            <li>Chính sách bảo hành đồng hồ Imoo</li>
-                            <li>Chính sách thanh toán</li>
-                            <li>Điều kiện & Điều khoản thành viên</li>
-                        </ul>
-                    </div>
-
-                    <!-- Hệ thống cửa hàng -->
-                    <div class="col-lg-4 col-md-6 mb-4">
-                        <h5 class="fw-bold text-danger">Hệ thống cửa hàng</h5>
-                        <div class="d-flex">
-                            <img src="store-image.jpg" alt="Hệ thống cửa hàng" class="img-fluid rounded"
-                                 style="max-height: 150px;">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Follow Us Section -->
-                <div class="row border-top pt-3">
-                    <div class="col-lg-8">
-                        <p>Công ty cổ phần Việt Tinh Anh Số ĐKKD: 0309132354 do sở kế hoạch và đầu tư cấp ngày 14/07/09</p>
-                        <p>Địa chỉ: 33–35 đường số D4, khu Đô thị mới Him Lam, Phường Tân Hưng, Quận 7, TP. Hồ Chí Minh</p>
-                    </div>
-                    <div class="col-lg-4 text-lg-end">
-                        <a href="#" class="text-dark me-2"><i class="bi bi-facebook fs-4"></i></a>
-                        <a href="#" class="text-dark me-2"><i class="bi bi-instagram fs-4"></i></a>
-                        <a href="#" class="text-dark me-2"><i class="bi bi-youtube fs-4"></i></a>
-                        <a href="#" class="text-dark"><i class="bi bi-tiktok fs-4"></i></a>
-                    </div>
-                </div>
-            </div>
-        </footer>
 
         <script>
             document.querySelector('.dropdown-btn').addEventListener('click', function () {

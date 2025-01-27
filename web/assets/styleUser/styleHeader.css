@@ -7,8 +7,7 @@
 
 /* Header styles */
 header {
-  background-color: #b90808;
-  padding: 10px 0;
+  background-color: #FF6600;
   border-bottom: 1px solid #ddd;
   position: fixed; 
   top: 0;
@@ -18,14 +17,18 @@ header {
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
   margin-bottom: 50px;
 }
+.header .search-container .form-control {
+    width: 400px; /* Hoặc bất kỳ giá trị nào bạn muốn */
+}
 
 .header_first {
   display: flex;
   align-items: center; /* Căn giữa theo trục dọc */
   justify-content: space-between; /* Phân bổ khoảng cách giữa các phần */
   padding: 10px 20px;
-  background-color: #b90808; /* Màu nền nhẹ */
+  background-color: #FF6600; /* Màu nền nhẹ */
   border-bottom: 1px solid #ddd; /* Đường kẻ dưới */
+  padding: 20px;
 }
 
 .header-left {
@@ -128,7 +131,7 @@ header {
 
 .header-right a:hover {
   background-color: #f0f0f0;
-  color: #b90808;
+  color: #FF6600;
 }
 
 .dropdown-menu {
@@ -184,7 +187,7 @@ header {
   }
   
   .menu-item:hover > a {
-    color: #a71e0b; 
+    color: #FF6600; 
   }
   
   .dropdown-menu {
@@ -242,7 +245,7 @@ header {
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            background: #cebdbfeb;
             display: flex;
             justify-content: center;
             align-items: center;
