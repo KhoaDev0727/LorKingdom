@@ -21,7 +21,7 @@
             <div class="content">
                 <h1>Nhận phần thưởng khi khám phá</h1>
                 <p>Tìm hiểu cách được giảm giá cho đơn hàng tiếp theo bằng Klook xu sad</p>
-                <button>Xem Klook xu</button>
+                <button>Xem Klook xu luan</button>
             </div>
         </div>
 
