@@ -20,8 +20,13 @@
             <img src="assets/img/PointPage_img/s4ehpensjhesz6pejvcl.png" alt="Reward" class="reward-image">
             <div class="content">
                 <h1>Nhận phần thưởng khi khám phá</h1>
+<<<<<<< HEAD
                 <p>Tìm hiểu cách được giảm giá cho đơn hàng tiếp theo bằng Klook xu sad</p>
                 <button>Xem Klook xu luan</button>
+=======
+                <p>Tìm hiểu cách được giảm giá cho đơn hàng tiếp theo bằng Klook xu sasda</p>
+                <button>Xem Klook xu</button>
+>>>>>>> 144752d5e9c4d65cb479ad23df8fcc858ce8004d
             </div>
         </div>
 
