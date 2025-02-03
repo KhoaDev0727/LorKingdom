@@ -15,7 +15,7 @@
     <body>
 
         <!-- Header Section -->
-        <jsp:include page="header.jsp"/>
+        <jsp:include page="./assets/Component/header.jsp"/>
         <!-- end Header Section -->
 
         <!-- Banner -->
@@ -93,7 +93,7 @@
         </div>
 
         <!-- Footer -->
-        <%@include file="footer.jsp" %>
+        <%@include file="./assets/Component/footer.jsp" %>
         <!-- Bootstrap JS and dependencies -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     </body>

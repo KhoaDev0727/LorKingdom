@@ -65,9 +65,6 @@
             </div>
         </section>
 
-
-
-
         <section class="item-box">
             <div class="category-section text-center">
                 <button class="category-btn active">Tất Cả</button>
@@ -79,41 +76,41 @@
 
             <!-- cart-item blocks -->
             <sql:setDataSource var="conn"
-                       driver="com.microsoft.sqlserver.jdbc.SQLServerDriver"
-                       url="jdbc:sqlserver://LEMINHKHOA:1433;databaseName=LorKingDom;encrypt=true;trustServerCertificate=true;"
-                       user="sa"
-                       password="12345" />
-    <sql:query var="products" dataSource="${conn}">
-        SELECT * FROM Product WHERE Status = 'Available'
-    </sql:query>
+                               driver="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+                               url="jdbc:sqlserver://LEMINHKHOA:1433;databaseName=LorKingDom;encrypt=true;trustServerCertificate=true;"
+                               user="sa"
+                               password="12345" />
+            <sql:query var="products" dataSource="${conn}">
+                SELECT * FROM Product WHERE Status = 'Available'
+            </sql:query>
 
-    <!-- Hiển thị sản phẩm -->
-    <div class="cart-items">
-        <c:forEach var="product" items="${products.rows}">
-            <div class="cart-item">
-                <div class="item-image">
-                    <img src="${product.Image}" alt="${product.Name}" class="product-image">
-                    <span class="discount-badge">-35%</span> 
-                </div>
-                <div class="item-info">
-                    <span class="exclusive-tag">Độc Quyền Online</span>
-                    <h4>${product.Name}</h4>
-                    <div class="price">
-                        <span class="new-price">${product.Price} Đ</span>
-                        <!-- Bạn có thể tính giá cũ giảm 35% nếu cần -->
-                        <span class="old-price">${product.Price} Đ</span>
+            <!-- Hiển thị sản phẩm -->
+            <div class="cart-items">
+                <c:forEach var="product" items="${products.rows}">
+                    <div class="cart-item">
+                        <div class="item-image">
+                            <img src="${product.Image}" alt="${product.Name}" class="product-image">
+                            <span class="discount-badge">-35%</span> 
+                        </div>
+                        <div class="item-info">
+                            <span class="exclusive-tag">Độc Quyền Online</span>
+                            <h4>${product.Name}</h4>
+                            <div class="price">
+                                <span class="new-price">${product.Price} Đ</span>
+                                <!-- Bạn có thể tính giá cũ giảm 35% nếu cần -->
+                                <span class="old-price">${product.Price} Đ</span>
+                            </div>
+                            <form action="AddToCartServlet" method="POST">
+                                <input type="hidden" name="productId" value="${product.ProductID}">
+                                <button class="add-to-cart-btn" type="submit">Thêm Vào Giỏ Hàng</button>
+                            </form>
+                        </div>
                     </div>
-                    <form action="AddToCartServlet" method="POST">
-                        <input type="hidden" name="productId" value="${product.ProductID}">
-                        <button class="add-to-cart-btn" type="submit">Thêm Vào Giỏ Hàng</button>
-                    </form>
-                </div>
+                </c:forEach>
             </div>
-        </c:forEach>
-    </div>
             <!-- ==== -->
-            
-            
+
+
 
         </section>
 

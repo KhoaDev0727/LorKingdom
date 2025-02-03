@@ -22,7 +22,7 @@
         }
 
     </style>
-    <%@include file="header.jsp" %>
+    <%@include file="./assets/Component/header.jsp" %>
     <body>
 
         <div class="cart-container">
@@ -84,6 +84,6 @@
             </div>
         </div>
     </body>
-    <%@include file="footer.jsp" %>
+    <%@include file="./assets/Component/footer.jsp" %>
 
 </html>

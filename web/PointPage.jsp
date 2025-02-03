@@ -14,7 +14,7 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <%@include file="header.jsp" %>
+        <%@include file="./assets/Component/header.jsp" %>
 
         <div class="rewards-banner">
             <img src="assets/img/PointPage_img/s4ehpensjhesz6pejvcl.png" alt="Reward" class="reward-image">
@@ -60,7 +60,7 @@
         </div>
 
 
-        <%@include file="footer.jsp" %>
+        <%@include file="./assets/Component/footer.jsp" %>
 
     </body>
 </html>
