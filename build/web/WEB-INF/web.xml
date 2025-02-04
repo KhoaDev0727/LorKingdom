@@ -9,8 +9,8 @@
         <servlet-class>Controller.LoginServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>CategoryServlet</servlet-name>
-        <servlet-class>Controller.CategoryServlet</servlet-class>
+        <servlet-name>SuperCategoryServlet</servlet-name>
+        <servlet-class>Controller.SuperCategoryServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
@@ -55,8 +55,8 @@
     <!-- Config for CategoryServlet -->
     <!-- Session timeout -->
     <servlet-mapping>
-        <servlet-name>CategoryServlet</servlet-name>
-        <url-pattern>/Admin/CategoryServlet</url-pattern>
+        <servlet-name>SuperCategoryServlet</servlet-name>
+        <url-pattern>/Admin/SuperCategoryServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

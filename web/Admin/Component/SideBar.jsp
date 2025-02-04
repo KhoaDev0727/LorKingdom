@@ -65,9 +65,9 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
                                 Product Management
                             </a>
-                            <a class="nav-link" href="CategoryServlet?&action=list">
+                            <a class="nav-link" href="SuperCategoryServlet?&action=list">
                                 <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
-                                 Supper Category Management
+                                 SupperCategory Management
                             </a>
 
 
