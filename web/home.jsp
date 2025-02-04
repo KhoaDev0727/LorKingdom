@@ -22,7 +22,7 @@
 
     <body>
         <!-- Header Section -->
-        <jsp:include page="header.jsp"/>
+        <jsp:include page="assets/Component/header.jsp"/>
         <!-- end Header Section -->
 
 

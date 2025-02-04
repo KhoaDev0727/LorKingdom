@@ -5,15 +5,27 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBConnection {
-    private static final String DB_URL = "jdbc:sqlserver://LEMINHKHOA:1433;databaseName=LorKingDom;encrypt=true;trustServerCertificate=true;";
-    private static final String DB_USER = "sa";
-    private static final String DB_PASSWORD = "12345";
 
-    // Phương thức tạo kết nối
+    private static String url = "jdbc:sqlserver://localhost:1433;databaseName=LorKingDom;encrypt=true;trustServerCertificate=true";
+    private static String user = "sa";
+    private static String pass = "123456789";
+
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+        Connection conn = DBConnection.getConnection();
+        if (conn != null) {
+            System.out.println("Kết nối thành công!");
+        } else {
+            System.out.println("Kết nối thất bại!");
+        }
+    }
+
     public static Connection getConnection() throws SQLException, ClassNotFoundException {
-        // Load JDBC Driver
-        Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-        // Tạo kết nối
-        return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            return DriverManager.getConnection(url, user, pass);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

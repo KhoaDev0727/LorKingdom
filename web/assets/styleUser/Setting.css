@@ -1,0 +1,243 @@
+/* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f6f9;
+
+}
+
+/* Container setup using Flexbox */
+.container-fluid {
+    width: 1000px !important; /* Đảm bảo ghi đè các kiểu dáng khác */
+    margin: 0 auto;
+    margin: 0 auto; /* Center the container */
+    margin-top: 160px;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: 330px; /* Smaller sidebar width */
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* User profile styling */
+.profile {
+    text-align: center;
+    margin-bottom: 30px;
+    background: linear-gradient(135deg, #0066cc, #33ccff);
+    height: 380px; /* Smaller profile box */
+    width: 275px; /* Smaller profile width */
+    border-radius: 15px;
+    padding: 30px 0;
+}
+
+.profile img {
+    width: 100px; /* Smaller image size */
+    height: 100px; /* Smaller image size */
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.profile-img {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Align items in the center */
+    text-align: center;
+}
+
+.username {
+    font-weight: bold;
+    color: white;
+    padding: 10px 0;
+}
+
+a {
+    text-decoration: none;
+    color: #fff;
+}
+
+
+/* Navigation Menu */
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+nav ul li {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+
+}
+
+nav ul li a {
+    font-size: 16px;
+    color: #333;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+nav ul li a i {
+    font-size: 25px; /* Additional size control */
+    color: #504c4c;
+    margin-right: 30px;
+    padding: 6px 8px;
+}
+
+
+nav ul li a.active {
+    color: #ff6b00;
+}
+
+nav ul li a:hover {
+    color: #ff6b00;
+}
+
+/* Adjusting active and hover icons */
+nav ul li a.active i, nav ul li a:hover i {
+    color: #ff6b00;
+}
+
+/* Adjust the "Xem" button */
+nav ul li a span {
+    font-size: 14px;
+    color: #ff6b00;
+}
+
+/* Adding spacing and styling for items */
+nav ul li a span:hover {
+    color: #e55a00;
+}
+
+
+/* Add space between icon and text */
+nav ul li a span {
+    margin-left: 10px; /* Space between icon and text */
+}
+
+nav ul li a.active {
+    color: #ff6b00;
+}
+
+nav ul li a:hover {
+    color: #ff6b00;
+}
+
+/* Adjusting active and hover icons */
+nav ul li a.active i, nav ul li a:hover i {
+    color: #ff6b00;
+}
+
+/* Adjust the "Xem" button */
+nav ul li a span {
+    font-size: 14px;
+    color: #ff6b00;
+}
+
+/* Adding spacing and styling for items */
+nav ul li a span:hover {
+    color: #e55a00;
+}
+
+
+/* Offer Section */
+.offer {
+    background-color: #fff3e0;
+    padding: 10px;
+    margin-top: 30px;
+    text-align: center;
+}
+
+/* Main Content Styling */
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+
+.main-content h1 {
+    font-size: 20px; /* Smaller heading font size */
+    margin-bottom: 20px;
+}
+
+/* Add Address Button */
+.add-address {
+    background-color: #ff6b00;
+    color: white;
+    border: none;
+    padding: 8px 16px; /* Smaller button padding */
+    cursor: pointer;
+    font-size: 14px; /* Smaller font size */
+    border-radius: 5px;
+}
+
+.add-address:hover {
+    background-color: #e55a00;
+}
+
+/* Klook Rewards Styling */
+.klook-rewards {
+    background-color: #ffffff;
+    border-radius: 10px;
+    width: 220px; /* Smaller Klook rewards width */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    margin: auto;
+    margin-top: 30px;
+    padding: 8px;
+}
+
+.rewards-header {
+    margin-bottom: 10px;
+}
+
+.rewards-title {
+    font-weight: bold;
+    font-size: 14px; /* Smaller title font size */
+    color: #4A90E2;
+}
+
+.rewards-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.level {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.level-text {
+    font-size: 12px; /* Smaller level text */
+    color: #333;
+    margin-right: 5px;
+}
+
+.level-badge {
+    background-color: #B0E0E6;
+    padding: 5px 10px;
+    font-size: 12px; /* Smaller badge font size */
+    color: #333;
+    border-radius: 15px;
+}
+
+.view-benefits {
+    background-color: #4A90E2;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-size: 12px; /* Smaller button font size */
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: center;
+    width: 100%;
+}
+
+.view-benefits:hover {
+    background-color: #357ABD;
+}

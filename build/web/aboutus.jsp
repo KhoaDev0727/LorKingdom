@@ -23,7 +23,7 @@
     <body>
         
         <!-- Header Section -->
-    <jsp:include page="./assets/Component/header.jsp"/>
+        <jsp:include page="assets/Component/header.jsp"/>
     <!-- end Header Section -->
         
         <div class="image-banner">
@@ -181,7 +181,7 @@
         </section>
         
         <!-- Footer Section -->
-        <%@include file="./assets/Component/footer.jsp" %>
+        <%@include file="assets/Component/footer.jsp" %>
 
         <!-- Swiper Script -->
         <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>

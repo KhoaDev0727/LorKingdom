@@ -15,7 +15,7 @@
     <body>
 
         <!-- Header Section -->
-        <jsp:include page="./assets/Component/header.jsp"/>
+        <jsp:include page="assets/Component/header.jsp"/>
         <!-- end Header Section -->
 
         <!-- Banner -->

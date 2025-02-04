@@ -65,10 +65,11 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
                                 Product Management
                             </a>
-                            <a class="nav-link" href="CategoryManagement.jsp">
+                            <a class="nav-link" href="CategoryServlet?&action=list">
                                 <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
-                                Category Management
+                                 Supper Category Management
                             </a>
+
 
                             <a class="nav-link" href="ShippingMethod.jsp">
                                 <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>

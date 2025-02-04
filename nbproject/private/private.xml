@@ -3,8 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/SWP391_P/LorKingdom/web/verifyCode.jsp</file>
-            <file>file:/D:/SWP391_P/LorKingdom/src/java/DBConnect/DBConnection.java</file>
+            <file>file:/F:/SPRING_2025/SWP/LorKingdom/web/aboutus.jsp</file>
+            <file>file:/F:/SPRING_2025/SWP/LorKingdom/src/java/Model/Category.java</file>
+            <file>file:/F:/SPRING_2025/SWP/LorKingdom/src/java/DBConnect/DBConnection.java</file>
+            <file>file:/F:/SPRING_2025/SWP/LorKingdom/web/Admin/CategoryManagement.jsp</file>
+            <file>file:/F:/SPRING_2025/SWP/LorKingdom/src/java/DAO/CategoryDAO.java</file>
+            <file>file:/F:/SPRING_2025/SWP/LorKingdom/web/Admin/Component/SideBar.jsp</file>
+            <file>file:/F:/SPRING_2025/SWP/LorKingdom/web/WEB-INF/web.xml</file>
+            <file>file:/F:/SPRING_2025/SWP/LorKingdom/src/java/Controller/CategoryServlet.java</file>
         </group>
     </open-files>
 </project-private>
