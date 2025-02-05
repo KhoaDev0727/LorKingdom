@@ -19,7 +19,7 @@ public class SuperCategoryDAO {
                 categories.add(new SuperCategory(
                         rs.getInt("SuperCategoryID"),
                         rs.getString("Name"),
-                        new Date(rs.getTimestamp("CreatedAt").getTime())
+                        rs.getTimestamp("CreatedAt")
                 ));
             }
         }

@@ -12,13 +12,9 @@
         <servlet-name>SuperCategoryServlet</servlet-name>
         <servlet-class>Controller.SuperCategoryServlet</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>CategoryServlet</servlet-name>
-        <servlet-class>Controller.CategoryServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>MaterialServlet</servlet-name>
-        <servlet-class>Controller.MaterialServlet</servlet-class>
+        <servlet>
+        <servlet-name>CustomerMangementServlet</servlet-name>
+        <servlet-class>Controller.CustomerMangementServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
@@ -66,13 +62,9 @@
         <servlet-name>SuperCategoryServlet</servlet-name>
         <url-pattern>/Admin/SuperCategoryServlet</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>CategoryServlet</servlet-name>
-        <url-pattern>/Admin/CategoryServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>MaterialServlet</servlet-name>
-        <url-pattern>/Admin/MaterialServlet</url-pattern>
+     <servlet-mapping>
+        <servlet-name>CustomerMangementServlet</servlet-name>
+        <url-pattern>/Admin/CustomerMangementServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

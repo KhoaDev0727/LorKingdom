@@ -49,7 +49,7 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
                                 Staff Permissions
                             </a>
-                            <a class="nav-link" href="UserManagement.jsp">
+                            <a class="nav-link" href="CustomerMangementServlet?&action=list">
                                 <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
                                 User Management
                             </a>
@@ -67,18 +67,10 @@
                             </a>
                             <a class="nav-link" href="SuperCategoryServlet?&action=list">
                                 <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
-                                SupperCategory Management
+                                 SupperCategory Management
                             </a>
-                            <a class="nav-link" href="CategoryServlet?&action=list">
-                                <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
-                                Category Management
-                            </a>
-                            
-                            <a class="nav-link" href="MaterialServlet?&action=list">
-                                <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
-                                Material Management
-                            </a>
-                            
+
+
                             <a class="nav-link" href="ShippingMethod.jsp">
                                 <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
                                 Shipping Method

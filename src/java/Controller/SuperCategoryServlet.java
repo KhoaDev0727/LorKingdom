@@ -143,8 +143,8 @@ public class SuperCategoryServlet extends HttpServlet {
             return;
         }
 
-        if (!name.matches("^[\\p{L}\\s]+$")) {
-            request.getSession().setAttribute("errorMessage", "Category name must contain only letters (including Vietnamese characters) and spaces.");
+        if (!name.matches("^[a-zA-Z0-9\\s]+$")) {
+            request.getSession().setAttribute("errorMessage", "Category name must contain only letters, numbers, and spaces.");
             response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
             return;
         }
