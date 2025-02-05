@@ -67,9 +67,12 @@
                             </a>
                             <a class="nav-link" href="SuperCategoryServlet?&action=list">
                                 <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
-                                 SupperCategory Management
+                                SupperCategory Management
                             </a>
-
+                            <a class="nav-link" href="CategoryServlet?&action=list">
+                                <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
+                                Category Management
+                            </a>
 
                             <a class="nav-link" href="ShippingMethod.jsp">
                                 <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
