@@ -43,7 +43,7 @@ public class AccountDAO {
                 if (rs.next()) {
                     return new Account(
                             rs.getInt("AccountID"),
-                            rs.getString("AccouuntName"),
+                            rs.getString("AccountName"),
                             rs.getString("PhoneNumber"),
                             rs.getString("Email"),
                             rs.getString("Password"),

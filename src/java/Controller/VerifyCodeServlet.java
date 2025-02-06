@@ -1,10 +1,12 @@
 package Controller;
 
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
-import jakarta.servlet.http.HttpSession;
 
-import java.io.IOException;
+import DBConnect.DBConnection;
 
 public class VerifyCodeServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -37,7 +39,23 @@ public class VerifyCodeServlet extends HttpServlet {
             session.removeAttribute("verificationCode");
             session.removeAttribute("codeExpiryTime");
             session.setAttribute("isVerified", true);
-            
+
+            // Lưu thông tin người dùng vào database
+            String username = (String) session.getAttribute("tempUsername");
+            String email = (String) session.getAttribute("tempEmail");
+            String password = (String) session.getAttribute("tempPassword");
+            String phoneNumber = (String) session.getAttribute("tempPhoneNumber");
+
+            if (username != null && email != null && password != null && phoneNumber != null) {
+                saveUserToDatabase(username, email, password, phoneNumber);
+
+                // Xóa thông tin tạm khỏi session
+                session.removeAttribute("tempUsername");
+                session.removeAttribute("tempEmail");
+                session.removeAttribute("tempPassword");
+                session.removeAttribute("tempPhoneNumber");
+            }
+
             response.sendRedirect("home.jsp");
         } else {
             // Xác thực thất bại
@@ -45,4 +63,28 @@ public class VerifyCodeServlet extends HttpServlet {
             request.getRequestDispatcher("verifyCode.jsp").forward(request, response);
         }
     }
+
+    private void saveUserToDatabase(String username, String email, String password, String phoneNumber) {
+        String sql = "INSERT INTO Account (RoleID, AccountName, Email, Password, PhoneNumber, Image) VALUES (?, ?, ?, ?, ?, ?)";
+        String defaultImageUrl = "./assets/img/default-img-profile.png";
+
+        int defaultRoleID = 3; 
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, defaultRoleID);
+            stmt.setString(2, username);
+            stmt.setString(3, email);
+            stmt.setString(4, password);
+            stmt.setString(5, phoneNumber);
+            stmt.setString(6, defaultImageUrl);
+            stmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    
 }

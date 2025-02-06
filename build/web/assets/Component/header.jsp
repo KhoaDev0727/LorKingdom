@@ -49,10 +49,28 @@
                         <div class="avatar">
                             <img src="./assets/img/profile.png" alt="logo">
                         </div>
+                        
                         <div class="menu-avatar">
-                            <a href="login.jsp" class="menu-item-avatar text-dark p-3">Login</a>
-                            <a href="register.jsp" class="menu-item-avatar text-dark p-3">Register</a>
+                            <c:choose>
+                                <c:when test="${not empty sessionScope.user}">
+                                    <a href="ProfileServlet" class="menu-item-avatar text-dark p-3">
+                                        <i class="fas fa-user-circle"></i> Profile
+                                    </a>
+                                    <a href="LogoutServlet" class="menu-item-avatar text-dark p-3">
+                                        <i class="fas fa-sign-out-alt"></i> Logout
+                                    </a>
+                                </c:when>
+                                <c:otherwise>
+                                    <a href="login.jsp" class="menu-item-avatar text-dark p-3">
+                                        <i class="fas fa-sign-in-alt"></i> Login
+                                    </a>
+                                    <a href="register.jsp" class="menu-item-avatar text-dark p-3">
+                                        <i class="fas fa-user-plus"></i> Register
+                                    </a>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
+                        
                     </div>
 
                 </div>

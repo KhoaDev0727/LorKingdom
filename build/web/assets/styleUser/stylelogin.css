@@ -23,14 +23,14 @@ body, html {
 
 
 .form-container {
-    margin: 150px 14% 0 auto;
+    margin: 140px 15% 0 auto;
     padding: 30px;
     background: #fff;
     border-radius: 20px;
     box-shadow: 0 4px 10px 0 rgba(0, 0, 0, .14);
     width: 100%;
     max-width: 400px;
-    height: 370px;
+    position: relative;
 }
 
 /* Kiểu cho form */
@@ -76,7 +76,7 @@ button[type="submit"] {
 }
 
 button.login-btn {
-    border-radius:30px;
+    border-radius:20px;
     background: rgb(255, 89, 0);
     color: white;
 }

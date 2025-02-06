@@ -41,76 +41,58 @@
                     <div class="sb-sidenav-menu">
                         <div class="nav">
                             <div class="sb-sidenav-menu-heading">Management</div>
-                            <a class="nav-link" href="DashBoard.jsp">
-                                <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
-                                Financial Dashboard
-                            </a>
-                            <a class="nav-link" href="StaffPermissions.jsp">
-                                <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
-                                Staff Permissions
-                            </a>
-                            <a class="nav-link" href="CustomerManagementServlet">
-                                <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
-                                User Management
-                            </a>
-                            <a class="nav-link" href="StaffManagementServlet">
-                                <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
-                                Staff Management
-                            </a>
-                            <a class="nav-link" href="AdminManagementServlet">
-                                <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
-                                Admin Management
-                            </a>
-                            <a class="nav-link" href="ProductManagement.jsp">
-                                <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
-                                Product Management
-                            </a>
-                            <a class="nav-link" href="SuperCategoryServlet?&action=list">
-                                <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
-                                SupperCategory Management
-                            </a>
-                            <a class="nav-link" href="CategoryServlet?&action=list">
-                                <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
-                                Category Management
-                            </a>
 
-                            <a class="nav-link" href="MaterialServlet?&action=list">
-                                <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
-                                Material Management
-                            </a>
-                            <a class="nav-link" href="SexServlet?&action=list">
-                                <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
-                                Sex Management
-                            </a>
+                            <!-- Dashboard Dropdown -->
+                            <div class="nav-item dropdown">
+                                <a class="nav-link" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                    Dashboard
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="DashBoard.jsp">Financial Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="StaffPermissions.jsp">Staff Permissions</a></li>
+                                    <li><a class="dropdown-item" href="UserManagement.jsp">User Management</a></li>
+                                    <li><a class="dropdown-item" href="StaffManagement.jsp">Staff Management</a></li>
+                                    <li><a class="dropdown-item" href="AdminManagement.jsp">Admin Management</a></li>
+                                    <li><a class="dropdown-item" href="ProductManagement.jsp">Product Management</a></li>
+                                </ul>
+                            </div>
 
-                            <a class="nav-link" href="AgeServlet?&action=list">
-                                <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
-                                Age Management
-                            </a>
-                            <a class="nav-link" href="BrandServlet?&action=list">
-                                <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
-                                Brand Management
-                            </a>
-                            <a class="nav-link" href="ShippingMethod.jsp">
-                                <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
-                                Shipping Method
-                            </a>
-                            <a class="nav-link" href="PaymentMethod.jsp">
-                                <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
-                                Payment Method
-                            </a>
-                            <a class="nav-link" href="PaymentMethod.jsp">
-                                <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
-                                FeedBack
-                            </a>
+                            <!-- Configuration Dropdown -->
+                            <div class="nav-item dropdown">
+                                <a class="nav-link" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-cogs"></i></div>
+                                    Configuration
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="SuperCategoryServlet?&action=list">SuperCategory
+                                            Management</a></li>
+                                    <li><a class="dropdown-item" href="ShippingMethod.jsp">Shipping Method</a></li>
+                                    <li><a class="dropdown-item" href="PaymentMethod.jsp">Payment Method</a></li>
+                                </ul>
+                            </div>
+
+                            <!-- Feedback Dropdown -->
+                            <div class="nav-item dropdown">
+                                <a class="nav-link" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-comments"></i></div>
+                                    Feedback
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="FeedBack.jsp">View Feedback</a></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                    <nav> 
+
+                    <nav>
                         <div class="sb-sidenav-footer">
                             <div class="small">Logged in as:</div>
                             Management Admin
                         </div>
                     </nav>
+                </nav>
             </div>
+        </div>
     </body>
 </html>
