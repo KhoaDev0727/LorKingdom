@@ -135,7 +135,7 @@
                                                 <div class="modal fade" id="editCustomerModal${s.accountId}">
                                                     <div class="modal-dialog modal-lg">
                                                         <div class="modal-content">
-                                                            <form action="CustomerMangementServlet" method="GET">
+                                                            <form action="CustomerMangementServlet" method="POST" enctype="multipart/form-data">
                                                                 <input type="hidden" name="action" value="update">
                                                                 <input type="hidden" name="accountId" value="${s.accountId}">
                                                                 <div class="modal-header">
@@ -190,9 +190,11 @@
                                                                         </div>
                                                                         <div class="col-md-4">
                                                                             <label class="form-label">Role</label>
-                                                                            <select class="form-select" name="roleID">
-                                                                                <c:forEach var="r" items="${roleList}">
-                                                                                    <option value="${r.roleID}" ${s.roleID == r.roleID ? 'selected' : ''}>${r.roleName}</option>
+                                                                             <select class="form-select" name="roleID">
+                                                                                <c:forEach var="r" items="${roles}">
+                                                                                    <option value="${r.roleID}" ${r.roleID == s.roleID ? 'selected' : ''}>
+                                                                                        ${r.name}
+                                                                                    </option>
                                                                                 </c:forEach>
                                                                             </select>
                                                                         </div>

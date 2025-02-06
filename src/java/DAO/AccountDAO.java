@@ -34,6 +34,55 @@ public class AccountDAO {
     private static String DELETE_ACCOUNT_BY_ID = "DELETE FROM Account WHERE AccountID = ?";
     private static String ADD = "INSERT INTO Account (AccountName, PhoneNumber,Email, Password, Address, Status, IsDeleted, Balance) VALUES (?, ?, ?)";
 
+    
+    public Account getAccountByEmail(String email) {
+        String query = "SELECT * FROM Account WHERE Email = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, email);
+            try ( ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new Account(
+                            rs.getInt("AccountID"),
+                            rs.getString("AccouuntName"),
+                            rs.getString("PhoneNumber"),
+                            rs.getString("Email"),
+                            rs.getString("Password"),
+                            rs.getString("Address"),
+                            rs.getString("Status"),
+                            rs.getDouble("Balance"),
+                            rs.getString("Image")
+                    );
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void updateAddress(String email, String address) {
+        String query = "UPDATE Account SET Address = ? WHERE Email = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, address);
+            ps.setString(2, email);
+            ps.executeUpdate();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updatePhoneNumber(String email, String phoneNumber) {
+        String query = "UPDATE Account SET PhoneNumber = ? WHERE Email = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, phoneNumber);
+            ps.setString(2, email);
+            ps.executeUpdate();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    
     public static List<Account> showList(int roleId) {
         List<Account> list = new ArrayList<>();
         try {

@@ -10,9 +10,12 @@ import Model.Role;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -24,6 +27,11 @@ import java.util.List;
  *
  * @author Truong Van Khang - CE181852
  */
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+        maxFileSize = 1024 * 1024 * 10, // 10MB
+        maxRequestSize = 1024 * 1024 * 50 // 50MB
+)
 public class StaffManagementServlet extends HttpServlet {
 
     /**
@@ -146,14 +154,17 @@ public class StaffManagementServlet extends HttpServlet {
 
             int accountID = Integer.parseInt(request.getParameter("accountId"));
             String userName = request.getParameter("userName");
-            String image = request.getParameter("image");
+
+            String uploadPath = getServletContext().getRealPath("") + File.separator + "images";
+
             String phoneNumber = request.getParameter("phoneNumber");
             String email = request.getParameter("email");
             String passwordHashed = hashPassword(request.getParameter("password"));
             String address = request.getParameter("address");
             String status = request.getParameter("status");
             int roleID = Integer.parseInt(request.getParameter("roleID"));
-
+            Part filePart = request.getPart("image");
+            String image = UploadImage.uploadFile(filePart, uploadPath);
             Account a = new Account(accountID, roleID, userName, phoneNumber, image, email, passwordHashed, address, status, Timestamp.from(Instant.now()));
             boolean isUpdate = AccountDAO.updateProfile(a);
             if (isUpdate) {

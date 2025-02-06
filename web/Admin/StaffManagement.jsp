@@ -135,7 +135,7 @@
                                                 <div class="modal fade" id="editCustomerModal${s.accountId}">
                                                     <div class="modal-dialog modal-lg">
                                                         <div class="modal-content">
-                                                            <form action="CustomerMangementServlet" method="GET">
+                                                            <form action="CustomerMangementServlet" method="POST" enctype="multipart/form-data">
                                                                 <input type="hidden" name="action" value="update">
                                                                 <input type="hidden" name="accountId" value="${s.accountId}">
                                                                 <div class="modal-header">

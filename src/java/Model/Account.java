@@ -21,6 +21,18 @@ public class Account {
     public Account() {
     }
 
+     public Account(int accountID, String userName, String phoneNumber, String email, String password, String address, String status, double balance, String image) {
+        this.accountId = accountID;
+        this.userName = userName;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.password = password;
+        this.address = address;
+        this.status = status;
+        this.balance = balance;
+        this.image = image;
+    }
+    
     public Account(int accountId, int RoleID, String userName, String phoneNumber, String email, String image, String password, String address, int isDeleted, String status, double balance, Timestamp createdAt, Timestamp updateAt) {
         this.accountId = accountId;
         this.RoleID = RoleID;
