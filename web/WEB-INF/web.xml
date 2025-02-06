@@ -8,17 +8,31 @@
         <servlet-name>LoginServlet</servlet-name>
         <servlet-class>Controller.LoginServlet</servlet-class>
     </servlet>
+    <servlet-mapping>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/LoginServlet</url-pattern>
+    </servlet-mapping>
+    <!-- Config for SuperCategoryServlet -->
     <servlet>
         <servlet-name>SuperCategoryServlet</servlet-name>
         <servlet-class>Controller.SuperCategoryServlet</servlet-class>
     </servlet>
-        <servlet>
-        <servlet-name>CustomerMangementServlet</servlet-name>
-        <servlet-class>Controller.CustomerMangementServlet</servlet-class>
+    <servlet-mapping>
+        <servlet-name>SuperCategoryServlet</servlet-name>
+        <url-pattern>/Admin/SuperCategoryServlet</url-pattern>
+    </servlet-mapping>
+    <!-- Config for CustomerManagementServlet -->
+    <servlet>
+        <servlet-name>CustomerManagementServlet</servlet-name>
+        <servlet-class>Controller.CustomerManagementServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>StaffManagementServlet</servlet-name>
+        <servlet-class>Controller.StaffManagementServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>LoginServlet</servlet-name>
-        <url-pattern>/LoginServlet</url-pattern>
+        <servlet-name>CustomerManagementServlet</servlet-name>
+        <url-pattern>/Admin/CustomerManagementServlet</url-pattern>
     </servlet-mapping>
     <!-- Config for RegisterServlet -->
     <servlet>
@@ -56,17 +70,15 @@
         <servlet-name>VerifyCodeServlet</servlet-name>
         <url-pattern>/VerifyCodeServlet</url-pattern>
     </servlet-mapping>
-    <!-- Config for CategoryServlet -->
-    <!-- Session timeout -->
+    <!-- Session timeout config -->
     <servlet-mapping>
-        <servlet-name>SuperCategoryServlet</servlet-name>
-        <url-pattern>/Admin/SuperCategoryServlet</url-pattern>
+        <servlet-name>StaffManagementServlet</servlet-name>
+        <url-pattern>/Admin/StaffManagementServlet</url-pattern>
     </servlet-mapping>
-     <servlet-mapping>
-        <servlet-name>CustomerMangementServlet</servlet-name>
-        <url-pattern>/Admin/CustomerMangementServlet</url-pattern>
-    </servlet-mapping>
+
+
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
+    <session-timeout>30</session-timeout>
 </web-app>

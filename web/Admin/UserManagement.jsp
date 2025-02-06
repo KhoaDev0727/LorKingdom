@@ -57,7 +57,7 @@
                                     <button class="btn btn-outline-secondary" type="submit">
                                         <i class="fas fa-search"></i>
                                     </button>
-                                    <a href="CustomerServlet" class="btn btn-outline-danger">
+                                    <a href="CustomerMangementServlet?&action=list" class="btn btn-outline-danger">
                                         <i class="fas fa-sync"></i>
                                     </a>
                                 </div>
@@ -99,7 +99,7 @@
                                                         <td>${customer.userName}</td>
                                                         <td>${customer.phoneNumber}</td>
                                                         <td>${customer.email}</td>
-                                                        <td style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                        <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                                             ${customer.password}
                                                         </td>
                                                         <td>${customer.address}</td>
@@ -115,11 +115,10 @@
                                                         <td>
                                                             <c:choose>
                                                                 <c:when test="${customer.isDeleted == 1}">
-                                                                    <span class="badge bg-secondary">Đã xóa</span>
+                                                                    <span class="badge bg-secondary">Deleted</span>
                                                                 </c:when>
                                                                 <c:otherwise>
-                                                                    <span class="badge">
-                                                                          ${customer.status == 'Inactive' ? 'bg-danger' : customer.status == 'Blocked' ? 'bg-warning' : 'bg-success'}">
+                                                                    <span class="badge ${customer.status == 'Inactive' ? 'bg-danger' : customer.status == 'Blocked' ? 'bg-warning' : 'bg-success'}">
                                                                         ${customer.status == 'Inactive' ? 'Inactive' : customer.status == 'Blocked' ? 'Blocked' : 'Active'}
                                                                     </span>
                                                                 </c:otherwise>
@@ -157,7 +156,6 @@
                                                                             <label class="form-label">Upload Profile Image</label>
                                                                             <!-- Thay đổi input từ type="url" sang type="file" -->
                                                                             <input type="file" class="form-control" name="image" accept="image/*">
-
                                                                             <!-- Hiển thị hình ảnh nếu đã tồn tại -->
                                                                             <c:if test="${not empty customer.image}">
                                                                                 <img src="${customer.image}" alt="Profile Image" 

@@ -49,11 +49,11 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
                                 Staff Permissions
                             </a>
-                            <a class="nav-link" href="CustomerMangementServlet?&action=list">
+                            <a class="nav-link" href="CustomerManagementServlet">
                                 <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
                                 User Management
                             </a>
-                            <a class="nav-link" href="StaffManagement.jsp">
+                            <a class="nav-link" href="StaffManagementServlet">
                                 <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
                                 Staff Management
                             </a>
@@ -67,7 +67,7 @@
                             </a>
                             <a class="nav-link" href="SuperCategoryServlet?&action=list">
                                 <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
-                                 SupperCategory Management
+                                SupperCategory Management
                             </a>
 
 
