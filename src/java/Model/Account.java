@@ -36,7 +36,8 @@ public class Account {
         this.createdAt = createdAt;
         this.updateAt = updateAt;
     }
- public Account(int accountId, int RoleID,  String userName, String phoneNumber, String email, String image, String password, String address,  String status, double balance, Timestamp updateAt) {
+
+    public Account(int accountId, int RoleID, String userName, String phoneNumber, String email, String image, String password, String address, String status, double balance, Timestamp updateAt) {
         this.accountId = accountId;
         this.RoleID = RoleID;
         this.userName = userName;
@@ -47,6 +48,19 @@ public class Account {
         this.address = address;
         this.status = status;
         this.balance = balance;
+        this.updateAt = updateAt;
+    }
+
+    public Account(int accountId, int RoleID, String userName, String phoneNumber, String email, String image, String password, String address, String status, Timestamp updateAt) {
+        this.accountId = accountId;
+        this.RoleID = RoleID;
+        this.userName = userName;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.image = image;
+        this.password = password;
+        this.address = address;
+        this.status = status;
         this.updateAt = updateAt;
     }
 
@@ -154,5 +168,4 @@ public class Account {
         this.updateAt = updateAt;
     }
 
-    
 }

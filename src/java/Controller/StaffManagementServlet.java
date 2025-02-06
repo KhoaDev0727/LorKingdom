@@ -111,7 +111,7 @@ public class StaffManagementServlet extends HttpServlet {
             request.setAttribute("staffs", list);
             request.getRequestDispatcher("StaffManagement.jsp").forward(request, response);
         } catch (Exception e) {
-           e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -151,11 +151,10 @@ public class StaffManagementServlet extends HttpServlet {
             String email = request.getParameter("email");
             String passwordHashed = hashPassword(request.getParameter("password"));
             String address = request.getParameter("address");
-            double balance = Double.parseDouble(request.getParameter("balance"));
             String status = request.getParameter("status");
             int roleID = Integer.parseInt(request.getParameter("roleID"));
 
-            Account a = new Account(accountID, roleID, userName, phoneNumber, image, email, passwordHashed, address, status, balance, Timestamp.from(Instant.now()));
+            Account a = new Account(accountID, roleID, userName, phoneNumber, image, email, passwordHashed, address, status, Timestamp.from(Instant.now()));
             boolean isUpdate = AccountDAO.updateProfile(a);
             if (isUpdate) {
                 showStaff(request, response);

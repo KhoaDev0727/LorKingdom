@@ -30,6 +30,10 @@
         <servlet-name>StaffManagementServlet</servlet-name>
         <servlet-class>Controller.StaffManagementServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AdminManagementServlet</servlet-name>
+        <servlet-class>Controller.AdminManagementServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CustomerManagementServlet</servlet-name>
         <url-pattern>/Admin/CustomerManagementServlet</url-pattern>
@@ -75,8 +79,10 @@
         <servlet-name>StaffManagementServlet</servlet-name>
         <url-pattern>/Admin/StaffManagementServlet</url-pattern>
     </servlet-mapping>
-
-
+    <servlet-mapping>
+        <servlet-name>AdminManagementServlet</servlet-name>
+        <url-pattern>/Admin/AdminManagementServlet</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>

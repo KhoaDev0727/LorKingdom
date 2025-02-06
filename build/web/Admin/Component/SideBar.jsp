@@ -57,7 +57,7 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
                                 Staff Management
                             </a>
-                            <a class="nav-link" href="AdminManagement.jsp">
+                            <a class="nav-link" href="AdminManagementServlet">
                                 <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
                                 Admin Management
                             </a>
