@@ -155,12 +155,11 @@ public class CategoryServlet extends HttpServlet {
             return;
         }
 
-        if (!name.matches("^[a-zA-Z0-9\\s\\p{L}]+$")) {
-            request.getSession().setAttribute("errorMessage", "Category name must contain only letters, numbers, and spaces.");
+        if (!name.matches("^[\\p{L}\\s]+$")) {
+            request.getSession().setAttribute("errorMessage", "Category name must contain only letters (including Vietnamese characters) and spaces.");
             response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
             return;
         }
-
         // Check for Duplicate Category
         if (categoryDAO.isCategoryExists(name)) {
             request.getSession().setAttribute("errorMessage", "Category name already exists.");

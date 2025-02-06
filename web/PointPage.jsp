@@ -20,7 +20,7 @@
             <img src="assets/img/PointPage_img/s4ehpensjhesz6pejvcl.png" alt="Reward" class="reward-image">
             <div class="rewards-content">
                 <h1 style="color: #FF6600;">Nhận phần thưởng khi khám phá</h1>
-                <p>Tìm hiểu cách được giảm giá cho đơn hàng tiếp theo bằng LorKingDom xu</p>
+                <p>Tìm hiểu cách được giảm giá cho đơn hàng tiếp theo bằng LorKingDom xu oke</p>
                 <button>Xem LorKingDom xu</button>
             </div>
         </div>

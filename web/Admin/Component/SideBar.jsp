@@ -73,12 +73,24 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
                                 Category Management
                             </a>
-                            
+
                             <a class="nav-link" href="MaterialServlet?&action=list">
                                 <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
                                 Material Management
                             </a>
-                            
+                            <a class="nav-link" href="SexServlet?&action=list">
+                                <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
+                                Sex Management
+                            </a>
+
+                            <a class="nav-link" href="AgeServlet?&action=list">
+                                <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
+                                Age Management
+                            </a>
+                            <a class="nav-link" href="BrandServlet?&action=list">
+                                <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
+                                Brand Management
+                            </a>
                             <a class="nav-link" href="ShippingMethod.jsp">
                                 <div class="sb-nav-link-icon"><i class="fas fa-address-book"></i></div>
                                 Shipping Method

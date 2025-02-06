@@ -31,7 +31,7 @@ public class CategoryDAO {
                         rs.getInt("CategoryID"),
                         rs.getInt("SuperCategoryID"),
                         rs.getString("Name"),
-                        new Date(rs.getTimestamp("CreatedAt").getTime())
+                        rs.getDate("CreatedAt")
                 ));
             }
         }
@@ -79,7 +79,7 @@ public class CategoryDAO {
         String query = "Select COUNT(*) FROM Category where Name = ? ";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, name);
-            try(ResultSet rs = ps.executeQuery()){
+            try ( ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return rs.getInt(1) > 0;
                 }
