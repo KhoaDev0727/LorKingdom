@@ -6,6 +6,7 @@ package DAO;
 
 import DBConnect.DBConnection;
 import Model.Account;
+import Model.Role;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,11 +22,13 @@ import java.util.List;
  */
 public class AccountDAO {
 
+    protected static String TestRole = "SELECT * FROM Role";
+
     protected static PreparedStatement stm = null;
     protected static ResultSet rs = null;
     protected static Connection conn = null;
     private static String SELECT_BY_ROLE_CUSTOMER = "SELECT * FROM Account WHERE RoleID = ?";
-    
+
     private static String UPDATE_PROFILE = "UPDATE Account SET AccountName = ?, PhoneNumber = ?, Email = ?, Password = ?, Address = ?, Status = ?, Balance = ?, UpdatedAt = ? WHERE AccountID = ?";
     private static String DELETE_ACCOUNT_SOFT = "UPDATE Account SET isDeleted = ?, Status= ? WHERE AccountID = ?";
     private static String DELETE_ACCOUNT_BY_ID = "DELETE FROM Account WHERE AccountID = ?";
@@ -57,7 +60,6 @@ public class AccountDAO {
                 );
                 list.add(a);
             }
-            rs.close();
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -112,8 +114,24 @@ public class AccountDAO {
 //        return rowUpdated;
 //    }
 
-    public static boolean deleteSoftAccountById(int accountId) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public static List<Role> showListRoleTest() {
+        List<Role> list = new ArrayList<>();
+        try {
+            conn = DBConnection.getConnection();
+            stm = conn.prepareStatement(TestRole);
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                Role a = new Role(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3)
+                );
+                list.add(a);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return list;
     }
 
 }

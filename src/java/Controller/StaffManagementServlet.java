@@ -6,6 +6,7 @@ package Controller;
 
 import DAO.AccountDAO;
 import Model.Account;
+import Model.Role;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -105,10 +106,9 @@ public class StaffManagementServlet extends HttpServlet {
         try {
             int roleId = 2;
             List<Account> list = AccountDAO.showList(roleId);
-            for (Account account : list) {
-                System.out.println(account.getAccountId());
-            }
+            List<Role> listRole = AccountDAO.showListRoleTest();
             request.setAttribute("staffs", list);
+            request.setAttribute("roles", listRole);
             request.getRequestDispatcher("StaffManagement.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();

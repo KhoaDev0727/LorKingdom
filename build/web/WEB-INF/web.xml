@@ -34,6 +34,18 @@
         <servlet-name>AdminManagementServlet</servlet-name>
         <servlet-class>Controller.AdminManagementServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>SexServlet</servlet-name>
+        <servlet-class>Controller.SexServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AgeServlet</servlet-name>
+        <servlet-class>Controller.AgeServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>BrandServlet</servlet-name>
+        <servlet-class>Controller.BrandServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CustomerManagementServlet</servlet-name>
         <url-pattern>/Admin/CustomerManagementServlet</url-pattern>
@@ -82,6 +94,18 @@
     <servlet-mapping>
         <servlet-name>AdminManagementServlet</servlet-name>
         <url-pattern>/Admin/AdminManagementServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SexServlet</servlet-name>
+        <url-pattern>/Admin/SexServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AgeServlet</servlet-name>
+        <url-pattern>/Admin/AgeServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BrandServlet</servlet-name>
+        <url-pattern>/Admin/BrandServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

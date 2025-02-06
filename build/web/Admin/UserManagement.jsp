@@ -65,7 +65,7 @@
 
                             <!-- Customer Table -->
                             <div class="table-responsive">
-                                <table class="table table-bordered table-striped table-hover">
+                                <table class="table table-bordered table-striped table-hover" >
                                     <thead class="table-dark">
                                         <tr>
                                             <th>ID</th>
@@ -84,7 +84,7 @@
                                     </thead>
                                     <tbody>
                                         <c:choose>
-                                            <c:when test="${empty customers}">
+                                            <c:when test="${empty customers }">
                                                 <tr>
                                                     <td colspan="12" class="text-center text-muted">No customers found</td>
                                                 </tr>
@@ -192,7 +192,7 @@
                                                                             <div class="input-group">
                                                                                 <span class="input-group-text">$</span>
                                                                                 <input type="number" class="form-control" name="balance" 
-                                                                                       value="${customer.balance}" step="0.01" required>
+                                                                                       value="${customer.balance}" step="0.01" required disabled>
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-4">
@@ -206,8 +206,10 @@
                                                                         <div class="col-md-4">
                                                                             <label class="form-label">Role</label>
                                                                             <select class="form-select" name="roleID">
-                                                                                <c:forEach var="r" items="${roleList}">
-                                                                                    <option value="${r.roleID}" ${customer.roleID == r.roleID ? 'selected' : ''}>${r.roleName}</option>
+                                                                                <c:forEach var="r" items="${roles}">
+                                                                                    <option value="${r.roleID}" ${r.roleID == customer.roleID ? 'selected' : ''}>
+                                                                                        ${r.name}
+                                                                                    </option>
                                                                                 </c:forEach>
                                                                             </select>
                                                                         </div>

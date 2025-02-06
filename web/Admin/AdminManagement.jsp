@@ -90,7 +90,7 @@
                                                     <tr>
                                                         <td>${s.accountId}</td>
                                                         <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; display: inline-block;">
-                                                            <img src="${s.image}" style="max-width: 100%; height: auto;">
+                                                            <img src="assets\img\profile.png" style="max-width: 100%; height: auto;">
                                                         </td>
                                                         <td>${s.userName}</td>
                                                         <td>${s.phoneNumber}</td>
@@ -190,9 +190,11 @@
                                                                         </div>
                                                                         <div class="col-md-4">
                                                                             <label class="form-label">Role</label>
-                                                                            <select class="form-select" name="roleID">
-                                                                                <c:forEach var="r" items="${roleList}">
-                                                                                    <option value="${r.roleID}" ${s.roleID == r.roleID ? 'selected' : ''}>${r.roleName}</option>
+                                                                              <select class="form-select" name="roleID">
+                                                                                <c:forEach var="r" items="${roles}">
+                                                                                    <option value="${r.roleID}" ${r.roleID == s.roleID ? 'selected' : ''}>
+                                                                                        ${r.name}
+                                                                                    </option>
                                                                                 </c:forEach>
                                                                             </select>
                                                                         </div>

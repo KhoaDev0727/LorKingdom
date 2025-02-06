@@ -6,6 +6,7 @@ package Controller;
 
 import DAO.AccountDAO;
 import Model.Account;
+import Model.Role;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -75,10 +76,11 @@ public class CustomerManagementServlet extends HttpServlet {
 
     protected void showCustomer(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        Integer.parseInt(request.getParameter("1"));
         int roleId = 3;
-        List<Account> list = AccountDAO.showList(roleId);
-        request.setAttribute("customers", list);
+        List<Account> listAccount = AccountDAO.showList(roleId);
+        List<Role> listRole = AccountDAO.showListRoleTest();
+        request.setAttribute("customers", listAccount);
+        request.setAttribute("roles", listRole);
         request.getRequestDispatcher("UserManagement.jsp").forward(request, response);
     }
 
