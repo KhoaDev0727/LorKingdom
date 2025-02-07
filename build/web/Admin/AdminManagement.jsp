@@ -39,7 +39,7 @@
                                 </div>
                                 <div>
                                     <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
-                                        <i class="fas fa-plus"></i> Add Customer
+                                        <i class="fas fa-plus"></i> Add Staff
                                     </button>
                                 </div>
                             </div>
@@ -47,14 +47,15 @@
 
                         <div class="card-body">
                             <!-- Search Form -->
-                            <form class="mb-4">
+                            <form action="AdminManagementServlet" method="GET" class="mb-4">
                                 <div class="input-group">
-                                    <input type="text" name="search" class="form-control" placeholder="Search customers..." 
+                                    <input type="hidden" name="action" value="search">
+                                    <input type="text" name="search" class="form-control" placeholder="Search Admin by (ID, Phone Number, Name, Email)..." 
                                            value="${param.search}">
                                     <button class="btn btn-outline-secondary" type="submit">
                                         <i class="fas fa-search"></i>
                                     </button>
-                                    <a href="AdminMangementServlet?&action=list" class="btn btn-outline-danger">
+                                    <a href="AdminManagementServlet" class="btn btn-outline-danger">
                                         <i class="fas fa-sync"></i>
                                     </a>
                                 </div>
@@ -89,8 +90,13 @@
                                                 <c:forEach var="s" items="${admins}">
                                                     <tr>
                                                         <td>${s.accountId}</td>
-                                                        <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; display: inline-block;">
-                                                            <img src="assets\img\profile.png" style="max-width: 100%; height: auto;">
+                                                        <td style="width: 50px; height: 80px; overflow: hidden; text-align: center;">
+                                                            <c:if test="${not empty s.image}">
+                                                                <img src="${pageContext.request.contextPath}/${s.image}" 
+                                                                     alt="Profile Image"
+                                                                     class="mt-2 rounded" 
+                                                                     style="width: 100%; height: 100%; object-fit: cover;">
+                                                            </c:if>
                                                         </td>
                                                         <td>${s.userName}</td>
                                                         <td>${s.phoneNumber}</td>
@@ -107,16 +113,25 @@
                                                 </td>
                                                 <td>
                                                     <c:choose>
-                                                        <c:when test="${s.isDeleted == 1}">
+                                                        <c:when test="${s.isDeleted eq 1}">
                                                             <span class="badge bg-secondary">Deleted</span>
                                                         </c:when>
                                                         <c:otherwise>
-                                                            <span class="badge ${s.status == 'Inactive' ? 'bg-danger' : s.status == 'Blocked' ? 'bg-warning' : 'bg-success'}">
-                                                                ${s.status == 'Inactive' ? 'Inactive' : s.status == 'Blocked' ? 'Blocked' : 'Active'}
-                                                            </span>
+                                                            <c:choose>
+                                                                <c:when test="${s.status eq 'Inactive'}">
+                                                                    <span class="badge bg-danger">Inactive</span>
+                                                                </c:when>
+                                                                <c:when test="${s.status eq 'Blocked'}">
+                                                                    <span class="badge bg-warning">Blocked</span>
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <span class="badge bg-success">Active</span>
+                                                                </c:otherwise>
+                                                            </c:choose>
                                                         </c:otherwise>
                                                     </c:choose>
                                                 </td>
+
                                                 <td>
                                                     <button class="btn btn-sm btn-warning" 
                                                             data-bs-toggle="modal" 
@@ -135,7 +150,7 @@
                                                 <div class="modal fade" id="editCustomerModal${s.accountId}">
                                                     <div class="modal-dialog modal-lg">
                                                         <div class="modal-content">
-                                                            <form action="CustomerMangementServlet" method="GET">
+                                                            <form action="AdminManagementServlet" method="POST" enctype="multipart/form-data">
                                                                 <input type="hidden" name="action" value="update">
                                                                 <input type="hidden" name="accountId" value="${s.accountId}">
                                                                 <div class="modal-header">
@@ -147,15 +162,14 @@
                                                                     <div class="row g-3">
                                                                         <div class="col-12">
                                                                             <label class="form-label">Upload Profile Image</label>
-                                                                            <!-- Thay đổi input từ type="url" sang type="file" -->
                                                                             <input type="file" class="form-control" name="image" accept="image/*">
-                                                                            <!-- Hiển thị hình ảnh nếu đã tồn tại -->
+                                                                            <!-- Giữ ảnh cũ nếu không upload mới -->
+                                                                            <input type="hidden" name="currentImage" value="${s.image}">
                                                                             <c:if test="${not empty s.image}">
-                                                                                <img src="${s.image}" alt="Profile Image" 
+                                                                                <img src="${pageContext.request.contextPath}/${s.image}" alt="Profile Image"
                                                                                      class="mt-2 rounded" style="max-height: 100px;">
                                                                             </c:if>
                                                                         </div>
-
                                                                         <div class="col-md-6">
                                                                             <label class="form-label">Full Name</label>
                                                                             <input type="text" class="form-control" name="userName" 
@@ -183,14 +197,14 @@
                                                                         <div class="col-md-4">
                                                                             <label class="form-label">Status</label>
                                                                             <select class="form-select" name="status">
-                                                                                <option value="active" ${s.status == 'active' ? 'selected' : ''}>Active</option>
-                                                                                <option value="inactive" ${s.status == 'inactive' ? 'selected' : ''}>Inactive</option>
-                                                                                <option value="blocked" ${s.status == 'blocked' ? 'selected' : ''}>Blocked</option>
+                                                                                <option value="Active" ${s.status == 'Active' ? 'selected' : ''}>Active</option>
+                                                                                <option value="Inactive" ${s.status == 'Inactive' ? 'selected' : ''}>Inactive</option>
+                                                                                <option value="Blocked" ${s.status == 'Blocked' ? 'selected' : ''}>Blocked</option>
                                                                             </select>
                                                                         </div>
                                                                         <div class="col-md-4">
                                                                             <label class="form-label">Role</label>
-                                                                              <select class="form-select" name="roleID">
+                                                                            <select class="form-select" name="roleID">
                                                                                 <c:forEach var="r" items="${roles}">
                                                                                     <option value="${r.roleID}" ${r.roleID == s.roleID ? 'selected' : ''}>
                                                                                         ${r.name}
@@ -224,7 +238,7 @@
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                                <form action="CustomerMangementServlet" method="GET" class="d-inline">
+                                                                <form action="AdminManagementServlet" method="GET" class="d-inline">
                                                                     <input type="hidden" name="action" value="delete">
                                                                     <input type="hidden" name="accountId" value="${s.accountId}">
                                                                     <button type="submit" class="btn btn-danger">Delete</button>
@@ -245,13 +259,12 @@
             </main>
         </div>
 
-        <!-- Add Customer Modal -->
+        <!-- Add Staff Or Admin Modal -->
         <div class="modal fade" id="addCustomerModal">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <form action="StaffManagementServlet" method="POST">
+                    <form action="AdminManagementServlet" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="action" value="add">
-
                         <div class="modal-header">
                             <h5 class="modal-title">Add New StaffS</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -259,9 +272,19 @@
 
                         <div class="modal-body">
                             <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label">Upload Profile Image</label>
+                                    <input type="file" class="form-control" name="image" accept="image/*">
+                                    <!-- Giữ ảnh cũ nếu không upload mới -->
+                                    <input type="hidden" name="currentImage" value="${s.image}">
+                                    <c:if test="${not empty s.image}">
+                                        <img src="${pageContext.request.contextPath}/${s.image}" alt="Profile Image"
+                                             class="mt-2 rounded" style="max-height: 100px;">
+                                    </c:if>
+                                </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Full Name</label>
-                                    <input type="text" class="form-control" name="accountName" required>
+                                    <input type="text" class="form-control" name="userName" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Phone Number</label>
@@ -283,16 +306,19 @@
                                 <div class="col-md-4">
                                     <label class="form-label">Status</label>
                                     <select class="form-select" name="status">
-                                        <option value="active" ${customer.status == 'active' ? 'selected' : ''}>Active</option>
-                                        <option value="inactive" ${customer.status == 'inactive' ? 'selected' : ''}>Inactive</option>
-                                        <option value="blocked" ${customer.status == 'blocked' ? 'selected' : ''}>Blocked</option>
+                                        <option value="active" ${s.status == 'active' ? 'selected' : ''}>Active</option>
+                                        <option value="inactive" ${s.status == 'inactive' ? 'selected' : ''}>Inactive</option>
+                                        <option value="blocked" ${s.status == 'blocked' ? 'selected' : ''}>Blocked</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Role</label>
                                     <select class="form-select" name="roleID">
-                                        <option value="2">Customer</option>
-                                        <option value="1">Admin</option>
+                                        <c:forEach var="r" items="${roles}">
+                                            <option value="${r.roleID}" ${r.roleID == s.roleID ? 'selected' : ''}>
+                                                ${r.name}
+                                            </option>
+                                        </c:forEach>
                                     </select>
                                 </div>
                             </div>

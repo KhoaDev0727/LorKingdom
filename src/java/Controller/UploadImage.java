@@ -4,8 +4,6 @@
  */
 package Controller;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +17,7 @@ import java.util.UUID;
 public class UploadImage {
 
     private static final String UPLOAD_DIR = "images";
+//    private static final String UPLOAD_DIR = "D:/Uploads";
 
     public static String uploadFile(Part filePart, String uploadPath) throws IOException {
         if (filePart == null || filePart.getSize() == 0) {
@@ -27,8 +26,10 @@ public class UploadImage {
         // Kiểm tra và tạo thư mục nếu chưa có
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) {
-            uploadDir.mkdirs();
+            boolean created = uploadDir.mkdirs();
+            System.out.println("Folder created: " + created + " at " + uploadDir.getAbsolutePath());
         }
+
         // Lấy tên file gốc và đổi tên tránh trùng lặp
         String originalName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
         String fileExtension = originalName.substring(originalName.lastIndexOf("."));
@@ -37,9 +38,9 @@ public class UploadImage {
         // Đường dẫn file
         String filePath = uploadPath + File.separator + newFileName;
         filePart.write(filePath);
+        System.out.println("File saved at: " + filePath);
 
         // Trả về đường dẫn ảnh để lưu vào database
         return UPLOAD_DIR + "/" + newFileName;
     }
-
 }

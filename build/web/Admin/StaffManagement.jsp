@@ -14,8 +14,35 @@
         <link rel="stylesheet" href="CSS/style.css" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
         <script src="JS/SideBarToggle.js"></script>
     </head>
+    <style>
+        /* Thiết lập ảnh */
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(5, 0, 0, 0.1);
+            object-fit: cover;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        img:hover {
+            transform: scale(1.02);
+        }
+        img:hover::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            z-index: -1;
+        }
+    </style>
     <body class="sb-nav-fixed">
         <%@ include file="Component/SideBar.jsp" %>
         <div id="layoutSidenav_content">
@@ -39,7 +66,7 @@
                                 </div>
                                 <div>
                                     <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
-                                        <i class="fas fa-plus"></i> Add Customer
+                                        <i class="fas fa-plus"></i> Add Staff
                                     </button>
                                 </div>
                             </div>
@@ -47,23 +74,24 @@
 
                         <div class="card-body">
                             <!-- Search Form -->
-                            <form class="mb-4">
+                            <form action="StaffManagementServlet" method="GET" class="mb-4">
                                 <div class="input-group">
-                                    <input type="text" name="search" class="form-control" placeholder="Search customers..." 
+                                    <input type="hidden" name="action" value="search">
+                                    <input type="text" name="search" class="form-control" placeholder="Search Staff by (ID, Phone Number, Name, Email)..." " 
                                            value="${param.search}">
                                     <button class="btn btn-outline-secondary" type="submit">
                                         <i class="fas fa-search"></i>
                                     </button>
-                                    <a href="StaffMangementServlet?&action=list" class="btn btn-outline-danger">
+                                    <a href="StaffManagementServlet?&action=list" class="btn btn-outline-danger">
                                         <i class="fas fa-sync"></i>
                                     </a>
                                 </div>
                             </form>
 
-                            <!-- Customer Table -->
+                            <!-- Staff Table -->
                             <div class="table-responsive">
                                 <table class="table table-bordered table-striped table-hover">
-                                    <thead class="table-dark">
+                                    <thead class="table-dark text-center">
                                         <tr>
                                             <th>ID</th>
                                             <th>Avatar</th>
@@ -89,8 +117,16 @@
                                                 <c:forEach var="s" items="${staffs}">
                                                     <tr>
                                                         <td>${s.accountId}</td>
-                                                        <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; display: inline-block;">
-                                                            <img src="${s.image}" style="max-width: 100%; height: auto;">
+                                                        <td style="width: 50px; height: 80px; overflow: hidden; text-align: center;">
+                                                            <c:if test="${not empty s.image}">
+                                                                <img src="${pageContext.request.contextPath}/${s.image}" 
+                                                                     alt="Profile Image"
+                                                                     class="mt-2 rounded" 
+                                                                     style="width: 100%; height: 100%; object-fit: cover;"
+                                                                     data-bs-toggle="tooltip" 
+                                                                     data-bs-html="true"
+                                                                     data-bs-title="<img src='${pageContext.request.contextPath}/${s.image}' style='max-width: 200px; max-height: 200px;'/>">
+                                                            </c:if>
                                                         </td>
                                                         <td>${s.userName}</td>
                                                         <td>${s.phoneNumber}</td>
@@ -107,15 +143,24 @@
                                                 </td>
                                                 <td>
                                                     <c:choose>
-                                                        <c:when test="${s.isDeleted == 1}">
+                                                        <c:when test="${s.isDeleted eq 1}">
                                                             <span class="badge bg-secondary">Deleted</span>
                                                         </c:when>
                                                         <c:otherwise>
-                                                            <span class="badge ${s.status == 'Inactive' ? 'bg-danger' : s.status == 'Blocked' ? 'bg-warning' : 'bg-success'}">
-                                                                ${s.status == 'Inactive' ? 'Inactive' : s.status == 'Blocked' ? 'Blocked' : 'Active'}
-                                                            </span>
+                                                            <c:choose>
+                                                                <c:when test="${s.status eq 'Inactive'}">
+                                                                    <span class="badge bg-danger">Inactive</span>
+                                                                </c:when>
+                                                                <c:when test="${s.status eq 'Blocked'}">
+                                                                    <span class="badge bg-warning">Blocked</span>
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <span class="badge bg-success">Active</span>
+                                                                </c:otherwise>
+                                                            </c:choose>
                                                         </c:otherwise>
                                                     </c:choose>
+
                                                 </td>
                                                 <td>
                                                     <button class="btn btn-sm btn-warning" 
@@ -135,9 +180,10 @@
                                                 <div class="modal fade" id="editCustomerModal${s.accountId}">
                                                     <div class="modal-dialog modal-lg">
                                                         <div class="modal-content">
-                                                            <form action="CustomerMangementServlet" method="POST" enctype="multipart/form-data">
+                                                            <form action="StaffManagementServlet" method="POST" enctype="multipart/form-data">
                                                                 <input type="hidden" name="action" value="update">
                                                                 <input type="hidden" name="accountId" value="${s.accountId}">
+
                                                                 <div class="modal-header">
                                                                     <h5 class="modal-title">Edit Staff</h5>
                                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -147,50 +193,81 @@
                                                                     <div class="row g-3">
                                                                         <div class="col-12">
                                                                             <label class="form-label">Upload Profile Image</label>
-                                                                            <!-- Thay đổi input từ type="url" sang type="file" -->
-                                                                            <input type="file" class="form-control" name="image" accept="image/*">
-                                                                            <!-- Hiển thị hình ảnh nếu đã tồn tại -->
+                                                                            <input type="file" 
+                                                                                   class="form-control" 
+                                                                                   name="image" 
+                                                                                   accept="image/*">
+                                                                            <input type="hidden" name="currentImage" value="${s.image}">
                                                                             <c:if test="${not empty s.image}">
-                                                                                <img src="${s.image}" alt="Profile Image" 
-                                                                                     class="mt-2 rounded" style="max-height: 100px;">
+                                                                                <img src="${pageContext.request.contextPath}/${s.image}" 
+                                                                                     alt="Profile Image"
+                                                                                     class="mt-2 rounded" 
+                                                                                     style="max-height: 100px;">
                                                                             </c:if>
                                                                         </div>
 
                                                                         <div class="col-md-6">
                                                                             <label class="form-label">Full Name</label>
-                                                                            <input type="text" class="form-control" name="userName" 
-                                                                                   value="${s.userName}" required>
+                                                                            <input type="text" 
+                                                                                   class="form-control" 
+                                                                                   name="userName" 
+                                                                                   value="${s.userName}" 
+                                                                                   required>
                                                                         </div>
+
                                                                         <div class="col-md-6">
                                                                             <label class="form-label">Phone Number</label>
-                                                                            <input type="tel" class="form-control" name="phoneNumber" 
-                                                                                   value="${s.phoneNumber}" pattern="[0-9]{10}" required>
+                                                                            <input type="tel" 
+                                                                                   class="form-control" 
+                                                                                   name="phoneNumber" 
+                                                                                   value="${s.phoneNumber}" 
+                                                                                   pattern="[0-9]{10}" 
+                                                                                   required>
                                                                         </div>
+
                                                                         <div class="col-md-6">
                                                                             <label class="form-label">Email</label>
-                                                                            <input type="email" class="form-control" name="email" 
-                                                                                   value="${s.email}" required>
+                                                                            <input type="email" 
+                                                                                   class="form-control" 
+                                                                                   name="email" 
+                                                                                   value="${s.email}" 
+                                                                                   required>
                                                                         </div>
+
                                                                         <div class="col-md-6">
                                                                             <label class="form-label">Password</label>
-                                                                            <input type="password" class="form-control" name="password" 
-                                                                                   value="${s.password}" required>
+                                                                            <input type="password" 
+                                                                                   class="form-control" 
+                                                                                   name="password" 
+                                                                                   value="${s.password}" 
+                                                                                   required>
                                                                         </div>
+
                                                                         <div class="col-12">
                                                                             <label class="form-label">Address</label>
-                                                                            <textarea class="form-control" name="address" rows="2">${s.address}</textarea>
+                                                                            <textarea class="form-control" 
+                                                                                      name="address" 
+                                                                                      rows="2">${s.address}</textarea>
                                                                         </div>
+
                                                                         <div class="col-md-4">
                                                                             <label class="form-label">Status</label>
                                                                             <select class="form-select" name="status">
-                                                                                <option value="active" ${s.status == 'active' ? 'selected' : ''}>Active</option>
-                                                                                <option value="inactive" ${s.status == 'inactive' ? 'selected' : ''}>Inactive</option>
-                                                                                <option value="blocked" ${s.status == 'blocked' ? 'selected' : ''}>Blocked</option>
+                                                                                <option value="active" ${s.status == 'Active' ? 'selected' : ''}>
+                                                                                    Active
+                                                                                </option>
+                                                                                <option value="inactive" ${s.status == 'Inactive' ? 'selected' : ''}>
+                                                                                    Inactive
+                                                                                </option>
+                                                                                <option value="blocked" ${s.status == 'blocked' ? 'selected' : ''}>
+                                                                                    Blocked
+                                                                                </option>
                                                                             </select>
                                                                         </div>
+
                                                                         <div class="col-md-4">
                                                                             <label class="form-label">Role</label>
-                                                                             <select class="form-select" name="roleID">
+                                                                            <select class="form-select" name="roleID">
                                                                                 <c:forEach var="r" items="${roles}">
                                                                                     <option value="${r.roleID}" ${r.roleID == s.roleID ? 'selected' : ''}>
                                                                                         ${r.name}
@@ -224,7 +301,7 @@
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                                <form action="CustomerMangementServlet" method="GET" class="d-inline">
+                                                                <form action="StaffManagementServlet" method="GET" class="d-inline">
                                                                     <input type="hidden" name="action" value="delete">
                                                                     <input type="hidden" name="accountId" value="${s.accountId}">
                                                                     <button type="submit" class="btn btn-danger">Delete</button>
@@ -297,7 +374,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Add Staff</button>
@@ -306,8 +382,15 @@
                 </div>
             </div>
         </div>
-
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl, {
+                        html: true
+                    });
+                });
+            });
+        </script>
     </body>
-</html>
-</body>
 </html>
