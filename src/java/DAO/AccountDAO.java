@@ -28,7 +28,6 @@ public class AccountDAO {
     protected static ResultSet rs = null;
     protected static Connection conn = null;
     private static String SELECT_BY_ROLE_CUSTOMER = "SELECT * FROM Account WHERE RoleID = ?";
-
     private static String UPDATE_PROFILE = "UPDATE Account SET AccountName = ?, PhoneNumber = ?, Email = ?, Password = ?, Address = ?, Status = ?, Balance = ?, UpdatedAt = ? WHERE AccountID = ?";
     private static String DELETE_ACCOUNT_SOFT = "UPDATE Account SET isDeleted = ?, Status= ? WHERE AccountID = ?";
     private static String DELETE_ACCOUNT_BY_ID = "DELETE FROM Account WHERE AccountID = ?";
