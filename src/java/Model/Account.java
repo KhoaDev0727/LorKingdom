@@ -76,6 +76,31 @@ public class Account {
         this.updateAt = updateAt;
     }
 
+    public Account(int accountId, int RoleID, String userName, String phoneNumber,String image, String email,  String password, String address, String status) {
+        this.accountId = accountId;
+        this.RoleID = RoleID;
+        this.userName = userName;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.image = image;
+        this.password = password;
+        this.address = address;
+        this.status = status;
+    }
+
+    public Account(int RoleID, String userName, String phoneNumber, String email, String image, String password, String address, String status) {
+        this.RoleID = RoleID;
+        this.userName = userName;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.image = image;
+        this.password = password;
+        this.address = address;
+        this.status = status;
+    }
+
+
+
     public int getAccountId() {
         return accountId;
     }

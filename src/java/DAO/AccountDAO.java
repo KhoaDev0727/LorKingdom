@@ -23,18 +23,17 @@ import java.util.List;
 public class AccountDAO {
 
     protected static String TestRole = "SELECT * FROM Role";
-
     protected static PreparedStatement stm = null;
     protected static ResultSet rs = null;
     protected static Connection conn = null;
     private static String SELECT_BY_ROLE_CUSTOMER = "SELECT * FROM Account WHERE RoleID = ?";
-
-    private static String UPDATE_PROFILE = "UPDATE Account SET AccountName = ?, PhoneNumber = ?, Email = ?, Password = ?, Address = ?, Status = ?, Balance = ?, UpdatedAt = ? WHERE AccountID = ?";
+    private static String UPDATE_PROFILE = "UPDATE Account SET AccountName = ?, PhoneNumber = ?, Em\"UPDATE Account SET AccountName = ?, PhoneNumber = ?, Email ail = ?,Image = ?, Password = ?, Address = ?, Status = ?, Balance = ?, UpdatedAt = ? WHERE AccountID = ?";
+    private static String UPDATE_PROFILE_STAFF = "UPDATE Account SET AccountName = ?, PhoneNumber = ?, Email = ?, Password = ?, Address = ?, Status = ?,Image = ?, UpdatedAt = ? WHERE AccountID = ?";
     private static String DELETE_ACCOUNT_SOFT = "UPDATE Account SET isDeleted = ?, Status= ? WHERE AccountID = ?";
     private static String DELETE_ACCOUNT_BY_ID = "DELETE FROM Account WHERE AccountID = ?";
-    private static String ADD = "INSERT INTO Account (AccountName, PhoneNumber,Email, Password, Address, Status, IsDeleted, Balance) VALUES (?, ?, ?)";
+    private static String SEARCH_ACCOUNT = "SELECT * FROM Account WHERE ( AccountID = ? OR AccountName LIKE ? OR PhoneNumber LIKE ? OR email LIKE ? ) AND RoleID = ?";
+    private static String ADD_ADMIN = "INSERT INTO Account (AccountName, PhoneNumber, Email, Image, Password, Address, Status, RoleID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-    
     public Account getAccountByEmail(String email) {
         String query = "SELECT * FROM Account WHERE Email = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
@@ -82,7 +81,6 @@ public class AccountDAO {
         }
     }
 
-    
     public static List<Account> showList(int roleId) {
         List<Account> list = new ArrayList<>();
         try {
@@ -127,12 +125,56 @@ public class AccountDAO {
             stm.setString(5, account.getAddress());
             stm.setString(6, account.getStatus());
             stm.setDouble(7, account.getBalance());
+            stm.setString(8, account.getImage());
+            stm.setTimestamp(9, currentTimestamp); // Lấy thời gian hiện tại
+            stm.setInt(10, account.getAccountId()); // Gán ID tài khoản cần cập nhật
+            rowUpdate = stm.executeUpdate() > 0;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return rowUpdate;
+    }
+
+    public static Boolean updateProfileStaff(Account account) {
+        boolean rowUpdate = false;
+        Timestamp currentTimestamp = Timestamp.valueOf(LocalDateTime.now());
+        try {
+
+            stm = conn.prepareStatement(UPDATE_PROFILE_STAFF);
+            stm.setString(1, account.getUserName());
+            stm.setString(2, account.getPhoneNumber());
+            stm.setString(3, account.getEmail());
+            stm.setString(4, account.getPassword());
+            stm.setString(5, account.getAddress());
+            stm.setString(6, account.getStatus());
+            stm.setString(7, account.getImage());
             stm.setTimestamp(8, currentTimestamp); // Lấy thời gian hiện tại
             stm.setInt(9, account.getAccountId()); // Gán ID tài khoản cần cập nhật
             rowUpdate = stm.executeUpdate() > 0;
         } catch (Exception e) {
             System.out.println(e);
         }
+        return rowUpdate;
+    }
+
+    public static Boolean addAdmin(Account account) {
+        boolean rowUpdate = false;
+        Timestamp currentTimestamp = Timestamp.valueOf(LocalDateTime.now());
+        try {
+            stm = conn.prepareStatement(ADD_ADMIN);
+            stm.setString(1, account.getUserName());
+            stm.setString(2, account.getPhoneNumber());
+            stm.setString(3, account.getEmail());
+            stm.setString(4, account.getImage());
+            stm.setString(5, account.getPassword());
+            stm.setString(6, account.getAddress());
+            stm.setString(7, account.getStatus());
+            stm.setInt(8, account.getRoleID()); // Gán ID tài khoản cần cập nhật
+            rowUpdate = stm.executeUpdate() > 0;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
         return rowUpdate;
     }
 
@@ -179,6 +221,51 @@ public class AccountDAO {
             }
         } catch (Exception e) {
             System.out.println(e);
+        }
+        return list;
+    }
+
+    public static List<Account> searchUser(String keyword, int role) {
+        List<Account> list = new ArrayList<>();
+        try {
+            conn = DBConnection.getConnection();
+            stm = conn.prepareStatement(SEARCH_ACCOUNT);
+            // Kiểm tra nếu keyword là số → tìm theo AccountID
+            if (keyword.matches("\\d+")) {
+                stm.setInt(1, Integer.parseInt(keyword)); // Tìm chính xác AccountID
+            } else {
+                stm.setNull(1, java.sql.Types.INTEGER); // Bỏ qua AccountID
+            }
+
+            // Dùng wildcard % để tìm kiếm tương đối
+            String searchPattern = "%" + keyword + "%";
+            stm.setString(2, searchPattern);
+            stm.setString(3, searchPattern);
+            stm.setString(4, searchPattern);
+            stm.setInt(5, role);
+            System.out.println(role);
+            try ( ResultSet rs = stm.executeQuery()) {
+                while (rs.next()) {
+                    Account a = new Account(
+                            rs.getInt("AccountID"),
+                            rs.getInt("RoleID"), // nullable
+                            rs.getString("AccountName"),
+                            rs.getString("PhoneNumber"),
+                            rs.getString("Email"),
+                            rs.getString("Image"), // nullable
+                            rs.getString("Password"),
+                            rs.getString("Address"), // nullable
+                            rs.getInt("IsDeleted"),
+                            rs.getString("Status"),
+                            rs.getDouble("Balance"),
+                            rs.getTimestamp("CreatedAt"),
+                            rs.getTimestamp("UpdatedAt") // nullable
+                    );
+                    list.add(a);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return list;
     }

@@ -34,6 +34,10 @@ import java.util.List;
 )
 public class StaffManagementServlet extends HttpServlet {
 
+    private static final String UPLOAD_DIR = "images";
+    private static final int ROLE_STAFF = 2;
+//    private static final String UPLOAD_DIR = "images";
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -84,6 +88,9 @@ public class StaffManagementServlet extends HttpServlet {
                     case "delete":
                         deleteStaff(request, response);
                         break;
+                    case "search":
+                        searchStaff(request, response);
+                        break;
                     default:
                         showStaff(request, response);
                 }
@@ -106,7 +113,7 @@ public class StaffManagementServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doGet(request, response);
+        updateStaff(request, response);
     }
 
     protected void showStaff(HttpServletRequest request, HttpServletResponse response)
@@ -129,7 +136,6 @@ public class StaffManagementServlet extends HttpServlet {
     }
 
     private static String hashPassword(String password) {
-
         try {
             // Use SHA-256 hashing algorithm
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -151,28 +157,31 @@ public class StaffManagementServlet extends HttpServlet {
     protected void updateStaff(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-
+            String uploadPath = request.getServletContext().getRealPath("/") + File.separator + UPLOAD_DIR;
             int accountID = Integer.parseInt(request.getParameter("accountId"));
             String userName = request.getParameter("userName");
-
-            String uploadPath = getServletContext().getRealPath("") + File.separator + "images";
-
             String phoneNumber = request.getParameter("phoneNumber");
             String email = request.getParameter("email");
             String passwordHashed = hashPassword(request.getParameter("password"));
             String address = request.getParameter("address");
             String status = request.getParameter("status");
             int roleID = Integer.parseInt(request.getParameter("roleID"));
+            // Lấy ảnh cũ từ request
+            String oldImage = request.getParameter("currentImage");
+            // Nếu có file mới, upload ảnh mới, ngược lại giữ ảnh cũ
             Part filePart = request.getPart("image");
-            String image = UploadImage.uploadFile(filePart, uploadPath);
-            Account a = new Account(accountID, roleID, userName, phoneNumber, image, email, passwordHashed, address, status, Timestamp.from(Instant.now()));
-            boolean isUpdate = AccountDAO.updateProfile(a);
+            String image = (filePart.getSize() > 0)
+                    ? UploadImage.uploadFile(filePart, uploadPath)
+                    : oldImage;
+            Account a = new Account(accountID, roleID, userName, phoneNumber, image, email, passwordHashed, address, status);
+            boolean isUpdate = AccountDAO.updateProfileStaff(a);
             if (isUpdate) {
                 showStaff(request, response);
             } else {
                 System.out.println("Loi Update");
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -186,6 +195,19 @@ public class StaffManagementServlet extends HttpServlet {
             } else {
                 System.out.println("loi r");
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void searchStaff(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            String keyword = request.getParameter("search");
+            int role = ROLE_STAFF;
+            List<Account> list = AccountDAO.searchUser(keyword, role);
+            request.setAttribute("staffs", list);
+            request.getRequestDispatcher("StaffManagement.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
         }
