@@ -38,7 +38,7 @@
                 <div class="footer-section">
                     <h4>THANH TOÁN</h4>
                     <div class="payment-methods">
-                        <img src="./assets/img/pay1.png" alt="Visa">
+                        <img src="./assets/img/logomomo.jpg" alt="momo">
                         <img src="./assets/img/pay2.png" alt="Mastercard">
                         <img src="./assets/img/pay3.png" alt="JCB">
                         <br>

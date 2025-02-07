@@ -5,8 +5,10 @@ import java.sql.*;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import DBConnect.DBConnection;
+import Model.Account;
 
 public class LoginServlet extends HttpServlet {
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = request.getParameter("email");
@@ -36,7 +38,22 @@ public class LoginServlet extends HttpServlet {
                 try (ResultSet rs = stmt.executeQuery()) {
                     if (rs.next()) {
                         HttpSession session = request.getSession();
-                        session.setAttribute("user", rs.getString("UserName"));
+                        Account account = new Account();
+                        account.setAccountID(rs.getInt("AccountID"));
+                        account.setUserName(rs.getString("AccountName"));
+                        account.setEmail(rs.getString("Email"));
+                        account.setPhoneNumber(rs.getString("PhoneNumber"));
+                        account.setStatus(rs.getString("Status"));
+                        account.setBalance(rs.getDouble("Balance"));
+                        account.setImage(rs.getString("Image"));
+                        account.setAddress(rs.getString("Address"));
+
+                        session.setAttribute("user", rs.getString("AccountName"));
+                        session.setAttribute("email", rs.getString("Email"));
+                        session.setAttribute("userID", rs.getInt("AccountID"));
+                        session.setAttribute("userStatus", rs.getString("Status"));
+                        session.setAttribute("account", account); // Store account in session
+
                         response.sendRedirect("home.jsp");
                     } else {
                         request.setAttribute("error", "Invalid email or password!");

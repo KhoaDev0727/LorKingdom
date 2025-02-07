@@ -69,12 +69,7 @@ button:hover {
     opacity: 0.8;
 }
 
-button[type="submit"] {
-    background-color: white;
-    color: white;
-}
-
-button.login-btn {
+button.register-btn {
     border-radius:30px;
     background: rgb(255, 89, 0);
     color: white;

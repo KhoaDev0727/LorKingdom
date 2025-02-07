@@ -10937,7 +10937,7 @@ body {
         transition: margin 0.15s ease-in-out;
     }
     .sb-sidenav-toggled #layoutSidenav #layoutSidenav_nav {
-        transform: translateX(-225px);
+        transform: translateX(-300px);
     }
     .sb-sidenav-toggled #layoutSidenav #layoutSidenav_content {
         margin-left: -225px;
@@ -10950,7 +10950,7 @@ body {
     z-index: 1039;
 }
 .sb-nav-fixed #layoutSidenav #layoutSidenav_nav {
-    width: 225px;
+    width: 300px;
     height: 100vh;
     z-index: 1038;
 }
@@ -11310,3 +11310,125 @@ body {
     color: #0056b3;
     text-decoration: underline;
 }
+
+
+
+
+/* Sidebar */
+        .sb-sidenav {
+            background-color: #212529;
+            border-right: 1px solid #2c3e50;
+        }
+
+        /* Sidenav menu */
+        .sb-sidenav-menu {
+            padding-top: 20px;
+        }
+
+        /* Sidenav menu heading */
+        .sb-sidenav-menu-heading {
+            font-size: 18px;
+            font-weight: bold;
+            color: #f5f5f5;
+            padding: 10px 20px;
+            text-transform: uppercase;
+        }
+
+        /* Nav links */
+        .nav-link {
+            font-size: 16px;
+            color: #b0bec5;
+            padding: 15px 20px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Hover effect for nav links */
+        .nav-link:hover {
+            background-color: #34495e;
+            color: #ffffff;
+            border-radius: 8px;
+        }
+
+        /* Sidebar navigation icons */
+        .sb-nav-link-icon {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        /* Dropdown toggle */
+        .nav-item.dropdown>a:after {
+            content: ' ▼';
+            font-size: 12px;
+            margin-left: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-item.dropdown.open>a:after {
+            content: ' ▲';
+            transform: rotate(180deg);
+        }
+
+        /* Make the dropdown items take full width of the sidebar */
+        .dropdown-menu {
+            background-color: #34495e;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            padding-left: 0;
+            width: 100%;
+            /* Full width */
+            position: relative;
+            /* Ensures the dropdown expands fully */
+        }
+
+        /* Dropdown items */
+        .dropdown-item {
+            color: #b0bec5;
+            font-size: 14px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            display: block;
+            /* Make sure it takes full width */
+        }
+
+        /* Hover effect for dropdown items */
+        .dropdown-item:hover {
+            background-color: #2c3e50;
+            color: #ffffff;
+        }
+
+        /* Footer of sidebar */
+        .sb-sidenav-footer {
+            background-color: #1d2d44;
+            color: #f5f5f5;
+            padding: 20px 10px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .sb-sidenav-footer .small {
+            font-weight: bold;
+        }
+
+        /* Hover effects */
+        .nav-item>a:hover {
+            cursor: pointer;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .sb-sidenav {
+                width: 100%;
+            }
+
+            .sb-nav-link-icon {
+                font-size: 20px;
+            }
+
+            .nav-item>a {
+                font-size: 14px;
+            }
+        }
