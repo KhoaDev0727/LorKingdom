@@ -53,7 +53,6 @@
                     <main>
                         <div class="container-fluid px-5">
                             <h1 class="mt-4">Staff Management</h1>
-
                             <!-- Success/Error Messages -->
                             <c:if test="${not empty message}">
                                 <div class="alert alert-${messageType} alert-dismissible fade show" role="alert">

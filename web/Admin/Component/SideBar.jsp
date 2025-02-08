@@ -79,7 +79,7 @@
                                     Feedback
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href="FeedBack.jsp">View Feedback</a></li>
+                                    <li><a class="dropdown-item" href="ReviewManagement.jsp">View Review</a></li>
                                 </ul>
                             </div>
                         </div>

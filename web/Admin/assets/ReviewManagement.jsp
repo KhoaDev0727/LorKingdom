@@ -1,3 +1,8 @@
+<%-- 
+    Document   : ReviewManagement
+    Created on : Feb 8, 2025, 1:29:48 PM
+    Author     : Truong Van Khang _ CE181852
+--%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
