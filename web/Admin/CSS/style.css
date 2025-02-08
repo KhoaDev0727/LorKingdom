@@ -10904,7 +10904,6 @@ body {
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     min-width: 0;
     flex-grow: 1;
     min-height: calc(100vh - 56px);
@@ -10950,7 +10949,7 @@ body {
     z-index: 1039;
 }
 .sb-nav-fixed #layoutSidenav #layoutSidenav_nav {
-    width: 300px;
+    width: 260px;
     height: 100vh;
     z-index: 1038;
 }
@@ -11315,120 +11314,120 @@ body {
 
 
 /* Sidebar */
-        .sb-sidenav {
-            background-color: #212529;
-            border-right: 1px solid #2c3e50;
-        }
+.sb-sidenav {
+    background-color: #212529;
+    border-right: 1px solid #2c3e50;
+}
 
-        /* Sidenav menu */
-        .sb-sidenav-menu {
-            padding-top: 20px;
-        }
+/* Sidenav menu */
+.sb-sidenav-menu {
+    padding-top: 20px;
+}
 
-        /* Sidenav menu heading */
-        .sb-sidenav-menu-heading {
-            font-size: 18px;
-            font-weight: bold;
-            color: #f5f5f5;
-            padding: 10px 20px;
-            text-transform: uppercase;
-        }
+/* Sidenav menu heading */
+.sb-sidenav-menu-heading {
+    font-size: 18px;
+    font-weight: bold;
+    color: #f5f5f5;
+    padding: 10px 20px;
+    text-transform: uppercase;
+}
 
-        /* Nav links */
-        .nav-link {
-            font-size: 16px;
-            color: #b0bec5;
-            padding: 15px 20px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-        }
+/* Nav links */
+.nav-link {
+    font-size: 16px;
+    color: #b0bec5;
+    padding: 15px 20px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+}
 
-        /* Hover effect for nav links */
-        .nav-link:hover {
-            background-color: #34495e;
-            color: #ffffff;
-            border-radius: 8px;
-        }
+/* Hover effect for nav links */
+.nav-link:hover {
+    background-color: #34495e;
+    color: #ffffff;
+    border-radius: 8px;
+}
 
-        /* Sidebar navigation icons */
-        .sb-nav-link-icon {
-            margin-right: 10px;
-            font-size: 18px;
-        }
+/* Sidebar navigation icons */
+.sb-nav-link-icon {
+    margin-right: 10px;
+    font-size: 18px;
+}
 
-        /* Dropdown toggle */
-        .nav-item.dropdown>a:after {
-            content: ' ▼';
-            font-size: 12px;
-            margin-left: auto;
-            transition: transform 0.3s ease;
-        }
+/* Dropdown toggle */
+.nav-item.dropdown>a:after {
+    content: ' ▼';
+    font-size: 12px;
+    margin-left: auto;
+    transition: transform 0.3s ease;
+}
 
-        .nav-item.dropdown.open>a:after {
-            content: ' ▲';
-            transform: rotate(180deg);
-        }
+.nav-item.dropdown.open>a:after {
+    content: ' ▲';
+    transform: rotate(180deg);
+}
 
-        /* Make the dropdown items take full width of the sidebar */
-        .dropdown-menu {
-            background-color: #34495e;
-            border: none;
-            border-radius: 5px;
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-            padding-left: 0;
-            width: 100%;
-            /* Full width */
-            position: relative;
-            /* Ensures the dropdown expands fully */
-        }
+/* Make the dropdown items take full width of the sidebar */
+.dropdown-menu {
+    background-color: #34495e;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    padding-left: 0;
+    width: 100%;
+    /* Full width */
+    position: relative;
+    /* Ensures the dropdown expands fully */
+}
 
-        /* Dropdown items */
-        .dropdown-item {
-            color: #b0bec5;
-            font-size: 14px;
-            padding: 10px 20px;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-            display: block;
-            /* Make sure it takes full width */
-        }
+/* Dropdown items */
+.dropdown-item {
+    color: #b0bec5;
+    font-size: 14px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    display: block;
+    /* Make sure it takes full width */
+}
 
-        /* Hover effect for dropdown items */
-        .dropdown-item:hover {
-            background-color: #2c3e50;
-            color: #ffffff;
-        }
+/* Hover effect for dropdown items */
+.dropdown-item:hover {
+    background-color: #2c3e50;
+    color: #ffffff;
+}
 
-        /* Footer of sidebar */
-        .sb-sidenav-footer {
-            background-color: #1d2d44;
-            color: #f5f5f5;
-            padding: 20px 10px;
-            text-align: center;
-            font-size: 14px;
-        }
+/* Footer of sidebar */
+.sb-sidenav-footer {
+    background-color: #1d2d44;
+    color: #f5f5f5;
+    padding: 20px 10px;
+    text-align: center;
+    font-size: 14px;
+}
 
-        .sb-sidenav-footer .small {
-            font-weight: bold;
-        }
+.sb-sidenav-footer .small {
+    font-weight: bold;
+}
 
-        /* Hover effects */
-        .nav-item>a:hover {
-            cursor: pointer;
-        }
+/* Hover effects */
+.nav-item>a:hover {
+    cursor: pointer;
+}
 
-        /* Responsive styles */
-        @media (max-width: 768px) {
-            .sb-sidenav {
-                width: 100%;
-            }
+/* Responsive styles */
+@media (max-width: 768px) {
+    .sb-sidenav {
+        width: 100%;
+    }
 
-            .sb-nav-link-icon {
-                font-size: 20px;
-            }
+    .sb-nav-link-icon {
+        font-size: 20px;
+    }
 
-            .nav-item>a {
-                font-size: 14px;
-            }
-        }
+    .nav-item>a {
+        font-size: 14px;
+    }
+}

@@ -15,9 +15,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 /**
@@ -115,7 +112,7 @@ public class AdminManagementServlet extends HttpServlet {
             String userName = request.getParameter("userName");
             String phoneNumber = request.getParameter("phoneNumber");
             String email = request.getParameter("email");
-            String passwordHashed = hashPassword(request.getParameter("password"));
+            String passwordHashed = MyUtils.hashPassword(request.getParameter("password"));
             String address = request.getParameter("address");
             String status = request.getParameter("status");
             int roleID = Integer.parseInt(request.getParameter("roleID"));
@@ -138,26 +135,6 @@ public class AdminManagementServlet extends HttpServlet {
         }
     }
 
-    private static String hashPassword(String password) {
-
-        try {
-            // Use SHA-256 hashing algorithm
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            // Get bytes from the password string using UTF-8 encoding
-            byte[] hashedBytes = md.digest(password.getBytes(StandardCharsets.UTF_8));
-            // Convert the byte array to a hexadecimal string
-            StringBuilder hexString = new StringBuilder();
-            for (byte b : hashedBytes) {
-                hexString.append(String.format("%02x", b));
-            }
-            // Return the hashed password as a hexadecimal string
-            return hexString.toString();
-        } catch (NoSuchAlgorithmException e) {
-            // Handle error if the hashing algorithm is not found
-            throw new RuntimeException("Error hashing password", e);
-        }
-    }
-
     protected void updateAdmin(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -166,7 +143,7 @@ public class AdminManagementServlet extends HttpServlet {
             String userName = request.getParameter("userName");
             String phoneNumber = request.getParameter("phoneNumber");
             String email = request.getParameter("email");
-            String passwordHashed = hashPassword(request.getParameter("password"));
+            String passwordHashed = MyUtils.hashPassword(request.getParameter("password"));
             String address = request.getParameter("address");
             String status = request.getParameter("status");
             int roleID = Integer.parseInt(request.getParameter("roleID"));
