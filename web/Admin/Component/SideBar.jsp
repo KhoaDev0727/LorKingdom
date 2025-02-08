@@ -50,10 +50,10 @@
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" href="DashBoard.jsp">Financial Dashboard</a></li>
-                                    <li><a class="dropdown-item" href="StaffPermissions.jsp">Staff Permissions</a></li>
-                                    <li><a class="dropdown-item" href="UserManagement.jsp">User Management</a></li>
+                                    <li><a class="dropdown-item" href="StaffManagementServlet">Staff Permissions</a></li>
+                                    <li><a class="dropdown-item" href="CustomerManagementServlet">User Management</a></li>
                                     <li><a class="dropdown-item" href="StaffManagement.jsp">Staff Management</a></li>
-                                    <li><a class="dropdown-item" href="AdminManagement.jsp">Admin Management</a></li>
+                                    <li><a class="dropdown-item" href="AdminManagementServlet">Admin Management</a></li>
                                     <li><a class="dropdown-item" href="ProductManagement.jsp">Product Management</a></li>
                                 </ul>
                             </div>
