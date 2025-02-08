@@ -23,7 +23,19 @@
     </head>
 
     <body class="sb-nav-fixed">
-        <%@ include file="Component/SideBar.jsp" %>
+        <div id="layoutSidenav">
+            <div id="layoutSidenav_content">
+                <!-- Side Bar -->
+                <%@ include file="Component/SideBar.jsp" %>
+                <div class="dashboard-container">
+                    <!-- Table -->
+                    <main>
+                        <div class="container-fluid px-5">
 
+                        </div> 
+                    </main>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

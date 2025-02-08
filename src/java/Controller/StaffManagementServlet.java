@@ -16,11 +16,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.List;
 
 /**
@@ -36,6 +31,7 @@ public class StaffManagementServlet extends HttpServlet {
 
     private static final String UPLOAD_DIR = "images";
     private static final int ROLE_STAFF = 2;
+            
 //    private static final String UPLOAD_DIR = "images";
 
     /**
@@ -79,12 +75,6 @@ public class StaffManagementServlet extends HttpServlet {
             String action = request.getParameter("action");
             if (action != null) {
                 switch (action) {
-                    case "add":
-                        addStaff(request, response);
-                        break;
-                    case "update":
-                        updateStaff(request, response);
-                        break;
                     case "delete":
                         deleteStaff(request, response);
                         break;
@@ -113,7 +103,25 @@ public class StaffManagementServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        updateStaff(request, response);
+         try {
+            String action = request.getParameter("action");
+            if (action != null) {
+                switch (action) {
+                    case "add":
+                        addStaff(request, response);
+                        break;
+                    case "update":
+                        updateStaff(request, response);
+                        break;
+                    default:
+                        showStaff(request, response);
+                }
+            } else {
+                showStaff(request, response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     protected void showStaff(HttpServletRequest request, HttpServletResponse response)
@@ -132,27 +140,34 @@ public class StaffManagementServlet extends HttpServlet {
 
     protected void addStaff(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-    }
-
-    private static String hashPassword(String password) {
-        try {
-            // Use SHA-256 hashing algorithm
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            // Get bytes from the password string using UTF-8 encoding
-            byte[] hashedBytes = md.digest(password.getBytes(StandardCharsets.UTF_8));
-            // Convert the byte array to a hexadecimal string
-            StringBuilder hexString = new StringBuilder();
-            for (byte b : hashedBytes) {
-                hexString.append(String.format("%02x", b));
+    try {
+            String uploadPath = request.getServletContext().getRealPath("/") + File.separator + UPLOAD_DIR;
+            String userName = request.getParameter("userName");
+            String phoneNumber = request.getParameter("phoneNumber");
+            String email = request.getParameter("email");
+            String passwordHashed = MyUtils.hashPassword(request.getParameter("password"));
+            String address = request.getParameter("address");
+            String status = request.getParameter("status");
+            int roleID = Integer.parseInt(request.getParameter("roleID"));
+            // Lấy ảnh cũ từ request
+            String oldImage = request.getParameter("currentImage");
+            // Nếu có file mới, upload ảnh mới, ngược lại giữ ảnh cũ
+            Part filePart = request.getPart("image");
+            String image = (filePart.getSize() > 0)
+                    ? UploadImage.uploadFile(filePart, uploadPath)
+                    : oldImage;
+            Account a = new Account(roleID, userName, phoneNumber, email, image, passwordHashed, address, status);
+            boolean isUpdate = AccountDAO.addAdmin(a);
+            if (isUpdate) {
+                showStaff(request, response);
+            } else {
+                System.out.println("Loi Update");
             }
-            // Return the hashed password as a hexadecimal string
-            return hexString.toString();
-        } catch (NoSuchAlgorithmException e) {
-            // Handle error if the hashing algorithm is not found
-            throw new RuntimeException("Error hashing password", e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
+ 
 
     protected void updateStaff(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -162,7 +177,7 @@ public class StaffManagementServlet extends HttpServlet {
             String userName = request.getParameter("userName");
             String phoneNumber = request.getParameter("phoneNumber");
             String email = request.getParameter("email");
-            String passwordHashed = hashPassword(request.getParameter("password"));
+            String passwordHashed = MyUtils.hashPassword(request.getParameter("password"));
             String address = request.getParameter("address");
             String status = request.getParameter("status");
             int roleID = Integer.parseInt(request.getParameter("roleID"));

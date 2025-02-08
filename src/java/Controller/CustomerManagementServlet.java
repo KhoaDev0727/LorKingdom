@@ -51,12 +51,6 @@ public class CustomerManagementServlet extends HttpServlet {
             String action = request.getParameter("action");
             if (action != null) {
                 switch (action) {
-                    case "add":
-                        addCustomer(request, response);
-                        break;
-                    case "update":
-                        updateCustomer(request, response);
-                        break;
                     case "delete":
                         deleteCustomer(request, response);
                         break;
