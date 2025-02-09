@@ -91,7 +91,23 @@ public class ReviewManagementServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            String action = request.getParameter("action");
+            if (action != null) {
+                switch (action) {
+                    case "update":
+                        System.out.println("khang");
+                        updateStatusReview(request, response);
+                        break;
+                    default:
+                        showReview(request, response);
+                }
+            } else {
+                showReview(request, response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -113,15 +129,38 @@ public class ReviewManagementServlet extends HttpServlet {
         } catch (Exception e) {
             System.out.println(e);
         }
-        
+
     }
 
     private void deleteReview(HttpServletRequest request, HttpServletResponse response) {
-
+        try {
+            int reviewID = Integer.parseInt(request.getParameter("reviewID"));
+            boolean deleted = ReviewDAO.deleteReview(reviewID);
+            if (deleted) {
+                showReview(request, response);
+            }else{
+                System.out.println("sout");  
+            }   
+        } catch (Exception e) {
+        }
     }
 
     private void searchSearch(HttpServletRequest request, HttpServletResponse response) {
 
+    }
+
+    private void updateStatusReview(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            int reviewID = Integer.parseInt(request.getParameter("reviewID"));
+            int Status = Integer.parseInt(request.getParameter("status"));
+            boolean updateRow = ReviewDAO.UpdateStatusReview(reviewID, Status);
+            if (updateRow) {
+                showReview(request, response);
+            } else {
+                System.out.println("loi r");
+            }
+        } catch (Exception e) {
+        }
     }
 
 }
