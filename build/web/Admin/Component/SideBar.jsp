@@ -51,9 +51,9 @@
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" href="DashBoard.jsp">Financial Dashboard</a></li>
                                     <li><a class="dropdown-item" href="StaffPermissions.jsp">Staff Permissions</a></li>
-                                    <li><a class="dropdown-item" href="UserManagement.jsp">User Management</a></li>
-                                    <li><a class="dropdown-item" href="StaffManagement.jsp">Staff Management</a></li>
-                                    <li><a class="dropdown-item" href="AdminManagement.jsp">Admin Management</a></li>
+                                    <li><a class="dropdown-item" href="CustomerManagementServlet">User Management</a></li>
+                                    <li><a class="dropdown-item" href="StaffManagementServlet">Staff Management</a></li>
+                                    <li><a class="dropdown-item" href="AdminManagementServlet">Admin Management</a></li>
                                     <li><a class="dropdown-item" href="ProductManagement.jsp">Product Management</a></li>
                                 </ul>
                             </div>
@@ -67,7 +67,7 @@
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" href="SuperCategoryServlet?&action=list">SuperCategory
                                             Management</a></li>
-                                    <li><a class="dropdown-item" href="ShippingMethod.jsp">Shipping Method</a></li>
+                                    <li><a class="dropdown-item" href="ShippingMethodServlet?&action=list">Shipping Method</a></li>
                                     <li><a class="dropdown-item" href="PaymentMethod.jsp">Payment Method</a></li>
                                 </ul>
                             </div>
@@ -79,7 +79,7 @@
                                     Feedback
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href="FeedBack.jsp">View Feedback</a></li>
+                                    <li><a class="dropdown-item" href="ReviewManagement.jsp">View Review</a></li>
                                 </ul>
                             </div>
                         </div>
