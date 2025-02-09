@@ -67,7 +67,7 @@
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" href="SuperCategoryServlet?&action=list">SuperCategory
                                             Management</a></li>
-                                    <li><a class="dropdown-item" href="ShippingMethodManagement.jsp">Shipping Method</a></li>
+                                    <li><a class="dropdown-item" href="ShippingMethodServlet?&action=list">Shipping Method</a></li>
                                     <li><a class="dropdown-item" href="PaymentMethod.jsp">Payment Method</a></li>
                                 </ul>
                             </div>

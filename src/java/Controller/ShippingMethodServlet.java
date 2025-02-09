@@ -1,128 +1,134 @@
 package Controller;
 
-import DBConnect.DBConnection;
+import DAO.ShippingDAO;
 import Model.Shipping;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
-import java.sql.*;
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-@WebServlet("/Admin/ShippingMethodServlet")
 public class ShippingMethodServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
 
+    private ShippingDAO shippingDAO = new ShippingDAO();
+
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet ShippingMethodServlet</title>");
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet ShippingMethodServlet at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        handleRequest(request, response);
+    }
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        handleRequest(request, response);
+    }
+
+    @Override
+    public String getServletInfo() {
+        return "Shipping Method Servlet";
+    }
+
+    private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
 
-        try (Connection conn = DBConnection.getConnection()) {
-            if ("add".equals(action)) {
-                addShippingMethod(conn, request);
-            } else if ("list".equals(action)) {
-                listShippingMethods(conn, request, null);
-            } else if ("update".equals(action)) {
-                updateShippingMethod(conn, request);
-            } else if ("delete".equals(action)) {
-                deleteShippingMethod(conn, request);
-            } else if ("search".equals(action)) {
-                String keyword = request.getParameter("search");
-                listShippingMethods(conn, request, keyword);
+        try {
+            if (action == null || action.equals("list")) {
+                listShippingMethods(request, response);
             } else {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                return;
+                switch (action) {
+                    case "add":
+                        addShippingMethod(request, response);
+                        break;
+                    case "update":
+                        updateShippingMethod(request, response);
+                        break;
+                    case "delete":
+                        deleteShippingMethod(request, response);
+                        break;
+                    case "search":
+                        searchShippingMethods(request, response);
+                        break;
+                    default:
+                        listShippingMethods(request, response);
+                        break;
+                }
             }
-            request.getRequestDispatcher("/Admin/ShippingMethodManagement.jsp").forward(request, response);
-        } catch (SQLException e) {
-            throw new ServletException("Database error", e);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(ShippingMethodServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            request.setAttribute("errorMessage", "Error: " + e.getMessage());
+            request.getRequestDispatcher("Admin/error.jsp").forward(request, response);
         }
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doPost(request, response);
+    private void listShippingMethods(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, ServletException, IOException {
+        List<Shipping> shippingMethods = shippingDAO.getAllShippingMethods();
+        request.setAttribute("shippingMethods", shippingMethods);
+        request.getRequestDispatcher("ShippingMethodManagement.jsp").forward(request, response);
     }
 
-    private void addShippingMethod(Connection conn, HttpServletRequest request) throws SQLException {
+    private void addShippingMethod(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, IOException, ServletException, ClassNotFoundException {
         String methodName = request.getParameter("methodName");
         BigDecimal price = new BigDecimal(request.getParameter("price"));
         String description = request.getParameter("description");
 
-        String sql = "INSERT INTO ShippingMethod (MethodName, Price, Description) VALUES (?, ?, ?)";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, methodName);
-            stmt.setBigDecimal(2, price);
-            stmt.setString(3, description);
-            stmt.executeUpdate();
+        if (shippingDAO.isShippingMethodExists(methodName)) {
+            request.getSession().setAttribute("errorMessage", "Shipping method already exists.");
+            response.sendRedirect("ShippingMethodServlet?action=list&showErrorModal=true");
+            return;
         }
-        listShippingMethods(conn, request, null);
+
+        Shipping newShippingMethod = new Shipping(0, methodName, price, description);
+        shippingDAO.addShippingMethod(methodName, price, description);
+        request.getSession().setAttribute("successMessage", "Shipping method added successfully.");
+        response.sendRedirect("ShippingMethodServlet?action=list&showSuccessModal=true");
     }
 
-   private void listShippingMethods(Connection conn, HttpServletRequest request, String keyword) throws SQLException {
-    List<Shipping> shippingMethods = new ArrayList<>();
-    String sql = "SELECT * FROM ShippingMethod";
-
-    if (keyword != null && !keyword.trim().isEmpty()) {
-        sql += " WHERE LOWER(MethodName) LIKE LOWER(?) OR LOWER(Description) LIKE LOWER(?)";
-    }
-
-    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-        if (keyword != null && !keyword.trim().isEmpty()) {
-            String searchPattern = "%" + keyword.toLowerCase() + "%";
-            stmt.setString(1, searchPattern);
-            stmt.setString(2, searchPattern);
-        }
-        try (ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                shippingMethods.add(new Shipping(
-                    rs.getInt("ShippingMethodID"),
-                    rs.getString("MethodName"),
-                    rs.getBigDecimal("Price"),
-                    rs.getString("Description")
-                ));
-            }
-        }
-    }
-
-    if (shippingMethods.isEmpty() && keyword != null) {
-        request.setAttribute("noResults", true);
-    }
-
-    request.setAttribute("shippingMethods", shippingMethods);
-    
-}
-
-    private void updateShippingMethod(Connection conn, HttpServletRequest request) throws SQLException {
+    private void updateShippingMethod(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, IOException, ServletException, ClassNotFoundException {
         int id = Integer.parseInt(request.getParameter("shippingMethodID"));
         String methodName = request.getParameter("methodName");
         BigDecimal price = new BigDecimal(request.getParameter("price"));
         String description = request.getParameter("description");
 
-        String sql = "UPDATE ShippingMethod SET MethodName = ?, Price = ?, Description = ? WHERE ShippingMethodID = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, methodName);
-            stmt.setBigDecimal(2, price);
-            stmt.setString(3, description);
-            stmt.setInt(4, id);
-            stmt.executeUpdate();
-        }
-        listShippingMethods(conn, request, null);
+        shippingDAO.updateShippingMethod(id, methodName, price, description);
+        request.getSession().setAttribute("successMessage", "Shipping method updated successfully.");
+        response.sendRedirect("ShippingMethodServlet?action=list&showSuccessModal=true");
     }
 
-    private void deleteShippingMethod(Connection conn, HttpServletRequest request) throws SQLException {
+    private void deleteShippingMethod(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, IOException, ServletException, ClassNotFoundException {
         int id = Integer.parseInt(request.getParameter("shippingMethodID"));
-        String sql = "DELETE FROM ShippingMethod WHERE ShippingMethodID = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            stmt.executeUpdate();
-        }
-        listShippingMethods(conn, request, null);
+        shippingDAO.deleteShippingMethod(id);
+        request.getSession().setAttribute("successMessage", "Shipping method deleted successfully.");
+        response.sendRedirect("ShippingMethodServlet?action=list&showSuccessModal=true");
+    }
+
+    private void searchShippingMethods(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ServletException, IOException, ClassNotFoundException {
+        String keyword = request.getParameter("search");
+        List<Shipping> shippingMethods = shippingDAO.searchShippingMethods(keyword);
+        request.setAttribute("shippingMethods", shippingMethods);
+        request.getRequestDispatcher("ShippingMethodManagement.jsp").forward(request, response);
     }
 }

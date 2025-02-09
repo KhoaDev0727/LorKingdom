@@ -8,12 +8,22 @@
         <servlet-name>LoginServlet</servlet-name>
         <servlet-class>Controller.LoginServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ReviewManagementServlet</servlet-name>
+        <servlet-class>Controller.ReviewManagementServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ShippingDAO</servlet-name>
+        <servlet-class>DAO.ShippingDAO</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ShippingMethodServlet</servlet-name>
+        <servlet-class>Controller.ShippingMethodServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/LoginServlet</url-pattern>
     </servlet-mapping>
-    
-    
     <!-- Config for LogoutServlet -->
     <servlet>
         <servlet-name>LogoutServlet</servlet-name>
@@ -23,8 +33,6 @@
         <servlet-name>LogoutServlet</servlet-name>
         <url-pattern>/LogoutServlet</url-pattern>
     </servlet-mapping>
-    
-    
     <!-- Config for UpdateAvatarServlet -->
     <servlet>
         <servlet-name>UpdateAvatarServlet</servlet-name>
@@ -34,7 +42,6 @@
         <servlet-name>UpdateAvatarServlet</servlet-name>
         <url-pattern>/UpdateAvatarServlet</url-pattern>
     </servlet-mapping>
-    
     <!-- Config for ProfileServlet -->
     <servlet>
         <servlet-name>ProfileServlet</servlet-name>
@@ -44,7 +51,6 @@
         <servlet-name>ProfileServlet</servlet-name>
         <url-pattern>/ProfileServlet</url-pattern>
     </servlet-mapping>
-    
     <!-- Config for SuperCategoryServlet -->
     <servlet>
         <servlet-name>SuperCategoryServlet</servlet-name>
@@ -110,7 +116,6 @@
         <servlet-name>ResendVerificationServlet</servlet-name>
         <url-pattern>/ResendVerificationServlet</url-pattern>
     </servlet-mapping>
-    
     <!-- Config for VerifyCodeServlet -->
     <servlet>
         <servlet-name>VerifyCodeServlet</servlet-name>
@@ -140,6 +145,14 @@
     <servlet-mapping>
         <servlet-name>BrandServlet</servlet-name>
         <url-pattern>/Admin/BrandServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ReviewManagementServlet</servlet-name>
+        <url-pattern>/Admin/ReviewManagementServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShippingMethodServlet</servlet-name>
+        <url-pattern>/Admin/ShippingMethodServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>
