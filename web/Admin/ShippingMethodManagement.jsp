@@ -29,39 +29,54 @@
                         }
                     </style>
 
-
-
                     <div class="card mb-4">
-                        <div class="card-header"><i class="fas fa-table me-1"></i> Shipping Method List</div>
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-table me-1"></i> Shipping Method List
+                                </div>
+                                <div>
+                                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addShippingMethodModal">
+                                        <i class="fas fa-plus"></i> Add method
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="d-flex align-items-center p-3 border rounded bg-light" style="max-width: 100%; gap: 15px;">
                             <!-- Form tìm kiếm -->
-                            <form method="GET" action="ShippingMethodServlet" class="d-flex align-items-center flex-grow-1" style="gap: 10px;">
-                                <input name="action" type="hidden" value="search">
-                                <input type="text" name="search" class="form-control flex-grow-1" 
-                                       placeholder="Find Shipping Method..." aria-label="Search"
-                                       style="border-radius: 8px; padding: 10px; font-size: 16px;">
-                                <button class="btn btn-primary taskFind" type="submit" 
-                                        style="border-radius: 8px; padding: 10px 14px; background-color: #007bff; border-color: #007bff;">
-                                    <i class="fas fa-search"></i>
-                                </button>
+                            <form action="ShippingMethodServlet" method="GET" class="mb-4 w-100">
+                                <div class="input-group" style="max-width: 100%;">
+                                    <input type="hidden" name="action" value="search">
+
+                                    <input type="text" name="search" class="form-control border-end-0" 
+                                           placeholder="Search Shipping Method (ID, Name, Description)..." 
+                                           value="${param.search}" style="border-right: none;">
+
+                                    <!-- Nút search -->
+                                    <button class="btn btn-outline-secondary border-start-0" type="submit" style="border-left: none;">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+
+                                    <!-- Nút refresh -->
+                                    <a href="ShippingMethodServlet?action=list" class="btn btn-outline-danger" 
+                                       style="border-left: none; border-radius: 0 5px 5px 0;">
+                                        <i class="fas fa-sync"></i>
+                                    </a>
+                                </div>
                             </form>
 
-                            <!-- Nút thêm phương thức vận chuyển -->
-                            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addShippingMethodModal"
-                                    style="border-radius: 8px; padding: 10px 14px; background-color: #28a745; border-color: #28a745;">
-                                <i class="fas fa-plus"></i>
-                            </button>
-
-                            <!-- Nút refresh -->
-                            <form action="<%= request.getContextPath() %>/Admin/ShippingMethodServlet" method="POST">
-                                <input type="hidden" name="action" value="list">
-                                <button class="btn btn-warning" type="submit" 
-                                        style="border-radius: 8px; padding: 10px 14px; background-color: #ffc107; border-color: #ffc107;">
-                                    <i class="fas fa-sync-alt"></i>
-                                </button>
-                            </form>
-
+                            <style>
+                                .input-group {
+                                    margin: 10px 0;
+                                }
+                                .form-control {
+                                    min-width: 300px;
+                                }
+                                .btn {
+                                    padding: 8px 12px;
+                                }
+                            </style>
                         </div>
 
                         <!-- Modal Thêm Shipping Method -->
@@ -102,9 +117,9 @@
                             </div>
                         </div>
 
-                        <div class="card-body">
-                            <table class="table table-striped">
-                                <thead>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead class="table-dark text-center">
                                     <tr>
                                         <th>Shipping Method ID</th>
                                         <th>Method Name</th>
@@ -112,11 +127,11 @@
                                         <th>Description</th>
                                     </tr>
                                 </thead>
-                                
+
                                 <tbody>
                                     <c:if test="${empty shippingMethods}">
                                         <tr>
-                                            <td colspan="5" class="text-center text-muted">No shipping methods available.</td>
+                                            <td colspan="12" class="text-center text-muted">No shipping methods found.</td>
                                         </tr>
                                     </c:if>
 
@@ -128,24 +143,24 @@
                                             <td>${shippingMethod.description}</td>
                                             <td>
                                                 <!-- Edit Button -->
-                                                <button class="btn btn-sm btn-primary" 
-                                                        data-bs-toggle="modal" 
-                                                        data-bs-target="#editShippingMethodModal-${shippingMethod.shippingMethodID}">
-                                                    Update
-                                                </button>
-
-                                                <form method="post" action="ShippingMethodServlet" class="d-inline">
-                                                    <input type="hidden" name="action" value="delete">
-                                                    <input type="hidden" name="shippingMethodID" value="${shippingMethod.shippingMethodID}">
-                                                    <button type="button" class="btn btn-sm btn-danger"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#confirmDeleteModal"
-                                                            onclick="setDeleteShippingMethodID(${shippingMethod.shippingMethodID})">
-                                                        Delete
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        </tr>
+                                    <button class="btn btn-sm btn-primary" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#editShippingMethodModal-${shippingMethod.shippingMethodID}">
+                                        Update
+                                    </button>
+                                    
+                                    <form method="post" action="ShippingMethodServlet" class="d-inline">
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="shippingMethodID" value="${shippingMethod.shippingMethodID}">
+                                        <button type="button" class="btn btn-sm btn-danger"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#confirmDeleteModal"
+                                                onclick="setDeleteShippingMethodID(${shippingMethod.shippingMethodID})">
+                                            Delete
+                                        </button>
+                                    </form>
+                                    </td>
+                                    </tr>
 
                                     <div class="modal fade" id="editShippingMethodModal-${shippingMethod.shippingMethodID}" tabindex="-1">
                                         <div class="modal-dialog">
@@ -171,7 +186,7 @@
                                                             <textarea class="form-control" name="description" rows="4" required>${shippingMethod.description}</textarea>
                                                         </div>
                                                     </div>
-                                                    
+
 
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -183,7 +198,7 @@
                                     </div>
                                 </c:forEach>
                                 </tbody>
-                                
+
                             </table>
                         </div>
                     </div>

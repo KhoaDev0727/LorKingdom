@@ -12,6 +12,10 @@
         <servlet-name>ReviewManagementServlet</servlet-name>
         <servlet-class>Controller.ReviewManagementServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ShippingDAO</servlet-name>
+        <servlet-class>DAO.ShippingDAO</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/LoginServlet</url-pattern>
