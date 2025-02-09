@@ -24,6 +24,8 @@ public class ReviewDAO {
     protected static Connection conn = null;
 
     private static String SELECT_REVIEW = "SELECT * FROM Review";
+    private static String UPDATE_STATUS = "UPDATE Review SET Status = ? WHERE ReviewID = ?;";
+    private static String DELETE_REVIEW_BY_ID = "DELETE FROM Review WHERE ReviewID = ?";
 
     public static List<Review> showReview() {
         List<Review> list = new ArrayList<>();
@@ -47,6 +49,33 @@ public class ReviewDAO {
             System.out.println(e);
         }
         return list;
+    }
+
+    public static boolean UpdateStatusReview(int ReviewID, int Status) {
+        boolean updateRow = false;
+        try {
+            conn = DBConnection.getConnection();
+            stm = conn.prepareStatement(UPDATE_STATUS);
+            stm.setInt(1, Status);
+            stm.setInt(2, ReviewID);
+            updateRow = stm.executeUpdate() > 0;
+        } catch (ClassNotFoundException | SQLException e) {
+            System.out.println(e);
+        }
+        return updateRow;
+    }
+
+    public static boolean deleteReview(int reviewID) {
+        boolean deleteaRow = false;
+        try {
+            conn = DBConnection.getConnection();
+            stm = conn.prepareStatement(DELETE_REVIEW_BY_ID);
+            stm.setInt(1, reviewID);
+            deleteaRow = stm.executeUpdate() > 0;
+        } catch (ClassNotFoundException | SQLException e) {
+            System.out.println(e);
+        }
+        return deleteaRow;
     }
 
 }
