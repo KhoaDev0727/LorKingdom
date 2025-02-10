@@ -12,6 +12,14 @@
         <servlet-name>ReviewManagementServlet</servlet-name>
         <servlet-class>Controller.ReviewManagementServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CategoryMenuServlet</servlet-name>
+        <servlet-class>Controller.CategoryMenuServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>getList</servlet-name>
+        <servlet-class>Controller.getList</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/LoginServlet</url-pattern>
@@ -141,6 +149,14 @@
     <servlet-mapping>
         <servlet-name>ReviewManagementServlet</servlet-name>
         <url-pattern>/Admin/ReviewManagementServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CategoryMenuServlet</servlet-name>
+        <url-pattern>/CategoryMenuServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getList</servlet-name>
+        <url-pattern>/getList</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

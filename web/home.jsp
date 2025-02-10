@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="./assets/styleUser/styleheader.css">
         <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
         <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css"
               rel="stylesheet">
         <!-- Bootstrap JS Bundle -->
@@ -26,7 +27,7 @@
         <!-- end Header Section -->
 
 
-        <section class="banner-section">
+        <s  ection class="banner-section">
             <div id="horizontalBannerCarousel" class="carousel slide" data-bs-ride="carousel">
                 <!-- Indicators/Dots -->
                 <div class="carousel-indicators">
@@ -74,111 +75,35 @@
             </div>
         </section>
 
-        <div class="product-carousel">
-            <h2>LEGO Giảm Giá Tặng Quà</h2>
-            <button class="view-more">Xem Thêm</button>
-            <div class="product-items">
-                <div class="product-item">
-                    <img src="./assets/img/lego1.png" alt="Product 1">
-                    <div class="product-info">
-                        <p>LEGO MARKETING</p>
-                        <p>SKU:MKT-5008978</p>
-                        <p>[Quà Tặng, Không Bán] Bộ Lắp Ráp Con Rắn LEGO</p>
-                        <p class="price">329.000 Đ</p>
-                        <button class="gift-button">Hàng Tặng Không Bán</button>
-                    </div>
-                </div>
-                <div class="product-item">
-                    <img src="./assets/img/lego2.png" alt="Product 2">
-                    <div class="product-info">
-                        <p>LEGO TECHNIC</p>
-                        <p>SKU:42154</p>
-                        <p>Đồ Chơi Lắp Ráp Siêu Xe Thể Thao Ford GT LEGO TECHNIC</p>
-                        <p class="old-price">3.799.000 Đ</p>
-                        <p class="price">2.659.000 Đ</p>
-                        <button class="cart-button">Thêm Vào Giỏ Hàng</button>
-                    </div>
-                </div>
-                <div class="product-item">
-                    <img src="./assets/img/lego3.png" alt="Product 2">
-                    <div class="product-info">
-                        <p>LEGO TECHNIC</p>
-                        <p>SKU:42154</p>
-                        <p>Đồ Chơi Lắp Ráp Siêu Xe Thể Thao Ford GT LEGO TECHNIC</p>
-                        <p class="old-price">3.799.000 Đ</p>
-                        <p class="price">2.659.000 Đ</p>
-                        <button class="cart-button">Thêm Vào Giỏ Hàng</button>
-                    </div>
-                </div>
-                <div class="product-item">
-                    <img src="./assets/img/lego4.png" alt="Product 2">
-                    <div class="product-info">
-                        <p>LEGO TECHNIC</p>
-                        <p>SKU:42154</p>
-                        <p>Đồ Chơi Lắp Ráp Siêu Xe Thể Thao Ford GT LEGO TECHNIC</p>
-                        <p class="old-price">3.799.000 Đ</p>
-                        <p class="price">2.659.000 Đ</p>
-                        <button class="cart-button">Thêm Vào Giỏ Hàng</button>
-                    </div>
-                </div>
-                <!-- Add more product-item elements as needed -->
+        <div class="product-carousel " style="background-color: red; width: 600px; height: 300px;   ">
+            <div class="menu-container">
+                <ul class="list-group">
+                    <c:forEach var="superCat" items="${superCategories}">
+                        <!-- SuperCategory -->
+                        <li class="list-group-item">
+                            <a data-bs-toggle="collapse" href="#collapse${superCat.superCategoryID}" role="button" 
+                               aria-expanded="false" aria-controls="collapse${superCat.superCategoryID}">
+                                ${superCat.name} 
+                            </a>
+                            <!-- Danh mục con (Categories) -->
+                            <div class="collapse" id="collapse${superCat.superCategoryID}">
+                                <ul class="list-group ms-3">
+                                    <c:forEach var="cat" items="${categories}">
+                                        <c:if test="${cat.superCategoryID == superCat.superCategoryID}">
+                                            <li class="list-group-item">
+                                                <a href="CategoryServlet?action=view&categoryID=${cat.categoryID}">
+                                                    ${cat.name}
+                                                </a>
+                                            </li>
+                                        </c:if>
+                                    </c:forEach>
+                                </ul>
+                            </div>
+                        </li>
+                    </c:forEach>
+                </ul>
             </div>
-        </div>
-
-
-
-        <div class="container my-5">
-            <h2 class="text-center mb-4" style="color: #001FFF; font-weight: 750;">Thương Hiệu Nổi Bật</h2>
-            <div class="row g-4">
-                <!-- Card 1 -->
-                <div class="col-6 col-md-3">
-                    <div class="brand-card">
-                        <img src="./assets/img/brand1.png" alt="brand1">
-                    </div>
-                </div>
-                <!-- Card 2 -->
-                <div class="col-6 col-md-3">
-                    <div class="brand-card">
-                        <img src="./assets/img/brand2.png" alt="brand2">
-                    </div>
-                </div>
-                <!-- Card 3 -->
-                <div class="col-6 col-md-3">
-                    <div class="brand-card">
-                        <img src="./assets/img/brand3.png" alt="brand3">
-                    </div>
-                </div>
-                <!-- Card 4 -->
-                <div class="col-6 col-md-3">
-                    <div class="brand-card">
-                        <img src="./assets/img/brand4.png" alt="brand4">
-                    </div>
-                </div>
-                <!-- Card 5 -->
-                <div class="col-6 col-md-3">
-                    <div class="brand-card">
-                        <img src="./assets/img/brand5.png" alt="brand5">
-                    </div>
-                </div>
-                <!-- Card 6 -->
-                <div class="col-6 col-md-3">
-                    <div class="brand-card">
-                        <img src="./assets/img/brand6.png" alt="brand6">
-                    </div>
-                </div>
-                <!-- Card 7 -->
-                <div class="col-6 col-md-3">
-                    <div class="brand-card">
-                        <img src="./assets/img/brand7.png" alt="brand7">
-                    </div>
-                </div>
-                <!-- Card 8 -->
-                <div class="col-6 col-md-3">
-                    <div class="brand-card">
-                        <img src="./assets/img/brand8.png" alt="brand8">
-                    </div>
-                </div>
-            </div>
+            <div></div>
         </div>
 
 
@@ -194,6 +119,6 @@
                 }
             });</script>
 
-    </body>
+</body>
 
 </html>

@@ -49,7 +49,7 @@
                         <div class="avatar">
                             <img src="./assets/img/profile.png" alt="logo">
                         </div>
-                        
+
                         <div class="menu-avatar">
                             <c:choose>
                                 <c:when test="${not empty sessionScope.user}">
@@ -70,7 +70,7 @@
                                 </c:otherwise>
                             </c:choose>
                         </div>
-                        
+
                     </div>
 
                 </div>
@@ -81,32 +81,12 @@
             <nav class="navbar">
                 <ul class="menu">
                     <li class="menu-item">
-                        <a href="#" data-key="newArrivals">Hàng Mới</a>
+                        <a href="getList" >Hàng Mới</a>
                     </li>
                     <li class="menu-item dropdown">
-                        <a href="#" data-key="products">Sản Phẩm</a>
+                        <a href="CategoryMenuServlet" data-key="products">Sản Phẩm</a>
                         <div class="dropdown-menu">
 
-                            <!-- dropdown menu -->
-
-                            <div class="dropdown-column">
-                                <h4>Đồ Chơi Theo Phim</h4>
-                                <ul>
-                                    <li><a href="#">Siêu Anh Hùng</a></li>
-                                    <li><a href="#">Siêu Robot</a></li>
-                                    <li><a href="#">Siêu Thú</a></li>
-                                </ul>
-                            </div>
-
-                            <div class="dropdown-column">
-                                <h4>Đồ Chơi Phương Tiện</h4>
-                                <ul>
-                                    <li><a href="#">Xe Điều Khiển</a></li>
-                                    <li><a href="#">Xe Lắp Ráp</a></li>
-                                </ul>
-                            </div>
-
-                            <!-- dropdown menu -->
                         </div>
                     </li>
                     <li class="menu-item">
@@ -120,9 +100,9 @@
                     <li class="menu-item">
                         <a href="#" data-key="memberProgram">Chương Trình Thành Viên</a>
                     </li>
-                    
-                     <li class="menu-item">
-                         <a href="PointPage.jsp" data-key="memberProgram">Lor Xu</a>
+
+                    <li class="menu-item">
+                        <a href="PointPage.jsp" data-key="memberProgram">Lor Xu</a>
                     </li>
 
                 </ul>
