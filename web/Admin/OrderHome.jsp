@@ -111,7 +111,7 @@
                 </div>
             </div>
         </div>
-        <!-- Delete Confirmation Modal for Shipping Methods -->
+        <!-- Delete Confirmation Modal for Order -->
         <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
