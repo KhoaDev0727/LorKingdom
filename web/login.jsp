@@ -61,7 +61,7 @@
                             </div>
                             
                             <div class="forgot-password">
-                                <a href="#">Forgot password?</a>
+                                <a href="forgotPassword.jsp">Forgot password?</a>
                             </div>
 
                             <!-- Register Link -->

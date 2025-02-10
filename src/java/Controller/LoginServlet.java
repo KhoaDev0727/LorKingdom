@@ -47,6 +47,7 @@ public class LoginServlet extends HttpServlet {
                         account.setBalance(rs.getDouble("Balance"));
                         account.setImage(rs.getString("Image"));
                         account.setAddress(rs.getString("Address"));
+                        account.setPassword(rs.getString("Password"));
 
                         session.setAttribute("user", rs.getString("AccountName"));
                         session.setAttribute("email", rs.getString("Email"));

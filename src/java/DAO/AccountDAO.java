@@ -59,25 +59,20 @@ public class AccountDAO {
         return null;
     }
 
-    public void updateAddress(String email, String address) {
-        String query = "UPDATE Account SET Address = ? WHERE Email = ?";
-        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setString(1, address);
-            ps.setString(2, email);
-            ps.executeUpdate();
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
+    public boolean updateProfileCustomer(String email, String address, String phoneNumber, String password) {
+        String query = "UPDATE Account SET Address = ?, PhoneNumber = ?, Password = ?, UpdatedAt = ? WHERE Email = ?";
+        Timestamp currentTimestamp = Timestamp.valueOf(LocalDateTime.now()); // Lấy thời gian hiện tại
 
-    public void updatePhoneNumber(String email, String phoneNumber) {
-        String query = "UPDATE Account SET PhoneNumber = ? WHERE Email = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setString(1, phoneNumber);
-            ps.setString(2, email);
-            ps.executeUpdate();
+            ps.setString(1, address);         // Cập nhật địa chỉ
+            ps.setString(2, phoneNumber);     // Cập nhật số điện thoại
+            ps.setString(3, password);        // Cập nhật mật khẩu
+            ps.setTimestamp(4, currentTimestamp); // Cập nhật thời gian sửa đổi
+            ps.setString(5, email);           // Xác định tài khoản cần cập nhật bằng email
+            return ps.executeUpdate() > 0;    // Trả về true nếu cập nhật thành công
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
+            return false; // Trả về false nếu có lỗi xảy ra
         }
     }
 

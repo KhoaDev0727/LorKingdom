@@ -56,7 +56,7 @@ public class VerifyCodeServlet extends HttpServlet {
                 session.removeAttribute("tempPhoneNumber");
             }
 
-            response.sendRedirect("home.jsp");
+            response.sendRedirect("verifyCode.jsp?status=success");
         } else {
             // Xác thực thất bại
             request.setAttribute("errorMessage", "Verification code is incorrect or empty. Please try again.");
