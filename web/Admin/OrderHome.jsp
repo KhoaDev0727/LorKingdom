@@ -51,7 +51,7 @@
                                             <button class="btn btn-outline-secondary" type="submit">
                                                 <i class="fas fa-search"></i>
                                             </button>
-                                            <a href="ShippingMethodServlet?action=list" class="btn btn-outline-danger">
+                                            <a href="OrderHome.jsp" class="btn btn-outline-danger">
                                                 <i class="fas fa-sync"></i>
                                             </a>
                                         </div>
