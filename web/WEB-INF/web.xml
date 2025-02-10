@@ -12,6 +12,10 @@
         <servlet-name>ReviewManagementServlet</servlet-name>
         <servlet-class>Controller.ReviewManagementServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>FinancialDashboardServlet</servlet-name>
+        <servlet-class>Controller.FinancialDashboardServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/LoginServlet</url-pattern>
@@ -141,6 +145,10 @@
     <servlet-mapping>
         <servlet-name>ReviewManagementServlet</servlet-name>
         <url-pattern>/Admin/ReviewManagementServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FinancialDashboardServlet</servlet-name>
+        <url-pattern>/Admin/FinancialDashboardServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

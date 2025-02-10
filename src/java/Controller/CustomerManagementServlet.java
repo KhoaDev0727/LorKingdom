@@ -100,6 +100,10 @@ public class CustomerManagementServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Displays the list of customers in the management interface. Retrieves
+     * customers with a specific role and the available roles.
+     */
     protected void showCustomer(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int roleId = 3;
@@ -110,31 +114,19 @@ public class CustomerManagementServlet extends HttpServlet {
         request.getRequestDispatcher("UserManagement.jsp").forward(request, response);
     }
 
+    /**
+     * Adds a new customer to the system. This method is currently empty and
+     * needs to be implemented.
+     */
     protected void addCustomer(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
     }
 
-    private static String hashPassword(String password) {
-
-        try {
-            // Use SHA-256 hashing algorithm
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            // Get bytes from the password string using UTF-8 encoding
-            byte[] hashedBytes = md.digest(password.getBytes(StandardCharsets.UTF_8));
-            // Convert the byte array to a hexadecimal string
-            StringBuilder hexString = new StringBuilder();
-            for (byte b : hashedBytes) {
-                hexString.append(String.format("%02x", b));
-            }
-            // Return the hashed password as a hexadecimal string
-            return hexString.toString();
-        } catch (NoSuchAlgorithmException e) {
-            // Handle error if the hashing algorithm is not found
-            throw new RuntimeException("Error hashing password", e);
-        }
-    }
-
+    /**
+     * Updates an existing customer's information. Handles profile image upload
+     * if a new image is provided.
+     */
     protected void updateCustomer(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -143,7 +135,7 @@ public class CustomerManagementServlet extends HttpServlet {
             String userName = request.getParameter("userName");
             String phoneNumber = request.getParameter("phoneNumber");
             String email = request.getParameter("email");
-            String passwordHashed = hashPassword(request.getParameter("password"));
+            String passwordHashed = MyUtils.hashPassword(request.getParameter("password"));
             String address = request.getParameter("address");
             String status = request.getParameter("status");
             int roleID = Integer.parseInt(request.getParameter("roleID"));
@@ -166,6 +158,10 @@ public class CustomerManagementServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Deletes a customer using soft delete (logical deletion). Instead of
+     * permanently removing the account, it changes the status.
+     */
     protected void deleteCustomer(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -181,6 +177,10 @@ public class CustomerManagementServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Searches for customers based on a keyword (name, email, etc.). Filters
+     * results based on role.
+     */
     protected void searchCustomer(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {

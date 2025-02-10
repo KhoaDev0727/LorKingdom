@@ -21,6 +21,10 @@ import java.util.List;
  *
  * @author Truong Van Khang - CE181852
  */
+/**
+ * Servlet for managing admin accounts, including adding, updating, deleting,
+ * and searching admins.
+ */
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024 * 2, // 2MB
         maxFileSize = 1024 * 1024 * 10, // 10MB
@@ -95,6 +99,12 @@ public class AdminManagementServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Adds a new admin account.
+     *
+     * @param request HttpServletRequest object
+     * @param response HttpServletResponse object
+     */
     protected void showAdmin(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int roleId = 1;
@@ -105,6 +115,12 @@ public class AdminManagementServlet extends HttpServlet {
         request.getRequestDispatcher("AdminManagement.jsp").forward(request, response);
     }
 
+    /**
+     * Updates an existing admin account.
+     *
+     * @param request HttpServletRequest object
+     * @param response HttpServletResponse object
+     */
     protected void addAdmin(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -135,6 +151,12 @@ public class AdminManagementServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Updates an existing admin account.
+     *
+     * @param request HttpServletRequest object
+     * @param response HttpServletResponse object
+     */
     protected void updateAdmin(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -166,6 +188,12 @@ public class AdminManagementServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Deletes an admin account (soft delete).
+     *
+     * @param request HttpServletRequest object
+     * @param response HttpServletResponse object
+     */
     protected void deleteAdmin(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -181,6 +209,12 @@ public class AdminManagementServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Searches for admin accounts based on a keyword.
+     *
+     * @param request HttpServletRequest object
+     * @param response HttpServletResponse object
+     */
     protected void searchAdmin(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -193,7 +227,13 @@ public class AdminManagementServlet extends HttpServlet {
             e.printStackTrace();
         }
     }
-    
+
+    /**
+     * Deletes a customer account (soft delete).
+     *
+     * @param request HttpServletRequest object
+     * @param response HttpServletResponse object
+     */
     protected void deleteCustomer(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
