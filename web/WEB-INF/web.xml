@@ -13,6 +13,8 @@
         <servlet-class>Controller.ReviewManagementServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>FinancialDashboardServlet</servlet-name>
+        <servlet-class>Controller.FinancialDashboardServlet</servlet-class>
         <servlet-name>CategoryMenuServlet</servlet-name>
         <servlet-class>Controller.CategoryMenuServlet</servlet-class>
     </servlet>
@@ -151,12 +153,8 @@
         <url-pattern>/Admin/ReviewManagementServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>CategoryMenuServlet</servlet-name>
-        <url-pattern>/CategoryMenuServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>getList</servlet-name>
-        <url-pattern>/getList</url-pattern>
+        <servlet-name>FinancialDashboardServlet</servlet-name>
+        <url-pattern>/Admin/FinancialDashboardServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

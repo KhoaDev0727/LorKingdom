@@ -49,7 +49,7 @@
                                     Dashboard
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href="DashBoard.jsp">Financial Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="FinancialDashboardServlet">Financial Dashboard</a></li>
                                     <li><a class="dropdown-item" href="StaffPermissions.jsp">Staff Permissions</a></li>
                                     <li><a class="dropdown-item" href="CustomerManagementServlet">User Management</a></li>
                                     <li><a class="dropdown-item" href="StaffManagementServlet">Staff Management</a></li>
@@ -69,6 +69,7 @@
                                             Management</a></li>
                                     <li><a class="dropdown-item" href="ShippingMethod.jsp">Shipping Method</a></li>
                                     <li><a class="dropdown-item" href="PaymentMethod.jsp">Payment Method</a></li>
+                                     <li><a class="dropdown-item" href="PriceRangeManagementServlet">Price Range Management</a></li>
                                 </ul>
                             </div>
 

@@ -2,7 +2,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-
 package Controller;
 
 import java.nio.charset.StandardCharsets;
@@ -14,7 +13,18 @@ import java.security.NoSuchAlgorithmException;
  * @author Truong Van Khang - CE181852
  */
 public class MyUtils {
-   public static String hashPassword(String password) {
+
+    /**
+     * Hashes a password using the SHA-256 algorithm.
+     *
+     * This method converts the input password into a hashed hexadecimal string
+     * using the SHA-256 cryptographic hashing algorithm.
+     *
+     * @param password The plain text password to be hashed.
+     * @return A hexadecimal string representation of the hashed password.
+     * @throws RuntimeException If the SHA-256 algorithm is not available.
+     */
+    public static String hashPassword(String password) {
         try {
             // Use SHA-256 hashing algorithm
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -32,5 +42,5 @@ public class MyUtils {
             throw new RuntimeException("Error hashing password", e);
         }
     }
-   
+
 }
