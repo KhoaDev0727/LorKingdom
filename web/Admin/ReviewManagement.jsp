@@ -48,11 +48,12 @@
                                         <input type="hidden" name="action" value="search">
                                         <div class="row g-2">
                                             <div class="col-md-4">
-                                                <input type="text" class="form-control" name="filterUserProduct" placeholder="Search by user or product">
+                                                <input type="text" value="0" class="form-control" name="filterUserProduct" placeholder="Search ID by user or product">
                                             </div>
+
                                             <div class="col-md-2">
                                                 <select class="form-select" name="filterRating">
-                                                    <option value="">Filter by rating</option>
+                                                    <option value="0">Filter by rating</option>
                                                     <option value="5">5 Stars</option>
                                                     <option value="4">4 Stars</option>
                                                     <option value="3">3 Stars</option>
@@ -62,7 +63,7 @@
                                             </div>
                                             <div class="col-md-2">
                                                 <select class="form-select" name="filterStatus">
-                                                    <option value="">Filter by status</option>
+                                                    <option value="-1">Filter by status</option>
                                                     <option value="0">Approved</option>
                                                     <option value="1">Pending</option>
                                                     <option value="2">Rejected</option>
@@ -154,7 +155,7 @@
                                                                     </button>
                                                                 </td>
                                                             </tr>
-                                                            
+
                                                             <!-- Edit Review Modal -->
                                                         <div class="modal fade" id="editStatusReviewModal${s.reviewID}">
                                                             <div class="modal-dialog modal-lg">

@@ -67,9 +67,10 @@
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" href="SuperCategoryServlet?&action=list">SuperCategory
                                             Management</a></li>
-                                    <li><a class="dropdown-item" href="ShippingMethod.jsp">Shipping Method</a></li>
+                                    <li><a class="dropdown-item" href="CategoryServlet">Category Management</a></li>
                                     <li><a class="dropdown-item" href="PaymentMethod.jsp">Payment Method</a></li>
                                      <li><a class="dropdown-item" href="PriceRangeManagementServlet">Price Range Management</a></li>
+                                 <li><a class="dropdown-item" href="SexServlet">Sex Method</a></li>
                                 </ul>
                             </div>
 

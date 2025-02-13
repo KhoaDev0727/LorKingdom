@@ -69,6 +69,14 @@
         <servlet-name>AdminManagementServlet</servlet-name>
         <servlet-class>Controller.AdminManagementServlet</servlet-class>
     </servlet>
+     <servlet>
+        <servlet-name>CategoryServlet</servlet-name>
+        <servlet-class>Controller.CategoryServlet</servlet-class>
+    </servlet>
+  <servlet-mapping>
+        <servlet-name>CategoryServlet</servlet-name>
+        <url-pattern>/Admin/CategoryServlet</url-pattern>
+    </servlet-mapping>
     <servlet>
         <servlet-name>SexServlet</servlet-name>
         <servlet-class>Controller.SexServlet</servlet-class>
