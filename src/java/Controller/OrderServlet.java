@@ -5,7 +5,9 @@
 package Controller;
 
 import DAO.OrderDAO;
+import DAO.OrderDetailDAO;
 import Model.Order;
+import Model.OrderDetail;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -120,6 +122,27 @@ public class OrderServlet extends HttpServlet {
                 e.printStackTrace();
             }
         }
+        if (action != null && action.equals("sort")) {
+            String sortOrder = request.getParameter("sortOrder"); // Lấy giá trị từ form
+        
+        // Nếu sortOrder không hợp lệ, sử dụng giá trị mặc định là ASC
+        if (sortOrder == null || (!sortOrder.equalsIgnoreCase("ASC") && !sortOrder.equalsIgnoreCase("DESC"))) {
+            sortOrder = "ASC";
+        }
+
+        try {
+            OrderDAO dao = new OrderDAO();
+            List<Order> list = dao.sort(sortOrder); // Gọi phương thức sort trong DAO
+            request.setAttribute("listO", list); // Lưu danh sách vào request
+            request.getRequestDispatcher("OrderHome.jsp").forward(request, response); // Chuyển tiếp đến JSP
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("message", "Error: " + e.getMessage());
+            request.setAttribute("messageType", "danger");
+            request.getRequestDispatcher("OrderHome.jsp").forward(request, response);
+        }
+        }
+
     }
 
     /**
