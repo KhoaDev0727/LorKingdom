@@ -49,7 +49,7 @@
                                     Dashboard
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href="DashBoard.jsp">Financial Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="FinancialDashboardServlet">Financial Dashboard</a></li>
                                     <li><a class="dropdown-item" href="StaffPermissions.jsp">Staff Permissions</a></li>
                                     <li><a class="dropdown-item" href="CustomerManagementServlet">User Management</a></li>
                                     <li><a class="dropdown-item" href="StaffManagementServlet">Staff Management</a></li>
@@ -67,10 +67,27 @@
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" href="SuperCategoryServlet?&action=list">SuperCategory
                                             Management</a></li>
+                                    <li><a class="dropdown-item" href="CategoryServlet?&action=list">Category
+                                            Management</a></li>
+                                    <li><a class="dropdown-item" href="AgeServlet?&action=list">Age
+                                            Management</a></li>
+                                    <li><a class="dropdown-item" href="SexServlet?&action=list">Sex
+                                            Management</a></li>
+                                    <li><a class="dropdown-item" href="BrandServlet?&action=list">Brand
+                                            Management</a></li>
+                                    <li><a class="dropdown-item" href="MaterialServlet?&action=list">Material
+                                            Management</a></li>
+                                    <li><a class="dropdown-item" href="PriceRangeServlet?&action=list">PriceRange
+                                            Management</a></li>
+                                            
+                                            
                                     <li><a class="dropdown-item" href="ShippingMethod.jsp">Shipping Method</a></li>
                                     <li><a class="dropdown-item" href="PaymentMethod.jsp">Payment Method</a></li>
+                                    <li><a class="dropdown-item" href="PriceRangeManagementServlet">Price Range Management</a></li>
                                 </ul>
                             </div>
+
+
 
                             <!-- Feedback Dropdown -->
                             <div class="nav-item dropdown">
