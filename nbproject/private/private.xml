@@ -3,17 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/SWP391_P/LorKingdom/LorKingdom/src/java/Controller/UploadImage.java</file>
-            <file>file:/D:/SWP391_P/LorKingdom/LorKingdom/src/java/DAO/AccountDAO.java</file>
-            <file>file:/D:/SWP391_P/LorKingdom/LorKingdom/web/Admin/UserManagement.jsp</file>
-            <file>file:/D:/SWP391_P/LorKingdom/LorKingdom/src/java/Model/Account.java</file>
-            <file>file:/D:/SWP391_P/LorKingdom/LorKingdom/src/java/Controller/StaffManagementServlet.java</file>
-            <file>file:/D:/SWP391_P/LorKingdom/LorKingdom/src/java/Controller/AdminManagementServlet.java</file>
-            <file>file:/D:/SWP391_P/LorKingdom/LorKingdom/web/assets/img/brand5.png</file>
-            <file>file:/D:/SWP391_P/LorKingdom/LorKingdom/src/java/Controller/CustomerManagementServlet.java</file>
-            <file>file:/D:/SWP391_P/LorKingdom/LorKingdom/web/Admin/AdminManagement.jsp</file>
-            <file>file:/D:/SWP391_P/LorKingdom/LorKingdom/web/Admin/StaffManagement.jsp</file>
-
+            <file>file:/F:/SPRING_2025/SWP/LorKingdom/src/java/Controller/getList.java</file>
+            <file>file:/F:/SPRING_2025/SWP/LorKingdom/web/home.jsp</file>
+            <file>file:/F:/SPRING_2025/SWP/LorKingdom/web/Setting.jsp</file>
+            <file>file:/F:/SPRING_2025/SWP/LorKingdom/web/Admin/Component/SideBar.jsp</file>
         </group>
     </open-files>
 </project-private>

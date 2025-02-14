@@ -84,7 +84,7 @@
                         <a href="getList" >Hàng Mới</a>
                     </li>
                     <li class="menu-item dropdown">
-                        <a href="CategoryMenuServlet" data-key="products">Sản Phẩm</a>
+                        <a href=pageNewProduct.jsp data-key="products">Sản Phẩm</a>
                         <div class="dropdown-menu">
 
                         </div>

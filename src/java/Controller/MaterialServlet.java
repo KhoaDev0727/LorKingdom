@@ -4,8 +4,8 @@
  */
 package Controller;
 
-import DAO.SexDAO;
-import Model.Sex;
+import DAO.MaterialDAO;
+import Model.Material;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -20,9 +20,9 @@ import java.util.List;
  *
  * @author admin1
  */
-public class SexServlet extends HttpServlet {
+public class MaterialServlet extends HttpServlet {
 
-    SexDAO sexDAO = new SexDAO();
+    MaterialDAO materialDAO = new MaterialDAO();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,10 +41,10 @@ public class SexServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet SexServlet</title>");
+            out.println("<title>Servlet MaterialServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet SexServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet MaterialServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -89,32 +89,29 @@ public class SexServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    /**
-     * Xử lý yêu cầu dựa trên tham số action
-     */
     private void handleRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
 
         try {
             if (action == null || action.equals("list")) {
-                listSexes(request, response);
+                listMaterials(request, response);
             } else {
                 switch (action) {
                     case "add":
-                        addSex(request, response);
+                        addMaterial(request, response);
                         break;
                     case "delete":
-                        deleteSex(request, response);
+                        deleteMaterial(request, response);
                         break;
                     case "update":
-                        updateSex(request, response);
+                        updateMaterial(request, response);
                         break;
                     case "search":
-                        searchSex(request, response);
+                        searchMaterial(request, response);
                         break;
                     default:
-                        listSexes(request, response);
+                        listMaterials(request, response);
                         break;
                 }
             }
@@ -125,110 +122,79 @@ public class SexServlet extends HttpServlet {
         }
     }
 
-    /**
-     * Liệt kê tất cả các giới tính
-     */
-    private void listSexes(HttpServletRequest request, HttpServletResponse response)
+    private void listMaterials(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
-        List<Sex> sexes = sexDAO.getAllSexes();
-        request.setAttribute("sexes", sexes);
-        request.getRequestDispatcher("SexManagement.jsp").forward(request, response);
+        List<Material> materials = materialDAO.getAllMaterials();
+        request.setAttribute("materials", materials);
+        request.getRequestDispatcher("MaterialManagement.jsp").forward(request, response);
     }
 
-    /**
-     * Thêm một giới tính mới
-     */
-    private void addSex(HttpServletRequest request, HttpServletResponse response)
+    private void addMaterial(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         String name = request.getParameter("name");
+        String description = request.getParameter("description");
 
-        // Kiểm tra dữ liệu: tên không được để trống và độ dài tối đa 50 ký tự
         if (name == null || name.trim().isEmpty()) {
-            request.getSession().setAttribute("errorMessage", "Tên giới tính không được để trống.");
-            response.sendRedirect("SexServlet?action=list&showErrorModal=true");
+            request.getSession().setAttribute("errorMessage", "Tên vật liệu không được để trống.");
+            response.sendRedirect("MaterialServlet?action=list&showErrorModal=true");
             return;
         }
-        if (name.length() > 50) {
-            request.getSession().setAttribute("errorMessage", "Tên quá dài. Tối đa 50 ký tự cho phép.");
-            response.sendRedirect("SexServlet?action=list&showErrorModal=true");
-            return;
-        }
-        // Kiểm tra xem giới tính đã tồn tại chưa (nếu cần)
-        if (sexDAO.isSexExists(name)) {
-            request.getSession().setAttribute("errorMessage", "Giới tính đã tồn tại.");
-            response.sendRedirect("SexServlet?action=list&showErrorModal=true");
-            return;
-        }
-        // Tạo đối tượng Sex (ID=0 và CreatedAt=null, DB sẽ tự set giá trị mặc định nếu có)
-        Sex sex = new Sex(0, name.trim(), null);
-        sexDAO.addSex(sex);
+        Material material = new Material(0, name.trim(), description);
+        materialDAO.addMaterial(material);
 
-        request.getSession().setAttribute("successMessage", "Giới tính được thêm thành công.");
-        response.sendRedirect("SexServlet?action=list&showSuccessModal=true");
+        request.getSession().setAttribute("successMessage", "Vật liệu được thêm thành công.");
+        response.sendRedirect("MaterialServlet?action=list&showSuccessModal=true");
     }
 
-    /**
-     * Cập nhật thông tin giới tính
-     */
-    private void updateSex(HttpServletRequest request, HttpServletResponse response)
+    private void updateMaterial(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         try {
-            int sexID = Integer.parseInt(request.getParameter("sexID"));
+            int materialID = Integer.parseInt(request.getParameter("materialID"));
             String name = request.getParameter("name");
+            String description = request.getParameter("description");
 
             if (name == null || name.trim().isEmpty()) {
-                request.getSession().setAttribute("errorMessage", "Tên giới tính không được để trống.");
-                response.sendRedirect("SexServlet?action=list&showErrorModal=true");
-                return;
-            }
-            if (name.length() > 50) {
-                request.getSession().setAttribute("errorMessage", "Tên quá dài. Tối đa 50 ký tự cho phép.");
-                response.sendRedirect("SexServlet?action=list&showErrorModal=true");
+                request.getSession().setAttribute("errorMessage", "Tên vật liệu không được để trống.");
+                response.sendRedirect("MaterialServlet?action=list&showErrorModal=true");
                 return;
             }
 
-            Sex sex = new Sex(sexID, name.trim(), null);
-            sexDAO.updateSex(sex);
-            request.getSession().setAttribute("successMessage", "Giới tính được cập nhật thành công.");
+            Material material = new Material(materialID, name.trim(), description);
+            materialDAO.updateMaterial(material);
+            request.getSession().setAttribute("successMessage", "Vật liệu được cập nhật thành công.");
         } catch (NumberFormatException e) {
             request.getSession().setAttribute("errorMessage", "ID không hợp lệ.");
         }
-        response.sendRedirect("SexServlet?action=list");
+        response.sendRedirect("MaterialServlet?action=list");
     }
 
-    /**
-     * Xóa giới tính theo ID
-     */
-    private void deleteSex(HttpServletRequest request, HttpServletResponse response)
+    private void deleteMaterial(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         try {
-            int sexID = Integer.parseInt(request.getParameter("sexID"));
-            sexDAO.deleteSex(sexID);
-            request.getSession().setAttribute("successMessage", "Giới tính được xóa thành công.");
+            int materialID = Integer.parseInt(request.getParameter("materialID"));
+            materialDAO.deleteMaterial(materialID);
+            request.getSession().setAttribute("successMessage", "Vật liệu được xóa thành công.");
         } catch (NumberFormatException e) {
             request.getSession().setAttribute("errorMessage", "ID không hợp lệ.");
         }
-        response.sendRedirect("SexServlet?action=list");
+        response.sendRedirect("MaterialServlet?action=list");
     }
 
-    /**
-     * Tìm kiếm giới tính theo tên (search theo keyword)
-     */
-    private void searchSex(HttpServletRequest request, HttpServletResponse response)
+    private void searchMaterial(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         String keyword = request.getParameter("search");
         if (keyword == null || keyword.trim().isEmpty()) {
-            listSexes(request, response);
+            listMaterials(request, response);
             return;
         }
-        List<Sex> allSexes = sexDAO.getAllSexes();
-        List<Sex> filteredSexes = new ArrayList<>();
-        for (Sex s : allSexes) {
-            if (s.getName() != null && s.getName().toLowerCase().contains(keyword.trim().toLowerCase())) {
-                filteredSexes.add(s);
+        List<Material> allMaterials = materialDAO.getAllMaterials();
+        List<Material> filteredMaterials = new ArrayList<>();
+        for (Material m : allMaterials) {
+            if (m.getName() != null && m.getName().toLowerCase().contains(keyword.trim().toLowerCase())) {
+                filteredMaterials.add(m);
             }
         }
-        request.setAttribute("sexes", filteredSexes);
-        request.getRequestDispatcher("SexManagement.jsp").forward(request, response);
+        request.setAttribute("materials", filteredMaterials);
+        request.getRequestDispatcher("MaterialManagement.jsp").forward(request, response);
     }
 }

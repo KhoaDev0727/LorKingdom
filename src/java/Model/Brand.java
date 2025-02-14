@@ -12,27 +12,27 @@ import java.sql.Date;
  */
 public class Brand {
 
-    private int brandID;
+    private int BrandID;
     private String brandName;
-    private String originBrand;  // Cột mới
-    private Date createdAt;
+    private String OriginBrand;  // Cột mới
+    private Date CreatedAt;
 
     public Brand() {
     }
 
-    public Brand(int brandID, String brandName, String originBrand, Date createdAt) {
-        this.brandID = brandID;
+    public Brand(int BrandID, String brandName, String OriginBrand, Date CreatedAt) {
+        this.BrandID = BrandID;
         this.brandName = brandName;
-        this.originBrand = originBrand;  // Thêm originBrand vào constructor
-        this.createdAt = createdAt;
+        this.OriginBrand = OriginBrand;
+        this.CreatedAt = CreatedAt;
     }
 
     public int getBrandID() {
-        return brandID;
+        return BrandID;
     }
 
-    public void setBrandID(int brandID) {
-        this.brandID = brandID;
+    public void setBrandID(int BrandID) {
+        this.BrandID = BrandID;
     }
 
     public String getBrandName() {
@@ -44,18 +44,21 @@ public class Brand {
     }
 
     public String getOriginBrand() {
-        return originBrand;  // Getter cho cột OriginBrand
+        return OriginBrand;
     }
 
-    public void setOriginBrand(String originBrand) {
-        this.originBrand = originBrand;  // Setter cho cột OriginBrand
+    public void setOriginBrand(String OriginBrand) {
+        this.OriginBrand = OriginBrand;
     }
 
     public Date getCreatedAt() {
-        return createdAt;
+        return CreatedAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setCreatedAt(Date CreatedAt) {
+        this.CreatedAt = CreatedAt;
     }
+
+  
+    
 }

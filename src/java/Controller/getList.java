@@ -7,7 +7,10 @@ package Controller;
 import Model.SuperCategory;
 import Model.Category;
 import Model.Age;
-
+import Model.Sex;
+import Model.Brand;
+import DAO.BrandDAO;
+import DAO.SexDAO;
 import DAO.AgeDAO;
 import DAO.SuperCategoryDAO;
 import DAO.CategoryDAO;
@@ -69,10 +72,15 @@ public class getList extends HttpServlet {
         SuperCategoryDAO superCategoryDAO = new SuperCategoryDAO();
         CategoryDAO categoryDAO = new CategoryDAO();
         AgeDAO ageDAO = new AgeDAO();
+        SexDAO sexDAO = new SexDAO();
+         
         try {
+
             List<SuperCategory> listSuperCategorys = superCategoryDAO.getAllSuperCategories();
             List<Category> listCategories = categoryDAO.getAllCategories();
             List<Age> listAges = ageDAO.getAllAges();
+            List<Sex> listSex = sexDAO.getAllSexes();
+
             // Kiểm tra danh sách có dữ liệu hay không
             if (listSuperCategorys.isEmpty()) {
                 System.out.println("Không có dữ liệu trong danh sách SuperCategory.");
@@ -83,25 +91,37 @@ public class getList extends HttpServlet {
             if (listAges.isEmpty()) {
                 System.out.println(" có dữ liệu trong danh sách Age.");
             }
+            if (listSex.isEmpty()) {
+                System.out.println(" có dữ liệu trong danh sách Sex.");
+            }
 
             // In ra console để kiểm tra dữ liệu trước khi truyền vào JSP
             System.out.println("Danh sách SuperCategory:");
             for (SuperCategory category : listSuperCategorys) {
                 System.out.println("ID: " + category.getSuperCategoryID() + ", Name: " + category.getName());
             }
+
             System.out.println("Danh sách Category:");
             for (Category listCategory : listCategories) {
                 System.out.println("ID: " + listCategory.getCategoryID() + ", Name: " + listCategory.getName());
             }
+
             System.out.println("Danh sách Age:");
             for (Age age : listAges) {
                 System.out.println("ID: " + age.getAgeID() + ", Age Range: " + age.getAgeRange() + ", Created At: " + age.getCreatedAt());
             }
+
+            System.out.println("Danh sách Sex:");
+            for (Sex sex : listSex) {
+                System.out.println("ID: " + sex.getSexID() + ", Name: " + sex.getName() + ", Created At: " + sex.getCreatedAt());
+            }
+
             // Gửi dữ liệu đến JSP
             request.setAttribute("superCategories", listSuperCategorys);
             request.setAttribute("categories", listCategories);
             request.setAttribute("ages", listAges);
-            request.getRequestDispatcher("pageNewProduct.jsp").forward(request, response);
+            request.setAttribute("listS", listSex);
+            request.getRequestDispatcher("home.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace(); // Log lỗi ra console
             request.getRequestDispatcher("error.jsp").forward(request, response);
