@@ -109,6 +109,13 @@ public class CustomerManagementServlet extends HttpServlet {
         int roleId = 3;
         List<Account> listAccount = AccountDAO.showList(roleId);
         List<Role> listRole = AccountDAO.showListRoleTest();
+        int r = 0;
+        for (Account account : listAccount) {
+            r++;
+            if (r==2) {
+                System.out.println(account.getStatus());
+            }
+        }
         request.setAttribute("customers", listAccount);
         request.setAttribute("roles", listRole);
         request.getRequestDispatcher("UserManagement.jsp").forward(request, response);

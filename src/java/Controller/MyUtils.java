@@ -7,6 +7,7 @@ package Controller;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Random;
 
 /**
  *
@@ -41,6 +42,19 @@ public class MyUtils {
             // Handle error if the hashing algorithm is not found
             throw new RuntimeException("Error hashing password", e);
         }
+    }
+    public static String generateProductID() {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        StringBuilder id = new StringBuilder("PRD");
+        Random random = new Random();
+        
+        // Tạo 5 ký tự ngẫu nhiên
+        for (int i = 0; i < 5; i++) {
+            int index = random.nextInt(characters.length());
+            id.append(characters.charAt(index));
+        }
+        
+        return id.toString();
     }
 
 }

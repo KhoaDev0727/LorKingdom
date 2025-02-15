@@ -14,7 +14,7 @@ public class Account {
     private String address;
     private String status;
     private double balance;
-    private int isDeleted;
+        private int isDeleted;
     private Timestamp createdAt;
     private Timestamp updateAt;
 

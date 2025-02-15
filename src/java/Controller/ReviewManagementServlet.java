@@ -67,7 +67,7 @@ public class ReviewManagementServlet extends HttpServlet {
                         deleteReview(request, response);
                         break;
                     case "search":
-                        searchSearch(request, response);
+//                        searchSearch(request, response);
                         break;
                     default:
                         showReview(request, response);
@@ -138,16 +138,27 @@ public class ReviewManagementServlet extends HttpServlet {
             boolean deleted = ReviewDAO.deleteReview(reviewID);
             if (deleted) {
                 showReview(request, response);
-            }else{
-                System.out.println("sout");  
-            }   
+            } else {
+                System.out.println("sout");
+            }
         } catch (Exception e) {
         }
     }
 
-    private void searchSearch(HttpServletRequest request, HttpServletResponse response) {
-
-    }
+//    private void searchSearch(HttpServletRequest request, HttpServletResponse response) {
+//        try {
+//            int filterRating = Integer.parseInt(request.getParameter("filterRating"));
+//            int filterStatus = Integer.parseInt(request.getParameter("filterStatus"));
+//            int filterByIdUserProduct = Integer.parseInt(request.getParameter("filterUserProduct"));
+//            if (filterRating == 0 || filterStatus == -1 && filterByIdUserProduct != 0) {
+//
+//            } else if (filterRating != 0 || filterStatus ) {
+//
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private void updateStatusReview(HttpServletRequest request, HttpServletResponse response) {
         try {

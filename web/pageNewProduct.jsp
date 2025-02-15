@@ -10,8 +10,6 @@
         <link rel="stylesheet" href="./assets/styleUser/styleHome.css">
         <link rel="stylesheet" href="./assets/styleUser/styleheader.css">
         <link rel="stylesheet" href="assets/styleUser/newProductPage.css"/>
-
-
         <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css"
@@ -30,8 +28,6 @@
         <!-- Header Section -->
         <jsp:include page="assets/Component/header.jsp"/>
         <!-- end Header Section -->
-
-
         <section class="banner-section">
             <div id="horizontalBannerCarousel" class="carousel slide" data-bs-ride="carousel">
                 <!-- Indicators/Dots -->

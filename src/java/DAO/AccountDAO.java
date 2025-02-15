@@ -89,7 +89,6 @@ public class AccountDAO {
             stm.setInt(1, roleId);
             rs = stm.executeQuery();
             while (rs.next()) {
-                System.out.println(rs.getString(10));
                 Account a = new Account(
                         rs.getInt(1), // 1. AccountID (INT)
                         rs.getInt(2), // 2. RoleID (INT, nullable)
@@ -138,8 +137,7 @@ public class AccountDAO {
     public static Boolean updateProfileStaff(Account account) {
         boolean rowUpdate = false;
         Timestamp currentTimestamp = Timestamp.valueOf(LocalDateTime.now());
-        try {
-
+        try {   
             stm = conn.prepareStatement(UPDATE_PROFILE_STAFF);
             stm.setString(1, account.getUserName());
             stm.setString(2, account.getPhoneNumber());

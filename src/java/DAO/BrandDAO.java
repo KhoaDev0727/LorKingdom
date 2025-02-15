@@ -15,7 +15,7 @@ public class BrandDAO {
     // Lấy danh sách tất cả các Brand
     public List<Brand> getAllBrands() throws SQLException, ClassNotFoundException {
         List<Brand> brands = new ArrayList<>();
-        String query = "SELECT BrandID, Name, OriginBrand, CreatedAt FROM Brand";
+        String query = "SELECT BrandID, Name, CreatedAt FROM Brand";
 
         try (Connection conn = DBConnection.getConnection();
              Statement stmt = conn.createStatement();
@@ -25,7 +25,6 @@ public class BrandDAO {
                 Brand brand = new Brand(
                         rs.getInt("BrandID"),
                         rs.getString("Name"),      // Lấy giá trị từ cột Name, mapping sang brandName
-                        rs.getString("OriginBrand"),
                         rs.getDate("CreatedAt")
                 );
                 brands.add(brand);
@@ -37,13 +36,12 @@ public class BrandDAO {
     // Thêm một Brand mới
     public void addBrand(Brand brand) throws SQLException, ClassNotFoundException {
         // Vì cột CreatedAt có giá trị mặc định GETDATE() nên ta không cần set giá trị này
-        String query = "INSERT INTO Brand (Name, OriginBrand) VALUES (?, ?)";
+        String query = "INSERT INTO Brand (Name) VALUES (?)";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
              
             ps.setString(1, brand.getBrandName());
-            ps.setString(2, brand.getOriginBrand());
             ps.executeUpdate();
         }
     }
@@ -63,7 +61,7 @@ public class BrandDAO {
     // Tìm kiếm Brand theo từ khóa (tìm theo tên)
     public List<Brand> searchBrand(String keyword) throws SQLException, ClassNotFoundException {
         List<Brand> brands = new ArrayList<>();
-        String query = "SELECT BrandID, Name, OriginBrand, CreatedAt FROM Brand WHERE Name LIKE ?";
+        String query = "SELECT BrandID, Name, CreatedAt FROM Brand WHERE Name LIKE ?";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
@@ -74,7 +72,6 @@ public class BrandDAO {
                     Brand brand = new Brand(
                             rs.getInt("BrandID"),
                             rs.getString("Name"),
-                            rs.getString("OriginBrand"),
                             rs.getDate("CreatedAt")
                     );
                     brands.add(brand);
@@ -103,14 +100,13 @@ public class BrandDAO {
     
     // Cập nhật thông tin của Brand
     public void updateBrand(Brand brand) throws SQLException, ClassNotFoundException {
-        String query = "UPDATE Brand SET Name = ?, OriginBrand = ? WHERE BrandID = ?";
+        String query = "UPDATE Brand SET Name = ?,  WHERE BrandID = ?";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
              
             ps.setString(1, brand.getBrandName());
-            ps.setString(2, brand.getOriginBrand());
-            ps.setInt(3, brand.getBrandID());
+            ps.setInt(2, brand.getBrandID());
             ps.executeUpdate();
         }
     }

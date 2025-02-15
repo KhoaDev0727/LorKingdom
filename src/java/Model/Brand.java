@@ -14,16 +14,14 @@ public class Brand {
 
     private int BrandID;
     private String brandName;
-    private String OriginBrand;  // Cột mới
     private Date CreatedAt;
 
     public Brand() {
     }
 
-    public Brand(int BrandID, String brandName, String OriginBrand, Date CreatedAt) {
+    public Brand(int BrandID, String brandName, Date CreatedAt) {
         this.BrandID = BrandID;
         this.brandName = brandName;
-        this.OriginBrand = OriginBrand;
         this.CreatedAt = CreatedAt;
     }
 
@@ -43,13 +41,6 @@ public class Brand {
         this.brandName = brandName;
     }
 
-    public String getOriginBrand() {
-        return OriginBrand;
-    }
-
-    public void setOriginBrand(String OriginBrand) {
-        this.OriginBrand = OriginBrand;
-    }
 
     public Date getCreatedAt() {
         return CreatedAt;

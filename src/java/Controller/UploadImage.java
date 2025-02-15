@@ -29,12 +29,10 @@ public class UploadImage {
             boolean created = uploadDir.mkdirs();
             System.out.println("Folder created: " + created + " at " + uploadDir.getAbsolutePath());
         }
-
         // Lấy tên file gốc và đổi tên tránh trùng lặp
         String originalName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
         String fileExtension = originalName.substring(originalName.lastIndexOf("."));
         String newFileName = UUID.randomUUID().toString() + fileExtension;
-
         // Đường dẫn file
         String filePath = uploadPath + File.separator + newFileName;
         filePart.write(filePath);

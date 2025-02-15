@@ -1,98 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee      http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <!-- Welcome Page -->
     <welcome-file-list>
         <welcome-file>home.jsp</welcome-file>
     </welcome-file-list>
-    <!-- Config for LoginServlet -->
+    <!-- Servlet Configurations -->
     <servlet>
         <servlet-name>LoginServlet</servlet-name>
         <servlet-class>Controller.LoginServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>ReviewManagementServlet</servlet-name>
-        <servlet-class>Controller.ReviewManagementServlet</servlet-class>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>Controller.LogoutServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>FinancialDashboardServlet</servlet-name>
-        <servlet-class>Controller.FinancialDashboardServlet</servlet-class>
+        <servlet-name>RegisterServlet</servlet-name>
+        <servlet-class>Controller.RegisterServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>CategoryMenuServlet</servlet-name>
-        <servlet-class>Controller.CategoryMenuServlet</servlet-class>
+        <servlet-name>ProfileServlet</servlet-name>
+        <servlet-class>Controller.ProfileServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>getList</servlet-name>
-        <servlet-class>Controller.getList</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>BrandServlet</servlet-name>
-        <servlet-class>Controller.BrandServlet</servlet-class>
+        <servlet-name>UpdateAvatarServlet</servlet-name>
+        <servlet-class>Controller.UpdateAvatarServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>CategoryServlet</servlet-name>
         <servlet-class>Controller.CategoryServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>SexServlet</servlet-name>
-        <servlet-class>Controller.SexServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>AgeServlet</servlet-name>
-        <servlet-class>Controller.AgeServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>MaterialServlet</servlet-name>
-        <servlet-class>Controller.MaterialServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>PriceRangeServlet</servlet-name>
-        <servlet-class>Controller.PriceRangeServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>getList</servlet-name>
-        <url-pattern>/getList</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>LoginServlet</servlet-name>
-        <url-pattern>/LoginServlet</url-pattern>
-    </servlet-mapping>
-    <!-- Config for LogoutServlet -->
-    <servlet>
-        <servlet-name>LogoutServlet</servlet-name>
-        <servlet-class>Controller.LogoutServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>LogoutServlet</servlet-name>
-        <url-pattern>/LogoutServlet</url-pattern>
-    </servlet-mapping>
-    <!-- Config for UpdateAvatarServlet -->
-    <servlet>
-        <servlet-name>UpdateAvatarServlet</servlet-name>
-        <servlet-class>Controller.UpdateAvatarServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>UpdateAvatarServlet</servlet-name>
-        <url-pattern>/UpdateAvatarServlet</url-pattern>
-    </servlet-mapping>
-    <!-- Config for ProfileServlet -->
-    <servlet>
-        <servlet-name>ProfileServlet</servlet-name>
-        <servlet-class>Controller.ProfileServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>ProfileServlet</servlet-name>
-        <url-pattern>/ProfileServlet</url-pattern>
-    </servlet-mapping>
-    <!-- Config for SuperCategoryServlet -->
-    <servlet>
         <servlet-name>SuperCategoryServlet</servlet-name>
         <servlet-class>Controller.SuperCategoryServlet</servlet-class>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>SuperCategoryServlet</servlet-name>
-        <url-pattern>/Admin/SuperCategoryServlet</url-pattern>
-    </servlet-mapping>
-    <!-- Config for CustomerManagementServlet -->
     <servlet>
         <servlet-name>CustomerManagementServlet</servlet-name>
         <servlet-class>Controller.CustomerManagementServlet</servlet-class>
@@ -105,47 +45,75 @@
         <servlet-name>AdminManagementServlet</servlet-name>
         <servlet-class>Controller.AdminManagementServlet</servlet-class>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>CustomerManagementServlet</servlet-name>
-        <url-pattern>/Admin/CustomerManagementServlet</url-pattern>
-    </servlet-mapping>
-    <!-- Config for RegisterServlet -->
     <servlet>
-        <servlet-name>RegisterServlet</servlet-name>
-        <servlet-class>Controller.RegisterServlet</servlet-class>
+        <servlet-name>SexServlet</servlet-name>
+        <servlet-class>Controller.SexServlet</servlet-class>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>RegisterServlet</servlet-name>
-        <url-pattern>/RegisterServlet</url-pattern>
-    </servlet-mapping>
-    <!-- Config for SendVerificationServlet -->
+    <servlet>
+        <servlet-name>AgeServlet</servlet-name>
+        <servlet-class>Controller.AgeServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>BrandServlet</servlet-name>
+        <servlet-class>Controller.BrandServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ReviewManagementServlet</servlet-name>
+        <servlet-class>Controller.ReviewManagementServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>FinancialDashboardServlet</servlet-name>
+        <servlet-class>Controller.FinancialDashboardServlet</servlet-class>
+    </servlet>
     <servlet>
         <servlet-name>SendVerificationServlet</servlet-name>
         <servlet-class>Controller.SendVerificationServlet</servlet-class>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>SendVerificationServlet</servlet-name>
-        <url-pattern>/SendVerificationServlet</url-pattern>
-    </servlet-mapping>
-    <!-- Config for ResendVerificationServlet -->
     <servlet>
         <servlet-name>ResendVerificationServlet</servlet-name>
         <servlet-class>Controller.ResendVerificationServlet</servlet-class>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>ResendVerificationServlet</servlet-name>
-        <url-pattern>/ResendVerificationServlet</url-pattern>
-    </servlet-mapping>
-    <!-- Config for VerifyCodeServlet -->
     <servlet>
         <servlet-name>VerifyCodeServlet</servlet-name>
         <servlet-class>Controller.VerifyCodeServlet</servlet-class>
     </servlet>
+    <!-- Servlet Mappings -->
+    <servlet>
+        <servlet-name>ProductManagementServlet</servlet-name>
+        <servlet-class>Controller.ProductManagementServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
-        <servlet-name>VerifyCodeServlet</servlet-name>
-        <url-pattern>/VerifyCodeServlet</url-pattern>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/LoginServlet</url-pattern>
     </servlet-mapping>
-    <!-- Session timeout config -->
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/LogoutServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RegisterServlet</servlet-name>
+        <url-pattern>/RegisterServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProfileServlet</servlet-name>
+        <url-pattern>/ProfileServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateAvatarServlet</servlet-name>
+        <url-pattern>/UpdateAvatarServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CategoryServlet</servlet-name>
+        <url-pattern>/Admin/CategoryServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SuperCategoryServlet</servlet-name>
+        <url-pattern>/Admin/SuperCategoryServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CustomerManagementServlet</servlet-name>
+        <url-pattern>/Admin/CustomerManagementServlet</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>StaffManagementServlet</servlet-name>
         <url-pattern>/Admin/StaffManagementServlet</url-pattern>
@@ -153,23 +121,6 @@
     <servlet-mapping>
         <servlet-name>AdminManagementServlet</servlet-name>
         <url-pattern>/Admin/AdminManagementServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ReviewManagementServlet</servlet-name>
-        <url-pattern>/Admin/ReviewManagementServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>FinancialDashboardServlet</servlet-name>
-        <url-pattern>/Admin/FinancialDashboardServlet</url-pattern>
-    </servlet-mapping>
-    <!--    Cua Luan-->
-    <servlet-mapping>
-        <servlet-name>BrandServlet</servlet-name>
-        <url-pattern>/Admin/BrandServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>CategoryServlet</servlet-name>
-        <url-pattern>/Admin/CategoryServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>SexServlet</servlet-name>
@@ -180,15 +131,35 @@
         <url-pattern>/Admin/AgeServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>MaterialServlet</servlet-name>
-        <url-pattern>/Admin/MaterialServlet</url-pattern>
+        <servlet-name>BrandServlet</servlet-name>
+        <url-pattern>/Admin/BrandServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>PriceRangeServlet</servlet-name>
-        <url-pattern>/Admin/PriceRangeServlet</url-pattern>
+        <servlet-name>ReviewManagementServlet</servlet-name>
+        <url-pattern>/Admin/ReviewManagementServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FinancialDashboardServlet</servlet-name>
+        <url-pattern>/Admin/FinancialDashboardServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SendVerificationServlet</servlet-name>
+        <url-pattern>/SendVerificationServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ResendVerificationServlet</servlet-name>
+        <url-pattern>/ResendVerificationServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VerifyCodeServlet</servlet-name>
+        <url-pattern>/VerifyCodeServlet</url-pattern>
+    </servlet-mapping>
+    <!-- Session Timeout -->
+    <servlet-mapping>
+        <servlet-name>ProductManagementServlet</servlet-name>
+        <url-pattern>/Admin/ProductManagementServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
-    <session-timeout>30</session-timeout>
 </web-app>

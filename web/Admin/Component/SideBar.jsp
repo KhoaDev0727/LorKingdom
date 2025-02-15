@@ -55,6 +55,7 @@
                                     <li><a class="dropdown-item" href="StaffManagementServlet">Staff Management</a></li>
                                     <li><a class="dropdown-item" href="AdminManagementServlet">Admin Management</a></li>
                                     <li><a class="dropdown-item" href="ProductManagement.jsp">Product Management</a></li>
+                                    <li><a class="dropdown-item" href="ProductManagementServlet">Add Product Management</a></li>
                                 </ul>
                             </div>
 
@@ -83,6 +84,8 @@
                                             
                                     <li><a class="dropdown-item" href="ShippingMethod.jsp">Shipping Method</a></li>
                                     <li><a class="dropdown-item" href="PaymentMethod.jsp">Payment Method</a></li>
+                                     <li><a class="dropdown-item" href="PriceRangeManagementServlet">Price Range Management</a></li>
+                                 <li><a class="dropdown-item" href="SexServlet">Sex Method</a></li>
                                     <li><a class="dropdown-item" href="PriceRangeManagementServlet">Price Range Management</a></li>
                                 </ul>
                             </div>

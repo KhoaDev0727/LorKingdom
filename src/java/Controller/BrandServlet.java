@@ -152,7 +152,7 @@ private void handleRequest(HttpServletRequest request, HttpServletResponse respo
         }
         
         // Tạo đối tượng Brand (BrandID=0 và CreatedAt=null vì DB sẽ tự set giá trị mặc định)
-        Brand brand = new Brand(0, brandName.trim(), originBrand != null ? originBrand.trim() : null, null);
+        Brand brand = new Brand(0, brandName.trim(), null);
         brandDAO.addBrand(brand);
 
         // Đặt thông báo thành công và chuyển hướng về danh sách
@@ -207,7 +207,7 @@ private void handleRequest(HttpServletRequest request, HttpServletResponse respo
                 return;
             }
             
-            Brand brand = new Brand(brandID, brandName.trim(), originBrand != null ? originBrand.trim() : null, null);
+            Brand brand = new Brand(brandID, brandName.trim(), null);
             brandDAO.updateBrand(brand);
             request.getSession().setAttribute("successMessage", "Brand updated successfully.");
         } catch (NumberFormatException e) {

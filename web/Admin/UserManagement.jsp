@@ -122,10 +122,10 @@
                                                                         </c:when>
                                                                         <c:otherwise>
                                                                             <c:choose>
-                                                                                <c:when test="${customer != null and customer.status eq 'Inactive'}">
+                                                                                <c:when test="${customer != null and customer.status eq 'inactive'}">
                                                                                     <span class="badge bg-danger">Inactive</span>
                                                                                 </c:when>
-                                                                                <c:when test="${customer != null and customer.status eq 'Blocked'}">
+                                                                                <c:when test="${customer != null and customer.status eq 'blocked'}">
                                                                                     <span class="badge bg-warning">Blocked</span>
                                                                                 </c:when>
                                                                                 <c:otherwise>
@@ -169,7 +169,7 @@
                                                                                     <!-- Giữ ảnh cũ nếu không upload mới -->
                                                                                     <input type="hidden" name="currentImage" value="${customer.image}">
                                                                                     <c:if test="${not empty customer.image}">
-                                                                                        <img src="${pageContext.request.contextPath}/${s.image}" alt="Profile Image"
+                                                                                        <img src="${pageContext.request.contextPath}/${customer.image}" alt="Profile Image"
                                                                                              class="mt-2 rounded" style="max-height: 100px;">
                                                                                     </c:if>
                                                                                 </div>

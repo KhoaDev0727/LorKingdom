@@ -199,7 +199,7 @@
                                                                                 <div class="col-md-4">
                                                                                     <label class="form-label">Status</label>
                                                                                     <select class="form-select" name="status">
-                                                                                        <option value="Active" ${s.status == 'Active' ? 'selected' : ''}>Active</option>
+                                                                                        <option value="Atcive" ${s.status == 'Active' ? 'selected' : ''}>Active</option>
                                                                                         <option value="Inactive" ${s.status == 'Inactive' ? 'selected' : ''}>Inactive</option>
                                                                                         <option value="Blocked" ${s.status == 'Blocked' ? 'selected' : ''}>Blocked</option>
                                                                                     </select>
