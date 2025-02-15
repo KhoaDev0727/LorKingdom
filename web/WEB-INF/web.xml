@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee      http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee 
+                             http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+
     <!-- Welcome Page -->
     <welcome-file-list>
         <welcome-file>home.jsp</welcome-file>
     </welcome-file-list>
+
     <!-- Servlet Configurations -->
     <servlet>
         <servlet-name>LoginServlet</servlet-name>
@@ -77,11 +82,16 @@
         <servlet-name>VerifyCodeServlet</servlet-name>
         <servlet-class>Controller.VerifyCodeServlet</servlet-class>
     </servlet>
-    <!-- Servlet Mappings -->
     <servlet>
         <servlet-name>ProductManagementServlet</servlet-name>
         <servlet-class>Controller.ProductManagementServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ShippingMethodServlet</servlet-name>
+        <servlet-class>Controller.ShippingMethodServlet</servlet-class>
+    </servlet>
+
+    <!-- Servlet Mappings -->
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/LoginServlet</url-pattern>
@@ -123,6 +133,14 @@
         <url-pattern>/Admin/AdminManagementServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>ProductManagementServlet</servlet-name>
+        <url-pattern>/Admin/ProductManagementServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShippingMethodServlet</servlet-name>
+        <url-pattern>/Admin/ShippingMethodServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>SexServlet</servlet-name>
         <url-pattern>/Admin/SexServlet</url-pattern>
     </servlet-mapping>
@@ -142,23 +160,8 @@
         <servlet-name>FinancialDashboardServlet</servlet-name>
         <url-pattern>/Admin/FinancialDashboardServlet</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>SendVerificationServlet</servlet-name>
-        <url-pattern>/SendVerificationServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ResendVerificationServlet</servlet-name>
-        <url-pattern>/ResendVerificationServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>VerifyCodeServlet</servlet-name>
-        <url-pattern>/VerifyCodeServlet</url-pattern>
-    </servlet-mapping>
+
     <!-- Session Timeout -->
-    <servlet-mapping>
-        <servlet-name>ProductManagementServlet</servlet-name>
-        <url-pattern>/Admin/ProductManagementServlet</url-pattern>
-    </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>

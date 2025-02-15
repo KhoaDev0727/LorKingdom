@@ -1,229 +1,187 @@
-/*
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
-*/
-/* 
-    Created on : Feb 6, 2025, 12:18:04 AM
-    Author     : le minh khoa
-*/
-
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
-
+/* General styles */
 body {
-    background-image: url(../img/banner-profile.png);
-}
-
-.padding {
-    padding-top: 5rem;
-}
-
-.user-card-full {
-    overflow: hidden;
-    max-width: 900px; 
-    margin: 0 auto; 
-}
-
-.card {
-    border-radius: 5px;
-    -webkit-box-shadow: 0 1px 20px 0 rgba(69, 90, 100, 0.08);
-    box-shadow: 0 1px 20px 0 rgba(69, 90, 100, 0.08);
-    border: none;
-    margin-bottom: 30px;
-}
-
-.user-card-full .user-profile {
-    border-radius: 5px 0 0 5px;
-    padding: 20px;
-}
-
-.bg-c-lite-green {
-    background: -webkit-gradient(linear, left top, right top, from(#f29263), to(#ee5a6f));
-    background: linear-gradient(to right, #ee5a6f, #f29263);
-}
-
-.user-profile {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    min-width: 250px;
-}
-
-.right {
-    display: flex;
-    flex-direction: column;
-    background-color: #eeecec;
-    width: 100%;
-    min-width: 620px;
+    background-image: url(../img/img2.jpg);
+    font-family: "Times New Roman";
+    background-size: cover;
 }
 
 .box-content {
-    display: flex;
-    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3); 
-    border-radius: 8px;
-    border: 1px solid snow;
+    width: 900px;
+    min-width: 900px;
+    height: auto;
 }
 
-input[type="file"] {
-    display: none; /* Ẩn input file */
+.page-content {
+    margin-top: 50px;
 }
 
-.custom-file-upload {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
+.card {
+    border-radius: 15px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+/* User Profile Section */
+.user-profile {
+    background: linear-gradient(135deg, #20c997, #2265ca);
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+    padding: 30px 20px;
     text-align: center;
+    width: 40%;
 }
 
-.custom-file-upload:hover {
-    background-color: #0056b3;
+.user-info {
+    width: 60%;
 }
 
+.user-profile img {
+    border-radius: 50%;
+    border: 4px solid #fff;
+}
 
-.card-block {
-    font-family: "Montserrat", serif;
+.user-profile h6 {
+    margin-top: 15px;
     font-size: 22px;
-}
-
-h3 {
-    font-size: 26px; 
-    font-weight: 750;
-    color: #333;
-}
-
-p {
-    font-size: 20px;
-    font-weight: 650;
-    color: #444;
-}
-
-h6 {
-    font-size: 18px;
-    font-weight: 450;
-    color: #666;
-}
-
-input[type="text"] {
-    font-size: 18px;
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-button {
-    font-size: 20px;
-    font-weight: bold;
-    background-color: #28a745;
-    color: white;
-    padding: 5px;
-    margin-top: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-button:hover {
-    background-color: #218838;
-}
-
-.m-b-25 {
-    margin-bottom: 20px;
-}
-
-.img-radius {
-    border-radius: 5px;
-}
-
-.card .card-block p {
-    line-height: 25px;
-}
-
-/* Cập nhật kích thước trên màn hình nhỏ */
-@media only screen and (max-width: 768px) {
-    .user-card-full {
-        max-width: 100%; /* Đảm bảo card chiếm toàn bộ màn hình trên thiết bị di động */
-    }
-
-    .col-xl-6 {
-        max-width: 100%; /* Điều chỉnh lại cột để phù hợp với màn hình nhỏ */
-    }
-
-    .user-profile {
-        text-align: left; /* Căn trái khi ở màn hình nhỏ */
-    }
-}
-
-.card-block {
-    padding: 1.25rem;
-}
-
-.b-b-default {
-    border-bottom: 1px solid #e0e0e0;
-}
-
-.m-b-20 {
-    margin-bottom: 20px;
-}
-
-.p-b-5 {
-    padding-bottom: 5px !important;
-}
-
-.col-sm-6 {
-    border-bottom: 1px solid rgb(206, 202, 202);
-}
-
-.card .card-block p {
-    line-height: 25px;
-}
-
-.m-b-10 {
-    margin-bottom: 10px;
-}
-
-.text-muted {
-    color: #919aa3 !important;
-}
-
-.b-b-default {
-    border-bottom: 1px solid #e0e0e0;
-}
-
-.f-w-600 {
     font-weight: 600;
 }
 
-.m-b-20 {
-    margin-bottom: 20px;
+/* Profile Information Section */
+.card-block {
+    padding: 30px;
+    width: 100%;
 }
 
-.m-t-40 {
-    margin-top: 20px;
+h3 {
+    color: #343a40;
+    font-weight: 700;
+    border-bottom: 2px solid #dee2e6;
+    padding-bottom: 10px;
 }
 
-.p-b-5 {
-    padding-bottom: 5px !important;
+p {
+    font-weight: 650;
+    margin-bottom: 8px;
+    color: #495057;
+    font-size: 22px;
+
 }
 
-.m-b-10 {
-    margin-bottom: 10px;
+.title {
+    color: white;
 }
 
-.m-t-40 {
-    margin-top: 20px;
+.change-btn {
+    padding-left: 10px;
 }
 
-.user-card-full .social-link li {
+h6 {
+    font-weight: 600;
+    font-size: 18px;
+    color: #6c757d;
+}
+
+/* Form Inputs */
+input.form-control {
+    border-radius: 8px;
+    padding: 8px;
+}
+
+/* Buttons */
+button[type='submit'], .btn-primary {
+    background: linear-gradient(135deg, #20c997, #17a2b8);
+    border: 1px solid;
+    padding: 5px 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    border-radius: 8px;
+    transition: 0.3s;
+    margin-top: 8px;
+}
+
+button[type='submit']:hover, .btn-primary:hover {
+    background: linear-gradient(135deg, #17a2b8, #20c997);
+}
+
+.btn-save {
+    background: linear-gradient(135deg, #20c997, #17a2b8);
+    color: white;
+}
+
+.btn-save:hover {
+    background: linear-gradient(135deg, #17a2b8, #20c997);
+    color: white;
+}
+
+button, .btn-update {
+    padding: 5px 10px;
+    margin-top: 5px;
+    border-radius: 10px;
+    border: 1px solid grey;
+    color: white;
+    font-weight: 600;
+    background: linear-gradient(135deg, #20c997, #17a2b8);
+}
+
+button:hover, .btn-update:hover {
+    background: linear-gradient(135deg, #17a2b8, #20c997);
+    color: white;
+}
+
+/* Modal Styles */
+.modal-content {
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.modal-header {
+    border-bottom: none;
+}
+
+.modal-footer {
+    border-top: none;
+    padding: 10px;
+}
+
+/* Định dạng container của avatar */
+.avatar-container {
+    position: relative;
     display: inline-block;
+    width: 150px;
+    height: 150px;
 }
 
-.user-card-full .social-link li a {
-    font-size: 20px;
-    margin: 0 10px 0 0;
-    -webkit-transition: all 0.3s ease-in-out;
-    transition: all 0.3s ease-in-out;
+/* Ảnh đại diện */
+.avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    transition: 0.3s;
 }
+
+/* Nút chọn file */
+.custom-file-upload {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Hiển thị nút khi hover vào avatar */
+.avatar-container:hover .custom-file-upload {
+    opacity: 1;
+}
+

@@ -23,9 +23,9 @@ public class ReviewDAO {
     protected static ResultSet rs = null;
     protected static Connection conn = null;
 
-    private static String SELECT_REVIEW = "SELECT * FROM Review";
-    private static String UPDATE_STATUS = "UPDATE Review SET Status = ? WHERE ReviewID = ?;";
-    private static String DELETE_REVIEW_BY_ID = "DELETE FROM Review WHERE ReviewID = ?";
+    private static String SELECT_REVIEW = "SELECT * FROM Reviews";
+    private static String UPDATE_STATUS = "UPDATE Reviews SET Status = ? WHERE ReviewID = ?;";
+    private static String DELETE_REVIEW_BY_ID = "DELETE FROM Reviews WHERE ReviewID = ?";
 
     public static List<Review> showReview() {
         List<Review> list = new ArrayList<>();

@@ -78,14 +78,12 @@
                                             Management</a></li>
                                     <li><a class="dropdown-item" href="MaterialServlet?&action=list">Material
                                             Management</a></li>
-                                    <li><a class="dropdown-item" href="PriceRangeServlet?&action=list">PriceRange
-                                            Management</a></li>
-                                            
-                                            
+                                    <li><a class="dropdown-item" href="PriceRangeServlet?&action=list">PriceRange Management</a></li>
                                     <li><a class="dropdown-item" href="ShippingMethod.jsp">Shipping Method</a></li>
+                                    <li><a class="dropdown-item" href="ShippingMethodServlet?&action=list">Shipping Method</a></li>
                                     <li><a class="dropdown-item" href="PaymentMethod.jsp">Payment Method</a></li>
-                                     <li><a class="dropdown-item" href="PriceRangeManagementServlet">Price Range Management</a></li>
-                                 <li><a class="dropdown-item" href="SexServlet">Sex Method</a></li>
+                                    <li><a class="dropdown-item" href="PriceRangeManagementServlet">Price Range Management</a></li>
+                                    <li><a class="dropdown-item" href="SexServlet">Sex Method</a></li>
                                     <li><a class="dropdown-item" href="PriceRangeManagementServlet">Price Range Management</a></li>
                                 </ul>
                             </div>

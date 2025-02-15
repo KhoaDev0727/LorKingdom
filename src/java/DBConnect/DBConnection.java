@@ -12,7 +12,7 @@ public class DBConnection {
     private static String url = "jdbc:sqlserver://localhost:1433;databaseName=LorKingDom;encrypt=true;trustServerCertificate=true";
     private static String user = "sa";
     private static String pass = "khangmc1502@";
-
+    
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         Connection conn = DBConnection.getConnection();
         if (conn != null) {
