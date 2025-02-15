@@ -4,7 +4,6 @@
  */
 package DAO;
 
-import static DAO.ReviewDAO.conn;
 import DBConnect.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

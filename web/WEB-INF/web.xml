@@ -15,23 +15,6 @@
         <servlet-class>Controller.LoginServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>ReviewManagementServlet</servlet-name>
-        <servlet-class>Controller.ReviewManagementServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ShippingDAO</servlet-name>
-        <servlet-class>DAO.ShippingDAO</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ShippingMethodServlet</servlet-name>
-        <servlet-class>Controller.ShippingMethodServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>LoginServlet</servlet-name>
-        <url-pattern>/LoginServlet</url-pattern>
-    </servlet-mapping>
-    <!-- Config for LogoutServlet -->
-    <servlet>
         <servlet-name>LogoutServlet</servlet-name>
         <servlet-class>Controller.LogoutServlet</servlet-class>
     </servlet>
@@ -86,18 +69,6 @@
     <servlet>
         <servlet-name>FinancialDashboardServlet</servlet-name>
         <servlet-class>Controller.FinancialDashboardServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>SendVerificationServlet</servlet-name>
-        <servlet-class>Controller.SendVerificationServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ResendVerificationServlet</servlet-name>
-        <servlet-class>Controller.ResendVerificationServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>VerifyCodeServlet</servlet-name>
-        <servlet-class>Controller.VerifyCodeServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ProductManagementServlet</servlet-name>
@@ -174,17 +145,11 @@
         <url-pattern>/Admin/ReviewManagementServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-<<<<<<< HEAD
         <servlet-name>FinancialDashboardServlet</servlet-name>
         <url-pattern>/Admin/FinancialDashboardServlet</url-pattern>
     </servlet-mapping>
 
     <!-- Session Timeout -->
-=======
-        <servlet-name>ShippingMethodServlet</servlet-name>
-        <url-pattern>/Admin/ShippingMethodServlet</url-pattern>
-    </servlet-mapping>
->>>>>>> origin/master
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
