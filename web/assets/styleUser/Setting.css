@@ -9,7 +9,7 @@ body {
 
 /* Container setup using Flexbox */
 .container-fluid {
-    width: 1000px !important; /* Đảm bảo ghi đè các kiểu dáng khác */
+    width: 1300px !important; /* Đảm bảo ghi đè các kiểu dáng khác */
     margin: 0 auto;
     margin: 0 auto; /* Center the container */
     margin-top: 160px;
@@ -19,7 +19,7 @@ body {
 .sidebar {
     width: 330px; /* Smaller sidebar width */
     background-color: #fff;
-    padding: 20px;
+    padding: 30px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
