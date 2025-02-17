@@ -144,8 +144,7 @@
                                                         <td>
                                                         <fmt:formatDate value="${s.updateAt}" pattern="dd-MM-yyyy" />
                                                         </td>
-                                                        <td>
-                                                            <c:choose>
+                                                        <td>                                                          <c:choose>
                                                                 <c:when test="${s.isDeleted eq 1}">
                                                                     <span class="badge bg-secondary">Deleted</span>
                                                                 </c:when>
@@ -163,7 +162,6 @@
                                                                     </c:choose>
                                                                 </c:otherwise>
                                                             </c:choose>
-
                                                         </td>
                                                         <td>
                                                             <button class="btn btn-sm btn-warning" 
@@ -256,18 +254,11 @@
                                                                                 <div class="col-md-4">
                                                                                     <label class="form-label">Status</label>
                                                                                     <select class="form-select" name="status">
-                                                                                        <option value="active" ${s.status == 'Active' ? 'selected' : ''}>
-                                                                                            Active
-                                                                                        </option>
-                                                                                        <option value="inactive" ${s.status == 'Inactive' ? 'selected' : ''}>
-                                                                                            Inactive
-                                                                                        </option>
-                                                                                        <option value="blocked" ${s.status == 'blocked' ? 'selected' : ''}>
-                                                                                            Blocked
-                                                                                        </option>
+                                                                                        <option value="Atcive" ${s.status == 'Active' ? 'selected' : ''}>Active</option>
+                                                                                        <option value="Inactive" ${s.status == 'Inactive' ? 'selected' : ''}>Inactive</option>
+                                                                                        <option value="Blocked" ${s.status == 'Blocked' ? 'selected' : ''}>Blocked</option>
                                                                                     </select>
                                                                                 </div>
-
                                                                                 <div class="col-md-4">
                                                                                     <label class="form-label">Role</label>
                                                                                     <select class="form-select" name="roleID">

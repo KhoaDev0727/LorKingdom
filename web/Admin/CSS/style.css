@@ -1937,6 +1937,7 @@ progress {
 .table-responsive, .datatable-wrapper .datatable-container {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    margin-top: -15px;
 }
 
 @media (max-width: 575.98px) {

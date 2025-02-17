@@ -132,7 +132,6 @@
                                                                 </c:otherwise>
                                                             </c:choose>
                                                         </td>
-
                                                         <td>
                                                             <button class="btn btn-sm btn-warning" 
                                                                     data-bs-toggle="modal" 

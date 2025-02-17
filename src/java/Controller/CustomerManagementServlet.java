@@ -5,6 +5,7 @@
 package Controller;
 
 import DAO.AccountDAO;
+import DAO.MyUntilsDAO;
 import Model.Account;
 import Model.Role;
 import java.io.IOException;
@@ -34,7 +35,10 @@ import java.util.List;
 public class CustomerManagementServlet extends HttpServlet {
 
     private static final String UPLOAD_DIR = "images";
-    private static final int ROLE_STAFF = 3;
+    private static final int ROLE_CUSTOMER = 3;
+    private static final MyUntilsDAO myUntilsDAO = new MyUntilsDAO();
+    private static int PAGE = 1;
+    private static final int PAGE_SIZE = 10;
 
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -105,20 +109,22 @@ public class CustomerManagementServlet extends HttpServlet {
      * customers with a specific role and the available roles.
      */
     protected void showCustomer(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        int roleId = 3;
-        List<Account> listAccount = AccountDAO.showList(roleId);
-        List<Role> listRole = AccountDAO.showListRoleTest();
-        int r = 0;
-        for (Account account : listAccount) {
-            r++;
-            if (r==2) {
-                System.out.println(account.getStatus());
+            throws ServletException, IOException, ClassNotFoundException {
+        try {
+            if (request.getParameter("page") != null) {
+                PAGE = Integer.parseInt(request.getParameter("page"));
             }
+            int totalPages = myUntilsDAO.getTotalPages(PAGE_SIZE, ROLE_CUSTOMER);
+            List<Account> listAccount = AccountDAO.getAllAccount(ROLE_CUSTOMER, PAGE, PAGE_SIZE);
+            List<Role> listRole = AccountDAO.showListRoleTest();
+            request.setAttribute("customers", listAccount);
+            request.setAttribute("currentPage", PAGE);
+            request.setAttribute("roles", listRole);
+            request.setAttribute("totalPages", totalPages);
+            request.getRequestDispatcher("CustomerManagement.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        request.setAttribute("customers", listAccount);
-        request.setAttribute("roles", listRole);
-        request.getRequestDispatcher("UserManagement.jsp").forward(request, response);
     }
 
     /**
@@ -135,7 +141,7 @@ public class CustomerManagementServlet extends HttpServlet {
      * if a new image is provided.
      */
     protected void updateCustomer(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, ClassNotFoundException {
         try {
             String uploadPath = request.getServletContext().getRealPath("/") + File.separator + UPLOAD_DIR;
             int accountID = Integer.parseInt(request.getParameter("accountId"));
@@ -160,14 +166,19 @@ public class CustomerManagementServlet extends HttpServlet {
             } else {
                 System.out.println("Loi Update");
             }
-        } catch (Exception e) {
+        } catch (ServletException | IOException | NumberFormatException e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * Deletes a customer using soft delete (logical deletion). Instead of
+     * Deletes a customer using soft delete (logical deletion).Instead of
      * permanently removing the account, it changes the status.
+     *
+     * @param request
+     * @param response
+     * @throws jakarta.servlet.ServletException
+     * @throws java.io.IOException
      */
     protected void deleteCustomer(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -192,10 +203,10 @@ public class CustomerManagementServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             String keyword = request.getParameter("search");
-            int role = ROLE_STAFF;
-            List<Account> list = AccountDAO.searchUser(keyword, role);
+            int totalPages = myUntilsDAO.getTotalPages(PAGE_SIZE, ROLE_CUSTOMER);
+            List<Account> list = AccountDAO.searchUser(keyword, ROLE_CUSTOMER, PAGE, PAGE_SIZE);
             request.setAttribute("customers", list);
-            request.getRequestDispatcher("UserManagement.jsp").forward(request, response);
+            request.getRequestDispatcher("CustomerManagement.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
         }
