@@ -128,7 +128,7 @@ public class StaffManagementServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             int roleId = 2;
-            List<Account> list = AccountDAO.showList(roleId);
+            List<Account> list = AccountDAO.getAllAccount(roleId, 1 ,2);
             List<Role> listRole = AccountDAO.showListRoleTest();
             request.setAttribute("staffs", list);
             request.setAttribute("roles", listRole);
@@ -218,11 +218,11 @@ public class StaffManagementServlet extends HttpServlet {
     protected void searchStaff(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            String keyword = request.getParameter("search");
-            int role = ROLE_STAFF;
-            List<Account> list = AccountDAO.searchUser(keyword, role);
-            request.setAttribute("staffs", list);
-            request.getRequestDispatcher("StaffManagement.jsp").forward(request, response);
+//            String keyword = request.getParameter("search");
+//            int role = ROLE_STAFF;
+//            List<Account> list = AccountDAO.searchUser(keyword, role);
+//            request.setAttribute("staffs", list);
+//            request.getRequestDispatcher("StaffManagement.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
         }

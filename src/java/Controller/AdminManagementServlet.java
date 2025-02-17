@@ -33,7 +33,7 @@ import java.util.List;
 public class AdminManagementServlet extends HttpServlet {
 
     private static final String UPLOAD_DIR = "images";
-    private static final int ROLE_STAFF = 1;
+    private static final int ROLE_ADMIN = 1;
 
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -107,8 +107,7 @@ public class AdminManagementServlet extends HttpServlet {
      */
     protected void showAdmin(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int roleId = 1;
-        List<Account> list = AccountDAO.showList(roleId);
+        List<Account> list = AccountDAO.getAllAccount(ROLE_ADMIN, 1, 2);
         List<Role> listRole = AccountDAO.showListRoleTest();
         request.setAttribute("admins", list);
         request.setAttribute("roles", listRole);
@@ -218,11 +217,10 @@ public class AdminManagementServlet extends HttpServlet {
     protected void searchAdmin(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            String keyword = request.getParameter("search");
-            int role = ROLE_STAFF;
-            List<Account> list = AccountDAO.searchUser(keyword, role);
-            request.setAttribute("admins", list);
-            request.getRequestDispatcher("AdminManagement.jsp").forward(request, response);
+//            String keyword = request.getParameter("search");
+//            List<Account> list = AccountDAO.searchUser(keyword, ROLE_ADMIN);
+//            request.setAttribute("admins", list);
+//            request.getRequestDispatcher("AdminManagement.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
         }

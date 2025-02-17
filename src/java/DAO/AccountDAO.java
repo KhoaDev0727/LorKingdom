@@ -26,12 +26,12 @@ public class AccountDAO {
     protected static PreparedStatement stm = null;
     protected static ResultSet rs = null;
     protected static Connection conn = null;
-    private static String SELECT_BY_ROLE_CUSTOMER = "SELECT * FROM Account WHERE RoleID = ?";
+    private static String SELECT_BY_ROLE_CUSTOMER = "SELECT * FROM Account WHERE RoleID = ? ORDER BY AccountID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
     private static String UPDATE_PROFILE = "UPDATE Account SET AccountName = ?, PhoneNumber = ?, Em\"UPDATE Account SET AccountName = ?, PhoneNumber = ?, Email ail = ?,Image = ?, Password = ?, Address = ?, Status = ?, Balance = ?, UpdatedAt = ? WHERE AccountID = ?";
     private static String UPDATE_PROFILE_STAFF = "UPDATE Account SET AccountName = ?, PhoneNumber = ?, Email = ?, Password = ?, Address = ?, Status = ?,Image = ?, UpdatedAt = ? WHERE AccountID = ?";
     private static String DELETE_ACCOUNT_SOFT = "UPDATE Account SET isDeleted = ?, Status= ? WHERE AccountID = ?";
     private static String DELETE_ACCOUNT_BY_ID = "DELETE FROM Account WHERE AccountID = ?";
-    private static String SEARCH_ACCOUNT = "SELECT * FROM Account WHERE ( AccountID = ? OR AccountName LIKE ? OR PhoneNumber LIKE ? OR email LIKE ? ) AND RoleID = ?";
+    private static String SEARCH_ACCOUNT = "SELECT * FROM Account WHERE ( AccountID = ? OR AccountName LIKE ? OR PhoneNumber LIKE ? OR email LIKE ? ) AND RoleID = ? ORDER BY AccountID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY;";
     private static String ADD_ADMIN = "INSERT INTO Account (AccountName, PhoneNumber, Email, Image, Password, Address, Status, RoleID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     public Account getAccountByEmail(String email) {
@@ -59,29 +59,45 @@ public class AccountDAO {
         return null;
     }
 
-    public boolean updateProfileCustomer(String email, String address, String phoneNumber, String password) {
-        String query = "UPDATE Account SET Address = ?, PhoneNumber = ?, Password = ?, UpdatedAt = ? WHERE Email = ?";
-        Timestamp currentTimestamp = Timestamp.valueOf(LocalDateTime.now()); // Lấy thời gian hiện tại
-
+    public void updateAddress(String email, String address) {
+        String query = "UPDATE Account SET Address = ? WHERE Email = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setString(1, address);         // Cập nhật địa chỉ
-            ps.setString(2, phoneNumber);     // Cập nhật số điện thoại
-            ps.setString(3, password);        // Cập nhật mật khẩu
-            ps.setTimestamp(4, currentTimestamp); // Cập nhật thời gian sửa đổi
-            ps.setString(5, email);           // Xác định tài khoản cần cập nhật bằng email
-            return ps.executeUpdate() > 0;    // Trả về true nếu cập nhật thành công
+            ps.setString(1, address);
+            ps.setString(2, email);
+            ps.executeUpdate();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
-            return false; // Trả về false nếu có lỗi xảy ra
         }
     }
 
-    public static List<Account> showList(int roleId) {
+    public void updatePhoneNumber(String email, String phoneNumber) {
+        String query = "UPDATE Account SET PhoneNumber = ? WHERE Email = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, phoneNumber);
+            ps.setString(2, email);
+            ps.executeUpdate();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static List<Account> getAllAccount(int roleId, int page, int pageSize) {
         List<Account> list = new ArrayList<>();
         try {
+            if (page <= 0) {
+                page = 1;
+            }
+            if (pageSize <= 0) {
+                pageSize = 5; // Mặc định mỗi trang 5 bản ghi
+            }
+            int offset = (page - 1) * pageSize; // Tính offset
+
             conn = DBConnection.getConnection();
             stm = conn.prepareStatement(SELECT_BY_ROLE_CUSTOMER);
-            stm.setInt(1, roleId);
+            stm.setInt(1, roleId); // RoleID
+            stm.setInt(2, offset); // OFFSET
+            stm.setInt(3, pageSize); // FETCH NEXT
+
             rs = stm.executeQuery();
             while (rs.next()) {
                 Account a = new Account(
@@ -132,7 +148,8 @@ public class AccountDAO {
     public static Boolean updateProfileStaff(Account account) {
         boolean rowUpdate = false;
         Timestamp currentTimestamp = Timestamp.valueOf(LocalDateTime.now());
-        try {   
+        try {
+
             stm = conn.prepareStatement(UPDATE_PROFILE_STAFF);
             stm.setString(1, account.getUserName());
             stm.setString(2, account.getPhoneNumber());
@@ -218,7 +235,7 @@ public class AccountDAO {
         return list;
     }
 
-    public static List<Account> searchUser(String keyword, int role) {
+    public static List<Account> searchUser(String keyword, int role, int page, int pageSize) {
         List<Account> list = new ArrayList<>();
         try {
             conn = DBConnection.getConnection();
@@ -229,14 +246,17 @@ public class AccountDAO {
             } else {
                 stm.setNull(1, java.sql.Types.INTEGER); // Bỏ qua AccountID
             }
-
             // Dùng wildcard % để tìm kiếm tương đối
             String searchPattern = "%" + keyword + "%";
             stm.setString(2, searchPattern);
             stm.setString(3, searchPattern);
             stm.setString(4, searchPattern);
             stm.setInt(5, role);
-            System.out.println(role);
+
+            // Calculate OFFSET and ROWS
+            int offset = (page - 1) * pageSize;
+            stm.setInt(6, offset);
+            stm.setInt(7, pageSize);
             try ( ResultSet rs = stm.executeQuery()) {
                 while (rs.next()) {
                     Account a = new Account(
@@ -261,6 +281,23 @@ public class AccountDAO {
             e.printStackTrace();
         }
         return list;
+    }
+
+    public boolean updateProfileCustomer(String email, String address, String phoneNumber, String password) {
+        String query = "UPDATE Account SET Address = ?, PhoneNumber = ?, Password = ?, UpdatedAt = ? WHERE Email = ?";
+        Timestamp currentTimestamp = Timestamp.valueOf(LocalDateTime.now()); // Lấy thời gian hiện tại
+
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, address);         // Cập nhật địa chỉ
+            ps.setString(2, phoneNumber);     // Cập nhật số điện thoại
+            ps.setString(3, password);        // Cập nhật mật khẩu
+            ps.setTimestamp(4, currentTimestamp); // Cập nhật thời gian sửa đổi
+            ps.setString(5, email);           // Xác định tài khoản cần cập nhật bằng email
+            return ps.executeUpdate() > 0;    // Trả về true nếu cập nhật thành công
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return false; // Trả về false nếu có lỗi xảy ra
+        }
     }
 
 }
