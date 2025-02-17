@@ -27,17 +27,17 @@ public class ResetPasswordServlet extends HttpServlet {
         } else {
             try (Connection conn = DBConnection.getConnection()) {
                 // Kiểm tra token hợp lệ
-                PreparedStatement ps = conn.prepareStatement("SELECT Email, token_expiry FROM Account WHERE reset_token = ?");
+                PreparedStatement ps = conn.prepareStatement("SELECT Email, TokenExpiry FROM Account WHERE ResetToken = ?");
                 ps.setString(1, token);
                 ResultSet rs = ps.executeQuery();
 
                 if (rs.next()) {
-                    long expiryTime = rs.getLong("token_expiry");
+                    long expiryTime = rs.getLong("TokenExpiry");
                     if (System.currentTimeMillis() > expiryTime) {
                         request.setAttribute("message", "Token expired.");
                     } else {
                         // Cập nhật mật khẩu vào database mà không hash
-                        ps = conn.prepareStatement("UPDATE Account SET Password = ?, reset_token = NULL, token_expiry = NULL WHERE reset_token = ?");
+                        ps = conn.prepareStatement("UPDATE Account SET Password = ?, ResetToken = NULL, TokenExpiry = NULL WHERE ResetToken = ?");
                         ps.setString(1, newPassword);  // Không mã hóa mật khẩu
                         ps.setString(2, token);
                         int rowsAffected = ps.executeUpdate();

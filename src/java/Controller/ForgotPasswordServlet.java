@@ -32,7 +32,7 @@ public class ForgotPasswordServlet extends HttpServlet {
         String userName = null; // Biến để lưu tên tài khoản
 
         try ( Connection conn = DBConnection.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM Account WHERE email = ?");
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM Account WHERE Email = ?");
             ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
 
@@ -40,7 +40,7 @@ public class ForgotPasswordServlet extends HttpServlet {
                 // Lấy tên tài khoản từ kết quả truy vấn
                 userName = rs.getString("AccountName");
 
-                ps = conn.prepareStatement("UPDATE Account SET reset_token = ?, token_expiry = ? WHERE email = ?");
+                ps = conn.prepareStatement("UPDATE Account SET ResetToken = ?, TokenExpiry = ? WHERE Email = ?");
                 ps.setString(1, resetToken);
                 ps.setLong(2, expiryTime);
                 ps.setString(3, email);

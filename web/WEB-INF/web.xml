@@ -7,6 +7,10 @@
 
     <!-- Servlet Configurations -->
     <servlet>
+        <servlet-name>ForgotPasswordServlet</servlet-name>
+        <servlet-class>Controller.ForgotPasswordServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>LoginServlet</servlet-name>
         <servlet-class>Controller.LoginServlet</servlet-class>
     </servlet>
@@ -25,6 +29,10 @@
     <servlet>
         <servlet-name>UpdateAvatarServlet</servlet-name>
         <servlet-class>Controller.UpdateAvatarServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ShippingDAO</servlet-name>
+        <servlet-class>DAO.ShippingDAO</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>CategoryServlet</servlet-name>
@@ -70,6 +78,23 @@
         <servlet-name>ShippingMethodServlet</servlet-name>
         <servlet-class>Controller.ShippingMethodServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ResetPasswordServlet</servlet-name>
+        <servlet-class>Controller.ResetPasswordServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SendVerificationServlet</servlet-name>
+        <servlet-class>Controller.SendVerificationServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ResendVerificationServlet</servlet-name>
+        <servlet-class>Controller.ResendVerificationServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>VerifyCodeServlet</servlet-name>
+        <servlet-class>Controller.VerifyCodeServlet</servlet-class>
+    </servlet>
+
     <!-- Servlet Mappings -->
     <servlet>
         <servlet-name>getList</servlet-name>
@@ -95,6 +120,26 @@
         <servlet-name>OriginServlet</servlet-name>
         <servlet-class>Controller.OriginServlet</servlet-class>
     </servlet>
+    <servlet-mapping>
+        <servlet-name>VerifyCodeServlet</servlet-name>
+        <url-pattern>/VerifyCodeServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ResendVerificationServlet</servlet-name>
+        <url-pattern>/ResendVerificationServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SendVerificationServlet</servlet-name>
+        <url-pattern>/SendVerificationServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ResetPasswordServlet</servlet-name>
+        <url-pattern>/ResetPasswordServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ForgotPasswordServlet</servlet-name>
+        <url-pattern>/ForgotPasswordServlet</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/LoginServlet</url-pattern>

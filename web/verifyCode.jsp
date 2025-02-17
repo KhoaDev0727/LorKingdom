@@ -50,7 +50,8 @@
                         <h5 class="modal-title" id="successModalLabel">Verification Successful</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body" style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="./assets/img/verified.gif" alt="Success" width="100">
                         Your account has been successfully verified! You can now log in.
                     </div>
                     <div class="modal-footer">
