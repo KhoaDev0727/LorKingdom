@@ -8,7 +8,15 @@ import Model.SuperCategory;
 import Model.Category;
 import Model.Age;
 import Model.Sex;
+import Model.PriceRange;
+import Model.Brand;
+import Model.Material;
+import Model.Origin;
 
+import DAO.OriginDAO;
+import DAO.MaterialDAO;
+import DAO.BrandDAO;
+import DAO.PriceRangeDAO;
 import DAO.SexDAO;
 import DAO.AgeDAO;
 import DAO.SuperCategoryDAO;
@@ -72,14 +80,24 @@ public class getList extends HttpServlet {
         CategoryDAO categoryDAO = new CategoryDAO();
         AgeDAO ageDAO = new AgeDAO();
         SexDAO sexDAO = new SexDAO();
-
+        PriceRangeDAO priceRangeDAO = new PriceRangeDAO();
+        BrandDAO brandDAO = new BrandDAO();
+        MaterialDAO materialDAO = new MaterialDAO();
+        OriginDAO originDAO = new OriginDAO();
+        
+        
         try {
 
             List<SuperCategory> listSuperCategorys = superCategoryDAO.getAllSuperCategories();
             List<Category> listCategories = categoryDAO.getAllCategories();
             List<Age> listAges = ageDAO.getAllAges();
             List<Sex> listSex = sexDAO.getAllSexes();
-
+            List<PriceRange> listPriceRange = priceRangeDAO.getAllPriceRanges();
+            List<Brand> listBrand = brandDAO.getAllBrands();
+            List<Material> materials = materialDAO.getAllMaterials();
+            List<Origin> origins = originDAO.getAllOrigins();
+            
+            
             // Kiểm tra danh sách có dữ liệu hay không
             if (listSuperCategorys.isEmpty()) {
                 System.out.println("Không có dữ liệu trong danh sách SuperCategory.");
@@ -116,10 +134,15 @@ public class getList extends HttpServlet {
             }
 
             // Gửi dữ liệu đến JSP
+            request.setAttribute("listPriceRanges", listPriceRange);
             request.setAttribute("superCategories", listSuperCategorys);
             request.setAttribute("categories", listCategories);
             request.setAttribute("ages", listAges);
             request.setAttribute("listS", listSex);
+            request.setAttribute("listB", listBrand);
+            request.setAttribute("listM", materials);
+            request.setAttribute("listO", origins);
+            
             request.getRequestDispatcher("home.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace(); // Log lỗi ra console

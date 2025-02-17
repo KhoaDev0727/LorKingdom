@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee 
-                             http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
-
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee                               http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
     <!-- Welcome Page -->
     <welcome-file-list>
-        <welcome-file>home.jsp</welcome-file>
+        <welcome-file>getList</welcome-file>
     </welcome-file-list>
 
     <!-- Servlet Configurations -->
@@ -59,10 +55,6 @@
         <servlet-class>Controller.AgeServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>BrandServlet</servlet-name>
-        <servlet-class>Controller.BrandServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>ReviewManagementServlet</servlet-name>
         <servlet-class>Controller.ReviewManagementServlet</servlet-class>
     </servlet>
@@ -78,8 +70,31 @@
         <servlet-name>ShippingMethodServlet</servlet-name>
         <servlet-class>Controller.ShippingMethodServlet</servlet-class>
     </servlet>
-
     <!-- Servlet Mappings -->
+    <servlet>
+        <servlet-name>getList</servlet-name>
+        <servlet-class>Controller.getList</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>BrandServlet</servlet-name>
+        <servlet-class>Controller.BrandServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>MaterialServlet</servlet-name>
+        <servlet-class>Controller.MaterialServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>PriceRange</servlet-name>
+        <servlet-class>Controller.PriceRange</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>PriceRangeServlet</servlet-name>
+        <servlet-class>Controller.PriceRangeServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>OriginServlet</servlet-name>
+        <servlet-class>Controller.OriginServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/LoginServlet</url-pattern>
@@ -99,14 +114,6 @@
     <servlet-mapping>
         <servlet-name>UpdateAvatarServlet</servlet-name>
         <url-pattern>/UpdateAvatarServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>CategoryServlet</servlet-name>
-        <url-pattern>/Admin/CategoryServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>SuperCategoryServlet</servlet-name>
-        <url-pattern>/Admin/SuperCategoryServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>CustomerManagementServlet</servlet-name>
@@ -129,6 +136,23 @@
         <url-pattern>/Admin/ShippingMethodServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>ReviewManagementServlet</servlet-name>
+        <url-pattern>/Admin/ReviewManagementServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FinancialDashboardServlet</servlet-name>
+        <url-pattern>/Admin/FinancialDashboardServlet</url-pattern>
+    </servlet-mapping>
+    <!-- =========================================== Cua Luan =================================================== -->
+    <servlet-mapping>
+        <servlet-name>CategoryServlet</servlet-name>
+        <url-pattern>/Admin/CategoryServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SuperCategoryServlet</servlet-name>
+        <url-pattern>/Admin/SuperCategoryServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>SexServlet</servlet-name>
         <url-pattern>/Admin/SexServlet</url-pattern>
     </servlet-mapping>
@@ -137,19 +161,31 @@
         <url-pattern>/Admin/AgeServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>getList</servlet-name>
+        <url-pattern>/getList</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>BrandServlet</servlet-name>
         <url-pattern>/Admin/BrandServlet</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ReviewManagementServlet</servlet-name>
-        <url-pattern>/Admin/ReviewManagementServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>FinancialDashboardServlet</servlet-name>
-        <url-pattern>/Admin/FinancialDashboardServlet</url-pattern>
-    </servlet-mapping>
-
+    <!-- =========================================== Cua Luan =================================================== -->
     <!-- Session Timeout -->
+    <servlet-mapping>
+        <servlet-name>MaterialServlet</servlet-name>
+        <url-pattern>/Admin/MaterialServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PriceRange</servlet-name>
+        <url-pattern>/PriceRange</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PriceRangeServlet</servlet-name>
+        <url-pattern>/Admin/PriceRangeServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OriginServlet</servlet-name>
+        <url-pattern>/Admin/OriginServlet</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>

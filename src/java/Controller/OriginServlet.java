@@ -3,14 +3,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 package Controller;
-import DAO.BrandDAO;
-import Model.Brand;
-import java.io.IOException;
-import java.io.PrintWriter;
+
+import DAO.OriginDAO;
+import Model.Origin;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -18,8 +19,10 @@ import java.util.List;
  *
  * @author admin1
  */
-public class BrandServlet extends HttpServlet {
-    BrandDAO brandDAO = new BrandDAO();
+public class OriginServlet extends HttpServlet {
+
+    OriginDAO originDAO = new OriginDAO();
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -37,10 +40,10 @@ public class BrandServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet BrandServlet</title>");
+            out.println("<title>Servlet OriginServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet BrandServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet OriginServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -84,31 +87,30 @@ public class BrandServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-    // Xử lý các request từ client
+    // Xử lý các request dựa theo tham số action
 
     private void handleRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
-
         try {
             if (action == null || action.equals("list")) {
-                listBrands(request, response);
+                listOrigins(request, response);
             } else {
                 switch (action) {
                     case "add":
-                        addBrand(request, response);
+                        addOrigin(request, response);
                         break;
                     case "update":
-                        updateBrand(request, response);
+                        updateOrigin(request, response);
                         break;
                     case "delete":
-                        deleteBrand(request, response);
+                        deleteOrigin(request, response);
                         break;
                     case "search":
-                        searchBrand(request, response);
+                        searchOrigin(request, response);
                         break;
                     default:
-                        listBrands(request, response);
+                        listOrigins(request, response);
                         break;
                 }
             }
@@ -119,97 +121,87 @@ public class BrandServlet extends HttpServlet {
         }
     }
 
-    // Hiển thị danh sách Brand
-    private void listBrands(HttpServletRequest request, HttpServletResponse response)
+    // Hiển thị danh sách Origin
+    private void listOrigins(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
-        List<Brand> brands = brandDAO.getAllBrands();
-        request.setAttribute("brands", brands);
-        request.getRequestDispatcher("BrandManagement.jsp").forward(request, response);
+        List<Origin> origins = originDAO.getAllOrigins();
+        request.setAttribute("origins", origins);
+        request.getRequestDispatcher("OriginManagement.jsp").forward(request, response);
     }
 
-    // Thêm mới Brand
-    private void addBrand(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException, ServletException, ClassNotFoundException {
+    // Thêm mới Origin
+    private void addOrigin(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, ServletException, IOException {
         String name = request.getParameter("name");
-
-        // Kiểm tra tên không được để trống
         if (name == null || name.trim().isEmpty()) {
-            request.getSession().setAttribute("errorMessage", "Brand name cannot be empty.");
-            response.sendRedirect("BrandServlet?action=list&showErrorModal=true");
+            request.getSession().setAttribute("errorMessage", "Origin name cannot be empty.");
+            response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
             return;
         }
-
-        // Kiểm tra độ dài tối đa (dựa trên định nghĩa trong database là 100 ký tự)
-        if (name.length() > 100) {
-            request.getSession().setAttribute("errorMessage", "Brand name is too long. Maximum 100 characters allowed.");
-            response.sendRedirect("BrandServlet?action=list&showErrorModal=true");
+        if (name.length() > 255) {
+            request.getSession().setAttribute("errorMessage", "Origin name is too long. Maximum 255 characters allowed.");
+            response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
             return;
         }
-
-        // Kiểm tra xem Brand đã tồn tại chưa
-        if (brandDAO.isBrandExists(name.trim())) {
-            request.getSession().setAttribute("errorMessage", "Brand already exists.");
-            response.sendRedirect("BrandServlet?action=list&showErrorModal=true");
+        if (originDAO.isOriginExists(name.trim())) {
+            request.getSession().setAttribute("errorMessage", "Origin already exists.");
+            response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
             return;
         }
-
-        Brand brand = new Brand(0, name.trim(), null);
-        brandDAO.addBrand(brand);
-        request.getSession().setAttribute("successMessage", "Brand added successfully.");
-        response.sendRedirect("BrandServlet?action=list&showSuccessModal=true");
+        Origin origin = new Origin(0, name.trim(), null);
+        originDAO.addOrigin(origin);
+        request.getSession().setAttribute("successMessage", "Origin added successfully.");
+        response.sendRedirect("OriginServlet?action=list&showSuccessModal=true");
     }
 
-    // Cập nhật Brand
-    private void updateBrand(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException, ServletException, ClassNotFoundException {
+    // Cập nhật Origin
+    private void updateOrigin(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, ServletException, IOException {
         try {
-            int brandID = Integer.parseInt(request.getParameter("brandID"));
+            int originID = Integer.parseInt(request.getParameter("originID"));
             String name = request.getParameter("name");
-
             if (name == null || name.trim().isEmpty()) {
-                request.getSession().setAttribute("errorMessage", "Brand name cannot be empty.");
-                response.sendRedirect("BrandServlet?action=list&showErrorModal=true");
+                request.getSession().setAttribute("errorMessage", "Origin name cannot be empty.");
+                response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
                 return;
             }
-            if (name.length() > 100) {
-                request.getSession().setAttribute("errorMessage", "Brand name is too long. Maximum 100 characters allowed.");
-                response.sendRedirect("BrandServlet?action=list&showErrorModal=true");
+            if (name.length() > 255) {
+                request.getSession().setAttribute("errorMessage", "Origin name is too long. Maximum 255 characters allowed.");
+                response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
                 return;
             }
-
-            Brand brand = new Brand(brandID, name.trim(), null);
-            brandDAO.updateBrand(brand);
-            request.getSession().setAttribute("successMessage", "Brand updated successfully.");
+            Origin origin = new Origin(originID, name.trim(), null);
+            originDAO.updateOrigin(origin);
+            request.getSession().setAttribute("successMessage", "Origin updated successfully.");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "Invalid Brand ID.");
+            request.getSession().setAttribute("errorMessage", "Invalid Origin ID.");
         }
-        response.sendRedirect("BrandServlet?action=list");
+        response.sendRedirect("OriginServlet?action=list");
     }
 
-    // Xóa Brand
-    private void deleteBrand(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException, ServletException, ClassNotFoundException {
+    // Xóa Origin
+    private void deleteOrigin(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, ServletException, IOException {
         try {
-            int brandID = Integer.parseInt(request.getParameter("brandID"));
-            brandDAO.deleteBrand(brandID);
-            request.getSession().setAttribute("successMessage", "Brand deleted successfully.");
+            int originID = Integer.parseInt(request.getParameter("originID"));
+            originDAO.deleteOrigin(originID);
+            request.getSession().setAttribute("successMessage", "Origin deleted successfully.");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "Invalid Brand ID.");
+            request.getSession().setAttribute("errorMessage", "Invalid Origin ID.");
         }
-        response.sendRedirect("BrandServlet?action=list");
+        response.sendRedirect("OriginServlet?action=list");
     }
 
-    // Tìm kiếm Brand theo từ khóa
-    private void searchBrand(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, ServletException, IOException, ClassNotFoundException {
+    // Tìm kiếm Origin theo từ khóa
+    private void searchOrigin(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, ServletException, IOException {
         String keyword = request.getParameter("search");
         if (keyword == null || keyword.trim().isEmpty()) {
-            listBrands(request, response);
+            listOrigins(request, response);
             return;
         }
-        List<Brand> brands = brandDAO.searchBrand(keyword.trim());
-        request.setAttribute("brands", brands);
-        request.getRequestDispatcher("BrandManagement.jsp").forward(request, response);
+        List<Origin> origins = originDAO.searchOrigin(keyword.trim());
+        request.setAttribute("origins", origins);
+        request.getRequestDispatcher("OriginManagement.jsp").forward(request, response);
     }
 }
-    

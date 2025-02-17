@@ -88,7 +88,31 @@
                                 </ul>
                             </div>
 
+                            <div class="nav-item dropdown">
+                                <a class="nav-link" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-cogs"></i></div>
+                                    Configuration
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="SuperCategoryServlet?&action=list">SuperCategory
+                                            Management</a></li>
+                                    <li><a class="dropdown-item" href="CategoryServlet?&action=list">Category
+                                            Management</a></li>
+                                    <li><a class="dropdown-item" href="AgeServlet?&action=list">Age
+                                            Management</a></li>
+                                    <li><a class="dropdown-item" href="SexServlet?&action=list">Sex
+                                            Management</a></li>
+                                    <li><a class="dropdown-item" href="BrandServlet?&action=list">Brand
+                                            Management</a></li>
+                                    <li><a class="dropdown-item" href="MaterialServlet?&action=list">Material
+                                            Management</a></li>
+                                    <li><a class="dropdown-item" href="PriceRangeServlet?&action=list">PriceRange Management</a></li>
 
+                                    <li><a class="dropdown-item" href="OriginServlet?&action=list">Origin Management</a></li>
+
+
+                                </ul>
+                            </div>
 
                             <!-- Feedback Dropdown -->
                             <div class="nav-item dropdown">

@@ -5,7 +5,7 @@
 package DAO;
 
 import DBConnect.DBConnection;
-import Model.Brand;
+import Model.Origin;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,74 +14,76 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BrandDAO {
+public class OriginDAO {
 
-    // Lấy danh sách tất cả các Brand
-    public List<Brand> getAllBrands() throws SQLException, ClassNotFoundException {
-        List<Brand> brands = new ArrayList<>();
-        String query = "SELECT BrandID, Name, CreatedAt FROM Brand";
+    // Lấy danh sách tất cả Origin
+    public List<Origin> getAllOrigins() throws SQLException, ClassNotFoundException {
+        List<Origin> origins = new ArrayList<>();
+        String query = "SELECT OriginID, Name, CreatedAt FROM Origin";
         try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
-                brands.add(new Brand(
-                        rs.getInt("BrandID"),
+                Origin origin = new Origin(
+                        rs.getInt("OriginID"),
                         rs.getString("Name"),
                         rs.getDate("CreatedAt")
-                ));
+                );
+                origins.add(origin);
             }
         }
-        return brands;
+        return origins;
     }
 
-    // Thêm mới Brand
-    public void addBrand(Brand brand) throws SQLException, ClassNotFoundException {
-        String query = "INSERT INTO Brand (Name) VALUES (?)";
+    // Thêm mới Origin
+    public void addOrigin(Origin origin) throws SQLException, ClassNotFoundException {
+        String query = "INSERT INTO Origin (Name) VALUES (?)";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setString(1, brand.getName());
+            ps.setString(1, origin.getName());
             ps.executeUpdate();
         }
     }
 
-    // Cập nhật Brand
-    public void updateBrand(Brand brand) throws SQLException, ClassNotFoundException {
-        String query = "UPDATE Brand SET Name = ? WHERE BrandID = ?";
+    // Cập nhật Origin
+    public void updateOrigin(Origin origin) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE Origin SET Name = ? WHERE OriginID = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setString(1, brand.getName());
-            ps.setInt(2, brand.getBrandID());
+            ps.setString(1, origin.getName());
+            ps.setInt(2, origin.getOriginID());
             ps.executeUpdate();
         }
     }
 
-    // Xóa Brand theo ID
-    public void deleteBrand(int brandID) throws SQLException, ClassNotFoundException {
-        String query = "DELETE FROM Brand WHERE BrandID = ?";
+    // Xóa Origin theo OriginID
+    public void deleteOrigin(int originID) throws SQLException, ClassNotFoundException {
+        String query = "DELETE FROM Origin WHERE OriginID = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setInt(1, brandID);
+            ps.setInt(1, originID);
             ps.executeUpdate();
         }
     }
 
-    // Tìm kiếm Brand theo từ khóa
-    public List<Brand> searchBrand(String keyword) throws SQLException, ClassNotFoundException {
-        List<Brand> brands = new ArrayList<>();
-        String query = "SELECT BrandID, Name, CreatedAt FROM Brand WHERE Name LIKE ?";
+    // Tìm kiếm Origin theo từ khóa (dựa trên tên)
+    public List<Origin> searchOrigin(String keyword) throws SQLException, ClassNotFoundException {
+        List<Origin> origins = new ArrayList<>();
+        String query = "SELECT OriginID, Name, CreatedAt FROM Origin WHERE Name LIKE ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, "%" + keyword + "%");
             try ( ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    brands.add(new Brand(
-                            rs.getInt("BrandID"),
+                    Origin origin = new Origin(
+                            rs.getInt("OriginID"),
                             rs.getString("Name"),
                             rs.getDate("CreatedAt")
-                    ));
+                    );
+                    origins.add(origin);
                 }
             }
         }
-        return brands;
+        return origins;
     }
 
-    // Kiểm tra xem Brand đã tồn tại hay chưa
-    public boolean isBrandExists(String name) throws SQLException, ClassNotFoundException {
-        String query = "SELECT COUNT(*) FROM Brand WHERE Name = ?";
+    // Kiểm tra xem Origin đã tồn tại hay chưa (theo tên)
+    public boolean isOriginExists(String name) throws SQLException, ClassNotFoundException {
+        String query = "SELECT COUNT(*) FROM Origin WHERE Name = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, name);
             try ( ResultSet rs = ps.executeQuery()) {

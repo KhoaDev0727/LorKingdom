@@ -76,12 +76,10 @@
             <div class="flex flex-col lg:flex-row">
                 <!-- Sidebar -->
                 <div class="w-full lg:w-1/4 pl-12 ">
-                    <h1 class="text-xl font-bold mb-4 text-orange-500 text-3xl" style="font-size: 35px;" >
-                        Danh Mục
-                    </h1>
+                    
                     <div class="mb-4 pl-12"  style="border-bottom:1px solid #ccc; margin-bottom: 5px; padding-bottom: 10px;">
-                        <h3 class="font-semibold mb-2">
-                            Sản phẩm
+                        <h3 class="font-semibold mb-2 text-orange-500">
+                            Category
                         </h3>
                         <div class="w-full overflow-y-auto max-h-[400px]">
                             <c:forEach var="superCat" items="${superCategories}" varStatus="status">
@@ -111,52 +109,28 @@
 
 
                     </div>
-                    <div class="mb-4" >
-                        <h3 class="font-semibold mb-2">
-                            Giá
+                    <div class="mb-4 pl-12">
+                        <h3 class="font-semibold mb-2 text-orange-500">
+                            Price Range 
                         </h3>
-                        <ul>
-                            <li>
-                                <input class="mr-2" id="price1" type="checkbox" />
-                                <label for="price1">
-                                    Dưới 200.000Đ
-                                </label>
-                            </li>
-                            <li>
-                                <input class="mr-2" id="price2" type="checkbox" />
-                                <label for="price2">
-                                    200.000Đ - 500.000Đ
-                                </label>
-                            </li>
-                            <li>
-                                <input class="mr-2" id="price3" type="checkbox" />
-                                <label for="price3">
-                                    500.000Đ - 1.000.000Đ
-                                </label>
-                            </li>
-                            <li>
-                                <input class="mr-2" id="price4" type="checkbox" />
-                                <label for="price4">
-                                    1.000.000Đ - 2.000.000Đ
-                                </label>
-                            </li>
-                            <li>
-                                <input class="mr-2" id="price5" type="checkbox" />
-                                <label for="price5">
-                                    2.000.000Đ - 4.000.000Đ
-                                </label>
-                            </li>
-                            <li>
-                                <input class="mr-2" id="price6" type="checkbox" />
-                                <label for="price6">
-                                    Trên 4.000.000Đ
-                                </label>
-                            </li>
-                        </ul>
+                        <div class="w-full overflow-y-auto max-h-[300px]">
+                            <form action="AgeSelectionServlet" method="get"> <!-- Update the action to your servlet that handles age selection -->
+                                <ul class="pl-4">
+                                    <c:forEach var="price" items="${listPriceRanges}">
+                                        <li  style="border-bottom:1px solid #ccc; margin-bottom: 5px;">
+                                            <label class="block px-4 py-2" >
+                                                <input type="radio" name="ageID" value="${price.priceRangeID}" onchange="this.form.submit()">
+                                                ${price.priceRange}
+                                            </label>
+                                        </li>
+                                    </c:forEach>
+                                </ul>
+                            </form>
+                        </div>
                     </div>
-                    <div class="mb-4 pl-8"  style="border-bottom:1px solid #ccc; margin-bottom: 5px;padding-bottom: 10px;">
-                        <h3 class="font-semibold mb-2">
-                            Tuổi
+                    <div class="mb-4 pl-12"  style="border-bottom:1px solid #ccc; margin-bottom: 5px;padding-bottom: 10px;">
+                        <h3 class="font-semibold mb-2 text-orange-500">
+                            Age
                         </h3>
                         <div class="w-full overflow-y-auto max-h-[300px]">
                             <form action="AgeSelectionServlet" method="get"> <!-- Update the action to your servlet that handles age selection -->
@@ -173,9 +147,9 @@
                             </form>
                         </div>
                     </div>
-                    <div class="mb-4">
-                        <h3 class="font-semibold mb-2">
-                            Giới Tính
+                    <div class="mb-4 pl-12">
+                        <h3 class="font-semibold mb-2 text-orange-500">
+                            Sex
                         </h3>
                         <div class="w-full overflow-y-auto max-h-[300px]">
                             <form action="AgeSelectionServlet" method="get"> <!-- Update the action to your servlet that handles age selection -->
@@ -192,18 +166,18 @@
                             </form>
                         </div>
                     </div>
-                    <div class="mb-4">
-                        <h3 class="font-semibold mb-2">
-                            Thương Hiệu
+                    <div class="mb-4 pl-12 ">
+                        <h3 class="font-semibold mb-2 text-orange-500">
+                            Brand
                         </h3>
                         <div class="w-full overflow-y-auto max-h-[300px]">
                             <form action="AgeSelectionServlet" method="get"> <!-- Update the action to your servlet that handles age selection -->
                                 <ul class="pl-4">
-                                    <c:forEach var="sex" items="${listS}">
+                                    <c:forEach var="brand" items="${listB}">
                                         <li  style="border-bottom:1px solid #ccc; margin-bottom: 5px;">
                                             <label class="block px-4 py-2" >
-                                                <input type="radio" name="ageID" value="${sex.sexID}" onchange="this.form.submit()">
-                                                ${sex.name}
+                                                <input type="radio" name="ageID" value="${brand.brandID}" onchange="this.form.submit()">
+                                                ${brand.name}
                                             </label>
                                         </li>
                                     </c:forEach>
@@ -211,6 +185,28 @@
                             </form>
                         </div>
                     </div>
+
+                    <div class="mb-4 pl-12">
+                        <h3 class="font-semibold mb-2 text-orange-500">
+                            Material
+                        </h3>
+                        <div class="w-full overflow-y-auto max-h-[300px]">
+                            <form action="AgeSelectionServlet" method="get"> <!-- Update the action to your servlet that handles age selection -->
+                                <ul class="pl-4">
+                                    <c:forEach var="material" items="${listM}">
+                                        <li  style="border-bottom:1px solid #ccc; margin-bottom: 5px;">
+                                            <label class="block px-4 py-2" >
+                                                <input type="radio" name="ageID" value="${material.materialID}" onchange="this.form.submit()">
+                                                ${material.name}
+                                            </label>
+                                        </li>
+                                    </c:forEach>
+                                </ul>
+                            </form>
+                        </div>
+                    </div>
+
+
                 </div>
                 <!-- Main Content -->
                 <div class="w-full lg:w-3/4 p-4">

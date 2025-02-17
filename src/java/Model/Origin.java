@@ -2,31 +2,32 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+
 package Model;
 
 import java.sql.Date;
 
-public class Brand {
+public class Origin {
 
-    private int brandID;
+    private int originID;
     private String name;
     private Date createdAt;
 
-    public Brand() {
+    public Origin() {
     }
 
-    public Brand(int brandID, String name, Date createdAt) {
-        this.brandID = brandID;
+    public Origin(int originID, String name, Date createdAt) {
+        this.originID = originID;
         this.name = name;
         this.createdAt = createdAt;
     }
 
-    public int getBrandID() {
-        return brandID;
+    public int getOriginID() {
+        return originID;
     }
 
-    public void setBrandID(int brandID) {
-        this.brandID = brandID;
+    public void setOriginID(int originID) {
+        this.originID = originID;
     }
 
     public String getName() {

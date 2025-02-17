@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.List;
 import Model.*;
 import DAO.*;
+import com.oracle.wls.shaded.org.apache.bcel.generic.AALOAD;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -38,7 +39,7 @@ public class ProductManagementServlet extends HttpServlet {
     private BrandDAO b = new BrandDAO();
     private AgeDAO a = new AgeDAO();
     private MaterialDAO m = new MaterialDAO();
-
+    OriginDAO originDAO = new OriginDAO();
     private String mainImagePath = null;
 
     @Override
@@ -50,13 +51,14 @@ public class ProductManagementServlet extends HttpServlet {
             List<Brand> listBrands = b.getAllBrands();
             List<Age> listAges = a.getAllAges();
             List<Material> listMaterials = m.getAllMaterials();
-
+            List<Origin> listOrigins = originDAO.getAllOrigins();
             request.setAttribute("ages", listAges);
             request.setAttribute("sexes", listGenders);
             request.setAttribute("Categories", listCategorys);
             request.setAttribute("priceRanges", listPriceRanges);
             request.setAttribute("materials", listMaterials);
             request.setAttribute("brands", listBrands);
+            request.setAttribute("listOrigin", listOrigins);
             request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
         } catch (Exception e) {
             System.out.println(e);
@@ -68,19 +70,19 @@ public class ProductManagementServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             // Lấy thông tin sản phẩm từ form
+            // Lấy thông tin sản phẩm từ form
             String productName = request.getParameter("productName");
             Integer category = Integer.parseInt(request.getParameter("category"));
             Integer gender = Integer.parseInt(request.getParameter("gender"));
             Integer priceRange = Integer.parseInt(request.getParameter("priceRange"));
             Integer brand = Integer.parseInt(request.getParameter("brand"));
             Integer ageGroup = Integer.parseInt(request.getParameter("ageGroup"));
-            Integer origin = 1;  // Mặc định là 1
+            Integer origin = Integer.parseInt(request.getParameter("origin")); // Lấy từ request
             Integer material = Integer.parseInt(request.getParameter("material"));
             String description = request.getParameter("description");
             double price = Double.parseDouble(request.getParameter("price"));
             int stockQuantity = Integer.parseInt(request.getParameter("stockQuantity"));
             String SKU = MyUtils.generateProductID();
-            System.out.println(SKU);
 
             // Tạo đối tượng sản phẩm
             Product p = new Product(SKU, category, material, ageGroup, gender, priceRange, brand, origin, productName, price, stockQuantity, description);
@@ -126,5 +128,4 @@ public class ProductManagementServlet extends HttpServlet {
         }
     }
 
-   
 }
