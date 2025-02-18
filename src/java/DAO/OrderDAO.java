@@ -191,7 +191,7 @@ public class OrderDAO extends DBConnect.DBConnection {
     public List<Order> searchByMoney(Double minAmount) throws SQLException, ClassNotFoundException {
         List<Order> list = new ArrayList<>();
         String query = "SELECT \n"
-                   + "o.*, a.AccountName, p.MethodName, s.MethodName, k.Status\n"
+                   + "                    o.*, a.AccountName, p.MethodName, s.MethodName, k.Status\n"
                 + "FROM \n"
                 + "    [dbo].[Orders] o\n"
                 + "INNER JOIN \n"
@@ -242,14 +242,14 @@ public class OrderDAO extends DBConnect.DBConnection {
         }
 
         // Câu truy vấn SQL với sắp xếp theo TotalAmount
-        String query = "SELECT o.*, a.AccountName, p.MethodName AS PaymentMethodName, s.MethodName AS ShippingMethodName, g.Status "
+       String query = "SELECT o.*, a.AccountName, p.MethodName AS PaymentMethodName, s.MethodName AS ShippingMethodName, g.Status "
              + "FROM [dbo].[Orders] o "
              + "INNER JOIN [dbo].[Account] a ON o.AccountID = a.AccountID "
              + "INNER JOIN [dbo].[PaymentMethods] p ON o.PaymentMethodID = p.PaymentMethodID "
              + "INNER JOIN [dbo].[ShippingMethods] s ON o.ShippingMethodID = s.ShippingMethodID "
              + "INNER JOIN [dbo].[StatusOrder] g ON o.StatusID = g.StatusID "
              + "WHERE o.TotalAmount IS NOT NULL "
-             + "ORDER BY o.TotalAmount " + orderBy;// Sắp xếp theo TotalAmount với orderBy
+             + "ORDER BY o.TotalAmount " + orderBy; // Sắp xếp theo TotalAmount với orderBy
 
         try (Connection conn = DBConnection.getConnection(); 
              PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -277,8 +277,10 @@ public class OrderDAO extends DBConnect.DBConnection {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         try {
             OrderDAO dao = new OrderDAO();
-            List<Order> list = dao.sort("ASC");
-      
+            List<Order> list = dao.getOrdersByPage(1, 5);
+            for (Order order : list) {
+                System.out.println(order);
+            }
         } catch (SQLException e) {
             System.out.println(e);
         }
