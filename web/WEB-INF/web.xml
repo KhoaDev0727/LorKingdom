@@ -4,7 +4,6 @@
     <welcome-file-list>
         <welcome-file>getList</welcome-file>
     </welcome-file-list>
-
     <!-- Servlet Configurations -->
     <servlet>
         <servlet-name>ForgotPasswordServlet</servlet-name>
@@ -94,7 +93,6 @@
         <servlet-name>VerifyCodeServlet</servlet-name>
         <servlet-class>Controller.VerifyCodeServlet</servlet-class>
     </servlet>
-
     <!-- Servlet Mappings -->
     <servlet>
         <servlet-name>getList</servlet-name>
@@ -119,6 +117,18 @@
     <servlet>
         <servlet-name>OriginServlet</servlet-name>
         <servlet-class>Controller.OriginServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>test</servlet-name>
+        <servlet-class>Controller.test</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>OrderView</servlet-name>
+        <servlet-class>Controller.OrderView</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ManageOrderServlet</servlet-name>
+        <servlet-class>Controller.ManageOrderServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>VerifyCodeServlet</servlet-name>
@@ -214,6 +224,8 @@
         <url-pattern>/Admin/BrandServlet</url-pattern>
     </servlet-mapping>
     <!-- =========================================== Cua Luan =================================================== -->
+    <!-- =========================================== Cua Loc =================================================== -->
+    <!-- =========================================== Cua Loc =================================================== -->
     <!-- Session Timeout -->
     <servlet-mapping>
         <servlet-name>MaterialServlet</servlet-name>
@@ -230,6 +242,18 @@
     <servlet-mapping>
         <servlet-name>OriginServlet</servlet-name>
         <url-pattern>/Admin/OriginServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>test</servlet-name>
+        <url-pattern>/test</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OrderView</servlet-name>
+        <url-pattern>/Admin/OrderView</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ManageOrderServlet</servlet-name>
+        <url-pattern>/Admin/OrderServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>
