@@ -45,7 +45,7 @@
         </div>
 
         <!-- Back button -->
-        <a href="${pageContext.request.contextPath}/Admin/orderServlet" class="btn btn-primary">Back to Orders</a>
+        <a href="${pageContext.request.contextPath}/Admin/OrderServlet" class="btn btn-primary">Back to Orders</a>
     </div>
 
     <!-- Include Bootstrap JS -->

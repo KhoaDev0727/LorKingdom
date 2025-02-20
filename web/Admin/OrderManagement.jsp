@@ -127,7 +127,7 @@
                                                                 </button>
                                                             </td>
                                                             <td> 
-                                                                <a href="/Admin/OrderView?action=view&orderId=${o.orderId}" class="btn btn-sm btn-info">
+                                                                <a href="${pageContext.request.contextPath}/Admin/OrderView?action=view&orderId=${o.orderId}" class="btn btn-sm btn-info">
                                                                     <i class="fas fa-eye"></i> View
                                                                 </a>
                                                             </td>
