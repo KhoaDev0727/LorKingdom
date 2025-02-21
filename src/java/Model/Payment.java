@@ -1,26 +1,26 @@
 package Model;
 
-public class Shipping {
+public class Payment {
 
-    private int shippingMethodID;
+    private int paymentMethodID;
     private String methodName;
     private String description;
 
-    public Shipping() {
+    public Payment() {
     }
 
-    public Shipping(int shippingMethodID, String methodName, String description) {
-        this.shippingMethodID = shippingMethodID;
+    public Payment(int paymentMethodID, String methodName, String description) {
+        this.paymentMethodID = paymentMethodID;
         this.methodName = methodName;
         this.description = description;
     }
 
-    public int getShippingMethodID() {
-        return shippingMethodID;
+    public int getPaymentMethodID() {
+        return paymentMethodID;
     }
 
-    public void setShippingMethodID(int shippingMethodID) {
-        this.shippingMethodID = shippingMethodID;
+    public void setPaymentMethodID(int paymentMethodID) {
+        this.paymentMethodID = paymentMethodID;
     }
 
     public String getMethodName() {

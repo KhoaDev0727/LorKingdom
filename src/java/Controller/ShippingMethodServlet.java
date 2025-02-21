@@ -4,7 +4,6 @@ import DAO.ShippingDAO;
 import Model.Shipping;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
 import jakarta.servlet.ServletException;
@@ -86,32 +85,55 @@ public class ShippingMethodServlet extends HttpServlet {
         request.getRequestDispatcher("ShippingMethodManagement.jsp").forward(request, response);
     }
 
-    private void addShippingMethod(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException, ServletException, ClassNotFoundException {
-        String methodName = request.getParameter("methodName");
-        BigDecimal price = new BigDecimal(request.getParameter("price"));
-        String description = request.getParameter("description");
+private void addShippingMethod(HttpServletRequest request, HttpServletResponse response)
+        throws SQLException, IOException, ServletException, ClassNotFoundException {
+    String methodName = request.getParameter("methodName");
+    String description = request.getParameter("description");
 
-        if (shippingDAO.isShippingMethodExists(methodName)) {
-            request.getSession().setAttribute("errorMessage", "Shipping method already exists.");
-            response.sendRedirect("ShippingMethodServlet?action=list&showErrorModal=true");
-            return;
-        }
-
-        Shipping newShippingMethod = new Shipping(0, methodName, price, description);
-        shippingDAO.addShippingMethod(methodName, price, description);
-        request.getSession().setAttribute("successMessage", "Shipping method added successfully.");
-        response.sendRedirect("ShippingMethodServlet?action=list&showSuccessModal=true");
+    // Kiểm tra nếu methodName rỗng hoặc null
+    if (methodName == null || methodName.trim().isEmpty()) {
+        request.getSession().setAttribute("errorMessage", "Method name cannot be empty.");
+        response.sendRedirect("ShippingMethodServlet?action=list&showErrorModal=true");
+        return;
     }
+
+    // Kiểm tra methodName chỉ chứa số, chữ, dấu - và _
+    if (!methodName.matches("^[a-zA-Z_-]+$")) {
+        request.getSession().setAttribute("errorMessage", 
+            "Method name can only contain letters, numbers, -, and _.");
+        response.sendRedirect("ShippingMethodServlet?action=list&showErrorModal=true");
+        return;
+    }
+
+    if (!description.matches("^[a-zA-Z_-]+$")) {
+        request.getSession().setAttribute("errorMessage", 
+            "Description can only contain letters, numbers, -, and _.");
+        response.sendRedirect("ShippingMethodServlet?action=list&showErrorModal=true");
+        return;
+    }
+    
+    // Kiểm tra nếu shipping method đã tồn tại
+    if (shippingDAO.isShippingMethodExists(methodName)) {
+        request.getSession().setAttribute("errorMessage", "Shipping method already exists.");
+        response.sendRedirect("ShippingMethodServlet?action=list&showErrorModal=true");
+        return;
+    }
+
+    // Thêm shipping method mới
+    Shipping newShippingMethod = new Shipping(0, methodName, description);
+    shippingDAO.addShippingMethod(methodName, description);
+    request.getSession().setAttribute("successMessage", "Shipping method added successfully.");
+    response.sendRedirect("ShippingMethodServlet?action=list&showSuccessModal=true");
+}
+
 
     private void updateShippingMethod(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException, ClassNotFoundException {
         int id = Integer.parseInt(request.getParameter("shippingMethodID"));
         String methodName = request.getParameter("methodName");
-        BigDecimal price = new BigDecimal(request.getParameter("price"));
         String description = request.getParameter("description");
 
-        shippingDAO.updateShippingMethod(id, methodName, price, description);
+        shippingDAO.updateShippingMethod(id, methodName, description);
         request.getSession().setAttribute("successMessage", "Shipping method updated successfully.");
         response.sendRedirect("ShippingMethodServlet?action=list&showSuccessModal=true");
     }
