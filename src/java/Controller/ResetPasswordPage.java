@@ -5,7 +5,7 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import DAO.AccountDAO;
 
-public class ResetPasswordServlet extends HttpServlet {
+public class ResetPasswordPage extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
@@ -25,13 +25,13 @@ public class ResetPasswordServlet extends HttpServlet {
             AccountDAO accountDAO = new AccountDAO();
 
             // Kiểm tra token hợp lệ
-            String email = accountDAO.validateResetToken(token);
+            String email = accountDAO.validateResetTokenAdmin(token);
 
             if (email == null) {
                 request.setAttribute("message", "Invalid or expired token.");
             } else {
                 // Cập nhật mật khẩu vào database
-                if (accountDAO.updatePassword(email, newPassword)) {
+                if (accountDAO.updatePasswordAdmin(email, newPassword)) {
                     request.setAttribute("message", "Password has been reset successfully.");
                 } else {
                     request.setAttribute("message", "Failed to reset password.");
@@ -40,6 +40,6 @@ public class ResetPasswordServlet extends HttpServlet {
         }
 
         // Chuyển hướng về trang resetPassword.jsp
-        request.getRequestDispatcher("resetPassword.jsp").forward(request, response);
+        request.getRequestDispatcher("resetPasswordPage.jsp").forward(request, response);
     }
 }

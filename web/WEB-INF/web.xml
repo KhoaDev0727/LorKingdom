@@ -4,7 +4,6 @@
     <welcome-file-list>
         <welcome-file>getList</welcome-file>
     </welcome-file-list>
-
     <!-- Servlet Configurations -->
     <servlet>
         <servlet-name>ForgotPasswordServlet</servlet-name>
@@ -94,7 +93,6 @@
         <servlet-name>VerifyCodeServlet</servlet-name>
         <servlet-class>Controller.VerifyCodeServlet</servlet-class>
     </servlet>
-
     <!-- Servlet Mappings -->
     <servlet>
         <servlet-name>getList</servlet-name>
@@ -119,6 +117,38 @@
     <servlet>
         <servlet-name>OriginServlet</servlet-name>
         <servlet-class>Controller.OriginServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>LoginPageServlet</servlet-name>
+        <servlet-class>Controller.LoginPageServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>RegisterPageServlet</servlet-name>
+        <servlet-class>Controller.RegisterPageServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SendVerificationPage</servlet-name>
+        <servlet-class>Controller.SendVerificationPage</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ResendVerificationPage</servlet-name>
+        <servlet-class>Controller.ResendVerificationPage</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>VerifyCodePage</servlet-name>
+        <servlet-class>Controller.VerifyCodePage</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>LogoutPage</servlet-name>
+        <servlet-class>Controller.LogoutPage</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ForgotPasswordPage</servlet-name>
+        <servlet-class>Controller.ForgotPasswordPage</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ResetPasswordPage</servlet-name>
+        <servlet-class>Controller.ResetPasswordPage</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>VerifyCodeServlet</servlet-name>
@@ -230,6 +260,38 @@
     <servlet-mapping>
         <servlet-name>OriginServlet</servlet-name>
         <url-pattern>/Admin/OriginServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LoginPageServlet</servlet-name>
+        <url-pattern>/Admin/LoginPageServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RegisterPageServlet</servlet-name>
+        <url-pattern>/Admin/RegisterPageServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SendVerificationPage</servlet-name>
+        <url-pattern>/Admin/SendVerificationPage</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ResendVerificationPage</servlet-name>
+        <url-pattern>/Admin/ResendVerificationPage</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VerifyCodePage</servlet-name>
+        <url-pattern>/Admin/VerifyCodePage</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LogoutPage</servlet-name>
+        <url-pattern>/Admin/LogoutPage</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ForgotPasswordPage</servlet-name>
+        <url-pattern>/ForgotPasswordPage</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ResetPasswordPage</servlet-name>
+        <url-pattern>/ResetPasswordPage</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

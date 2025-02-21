@@ -15,7 +15,7 @@ import jakarta.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 
-public class ForgotPasswordServlet extends HttpServlet {
+public class ForgotPasswordPage extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
@@ -57,7 +57,7 @@ public class ForgotPasswordServlet extends HttpServlet {
             request.setAttribute("message", "An error occurred. Please try again.");
         }
 
-        request.getRequestDispatcher("forgotPassword.jsp").forward(request, response);
+        request.getRequestDispatcher("forgotPasswordPage.jsp").forward(request, response);
     }
 
     private void sendResetEmail(String email, String token, String userName) throws MessagingException, UnsupportedEncodingException {

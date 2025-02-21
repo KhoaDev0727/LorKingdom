@@ -5,7 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 
-public class VerifyCodeServlet extends HttpServlet {
+public class VerifyCodePage extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -14,7 +14,7 @@ public class VerifyCodeServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
 
         if (session == null || session.getAttribute("verificationCode") == null || session.getAttribute("codeExpiryTime") == null) {
-            response.sendRedirect("login.jsp");
+            response.sendRedirect("loginPage.jsp");
             return;
         }
 
@@ -27,7 +27,7 @@ public class VerifyCodeServlet extends HttpServlet {
             session.removeAttribute("verificationCode");
             session.removeAttribute("codeExpiryTime");
             request.setAttribute("errorMessage", "Verification code has expired. Please resend a new code.");
-            request.getRequestDispatcher("verifyCode.jsp").forward(request, response);
+            request.getRequestDispatcher("verifyCodePage.jsp").forward(request, response);
             return;
         }
 
@@ -55,16 +55,16 @@ public class VerifyCodeServlet extends HttpServlet {
                 session.removeAttribute("tempPhoneNumber");
             }
 
-            response.sendRedirect("verifyCode.jsp?status=success");
+            response.sendRedirect("verifyCodePage.jsp?status=success");
         } else {
             // Xác thực thất bại
             request.setAttribute("errorMessage", "Verification code is incorrect or empty. Please try again.");
-            request.getRequestDispatcher("verifyCode.jsp").forward(request, response);
+            request.getRequestDispatcher("verifyCodePage.jsp").forward(request, response);
         }
     }
 
     private void saveUserToDatabase(String username, String email, String password, String phoneNumber, HttpSession session) {
         AccountDAO accountDAO = new AccountDAO();
-        accountDAO.insertNewAccount(username, email, password, phoneNumber);
+        accountDAO.insertNewStaff(username, email, password, phoneNumber);
     }
 }
