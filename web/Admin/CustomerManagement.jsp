@@ -4,7 +4,6 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -29,7 +28,6 @@
                     <main>
                         <div class="container-fluid px-5">
                             <h1 class="mt-4">Customer Management</h1>
-
                             <!-- Success/Error Messages -->
                             <c:if test="${not empty message}">
                                 <div class="alert alert-${messageType} alert-dismissible fade show" role="alert">
@@ -71,21 +69,7 @@
                                     <!-- Customer Table -->
                                     <div class="table-responsive">
                                         <!-- Pagination -->
-                                        <div style="margin-top: 20px; margin-bottom: 20px">
-                                            <c:if test="${currentPage > 1}">
-                                                <a href="CustomerManagementServlet?page=${currentPage - 1}" style="padding: 5px 10px; border: 1px solid #ccc; border-radius: 4px; text-decoration: none; color: #333; margin-right: 10px;">
-                                                    Previous
-                                                </a>
-                                            </c:if>
-                                            <span style="font-weight: bold; color: #555;">
-                                                Page ${currentPage} of ${totalPages}
-                                            </span>
-                                            <c:if test="${currentPage < totalPages}">
-                                                <a href="CustomerManagementServlet?page=${currentPage + 1}" style="padding: 5px 10px; border: 1px solid #ccc; border-radius: 4px; text-decoration: none; color: #333; margin-left: 10px;">
-                                                    Next
-                                                </a>
-                                            </c:if>
-                                        </div>
+                                        <%@ include file="Component/Pagination.jsp" %>
                                         <table class="table table-bordered table-striped table-hover">
                                             <thead class="table-dark">
                                                 <tr>
@@ -148,10 +132,12 @@
                                                                     </c:choose>
                                                                 </td>
                                                                 <td>
-                                                                    <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editCustomerModal${customer.accountId}">
+                                                                    <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editCustomerModal${customer.accountId}"
+                                                                            ${customer.isDeleted eq 1 ? 'disabled' : ''}>
                                                                         <i class="fas fa-edit"></i>
                                                                     </button>
-                                                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal${customer.accountId}">
+                                                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal${customer.accountId}"
+                                                                            ${customer.isDeleted eq 1 ? 'disabled' : ''}>
                                                                         <i class="fas fa-trash"></i>
                                                                     </button>
                                                                 </td>
@@ -189,8 +175,9 @@
                                                                                 </div>
                                                                                 <div class="col-md-6">
                                                                                     <label class="form-label">Email</label>
-                                                                                    <input type="email" class="form-control" name="email" value="${customer.email}" required>
-                                                                                </div>
+                                                                                    <input type="email" class="form-control" name="email" id="email" value="${customer.email}" required>
+                                                                                </div>      
+
                                                                                 <div class="col-md-6">
                                                                                     <label class="form-label">Password</label>
                                                                                     <input type="password" class="form-control" name="password" value="${customer.password}" required>
@@ -203,22 +190,22 @@
                                                                                     <label class="form-label">Balance</label>
                                                                                     <div class="input-group">
                                                                                         <span class="input-group-text">$</span>
-                                                                                        <input type="number" class="form-control" name="balance" value="${customer.balance}" step="0.01" required disabled>
+                                                                                        <input type="number" class="form-control" name="balance" value="${customer.balance}" step="0.01"  disabled>
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="col-md-4">
                                                                                     <label class="form-label">Status</label>
                                                                                     <select class="form-select" name="status">
-                                                                                        <option value="Atcive" ${s.status == 'Active' ? 'selected' : ''}>Active</option>
-                                                                                        <option value="Inactive" ${s.status == 'Inactive' ? 'selected' : ''}>Inactive</option>
-                                                                                        <option value="Blocked" ${s.status == 'Blocked' ? 'selected' : ''}>Blocked</option>
+                                                                                        <option value="Active" ${customer.status == 'Active' ? 'selected' : ''}>Active</option>
+                                                                                        <option value="Inactive" ${customer.status == 'Inactive' ? 'selected' : ''}>Inactive</option>
+                                                                                        <option value="Blocked" ${customer.status == 'Blocked' ? 'selected' : ''}>Blocked</option>
                                                                                     </select>
                                                                                 </div>
                                                                                 <div class="col-md-4">
                                                                                     <label class="form-label">Role</label>
                                                                                     <select class="form-select" name="roleID">
-                                                                                        <c:forEach var="r" items="${roles}">
-                                                                                            <option value="${r.roleID}" ${r.roleID == customer.roleID ? 'selected' : ''}>${r.name}</option>
+                                                                                        <c:forEach var="r" items="${roles}" >
+                                                                                            <option value="${r.roleID}" ${r.roleID == customer.roleID ? 'selected' : ''} >${r.name}</option>
                                                                                         </c:forEach>
                                                                                     </select>
                                                                                 </div>
@@ -261,7 +248,6 @@
                                             </tbody>
                                         </table>
                                     </div>
-
                                 </div>
                             </div>
                         </div>

@@ -28,7 +28,8 @@ public class AccountDAO {
     protected static ResultSet rs = null;
     protected static Connection conn = null;
     private static String SELECT_BY_ROLE_CUSTOMER = "SELECT * FROM Account WHERE RoleID = ? ORDER BY AccountID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
-    private static String UPDATE_PROFILE = "UPDATE Account SET AccountName = ?, PhoneNumber = ?, Em\"UPDATE Account SET AccountName = ?, PhoneNumber = ?, Email ail = ?,Image = ?, Password = ?, Address = ?, Status = ?, Balance = ?, UpdatedAt = ? WHERE AccountID = ?";
+    private static String SELECT_NAME_ACCOUNT_BY_ID = "SELECT AccountID, AccountName, Image  FROM Account WHERE AccountID = ?";
+    private static String UPDATE_PROFILE = "UPDATE Account SET AccountName = ?, PhoneNumber = ?, Email ail = ?,Image = ?, Password = ?, Address = ?, Status = ?, Balance = ?, UpdatedAt = ? WHERE AccountID = ?";
     private static String UPDATE_PROFILE_STAFF = "UPDATE Account SET AccountName = ?, PhoneNumber = ?, Email = ?, Password = ?, Address = ?, Status = ?,Image = ?, UpdatedAt = ? WHERE AccountID = ?";
     private static String DELETE_ACCOUNT_SOFT = "UPDATE Account SET isDeleted = ?, Status= ? WHERE AccountID = ?";
     private static String DELETE_ACCOUNT_BY_ID = "DELETE FROM Account WHERE AccountID = ?";
@@ -80,6 +81,27 @@ public class AccountDAO {
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    public static Account getInforAccountByID(int AccountID) throws SQLException {
+        Account account = new Account();
+        try {
+            conn = DBConnection.getConnection();
+            stm = conn.prepareStatement(SELECT_NAME_ACCOUNT_BY_ID);
+            stm.setInt(1, AccountID); // RoleID
+            rs = stm.executeQuery();
+            if (rs.next()) {
+                account = new Account(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3));
+            } else {
+                System.out.println("Không tìm thấy tài khoản với ID: " + AccountID);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return account;
     }
 
     public static List<Account> getAllAccount(int roleId, int page, int pageSize) {
@@ -236,7 +258,7 @@ public class AccountDAO {
         return list;
     }
 
-    public static List<Account> searchUser(String keyword, int role, int page, int pageSize) {
+    public static List<Account> findUser(String keyword, int roleID, int page, int pageSize) {
         List<Account> list = new ArrayList<>();
         try {
             conn = DBConnection.getConnection();
@@ -252,8 +274,7 @@ public class AccountDAO {
             stm.setString(2, searchPattern);
             stm.setString(3, searchPattern);
             stm.setString(4, searchPattern);
-            stm.setInt(5, role);
-
+            stm.setInt(5, roleID);
             // Calculate OFFSET and ROWS
             int offset = (page - 1) * pageSize;
             stm.setInt(6, offset);

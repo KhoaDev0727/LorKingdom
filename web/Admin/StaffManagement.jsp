@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -93,6 +94,7 @@
 
                                     <!-- Staff Table -->
                                     <div class="table-responsive">
+                                        <%@ include file="Component/Pagination.jsp" %>
                                         <table class="table table-bordered table-striped table-hover">
                                             <thead class="table-dark text-center">
                                                 <tr>
@@ -103,6 +105,7 @@
                                                     <th>Email</th>
                                                     <th>Password</th>
                                                     <th>Address</th>
+                                                    <th>Role Name</th>
                                                     <th>Created At</th>
                                                     <th>Updated At</th>
                                                     <th>Status</th>
@@ -138,46 +141,49 @@
                                                                     ${s.password}
                                                                 </td>
                                                                 <td>${s.address}</td> 
+                                                                <td>  <c:forEach var="r" items="${roles}">
+                                                                        <c:if test="${s.roleID == r.roleID}">${r.name}</c:if>
+                                                                    </c:forEach> 
+                                                                </td>
                                                                 <td>
-                                                        <fmt:formatDate value="${s.createdAt}" pattern="dd-MM-yyyy" />
-                                                        </td>
-                                                        <td>
-                                                        <fmt:formatDate value="${s.updateAt}" pattern="dd-MM-yyyy" />
-                                                        </td>
-                                                        <td>                                                          <c:choose>
-                                                                <c:when test="${s.isDeleted eq 1}">
-                                                                    <span class="badge bg-secondary">Deleted</span>
-                                                                </c:when>
-                                                                <c:otherwise>
+                                                                    <fmt:formatDate value="${s.createdAt}" pattern="dd-MM-yyyy" />
+                                                                </td>
+                                                                <td>
+                                                                    <fmt:formatDate value="${s.updateAt}" pattern="dd-MM-yyyy" />
+                                                                </td>
+                                                                <td>                                                          
                                                                     <c:choose>
-                                                                        <c:when test="${s.status eq 'Inactive'}">
-                                                                            <span class="badge bg-danger">Inactive</span>
-                                                                        </c:when>
-                                                                        <c:when test="${s.status eq 'Blocked'}">
-                                                                            <span class="badge bg-warning">Blocked</span>
+                                                                        <c:when test="${s.isDeleted eq 1}">
+                                                                            <span class="badge bg-secondary">Deleted</span>
                                                                         </c:when>
                                                                         <c:otherwise>
-                                                                            <span class="badge bg-success">Active</span>
+                                                                            <c:choose>
+                                                                                <c:when test="${s.status eq 'Inactive'}">
+                                                                                    <span class="badge bg-danger">Inactive</span>
+                                                                                </c:when>
+                                                                                <c:when test="${s.status eq 'Blocked'}">
+                                                                                    <span class="badge bg-warning">Blocked</span>
+                                                                                </c:when>
+                                                                                <c:otherwise>
+                                                                                    <span class="badge bg-success">Active</span>
+                                                                                </c:otherwise>
+                                                                            </c:choose>
                                                                         </c:otherwise>
                                                                     </c:choose>
-                                                                </c:otherwise>
-                                                            </c:choose>
-                                                        </td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-warning" 
-                                                                    data-bs-toggle="modal" 
-                                                                    data-bs-target="#editCustomerModal${s.accountId}">
-                                                                <i class="fas fa-edit"></i>
-                                                            </button>
-                                                            <button class="btn btn-sm btn-danger" 
-                                                                    data-bs-toggle="modal" 
-                                                                    data-bs-target="#deleteModal${s.accountId}">
-                                                                <i class="fas fa-trash"></i>
-                                                            </button>
-                                                        </td>
-                                                        </tr>
+                                                                </td>
+                                                                <td>
+                                                                    <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editCustomerModal${s.accountId}"
+                                                                            ${s.isDeleted eq 1 ? 'disabled' : ''}>
+                                                                        <i class="fas fa-edit"></i>
+                                                                    </button>
+                                                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal${s.accountId}"
+                                                                            ${s.isDeleted eq 1 ? 'disabled' : ''}>
+                                                                        <i class="fas fa-trash"></i>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
 
-                                                        <!-- Edit Customer Modal -->
+                                                            <!-- Edit Customer Modal -->
                                                         <div class="modal fade" id="editCustomerModal${s.accountId}">
                                                             <div class="modal-dialog modal-lg">
                                                                 <div class="modal-content">
@@ -234,7 +240,6 @@
                                                                                            value="${s.email}" 
                                                                                            required>
                                                                                 </div>
-
                                                                                 <div class="col-md-6">
                                                                                     <label class="form-label">Password</label>
                                                                                     <input type="password" 
@@ -254,7 +259,7 @@
                                                                                 <div class="col-md-4">
                                                                                     <label class="form-label">Status</label>
                                                                                     <select class="form-select" name="status">
-                                                                                        <option value="Atcive" ${s.status == 'Active' ? 'selected' : ''}>Active</option>
+                                                                                        <option value="Active" ${s.status == 'Active' ? 'selected' : ''}>Active</option>
                                                                                         <option value="Inactive" ${s.status == 'Inactive' ? 'selected' : ''}>Inactive</option>
                                                                                         <option value="Blocked" ${s.status == 'Blocked' ? 'selected' : ''}>Blocked</option>
                                                                                     </select>
@@ -366,9 +371,9 @@
                                 <div class="col-md-4">
                                     <label class="form-label">Status</label>
                                     <select class="form-select" name="status">
-                                        <option value="active" ${s.status == 'active' ? 'selected' : ''}>Active</option>
-                                        <option value="inactive" ${s.status == 'inactive' ? 'selected' : ''}>Inactive</option>
-                                        <option value="blocked" ${s.status == 'blocked' ? 'selected' : ''}>Blocked</option>
+                                        <option value="Active" ${s.status == 'active' ? 'selected' : ''}>Active</option>
+                                        <option value="Inactive" ${s.status == 'inactive' ? 'selected' : ''}>Inactive</option>
+                                        <option value="Blocked" ${s.status == 'blocked' ? 'selected' : ''}>Blocked</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4">
@@ -401,6 +406,7 @@
                     });
                 });
             });
+
         </script>
     </body>
 </html>

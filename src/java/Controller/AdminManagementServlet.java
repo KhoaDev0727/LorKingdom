@@ -34,6 +34,7 @@ public class AdminManagementServlet extends HttpServlet {
 
     private static final String UPLOAD_DIR = "images";
     private static final int ROLE_ADMIN = 1;
+        private static final String FOLDER = "images";
 
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -136,7 +137,7 @@ public class AdminManagementServlet extends HttpServlet {
             // Nếu có file mới, upload ảnh mới, ngược lại giữ ảnh cũ
             Part filePart = request.getPart("image");
             String image = (filePart.getSize() > 0)
-                    ? UploadImage.uploadFile(filePart, uploadPath)
+                    ? UploadImage.uploadFile(filePart, uploadPath, FOLDER)
                     : oldImage;
             Account a = new Account(roleID, userName, phoneNumber, email, image, passwordHashed, address, status);
             boolean isUpdate = AccountDAO.addAdmin(a);
@@ -173,7 +174,7 @@ public class AdminManagementServlet extends HttpServlet {
             // Nếu có file mới, upload ảnh mới, ngược lại giữ ảnh cũ
             Part filePart = request.getPart("image");
             String image = (filePart.getSize() > 0)
-                    ? UploadImage.uploadFile(filePart, uploadPath)
+                    ? UploadImage.uploadFile(filePart, uploadPath, FOLDER)
                     : oldImage;
             Account a = new Account(accountID, roleID, userName, phoneNumber, image, email, passwordHashed, address, status);
             boolean isUpdate = AccountDAO.updateProfileStaff(a);

@@ -111,6 +111,7 @@ public class ProductManagementServlet extends HttpServlet {
                     String detailImageFileName = handleImageProduct.generateUniqueFileName(part);
                     String detailImageFilePath = handleImageProduct.saveFile(part, uploadPath, detailImageFileName);
                     imagePaths.add(detailImageFilePath);
+                    System.out.println(detailImageFilePath);
                 }
             }
             // Thêm sản phẩm và ảnh vào DB
