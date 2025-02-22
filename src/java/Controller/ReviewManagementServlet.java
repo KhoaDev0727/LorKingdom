@@ -254,7 +254,6 @@ public class ReviewManagementServlet extends HttpServlet {
                 }
             }
             // Giả sử PAGE_SIZE là hằng số đã được định nghĩa
-
             int filterRating = Integer.parseInt(request.getParameter("filterRating"));
             int filterStatus = Integer.parseInt(request.getParameter("filterStatus"));
             int totalPages = myUntilsDAO.getTotalPagesSearchReview(filterRating, filterStatus, filterByIdUserProductID, PAGE_SIZE);
