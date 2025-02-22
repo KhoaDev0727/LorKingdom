@@ -156,6 +156,8 @@
     <servlet>
         <servlet-name>ResetPasswordPage</servlet-name>
         <servlet-class>Controller.ResetPasswordPage</servlet-class>
+        <servlet-name>ProductDetailServlet</servlet-name>
+        <servlet-class>Controller.ProductDetailServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>VerifyCodeServlet</servlet-name>
@@ -251,8 +253,6 @@
         <servlet-name>BrandServlet</servlet-name>
         <url-pattern>/Admin/BrandServlet</url-pattern>
     </servlet-mapping>
-    <!-- =========================================== Cua Luan =================================================== -->
-    <!-- Session Timeout -->
     <servlet-mapping>
         <servlet-name>MaterialServlet</servlet-name>
         <url-pattern>/Admin/MaterialServlet</url-pattern>
@@ -270,6 +270,7 @@
         <url-pattern>/Admin/OriginServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+
         <servlet-name>LoginPageServlet</servlet-name>
         <url-pattern>/Admin/LoginPageServlet</url-pattern>
     </servlet-mapping>
@@ -301,6 +302,12 @@
         <servlet-name>ResetPasswordPage</servlet-name>
         <url-pattern>/ResetPasswordPage</url-pattern>
     </servlet-mapping>
+
+        <servlet-name>ProductDetailServlet</servlet-name>
+        <url-pattern>/ProductDetailServlet</url-pattern>
+    </servlet-mapping>
+    <!-- =========================================== Cua Luan =================================================== -->
+    <!-- Session Timeout -->
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>

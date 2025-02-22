@@ -94,6 +94,9 @@ public class Product {
         this.description = description;
     }
 
+    public Product() {
+    }
+
     public int getProductID() {
         return productID;
     }

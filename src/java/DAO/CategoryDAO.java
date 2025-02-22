@@ -88,4 +88,18 @@ public class CategoryDAO {
         return false;
     }
 
+    public String getCategoryNameByProductId(int productId) throws SQLException, ClassNotFoundException {
+        String categoryName = null;
+        String sql = "SELECT c.Name FROM Product p JOIN Category c ON p.CategoryID = c.CategoryID WHERE p.ProductID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, productId);
+            try ( ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    categoryName = rs.getString("Name");
+                }
+            }
+        }
+        return categoryName;
+    }
+
 }

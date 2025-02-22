@@ -27,7 +27,7 @@ public class PriceRange {
 
     public int getPriceRangeID() {
         return priceRangeID;
-    }
+    }   
 
     public void setPriceRangeID(int priceRangeID) {
         this.priceRangeID = priceRangeID;

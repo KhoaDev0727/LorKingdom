@@ -90,4 +90,22 @@ public class SexDAO {
         }
     }
 
+    public String getSexNameByProductId(int productId) throws SQLException, ClassNotFoundException {
+        String sexName = null;
+        String query = "SELECT s.Name "
+                + "FROM Product p "
+                + "JOIN Sex s ON p.SexID = s.SexID "
+                + "WHERE p.ProductID = ?";
+
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, productId);
+            try ( ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    sexName = rs.getString("Name");
+                }
+            }
+        }
+        return sexName;
+    }
+
 }

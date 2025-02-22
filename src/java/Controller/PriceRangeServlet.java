@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 package Controller;
+
 import DAO.PriceRangeDAO;
 import Model.PriceRange;
 import java.io.IOException;
@@ -19,7 +20,9 @@ import java.util.List;
  * @author admin1
  */
 public class PriceRangeServlet extends HttpServlet {
-PriceRangeDAO priceRangeDAO = new PriceRangeDAO();
+
+    PriceRangeDAO priceRangeDAO = new PriceRangeDAO();
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -103,6 +106,9 @@ PriceRangeDAO priceRangeDAO = new PriceRangeDAO();
                     case "update":
                         updatePriceRange(request, response);
                         break;
+                    case "search":
+                        searchPriceRange(request, response);
+                        break;
                     default:
                         listPriceRanges(request, response);
                         break;
@@ -166,4 +172,18 @@ PriceRangeDAO priceRangeDAO = new PriceRangeDAO();
         priceRangeDAO.deletePriceRange(id);
         response.sendRedirect("PriceRangeServlet?action=list");
     }
+
+    private void searchPriceRange(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException, SQLException, ClassNotFoundException {
+        String keyword = request.getParameter("keyword");
+        List<PriceRange> priceRanges;
+        if (keyword == null || keyword.trim().isEmpty()) {
+            priceRanges = priceRangeDAO.getAllPriceRanges();
+        } else {
+            priceRanges = priceRangeDAO.searchPriceRanges(keyword.trim());
+        }
+        request.setAttribute("priceRanges", priceRanges);
+        request.getRequestDispatcher("PriceRangeManagement.jsp").forward(request, response);
+    }
+
 }

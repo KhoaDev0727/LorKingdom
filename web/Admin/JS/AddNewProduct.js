@@ -105,12 +105,12 @@ function processFiles(files) {
         return;
     }
 
-    if (currentFiles.length + validFiles.length > MAX_IMAGES) {
-        showError(`Maximum ${MAX_IMAGES} images allowed`);
+    if (currentFiles.length + validFiles.length > 8) {
+        showError(`Maximum ${8} images allowed`);
         return;
     }
 
-    currentFiles = [...currentFiles, ...validFiles].slice(0, MAX_IMAGES);
+    currentFiles = [...currentFiles, ...validFiles].slice(0, 8);
     updatePreview();
     updateFileInput();
 }

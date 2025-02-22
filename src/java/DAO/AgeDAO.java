@@ -96,4 +96,18 @@ public class AgeDAO {
         }
     }
 
+    public String getAgeRangeByProductId(int productId) throws SQLException, ClassNotFoundException {
+        String ageRange = null;
+        String sql = "SELECT a.AgeRange FROM Product p JOIN Age a ON p.AgeID = a.AgeID WHERE p.ProductID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, productId);
+            try ( ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    ageRange = rs.getString("AgeRange");
+                }
+            }
+        }
+        return ageRange;
+    }
+
 }

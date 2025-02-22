@@ -17,9 +17,7 @@ public class MaterialDAO {
         List<Material> materials = new ArrayList<>();
         String query = "SELECT MaterialID, Name, Description FROM Material";
 
-        try (Connection conn = DBConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
+        try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
 
             while (rs.next()) {
                 materials.add(new Material(
@@ -36,8 +34,7 @@ public class MaterialDAO {
     public void addMaterial(Material material) throws SQLException, ClassNotFoundException {
         String query = "INSERT INTO Material (Name, Description) VALUES (?, ?)";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
 
             ps.setString(1, material.getName());
             ps.setString(2, material.getDescription());
@@ -48,10 +45,9 @@ public class MaterialDAO {
     // Kiểm tra xem vật liệu đã tồn tại chưa
     public boolean isMaterialExists(String name) throws SQLException, ClassNotFoundException {
         String query = "SELECT COUNT(*) FROM Material WHERE Name = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, name);
-            try (ResultSet rs = ps.executeQuery()) {
+            try ( ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return rs.getInt(1) > 0;
                 }
@@ -64,8 +60,7 @@ public class MaterialDAO {
     public void updateMaterial(Material material) throws SQLException, ClassNotFoundException {
         String query = "UPDATE Material SET Name = ?, Description = ? WHERE MaterialID = ?";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
 
             ps.setString(1, material.getName());
             ps.setString(2, material.getDescription());
@@ -78,8 +73,7 @@ public class MaterialDAO {
     public void deleteMaterial(int materialID) throws SQLException, ClassNotFoundException {
         String query = "DELETE FROM Material WHERE MaterialID = ?";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
 
             System.out.println("Deleting Material ID: " + materialID); // Debug
             ps.setInt(1, materialID);
@@ -90,4 +84,19 @@ public class MaterialDAO {
             }
         }
     }
+
+    public String getMaterialNameByProductId(int productId) throws SQLException, ClassNotFoundException {
+        String materialName = null;
+        String sql = "SELECT m.Name FROM Product p JOIN Material m ON p.MaterialID = m.MaterialID WHERE p.ProductID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, productId);
+            try ( ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    materialName = rs.getString("Name");
+                }
+            }
+        }
+        return materialName;
+    }
+
 }

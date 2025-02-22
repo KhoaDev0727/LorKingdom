@@ -1,5 +1,6 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -76,138 +77,125 @@
             <div class="flex flex-col lg:flex-row">
                 <!-- Sidebar -->
                 <div class="w-full lg:w-1/4 pl-12 ">
-                    
-                    <div class="mb-4 pl-12"  style="border-bottom:1px solid #ccc; margin-bottom: 5px; padding-bottom: 10px;">
-                        <h3 class="font-semibold mb-2 text-orange-500">
-                            Category
-                        </h3>
-                        <div class="w-full overflow-y-auto max-h-[400px]">
-                            <c:forEach var="superCat" items="${superCategories}" varStatus="status">
-                                <!-- SuperCategory Heading -->
-                                <button onclick="toggleMenu('menu${status.index}')" class="block w-full text-left px-4 py-2 focus:outline-none">
-                                    ${superCat.name}
-                                </button>
-                                <!-- Categories Dropdown as Radio Buttons -->
-                                <div id="menu${status.index}" class="hidden overflow-auto max-h-60 transition-all ease-out duration-300">
-                                    <form action="CategoryServlet" method="get">
+                    <form action="getList" method="get" id="filterForm">
+                        <!-- Category -->
+                        <div class="mb-4" style="border-bottom:1px solid #ccc; margin-bottom: 5px; padding-bottom: 10px; margin-top: 70px;">
+                            <h3 class="font-semibold mb-2 text-orange-500">Category</h3>
+                            <div class="w-full overflow-y-auto max-h-[400px]">
+                                <c:forEach var="superCat" items="${superCategories}" varStatus="status">
+                                    <button type="button" onclick="toggleMenu('menu${status.index}')" class="block w-full text-left px-4 py-2 focus:outline-none">
+                                        ${superCat.name}
+                                    </button>
+                                    <div id="menu${status.index}" class="hidden overflow-auto max-h-60 transition-all ease-out duration-300">
                                         <ul class="pl-4">
                                             <c:forEach var="cat" items="${categories}">
                                                 <c:if test="${cat.superCategoryID == superCat.superCategoryID}">
                                                     <li>
                                                         <label class="block px-4 py-2" style="border-bottom:1px solid #ccc; margin-bottom: 5px;">
-                                                            <input type="radio" name="categoryID" value="${cat.categoryID}" onchange="this.form.submit()">
+                                                            <input type="radio" name="categoryID" value="${cat.categoryID}" ${param.categoryID == cat.categoryID ? 'checked' : ''} onchange="submitFilter()">
                                                             ${cat.name}
                                                         </label>
                                                     </li>
                                                 </c:if>
                                             </c:forEach>
                                         </ul>
-                                    </form>
-                                </div>
-                            </c:forEach>
+                                    </div>
+                                </c:forEach>
+                            </div>
                         </div>
 
-
-                    </div>
-                    <div class="mb-4 pl-12">
-                        <h3 class="font-semibold mb-2 text-orange-500">
-                            Price Range 
-                        </h3>
-                        <div class="w-full overflow-y-auto max-h-[300px]">
-                            <form action="AgeSelectionServlet" method="get"> <!-- Update the action to your servlet that handles age selection -->
+                        <!-- Price Range -->
+                        <div class="mb-4">
+                            <h3 class="font-semibold mb-2 text-orange-500">Price Range</h3>
+                            <div class="w-full overflow-y-auto max-h-[300px]">
                                 <ul class="pl-4">
                                     <c:forEach var="price" items="${listPriceRanges}">
-                                        <li  style="border-bottom:1px solid #ccc; margin-bottom: 5px;">
-                                            <label class="block px-4 py-2" >
-                                                <input type="radio" name="ageID" value="${price.priceRangeID}" onchange="this.form.submit()">
+                                        <li style="border-bottom:1px solid #ccc; margin-bottom: 5px;">
+                                            <label class="block px-4 py-2">
+                                                <input type="radio" name="priceRangeID" value="${price.priceRangeID}" ${param.priceRangeID == price.priceRangeID ? 'checked' : ''} onchange="submitFilter()">
                                                 ${price.priceRange}
                                             </label>
                                         </li>
                                     </c:forEach>
                                 </ul>
-                            </form>
+                            </div>
                         </div>
-                    </div>
-                    <div class="mb-4 pl-12"  style="border-bottom:1px solid #ccc; margin-bottom: 5px;padding-bottom: 10px;">
-                        <h3 class="font-semibold mb-2 text-orange-500">
-                            Age
-                        </h3>
-                        <div class="w-full overflow-y-auto max-h-[300px]">
-                            <form action="AgeSelectionServlet" method="get"> <!-- Update the action to your servlet that handles age selection -->
+
+                        <!-- Age -->
+                        <div class="mb-4" style="border-bottom:1px solid #ccc; margin-bottom: 5px;padding-bottom: 10px;">
+                            <h3 class="font-semibold mb-2 text-orange-500">Age</h3>
+                            <div class="w-full overflow-y-auto max-h-[300px]">
                                 <ul class="pl-4">
                                     <c:forEach var="age" items="${ages}">
-                                        <li  style="border-bottom:1px solid #ccc; margin-bottom: 5px;">
-                                            <label class="block px-4 py-2" >
-                                                <input type="radio" name="ageID" value="${age.ageID}" onchange="this.form.submit()">
+                                        <li style="border-bottom:1px solid #ccc; margin-bottom: 5px;">
+                                            <label class="block px-4 py-2">
+                                                <input type="radio" name="ageID" value="${age.ageID}" ${param.ageID == age.ageID ? 'checked' : ''} onchange="submitFilter()">
                                                 ${age.ageRange}
                                             </label>
                                         </li>
                                     </c:forEach>
                                 </ul>
-                            </form>
+                            </div>
                         </div>
-                    </div>
-                    <div class="mb-4 pl-12">
-                        <h3 class="font-semibold mb-2 text-orange-500">
-                            Sex
-                        </h3>
-                        <div class="w-full overflow-y-auto max-h-[300px]">
-                            <form action="AgeSelectionServlet" method="get"> <!-- Update the action to your servlet that handles age selection -->
+
+                        <!-- Sex -->
+                        <div class="mb-4">
+                            <h3 class="font-semibold mb-2 text-orange-500">Sex</h3>
+                            <div class="w-full overflow-y-auto max-h-[300px]">
                                 <ul class="pl-4">
                                     <c:forEach var="sex" items="${listS}">
-                                        <li  style="border-bottom:1px solid #ccc; margin-bottom: 5px;">
-                                            <label class="block px-4 py-2" >
-                                                <input type="radio" name="ageID" value="${sex.sexID}" onchange="this.form.submit()">
+                                        <li style="border-bottom:1px solid #ccc; margin-bottom: 5px;">
+                                            <label class="block px-4 py-2">
+                                                <input type="radio" name="sexID" value="${sex.sexID}" ${param.sexID == sex.sexID ? 'checked' : ''} onchange="submitFilter()">
                                                 ${sex.name}
                                             </label>
                                         </li>
                                     </c:forEach>
                                 </ul>
-                            </form>
+                            </div>
                         </div>
-                    </div>
-                    <div class="mb-4 pl-12 ">
-                        <h3 class="font-semibold mb-2 text-orange-500">
-                            Brand
-                        </h3>
-                        <div class="w-full overflow-y-auto max-h-[300px]">
-                            <form action="AgeSelectionServlet" method="get"> <!-- Update the action to your servlet that handles age selection -->
+
+                        <!-- Brand -->
+                        <div class="mb-4">
+                            <h3 class="font-semibold mb-2 text-orange-500">Brand</h3>
+                            <div class="w-full overflow-y-auto max-h-[300px]">
                                 <ul class="pl-4">
                                     <c:forEach var="brand" items="${listB}">
-                                        <li  style="border-bottom:1px solid #ccc; margin-bottom: 5px;">
-                                            <label class="block px-4 py-2" >
-                                                <input type="radio" name="ageID" value="${brand.brandID}" onchange="this.form.submit()">
+                                        <li style="border-bottom:1px solid #ccc; margin-bottom: 5px;">
+                                            <label class="block px-4 py-2">
+                                                <input type="radio" name="brandID" value="${brand.brandID}" ${param.brandID == brand.brandID ? 'checked' : ''} onchange="submitFilter()">
                                                 ${brand.name}
                                             </label>
                                         </li>
                                     </c:forEach>
                                 </ul>
-                            </form>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="mb-4 pl-12">
-                        <h3 class="font-semibold mb-2 text-orange-500">
-                            Material
-                        </h3>
-                        <div class="w-full overflow-y-auto max-h-[300px]">
-                            <form action="AgeSelectionServlet" method="get"> <!-- Update the action to your servlet that handles age selection -->
+                        <!-- Material -->
+                        <div class="mb-4">
+                            <h3 class="font-semibold mb-2 text-orange-500">Material</h3>
+                            <div class="w-full overflow-y-auto max-h-[300px]">
                                 <ul class="pl-4">
                                     <c:forEach var="material" items="${listM}">
-                                        <li  style="border-bottom:1px solid #ccc; margin-bottom: 5px;">
-                                            <label class="block px-4 py-2" >
-                                                <input type="radio" name="ageID" value="${material.materialID}" onchange="this.form.submit()">
+                                        <li style="border-bottom:1px solid #ccc; margin-bottom: 5px;">
+                                            <label class="block px-4 py-2">
+                                                <input type="radio" name="materialID" value="${material.materialID}" ${param.materialID == material.materialID ? 'checked' : ''} onchange="submitFilter()">
                                                 ${material.name}
                                             </label>
                                         </li>
                                     </c:forEach>
                                 </ul>
-                            </form>
+                            </div>
                         </div>
-                    </div>
 
-
+                        <!-- Nút Reset Filter -->
+                        <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mt-4" onclick="resetFilter()">Reset</button>
+                    </form>
                 </div>
+
+
+
                 <!-- Main Content -->
                 <div class="w-full lg:w-3/4 p-4">
                     <div class="flex justify-between items-center mb-4">
@@ -216,7 +204,7 @@
                                 Kết quả:
                             </span>
                             <span class="font-bold">
-                                6362 products
+                                ${totalProducts} products
                             </span>
                         </div>
                         <div class="flex items-center">
@@ -236,215 +224,60 @@
                             </select>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <!-- Product Card -->
-                        <div class="border border-gray-300 rounded p-4">
-                            <img alt="Mô Hình Doraemon Concert Series 2" class="w-full h-48 object-cover mb-4" height="200"
-                                 src="https://storage.googleapis.com/a1aa/image/DtqhZTRwLIOP0PRSF1FIyuU5nyDsbti2fBaJKODEZA8.jpg"
-                                 width="200" />
-                            <div class="text-center">
-                                <p class="text-red-500 font-bold mb-2">
-                                    300.000Đ
-                                </p>
-                                <p class="text-gray-600 mb-2">
-                                    Mô Hình Doraemon Concert Series 2
-                                </p>
-                                <p class="text-gray-400 text-sm mb-4">
-                                    SKU: 4897056203456
-                                </p>
-                                <button class="bg-red-500 text-white py-2 px-4 rounded-full mb-2">
-                                    Thêm Vào Giỏ Hàng
-                                </button>
-                                <button class="text-red-500">
-                                    <i class="far fa-heart">
-                                    </i>
-                                </button>
-                            </div>
-                        </div>
-                        <!-- Repeat Product Cards as needed -->
-                        <div class="border border-gray-300 rounded p-4">
-                            <img alt="Mô Hình Disney Donald Duck Club" class="w-full h-48 object-cover mb-4" height="200"
-                                 src="https://storage.googleapis.com/a1aa/image/AHDnwJreaqe9DvbD5SjD_OfK5nttJY5co5d3XaqeICw.jpg"
-                                 width="200" />
-                            <div class="text-center">
-                                <p class="text-red-500 font-bold mb-2">
-                                    300.000Đ
-                                </p>
-                                <p class="text-gray-600 mb-2">
-                                    Mô Hình Disney Donald Duck Club
-                                </p>
-                                <p class="text-gray-400 text-sm mb-4">
-                                    SKU: 4897056203457
-                                </p>
-                                <button class="bg-red-500 text-white py-2 px-4 rounded-full mb-2">
-                                    Thêm Vào Giỏ Hàng
-                                </button>
-                                <button class="text-red-500">
-                                    <i class="far fa-heart">
-                                    </i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="border border-gray-300 rounded p-4">
-                            <img alt="Mô Hình The Aristocats Marie" class="w-full h-48 object-cover mb-4" height="200"
-                                 src="https://storage.googleapis.com/a1aa/image/4Tbahiywowjq2oOg0xEyvEUPJJvsKti0AlMchVm0KSU.jpg"
-                                 width="200" />
-                            <div class="text-center">
-                                <p class="text-red-500 font-bold mb-2">
-                                    350.000Đ
-                                </p>
-                                <p class="text-gray-600 mb-2">
-                                    Mô Hình The Aristocats Marie
-                                </p>
-                                <p class="text-gray-400 text-sm mb-4">
-                                    SKU: 4897056203458
-                                </p>
-                                <button class="bg-red-500 text-white py-2 px-4 rounded-full mb-2">
-                                    Thêm Vào Giỏ Hàng
-                                </button>
-                                <button class="text-red-500">
-                                    <i class="far fa-heart">
-                                    </i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="border border-gray-300 rounded p-4">
-                            <img alt="Mô Hình Lotso Huggin Bear" class="w-full h-48 object-cover mb-4" height="200"
-                                 src="https://storage.googleapis.com/a1aa/image/AtlDDcFwbyYtKin5gKCI0adqYsjGysBbOY5ha0VEE-g.jpg"
-                                 width="200" />
-                            <div class="text-center">
-                                <p class="text-red-500 font-bold mb-2">
-                                    90.000Đ
-                                </p>
-                                <p class="text-gray-600 mb-2">
-                                    Mô Hình Lotso Huggin Bear
-                                </p>
-                                <p class="text-gray-400 text-sm mb-4">
-                                    SKU: 4897056203459
-                                </p>
-                                <button class="bg-red-500 text-white py-2 px-4 rounded-full mb-2">
-                                    Thêm Vào Giỏ Hàng
-                                </button>
-                                <button class="text-red-500">
-                                    <i class="far fa-heart">
-                                    </i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="border border-gray-300 rounded p-4">
-                            <img alt="Mô Hình Nhân Vật Động Vật" class="w-full h-48 object-cover mb-4" height="200"
-                                 src="https://storage.googleapis.com/a1aa/image/83N5QSbdGVlpRQTwGuzuSq32Qjgv9x8wzWOxMSQhLV4.jpg"
-                                 width="200" />
-                            <div class="text-center">
-                                <p class="text-red-500 font-bold mb-2">
-                                    440.000Đ
-                                </p>
-                                <p class="text-gray-600 mb-2">
-                                    Mô Hình Nhân Vật Động Vật
-                                </p>
-                                <p class="text-gray-400 text-sm mb-4">
-                                    SKU: 4897056203460
-                                </p>
-                                <button class="bg-red-500 text-white py-2 px-4 rounded-full mb-2">
-                                    Thêm Vào Giỏ Hàng
-                                </button>
-                                <button class="text-red-500">
-                                    <i class="far fa-heart">
-                                    </i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="border border-gray-300 rounded p-4">
-                            <img alt="Mô Hình Disney The Cute Stitch" class="w-full h-48 object-cover mb-4" height="200"
-                                 src="https://storage.googleapis.com/a1aa/image/Taz4yei1yboRr40Z4jTrrVx_cfNCdDcB-dTkQ-YnlSI.jpg"
-                                 width="200" />
-                            <div class="text-center">
-                                <p class="text-red-500 font-bold mb-2">
-                                    300.000Đ
-                                </p>
-                                <p class="text-gray-600 mb-2">
-                                    Mô Hình Disney The Cute Stitch
-                                </p>
-                                <p class="text-gray-400 text-sm mb-4">
-                                    SKU: 4897056203461
-                                </p>
-                                <button class="bg-red-500 text-white py-2 px-4 rounded-full mb-2">
-                                    Thêm Vào Giỏ Hàng
-                                </button>
-                                <button class="text-red-500">
-                                    <i class="far fa-heart">
-                                    </i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="border border-gray-300 rounded p-4">
-                            <img alt="Mô Hình Tom And Jerry" class="w-full h-48 object-cover mb-4" height="200"
-                                 src="https://storage.googleapis.com/a1aa/image/dyGCwpvOC3ynXEprMSgIugs8Mlo-RtR-y4lnjXeabzA.jpg"
-                                 width="200" />
-                            <div class="text-center">
-                                <p class="text-red-500 font-bold mb-2">
-                                    300.000Đ
-                                </p>
-                                <p class="text-gray-600 mb-2">
-                                    Mô Hình Tom And Jerry
-                                </p>
-                                <p class="text-gray-400 text-sm mb-4">
-                                    SKU: 4897056203462
-                                </p>
-                                <button class="bg-red-500 text-white py-2 px-4 rounded-full mb-2">
-                                    Thêm Vào Giỏ Hàng
-                                </button>
-                                <button class="text-red-500">
-                                    <i class="far fa-heart">
-                                    </i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="border border-gray-300 rounded p-4">
-                            <img alt="Mô Hình Nhân Vật Shin" class="w-full h-48 object-cover mb-4" height="200"
-                                 src="https://storage.googleapis.com/a1aa/image/YCohV8Jrnd7Ly3Du1AsfHU-mmXaTQMcj1mC_kFvkCR4.jpg"
-                                 width="200" />
-                            <div class="text-center">
-                                <p class="text-red-500 font-bold mb-2">
-                                    330.000Đ
-                                </p>
-                                <p class="text-gray-600 mb-2">
-                                    Mô Hình Nhân Vật Shin
-                                </p>
-                                <p class="text-gray-400 text-sm mb-4">
-                                    SKU: 4897056203463
-                                </p>
-                                <button class="bg-red-500 text-white py-2 px-4 rounded-full mb-2">
-                                    Thêm Vào Giỏ Hàng
-                                </button>
-                                <button class="text-red-500">
-                                    <i class="far fa-heart">
-                                    </i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="border border-gray-300 rounded p-4">
-                            <img alt="Mô Hình Nhân Vật Gấu Trúc" class="w-full h-48 object-cover mb-4" height="200"
-                                 src="https://storage.googleapis.com/a1aa/image/mpY8Qrn-VLqnb22CYMPCifTGy2u2qHO03JWlSdL6s1M.jpg"
-                                 width="200" />
-                            <div class="text-center">
-                                <p class="text-red-500 font-bold mb-2">
-                                    280.000Đ
-                                </p>
-                                <p class="text-gray-600 mb-2">
-                                    Mô Hình Nhân Vật Gấu Trúc
-                                </p>
-                                <p class="text-gray-400 text-sm mb-4">
-                                    SKU: 4897056203464
-                                </p>
-                                <button class="bg-red-500 text-white py-2 px-4 rounded-full mb-2">
-                                    Thêm Vào Giỏ Hàng
-                                </button>
-                                <button class="text-red-500">
-                                    <i class="far fa-heart">
-                                    </i>
-                                </button>
-                            </div>
+                    <div style="margin-bottom: 50px;" >
+
+                        <div class="grid grid-cols-3 gap-4 " id="productListContainer">
+                            <c:forEach var="product" items="${listP}" begin="0" end="8">
+
+                                <a href="ProductDetailServlet?productID=${product.productID}"
+                                   class="border border-gray-400 rounded-4 p-4 transform transition duration-200 hover:scale-105 no-underline"
+                                   style="width: 350px; height: 450px; display: block;"> 
+
+                                    <div class="main-image mb-4 w-full h-50 overflow-hidden group"
+                                         style="height: 200px;">
+                                        <c:forEach var="img" items="${mainImages}">
+                                            <c:if test="${img.productID == product.productID}">
+                                                <img 
+                                                    src="${pageContext.request.contextPath}/${img.imageUrl}"
+                                                    alt="Main Image"
+                                                    class="w-full h-full object-cover rounded shadown duration-300" />
+                                            </c:if>
+                                        </c:forEach>
+                                    </div>
+
+                                    <!-- Thông tin sản phẩm -->
+                                    <div class="mt-4">
+                                        <h3 class="text-gray-600 mb-2">
+                                            ${product.name}
+                                        </h3>
+                                        <div class="d-flex justify-content-between">
+                                            <p class="text-gray-400 text-l mb-4">
+                                                SKU: ${product.SKU}
+                                            </p>
+                                            <p class="text-gray-400 mb-2 text-sm">
+                                                <!-- Lấy Category Name -->
+                                                <c:forEach var="cat" items="${categories}">
+                                                    <c:if test="${cat.categoryID == product.categoryID}">
+                                                        ${cat.name}
+                                                    </c:if>
+                                                </c:forEach>
+                                            </p>
+                                        </div>
+                                        <p class="text-red-500 font-bold mb-2">
+                                            ${product.price}₫
+                                        </p>
+
+                                        <!-- Nút Thêm Vào Giỏ Hàng -->
+                                        <button class="bg-red-500 text-white py-2 px-4 rounded-full mb-2 mt-3"
+                                                onclick="event.preventDefault(); location.href = 'AddToCartServlet?sku=${product.SKU}'">
+                                            Thêm Vào Giỏ Hàng
+                                        </button>
+                                        <button class="text-red-500" onclick="toggleFavorite('${product.SKU}')">
+                                            <i class="far fa-heart"></i>
+                                        </button>
+                                    </div>
+                                </a>
+                            </c:forEach>
                         </div>
                     </div>
                 </div>
@@ -468,6 +301,24 @@
                 } else {
                     menu.classList.add('hidden');
                 }
+            }
+            function submitFilter() {
+                // Lấy dữ liệu của form
+                const form = document.getElementById("filterForm");
+                const formData = new FormData(form);
+                // Chuyển đổi dữ liệu sang URL parameters
+                const params = new URLSearchParams(formData).toString();
+
+                fetch("getList?" + params, {
+                    method: "GET"
+                })
+                        .then(response => response.text())
+                        .then(data => {
+                            // Cập nhật lại phần danh sách sản phẩm
+                            document.getElementById("productListContainer").innerHTML = data;
+
+                        })
+                        .catch(error => console.error("Lỗi khi load dữ liệu:", error));
             }
 
         </script>
