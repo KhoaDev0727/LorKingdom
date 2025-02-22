@@ -179,7 +179,7 @@
                                             </div>
                                         </div>
                                         <!-- Preview grid -->
-                                        <div id="previewGrid" class="preview-grid flex-md-row"></div>
+                                        <div id="previewGrid" class="preview-grid"></div>
                                     </div>
                                 </div>
                             </div>
@@ -198,62 +198,9 @@
                 </div>
             </form>
         </div>
-        <!-- Success Modal -->
-        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="successModalLabel">Thông báo</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
-                    </div>
-                    <div class="modal-body">
-                        Thêm sản phẩm thành công.
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Đóng</button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Error Modal -->
-        <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="errorModalLabel">Lỗi</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
-                    </div>
-                    <div class="modal-body">
-                        ${errorMessage}
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <c:if test="${param.updateSuccess eq 'true'}">
-            <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    var successModal = new bootstrap.Modal(document.getElementById('successModal'));
-                    successModal.show();
-                });
-            </script>
-        </c:if>
-
-        <c:if test="${not empty errorMessage}">
-            <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
-                    errorModal.show();
-                });
-            </script>
-        </c:if>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
         <script src="JS/AddNewProduct.js"></script>
-
     </body>
 </html>

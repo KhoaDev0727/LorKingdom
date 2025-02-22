@@ -1,20 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee                               http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
-<!--     Welcome Page -->
-    <!--    <welcome-file-list>
+<web-app version="3.1" 
+         xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+
+    <!-- Welcome Page -->
+    <!--
+    <welcome-file-list>
         <welcome-file>getList</welcome-file>
-    </welcome-file-list>-->
-    
-    <!--        <welcome-file-list>
+    </welcome-file-list>
+    -->
+    <!--
+    <welcome-file-list>
         <welcome-file>formComment.jsp</welcome-file>
-    </welcome-file-list>-->
+    </welcome-file-list>
+    -->
     <welcome-file-list>
         <welcome-file>ViewReview.jsp</welcome-file>
     </welcome-file-list>
+
     <!-- Servlet Configurations -->
     <servlet>
         <servlet-name>ForgotPasswordServlet</servlet-name>
         <servlet-class>Controller.ForgotPasswordServlet</servlet-class>
+    </servlet>
+  
+    <servlet>
+        <servlet-name>ReviewManagementServlet</servlet-name>
+        <servlet-class>Controller.ReviewManagementServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>LoginServlet</servlet-name>
@@ -100,7 +113,6 @@
         <servlet-name>VerifyCodeServlet</servlet-name>
         <servlet-class>Controller.VerifyCodeServlet</servlet-class>
     </servlet>
-    <!-- Servlet Mappings -->
     <servlet>
         <servlet-name>getList</servlet-name>
         <servlet-class>Controller.getList</servlet-class>
@@ -156,9 +168,13 @@
     <servlet>
         <servlet-name>ResetPasswordPage</servlet-name>
         <servlet-class>Controller.ResetPasswordPage</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>ProductDetailServlet</servlet-name>
         <servlet-class>Controller.ProductDetailServlet</servlet-class>
     </servlet>
+
+    <!-- Servlet Mappings -->
     <servlet-mapping>
         <servlet-name>VerifyCodeServlet</servlet-name>
         <url-pattern>/VerifyCodeServlet</url-pattern>
@@ -228,7 +244,6 @@
         <servlet-name>FinancialDashboardServlet</servlet-name>
         <url-pattern>/Admin/FinancialDashboardServlet</url-pattern>
     </servlet-mapping>
-    <!-- =========================================== Cua Luan =================================================== -->
     <servlet-mapping>
         <servlet-name>CategoryServlet</servlet-name>
         <url-pattern>/Admin/CategoryServlet</url-pattern>
@@ -270,7 +285,6 @@
         <url-pattern>/Admin/OriginServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-
         <servlet-name>LoginPageServlet</servlet-name>
         <url-pattern>/Admin/LoginPageServlet</url-pattern>
     </servlet-mapping>
@@ -302,13 +316,14 @@
         <servlet-name>ResetPasswordPage</servlet-name>
         <url-pattern>/ResetPasswordPage</url-pattern>
     </servlet-mapping>
-
+    <servlet-mapping>
         <servlet-name>ProductDetailServlet</servlet-name>
         <url-pattern>/ProductDetailServlet</url-pattern>
     </servlet-mapping>
-    <!-- =========================================== Cua Luan =================================================== -->
+
     <!-- Session Timeout -->
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
+
 </web-app>
