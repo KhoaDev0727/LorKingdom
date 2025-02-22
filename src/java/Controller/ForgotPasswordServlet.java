@@ -13,6 +13,7 @@ import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
+import java.sql.Timestamp;
 
 public class ForgotPasswordServlet extends HttpServlet {
 
@@ -42,7 +43,7 @@ public class ForgotPasswordServlet extends HttpServlet {
 
                 ps = conn.prepareStatement("UPDATE Account SET ResetToken = ?, TokenExpiry = ? WHERE Email = ?");
                 ps.setString(1, resetToken);
-                ps.setLong(2, expiryTime);
+                ps.setTimestamp(2, new Timestamp(System.currentTimeMillis() + 30 * 60 * 1000));
                 ps.setString(3, email);
                 ps.executeUpdate();
 

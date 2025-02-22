@@ -5,6 +5,7 @@
 package Controller;
 
 import DAO.AccountDAO;
+import DAO.MyUntilsDAO;
 import Model.Account;
 import Model.Role;
 import java.io.IOException;
@@ -31,9 +32,12 @@ public class StaffManagementServlet extends HttpServlet {
 
     private static final String UPLOAD_DIR = "images";
     private static final int ROLE_STAFF = 2;
-            
-//    private static final String UPLOAD_DIR = "images";
+    private static final String FOLDER = "images";
+    private static final MyUntilsDAO myUntilsDAO = new MyUntilsDAO();
+    private static int PAGE = 1;
+    private static final int PAGE_SIZE = 10;
 
+//    private static final String UPLOAD_DIR = "images";
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -103,7 +107,7 @@ public class StaffManagementServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         try {
+        try {
             String action = request.getParameter("action");
             if (action != null) {
                 switch (action) {
@@ -127,11 +131,17 @@ public class StaffManagementServlet extends HttpServlet {
     protected void showStaff(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            int roleId = 2;
-            List<Account> list = AccountDAO.getAllAccount(roleId, 1 ,2);
+            if (request.getParameter("page") != null) {
+                PAGE = Integer.parseInt(request.getParameter("page"));
+            }
+            int totalPages = myUntilsDAO.getTotalPagesAccount(PAGE_SIZE, ROLE_STAFF);
+            List<Account> list = AccountDAO.getAllAccount(ROLE_STAFF, PAGE, PAGE_SIZE);
             List<Role> listRole = AccountDAO.showListRoleTest();
             request.setAttribute("staffs", list);
             request.setAttribute("roles", listRole);
+            request.setAttribute("currentPage", PAGE);
+            request.setAttribute("totalPages", totalPages);
+            request.setAttribute("forward", "StaffManagementServlet");
             request.getRequestDispatcher("StaffManagement.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
@@ -140,7 +150,7 @@ public class StaffManagementServlet extends HttpServlet {
 
     protected void addStaff(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-    try {
+        try {
             String uploadPath = request.getServletContext().getRealPath("/") + File.separator + UPLOAD_DIR;
             String userName = request.getParameter("userName");
             String phoneNumber = request.getParameter("phoneNumber");
@@ -154,7 +164,7 @@ public class StaffManagementServlet extends HttpServlet {
             // Nếu có file mới, upload ảnh mới, ngược lại giữ ảnh cũ
             Part filePart = request.getPart("image");
             String image = (filePart.getSize() > 0)
-                    ? UploadImage.uploadFile(filePart, uploadPath)
+                    ? UploadImage.uploadFile(filePart, uploadPath, FOLDER)
                     : oldImage;
             Account a = new Account(roleID, userName, phoneNumber, email, image, passwordHashed, address, status);
             boolean isUpdate = AccountDAO.addAdmin(a);
@@ -167,7 +177,6 @@ public class StaffManagementServlet extends HttpServlet {
             e.printStackTrace();
         }
     }
- 
 
     protected void updateStaff(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -186,7 +195,7 @@ public class StaffManagementServlet extends HttpServlet {
             // Nếu có file mới, upload ảnh mới, ngược lại giữ ảnh cũ
             Part filePart = request.getPart("image");
             String image = (filePart.getSize() > 0)
-                    ? UploadImage.uploadFile(filePart, uploadPath)
+                    ? UploadImage.uploadFile(filePart, uploadPath, FOLDER)
                     : oldImage;
             Account a = new Account(accountID, roleID, userName, phoneNumber, image, email, passwordHashed, address, status);
             boolean isUpdate = AccountDAO.updateProfileStaff(a);
@@ -218,11 +227,34 @@ public class StaffManagementServlet extends HttpServlet {
     protected void searchStaff(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-//            String keyword = request.getParameter("search");
-//            int role = ROLE_STAFF;
-//            List<Account> list = AccountDAO.searchUser(keyword, role);
-//            request.setAttribute("staffs", list);
-//            request.getRequestDispatcher("StaffManagement.jsp").forward(request, response);
+            String keyword = request.getParameter("search"); // Lấy từ ô nhập
+            if (keyword == null) {
+                keyword = ""; // Tránh null gây lỗi
+            }
+            String pageParam = request.getParameter("page");
+            int page = 1; // Mặc định là trang 1 nếu không có tham số
+            if (pageParam != null && !pageParam.trim().isEmpty()) {
+                try {
+                    page = Integer.parseInt(pageParam.trim()); // Chuyển đổi số nguyên
+                    if (page < 1) {
+                        page = 1; // Không cho phép số âm
+                    }
+                } catch (NumberFormatException e) {
+                    page = 1; // Nếu lỗi, quay về trang đầu
+                }
+            }
+
+            int totalPages = myUntilsDAO.getTotalPagesAccountSearch(PAGE_SIZE, ROLE_STAFF, keyword);
+            List<Account> list = AccountDAO.findUser(keyword, ROLE_STAFF, page, PAGE_SIZE);
+            List<Role> roleList = AccountDAO.showListRoleTest();
+            request.setAttribute("staffs", list);
+            request.setAttribute("currentPage", page);
+            request.setAttribute("roles", roleList);
+            request.setAttribute("totalPages", totalPages);
+            request.setAttribute("action", "search");
+            request.setAttribute("keyword", keyword); // Giữ lại keyword
+
+            request.getRequestDispatcher("StaffManagement.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
         }

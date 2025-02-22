@@ -81,4 +81,23 @@ public class PriceRangeDAO {
             ps.executeUpdate();
         }
     }
+
+    public List<PriceRange> searchPriceRanges(String keyword) throws SQLException, ClassNotFoundException {
+        List<PriceRange> priceRanges = new ArrayList<>();
+        String query = "SELECT PriceRangeID, PriceRange, CreatedAt FROM PriceRange WHERE PriceRange LIKE ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, "%" + keyword + "%");
+            try ( ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    priceRanges.add(new PriceRange(
+                            rs.getInt("PriceRangeID"),
+                            rs.getString("PriceRange"),
+                            rs.getTimestamp("CreatedAt")
+                    ));
+                }
+            }
+        }
+        return priceRanges;
+    }
+
 }

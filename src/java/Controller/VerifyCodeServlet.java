@@ -1,12 +1,9 @@
 package Controller;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
+import DAO.AccountDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
-
-import DBConnect.DBConnection;
+import java.io.IOException;
 
 public class VerifyCodeServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -40,16 +37,18 @@ public class VerifyCodeServlet extends HttpServlet {
             session.removeAttribute("codeExpiryTime");
             session.setAttribute("isVerified", true);
 
-            // Lưu thông tin người dùng vào database
+            // Retrieve user information from session
             String username = (String) session.getAttribute("tempUsername");
             String email = (String) session.getAttribute("tempEmail");
             String password = (String) session.getAttribute("tempPassword");
             String phoneNumber = (String) session.getAttribute("tempPhoneNumber");
 
             if (username != null && email != null && password != null && phoneNumber != null) {
-                saveUserToDatabase(username, email, password, phoneNumber);
+                // Hash the password before sending it to DAO
+                String hashedPassword = MyUtils.hashPassword(password);
+                saveUserToDatabase(username, email, hashedPassword, phoneNumber, session);
 
-                // Xóa thông tin tạm khỏi session
+                // Clear session attributes after successful account creation
                 session.removeAttribute("tempUsername");
                 session.removeAttribute("tempEmail");
                 session.removeAttribute("tempPassword");
@@ -64,27 +63,8 @@ public class VerifyCodeServlet extends HttpServlet {
         }
     }
 
-    private void saveUserToDatabase(String username, String email, String password, String phoneNumber) {
-        String sql = "INSERT INTO Account (RoleID, AccountName, Email, Password, PhoneNumber, Image) VALUES (?, ?, ?, ?, ?, ?)";
-        String defaultImageUrl = "./assets/img/default-img-profile.png";
-
-        int defaultRoleID = 3; 
-        
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, defaultRoleID);
-            stmt.setString(2, username);
-            stmt.setString(3, email);
-            stmt.setString(4, password);
-            stmt.setString(5, phoneNumber);
-            stmt.setString(6, defaultImageUrl);
-            stmt.executeUpdate();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private void saveUserToDatabase(String username, String email, String password, String phoneNumber, HttpSession session) {
+        AccountDAO accountDAO = new AccountDAO();
+        accountDAO.insertNewAccount(username, email, password, phoneNumber);
     }
-    
-    
 }

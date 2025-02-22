@@ -30,7 +30,7 @@
                         <li>
                             <hr class="dropdown-divider" />
                         </li>
-                        <li><a class="dropdown-item" href="/logOutAdmin">Logout</a></li>
+                        <li><a class="dropdown-item" href="LogoutPage">Logout</a></li>
                     </ul>
                 </li>
             </ul>
@@ -51,7 +51,7 @@
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" href="FinancialDashboardServlet">Financial Dashboard</a></li>
                                     <li><a class="dropdown-item" href="StaffPermissions.jsp">Staff Permissions</a></li>
-                                    <li><a class="dropdown-item" href="CustomerManagementServlet">User Management</a></li>
+                                    <li><a class="dropdown-item" href="CustomerManagementServlet">Customer Management</a></li>
                                     <li><a class="dropdown-item" href="StaffManagementServlet">Staff Management</a></li>
                                     <li><a class="dropdown-item" href="AdminManagementServlet">Admin Management</a></li>
                                     <li><a class="dropdown-item" href="ProductManagement.jsp">Product Management</a></li>

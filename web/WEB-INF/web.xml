@@ -1,13 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee                               http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+<web-app version="3.1" 
+         xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+
     <!-- Welcome Page -->
+    <!--
     <welcome-file-list>
         <welcome-file>getList</welcome-file>
     </welcome-file-list>
+    -->
+    <!--
+    <welcome-file-list>
+        <welcome-file>formComment.jsp</welcome-file>
+    </welcome-file-list>
+    -->
+    <welcome-file-list>
+        <welcome-file>ViewReview.jsp</welcome-file>
+    </welcome-file-list>
+
     <!-- Servlet Configurations -->
     <servlet>
         <servlet-name>ForgotPasswordServlet</servlet-name>
         <servlet-class>Controller.ForgotPasswordServlet</servlet-class>
+    </servlet>
+  
+    <servlet>
+        <servlet-name>ReviewManagementServlet</servlet-name>
+        <servlet-class>Controller.ReviewManagementServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>LoginServlet</servlet-name>
@@ -130,6 +150,43 @@
         <servlet-name>ManageOrderServlet</servlet-name>
         <servlet-class>Controller.ManageOrderServlet</servlet-class>
     </servlet>
+        <servlet-name>LoginPageServlet</servlet-name>
+        <servlet-class>Controller.LoginPageServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>RegisterPageServlet</servlet-name>
+        <servlet-class>Controller.RegisterPageServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SendVerificationPage</servlet-name>
+        <servlet-class>Controller.SendVerificationPage</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ResendVerificationPage</servlet-name>
+        <servlet-class>Controller.ResendVerificationPage</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>VerifyCodePage</servlet-name>
+        <servlet-class>Controller.VerifyCodePage</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>LogoutPage</servlet-name>
+        <servlet-class>Controller.LogoutPage</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ForgotPasswordPage</servlet-name>
+        <servlet-class>Controller.ForgotPasswordPage</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ResetPasswordPage</servlet-name>
+        <servlet-class>Controller.ResetPasswordPage</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ProductDetailServlet</servlet-name>
+        <servlet-class>Controller.ProductDetailServlet</servlet-class>
+    </servlet>
+
+    <!-- Servlet Mappings -->
     <servlet-mapping>
         <servlet-name>VerifyCodeServlet</servlet-name>
         <url-pattern>/VerifyCodeServlet</url-pattern>
@@ -192,13 +249,13 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ReviewManagementServlet</servlet-name>
+        <url-pattern>/ReviewManagementServlet</url-pattern>
         <url-pattern>/Admin/ReviewManagementServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>FinancialDashboardServlet</servlet-name>
         <url-pattern>/Admin/FinancialDashboardServlet</url-pattern>
     </servlet-mapping>
-    <!-- =========================================== Cua Luan =================================================== -->
     <servlet-mapping>
         <servlet-name>CategoryServlet</servlet-name>
         <url-pattern>/Admin/CategoryServlet</url-pattern>
@@ -224,9 +281,6 @@
         <url-pattern>/Admin/BrandServlet</url-pattern>
     </servlet-mapping>
     <!-- =========================================== Cua Luan =================================================== -->
-    <!-- =========================================== Cua Loc =================================================== -->
-    <!-- =========================================== Cua Loc =================================================== -->
-    <!-- Session Timeout -->
     <servlet-mapping>
         <servlet-name>MaterialServlet</servlet-name>
         <url-pattern>/Admin/MaterialServlet</url-pattern>
@@ -244,10 +298,6 @@
         <url-pattern>/Admin/OriginServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>test</servlet-name>
-        <url-pattern>/test</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>OrderView</servlet-name>
         <url-pattern>/Admin/OrderView</url-pattern>
     </servlet-mapping>
@@ -255,7 +305,44 @@
         <servlet-name>ManageOrderServlet</servlet-name>
         <url-pattern>/Admin/OrderServlet</url-pattern>
     </servlet-mapping>
+        <servlet-name>LoginPageServlet</servlet-name>
+        <url-pattern>/Admin/LoginPageServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RegisterPageServlet</servlet-name>
+        <url-pattern>/Admin/RegisterPageServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SendVerificationPage</servlet-name>
+        <url-pattern>/Admin/SendVerificationPage</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ResendVerificationPage</servlet-name>
+        <url-pattern>/Admin/ResendVerificationPage</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VerifyCodePage</servlet-name>
+        <url-pattern>/Admin/VerifyCodePage</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LogoutPage</servlet-name>
+        <url-pattern>/Admin/LogoutPage</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ForgotPasswordPage</servlet-name>
+        <url-pattern>/ForgotPasswordPage</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ResetPasswordPage</servlet-name>
+        <url-pattern>/ResetPasswordPage</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProductDetailServlet</servlet-name>
+        <url-pattern>/ProductDetailServlet</url-pattern>
+    </servlet-mapping>
+    <!-- Session Timeout -->
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
+
 </web-app>

@@ -1,12 +1,9 @@
 package Controller;
 
-import DBConnect.DBConnection;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import DAO.AccountDAO;
 
 public class ResetPasswordServlet extends HttpServlet {
 
@@ -25,39 +22,24 @@ public class ResetPasswordServlet extends HttpServlet {
         } else if (!newPassword.matches("[a-zA-Z0-9]*")) {  // Chỉ chấp nhận chữ và số
             request.setAttribute("message", "Password cannot contain special characters.");
         } else {
-            try (Connection conn = DBConnection.getConnection()) {
-                // Kiểm tra token hợp lệ
-                PreparedStatement ps = conn.prepareStatement("SELECT Email, TokenExpiry FROM Account WHERE ResetToken = ?");
-                ps.setString(1, token);
-                ResultSet rs = ps.executeQuery();
+            AccountDAO accountDAO = new AccountDAO();
 
-                if (rs.next()) {
-                    long expiryTime = rs.getLong("TokenExpiry");
-                    if (System.currentTimeMillis() > expiryTime) {
-                        request.setAttribute("message", "Token expired.");
-                    } else {
-                        // Cập nhật mật khẩu vào database mà không hash
-                        ps = conn.prepareStatement("UPDATE Account SET Password = ?, ResetToken = NULL, TokenExpiry = NULL WHERE ResetToken = ?");
-                        ps.setString(1, newPassword);  // Không mã hóa mật khẩu
-                        ps.setString(2, token);
-                        int rowsAffected = ps.executeUpdate();
+            // Kiểm tra token hợp lệ
+            String email = accountDAO.validateResetToken(token);
 
-                        if (rowsAffected > 0) {
-                            request.setAttribute("message", "Password has been reset successfully.");
-                        } else {
-                            request.setAttribute("message", "Failed to reset password.");
-                        }
-                    }
+            if (email == null) {
+                request.setAttribute("message", "Invalid or expired token.");
+            } else {
+                // Cập nhật mật khẩu vào database
+                if (accountDAO.updatePassword(email, newPassword)) {
+                    request.setAttribute("message", "Password has been reset successfully.");
                 } else {
-                    request.setAttribute("message", "Invalid token.");
+                    request.setAttribute("message", "Failed to reset password.");
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                request.setAttribute("message", "An error occurred.");
             }
         }
 
-        // Chuyển hướng về trang resetPassword.jsp và bắt đầu đếm ngược
+        // Chuyển hướng về trang resetPassword.jsp
         request.getRequestDispatcher("resetPassword.jsp").forward(request, response);
     }
 }

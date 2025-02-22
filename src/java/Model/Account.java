@@ -63,6 +63,13 @@ public class Account {
         this.updateAt = updateAt;
     }
 
+    public Account(int accountId, String userName, String image) {
+        this.accountId = accountId;
+        this.userName = userName;
+        this.image = image;
+    }
+    
+
     public Account(int accountId, int RoleID, String userName, String phoneNumber, String email, String image, String password, String address, String status, Timestamp updateAt) {
         this.accountId = accountId;
         this.RoleID = RoleID;

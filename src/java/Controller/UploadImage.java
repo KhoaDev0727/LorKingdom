@@ -16,10 +16,10 @@ import java.util.UUID;
  */
 public class UploadImage {
 
-    private static final String UPLOAD_DIR = "images";
+//    private static final String UPLOAD_DIR = "images";
 //    private static final String UPLOAD_DIR = "D:/Uploads";
 
-    public static String uploadFile(Part filePart, String uploadPath) throws IOException {
+    public static String uploadFile(Part filePart, String uploadPath, String folder) throws IOException {
         if (filePart == null || filePart.getSize() == 0) {
             return null; // Không có file được tải lên
         }
@@ -39,6 +39,6 @@ public class UploadImage {
         System.out.println("File saved at: " + filePath);
 
         // Trả về đường dẫn ảnh để lưu vào database
-        return UPLOAD_DIR + "/" + newFileName;
+        return folder + "/" + newFileName;
     }
 }

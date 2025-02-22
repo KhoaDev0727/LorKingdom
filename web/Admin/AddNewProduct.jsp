@@ -166,7 +166,7 @@
                             </div>
                             <div class="col-md-12">
                                 <div class="image-upload-section">
-                                    <h4>Detail Images (Maximum 4)</h4>
+                                    <h4>Detail Images (Maximum 8)</h4>
                                     <div class="upload-container mess-error">
                                         <!-- Hidden file input -->
                                         <input type="file" id="detailImagesInput" name="detailImages" multiple accept="image/*" hidden onchange="handleFileSelect(event)">
@@ -175,7 +175,7 @@
                                             <div class="upload-prompt">
                                                 <i class="fas fa-cloud-upload-alt"></i>
                                                 <p>Drag & drop images here or click to upload</p>
-                                                <small class="text-muted">(Maximum 4 images, JPEG/PNG only)</small>
+                                                <small class="text-muted">(Maximum 8 images, JPEG/PNG only)</small>
                                             </div>
                                         </div>
                                         <!-- Preview grid -->
