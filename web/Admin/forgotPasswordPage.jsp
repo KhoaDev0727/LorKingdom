@@ -9,9 +9,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./CSS/forgotPasswordPage.css"/>
 </head>
-<body>
+<body style="background-image: url(./assets/img/back-forgot.jpg);
+             background-size: cover;">
     <div class="container mt-5">
-        <div class="forgot-password-container">
+        <div class="forgot-password-container" style="background-color: rgb(231, 231, 231);">
             <h3>Forgot Your Password?</h3>
             <p>Enter your email address to receive a reset link.</p>
             <form action="ForgotPasswordPage" method="POST">
@@ -22,7 +23,7 @@
             </form>
 
             <c:if test="${not empty requestScope.message}">
-                <div class="alert alert-info mt-3">${requestScope.message}</div>
+                <div class="alert alert-info mt-3" style="background-color: rgb(231, 231, 231);">${requestScope.message}</div>
             </c:if>
         </div>
     </div>

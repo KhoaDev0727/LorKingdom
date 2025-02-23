@@ -22,91 +22,97 @@
     <body>
 
         <!-- Banner -->
-        <div class="container-fluid2"> 
-            <div class="form-container">
-                <div class="container form">
-                    <h3>Create Account</h3>
-                    <form action="RegisterPageServlet" method="POST">
-                        <!-- Username Input -->
-                        <div class="mb-3">
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                <input type="text" class="form-control" id="username" name="username" placeholder="Username" 
-                                       value="<%= request.getAttribute("usernameValue") != null ? request.getAttribute("usernameValue") : "" %>" />
-                            </div>
-                            <% 
-                                String usernameError = (String) request.getAttribute("usernameError");
-                                if (usernameError != null && !usernameError.isEmpty()) { 
-                            %>
-                            <span class="text-danger"><%= usernameError %></span>
-                            <% 
-                                } 
-                            %>
-                        </div>
-                    
-                        <!-- Phone Number Input -->
-                        <div class="mb-3">
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                                <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone Number" 
-                                       value="<%= request.getAttribute("phoneValue") != null ? request.getAttribute("phoneValue") : "" %>" />
-                            </div>
-                            <%
-                               String phoneNumberError = (String) request.getAttribute("phoneNumberError");
-                               if (phoneNumberError != null && !phoneNumberError.isEmpty()) {
-                            %>
-                            <span class="text-danger"><%= phoneNumberError %></span>
-                            <%
-                                }
-                            %>
-                        </div>
-                    
-                        <!-- Email Input -->
-                        <div class="mb-3">
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                <input type="email" class="form-control" id="email" name="email" placeholder="Email" 
-                                       value="<%= request.getAttribute("emailValue") != null ? request.getAttribute("emailValue") : "" %>" />
-                            </div>
-                            <% 
-                                String emailError = (String) request.getAttribute("emailError");
-                                if (emailError != null && !emailError.isEmpty()) { 
-                            %>
-                            <span class="text-danger"><%= emailError %></span>
-                            <% 
-                                } 
-                            %>
-                        </div>
-                    
-                        <!-- Password Input -->
-                        <div class="mb-3">
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                <input type="password" class="form-control" id="password" name="password" placeholder="Password" 
-                                       value="<%= request.getAttribute("passwordValue") != null ? request.getAttribute("passwordValue") : "" %>" />
-                            </div>                   
-                            <% 
-                                String passwordError = (String) request.getAttribute("passwordError");
-                                if (passwordError != null && !passwordError.isEmpty()) { 
-                            %>
-                            <span class="text-danger"><%= passwordError %></span>
-                            <% 
-                                } 
-                            %>
-                        </div>                   
-                    
-                        <!-- Register Button -->
-                        <button type="submit" class="btn btn-primary register-btn">Register</button>
-                    
-                        <!-- Login Link -->
-                        <div class="login-link mt-3" >
-                            <span>Already have an account? <a href="loginPage.jsp">Login</a></span>
-                        </div>
-                    </form>
-                    
+        <div class="containers">
+        <div class="background">
+            <img src="./assets/img/back-login.jpg" alt="Sea Background" class="background-img">
+        </div>
+        <div class="login-section">
+            <div class="login-form">
+                <div class="logo">
+                    <img src="./assets/img/logo-login.png" alt="Lorkingdom Logo" class="logo-img">
                 </div>
+                <h2 class="mb-4" style="font-weight: 600;">Create Account</h2>
+                <form action="RegisterPageServlet" method="POST">
+                    <!-- Username Input -->
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Username" 
+                                   value="<%= request.getAttribute("usernameValue") != null ? request.getAttribute("usernameValue") : "" %>" />
+                        </div>
+                        <% 
+                            String usernameError = (String) request.getAttribute("usernameError");
+                            if (usernameError != null && !usernameError.isEmpty()) { 
+                        %>
+                        <span class="text-danger"><%= usernameError %></span>
+                        <% 
+                            } 
+                        %>
+                    </div>
+                
+                    <!-- Phone Number Input -->
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                            <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone Number" 
+                                   value="<%= request.getAttribute("phoneValue") != null ? request.getAttribute("phoneValue") : "" %>" />
+                        </div>
+                        <%
+                           String phoneNumberError = (String) request.getAttribute("phoneNumberError");
+                           if (phoneNumberError != null && !phoneNumberError.isEmpty()) {
+                        %>
+                        <span class="text-danger"><%= phoneNumberError %></span>
+                        <%
+                            }
+                        %>
+                    </div>
+                
+                    <!-- Email Input -->
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Email" 
+                                   value="<%= request.getAttribute("emailValue") != null ? request.getAttribute("emailValue") : "" %>" />
+                        </div>
+                        <% 
+                            String emailError = (String) request.getAttribute("emailError");
+                            if (emailError != null && !emailError.isEmpty()) { 
+                        %>
+                        <span class="text-danger"><%= emailError %></span>
+                        <% 
+                            } 
+                        %>
+                    </div>
+                
+                    <!-- Password Input -->
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Password" 
+                                   value="<%= request.getAttribute("passwordValue") != null ? request.getAttribute("passwordValue") : "" %>" />
+                        </div>                   
+                        <% 
+                            String passwordError = (String) request.getAttribute("passwordError");
+                            if (passwordError != null && !passwordError.isEmpty()) { 
+                        %>
+                        <span class="text-danger"><%= passwordError %></span>
+                        <% 
+                            } 
+                        %>
+                    </div>                   
+                
+                    <!-- Register Button -->
+                    <button type="submit" class="btn btn-primary register-btn">Register</button>
+                
+                    <!-- Login Link -->
+                    <div class="login-link mt-3" >
+                        <span>Already have an account? <a href="loginPage.jsp">Login</a></span>
+                    </div>
+                </form>
+
             </div>
         </div>
+    </div>
 
         <!-- Bootstrap JS and dependencies -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

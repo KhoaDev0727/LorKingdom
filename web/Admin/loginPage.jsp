@@ -22,10 +22,16 @@
 
 <body>
     <!-- Banner -->
-    <div class="container-fluid2">
-        <div class="form-container">
-            <div class="container form">
-                <h3 class="mb-4">Login Page</h3>
+    <div class="containers">
+        <div class="background">
+            <img src="./assets/img/back-login.jpg" alt="Sea Background" class="background-img">
+        </div>
+        <div class="login-section">
+            <div class="login-form">
+                <div class="logo">
+                    <img src="./assets/img/logo-login.png" alt="Lorkingdom Logo" class="logo-img">
+                </div>
+                <h2 class="mb-4" style="font-weight: 600;">Login Page</h2>
                 <form method="POST" action="LoginPageServlet">
                     <!-- Email Input -->
                     <div class="mb-4">
@@ -71,13 +77,14 @@
                         </div>
 
                         <div class="forgot-password">
-                            <a href="forgotPassword.jsp">Forgot password?</a>
+                            <a href="forgotPasswordPage.jsp">Forgot password?</a>
                         </div>
 
                         <!-- Register Link -->
 
                     </div>
                 </form>
+
             </div>
         </div>
     </div>
