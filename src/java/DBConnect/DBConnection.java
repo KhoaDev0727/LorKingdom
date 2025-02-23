@@ -12,8 +12,7 @@ public class DBConnection {
 
 //    private static String url = "jdbc:sqlserver://DESKTOP-FAPV9II\\KHOADEV;databaseName=LorKingDom;encrypt=false;";
 //    private static String user = "sa";
-//    private static String pass = "12345";
-    
+//    private static String pass = "12345";   
 
 
   private static String url = "jdbc:sqlserver://localhost:1433;databaseName=LorKingDom;encrypt=true;trustServerCertificate=true";

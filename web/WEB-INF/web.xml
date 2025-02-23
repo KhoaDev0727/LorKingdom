@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
     <!-- Welcome Page -->
-    <!--
+    
     <welcome-file-list>
         <welcome-file>getList</welcome-file>
     </welcome-file-list>
-    -->
+    
     <!--
     <welcome-file-list>
         <welcome-file>formComment.jsp</welcome-file>
     </welcome-file-list>
     -->
-    <welcome-file-list>
+<!--    <welcome-file-list>
         <welcome-file>ViewReview.jsp</welcome-file>
-    </welcome-file-list>
-    <!-- Servlet Configurations -->
+    </welcome-file-list> -->
+<!--   Servlet Configurations -->
     <servlet>
         <servlet-name>ForgotPasswordServlet</servlet-name>
         <servlet-class>Controller.ForgotPasswordServlet</servlet-class>
@@ -307,11 +307,11 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ForgotPasswordPage</servlet-name>
-        <url-pattern>/ForgotPasswordPage</url-pattern>
+        <url-pattern>/Admin/ForgotPasswordPage</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ResetPasswordPage</servlet-name>
-        <url-pattern>/ResetPasswordPage</url-pattern>
+        <url-pattern>/Admin/ResetPasswordPage</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ProductDetailServlet</servlet-name>
