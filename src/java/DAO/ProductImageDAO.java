@@ -8,6 +8,7 @@ import static DAO.AccountDAO.conn;
 import static DAO.AccountDAO.stm;
 import DBConnect.DBConnection;
 import Model.Account;
+import Model.Product;
 import Model.ProductImage;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -178,6 +179,27 @@ public class ProductImageDAO {
             System.out.println("Lỗi khi lấy ảnh phụ (IsMain=0) theo ProductID: " + ex);
         }
         return images;
+    }
+
+    public static ProductImage getMainImage(int productID) throws SQLException {
+        String query = "SELECT * FROM ProductImages WHERE ProductID = ? AND IsMain = 1";
+        try{
+            conn = DBConnection.getConnection();
+            stm = conn.prepareStatement(query);
+            stm.setInt(1, productID);
+            rs = stm.executeQuery();
+            if (rs.next()) {
+                return new ProductImage(
+                        rs.getInt("ImageID"),
+                        rs.getString("ProductID"),
+                        rs.getString("Image"),
+                        rs.getInt("IsMain")
+                );
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return null; // Trả về null nếu không tìm thấy ảnh chính
     }
 
 }

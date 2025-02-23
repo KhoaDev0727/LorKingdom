@@ -43,7 +43,7 @@
                     </div>
                     <a href="aboutus.jsp" data-key="aboutUs">Giới Thiệu</a>
                     <a href="#" data-key="help">Trợ giúp</a>
-                    <a href="cart.jsp" data-key="cart">Giỏ hàng</a>
+                    <a href="Cart" data-key="cart">Giỏ hàng</a>
 
                     <div class="avatar-container">
                         <div class="avatar">
