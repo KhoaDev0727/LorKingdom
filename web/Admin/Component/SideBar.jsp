@@ -66,25 +66,9 @@
                                     Configuration
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href="SuperCategoryServlet?&action=list">SuperCategory
-                                            Management</a></li>
-                                    <li><a class="dropdown-item" href="CategoryServlet?&action=list">Category
-                                            Management</a></li>
-                                    <li><a class="dropdown-item" href="AgeServlet?&action=list">Age
-                                            Management</a></li>
-                                    <li><a class="dropdown-item" href="SexServlet?&action=list">Sex
-                                            Management</a></li>
-                                    <li><a class="dropdown-item" href="BrandServlet?&action=list">Brand
-                                            Management</a></li>
-                                    <li><a class="dropdown-item" href="MaterialServlet?&action=list">Material
-                                            Management</a></li>
-                                    <li><a class="dropdown-item" href="PriceRangeServlet?&action=list">PriceRange Management</a></li>
                                     <li><a class="dropdown-item" href="OrderServlet">Order Management</a></li>
                                     <li><a class="dropdown-item" href="ShippingMethodServlet?&action=list">Shipping Method</a></li>
-                                    <li><a class="dropdown-item" href="PaymentMethod.jsp">Payment Method</a></li>
-                                    <li><a class="dropdown-item" href="PriceRangeManagementServlet">Price Range Management</a></li>
-                                    <li><a class="dropdown-item" href="SexServlet">Sex Method</a></li>
-                                    <li><a class="dropdown-item" href="PriceRangeManagementServlet">Price Range Management</a></li>
+                                    <li><a class="dropdown-item" href="PaymentMethodServlet">Payment Method</a></li>
                                 </ul>
                             </div>
 
@@ -94,7 +78,7 @@
                                     Configuration
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href="SuperCategoryServlet?&action=list">SuperCategory
+                                    <li><a class="dropdown-item" href="SuperCategoryServlet?&action=list">Super Category
                                             Management</a></li>
                                     <li><a class="dropdown-item" href="CategoryServlet?&action=list">Category
                                             Management</a></li>
@@ -106,11 +90,9 @@
                                             Management</a></li>
                                     <li><a class="dropdown-item" href="MaterialServlet?&action=list">Material
                                             Management</a></li>
-                                    <li><a class="dropdown-item" href="PriceRangeServlet?&action=list">PriceRange Management</a></li>
+                                    <li><a class="dropdown-item" href="PriceRangeServlet?&action=list">Price Range Management</a></li>
 
                                     <li><a class="dropdown-item" href="OriginServlet?&action=list">Origin Management</a></li>
-
-
                                 </ul>
                             </div>
 
