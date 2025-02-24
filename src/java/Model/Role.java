@@ -5,42 +5,45 @@
 
 package Model;
 
+/**
+ *
+ * @author Truong Van Khang - CE181852
+ */
 public class Role {
-    private int roleID;
-    private String roleName;
-    private String description;
+    private int RoleID;
+    private String Name ;
+    private String Decription;
 
-    public Role() {
-    }
-
-    public Role(int roleID, String roleName, String description) {
-        this.roleID = roleID;
-        this.roleName = roleName;
-        this.description = description;
+    public Role(int RoleID, String Name, String Decription) {
+        this.RoleID = RoleID;
+        this.Name = Name;
+        this.Decription = Decription;
     }
 
     public int getRoleID() {
-        return roleID;
+        return RoleID;
     }
 
-    public void setRoleID(int roleID) {
-        this.roleID = roleID;
+    public void setRoleID(int RoleID) {
+        this.RoleID = RoleID;
     }
 
-    public String getRoleName() {
-        return roleName;
+    public String getName() {
+        return Name;
     }
 
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
+    public void setName(String Name) {
+        this.Name = Name;
     }
 
-    public String getDescription() {
-        return description;
+    public String getDecription() {
+        return Decription;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDecription(String Decription) {
+        this.Decription = Decription;
     }
+    
+    
+
 }
-

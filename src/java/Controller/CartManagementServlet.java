@@ -182,10 +182,19 @@ public class CartManagementServlet extends HttpServlet {
     private void deleteAllItem(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
+            // Lấy userId từ session
             int userId = getSession(request, response);
+            // Gọi phương thức removeAll trong cartDAO
             boolean rowUpdate = cartDAO.removeAll(userId);
+
             if (rowUpdate) {
-                showCart(request, response);
+                // Trả về phản hồi JSON nếu xóa thành công
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write("{\"totalMoney\": 0, \"cartSize\": 0}");
+            } else {
+                // Trả về lỗi nếu không xóa được
+                sendErrorResponse(response, "Failed to delete all items");
             }
         } catch (Exception e) {
             e.printStackTrace();
