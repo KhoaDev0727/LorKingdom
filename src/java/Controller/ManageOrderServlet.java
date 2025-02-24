@@ -48,7 +48,7 @@ public class ManageOrderServlet extends HttpServlet {
             int index = Integer.parseInt(indexString);
 
             // Số lượng sản phẩm trên mỗi trang
-            int ordersPerPage = 5;
+            int ordersPerPage = 10;
 
             OrderDAO dao = new OrderDAO();
 

@@ -48,12 +48,6 @@
         <servlet-name>UpdateAvatarServlet</servlet-name>
         <servlet-class>Controller.UpdateAvatarServlet</servlet-class>
     </servlet>
-
-    <servlet>
-        <servlet-name>ShippingDAO</servlet-name>
-        <servlet-class>DAO.ShippingDAO</servlet-class>
-    </servlet>
-
     <servlet>
         <servlet-name>CategoryServlet</servlet-name>
         <servlet-class>Controller.CategoryServlet</servlet-class>
