@@ -1,28 +1,103 @@
-body, html {
+* {
     margin: 0;
     padding: 0;
-    height: 100%;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
-.container-fluid2 {
-    height: 110vh;
+
+.containers {
+    display: flex;
+    height: 100vh;
     width: 100%;
-    background-image: url("../assets/img/adminitrator.jpg");
-    background-size: cover;
-    background-position: bottom;
-    background-repeat: no-repeat;
-    padding-top: 6%;
+    background-color: #f0f8ff;
 }
 
+.background {
+    flex: 0 50%; 
+    position: relative;
+    overflow: hidden;
+    margin-left: 10%;
+    width: 100%;
+    height: auto;
+}
 
-.form-container {
-    margin: 140px 15% 0 auto;
+.background-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.login-section {
+    flex: 0 50%; 
+    margin-right: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+}
+
+.login-form {
+    background-color: rgba(255, 255, 255, 0.9);
     padding: 30px;
-    background: #fff;
-    border-radius: 20px;
-    box-shadow: 2px 4px 4px rgba(206, 206, 206, 0.14);
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 400px;
+    text-align: center;
     position: relative;
+}
+
+.logo {
+    margin-bottom: 20px;
+    border-bottom: 1px solid grey;
+    padding-bottom: 10px;
+}
+
+.logo-img {
+    max-width: 150px;
+    height: auto;
+}
+
+h2 {
+    color: #1977d4;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #666;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.login-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #1e90ff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.login-button:hover {
+    background-color: #4169e1;
 }
 
 /* Kiểu cho form */
@@ -58,25 +133,21 @@ button {
     margin-top: 10px;
 }
 
-button:hover {
-    opacity: 0.8;
+button[type="submit"]:hover {
+   background-color: rgba(68, 68, 66, 0.9);
 }
 
 button[type="submit"] {
-    background-color: white;
+    background-color: #4169e1;
     color: white;
+    font-weight: 550;
+    border-radius: 20px;
 }
 
-button.login-btn {
-    border-radius:20px;
-    background: rgb(66, 66, 66);
-    color: white;
-    font-weight: 650;
+.forgot-password {
+    padding-top: 5px;
 }
-.FP {
-    display: flex;
-   
-}
+
 .FP a, span{
      font-size: 16px;
 }

@@ -92,4 +92,19 @@ public class BrandDAO {
         }
         return false;
     }
+
+    public String getBrandNameByProductId(int productId) throws SQLException, ClassNotFoundException {
+        String brandName = null;
+        String sql = "SELECT b.Name FROM Product p JOIN Brand b ON p.BrandID = b.BrandID WHERE p.ProductID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, productId);
+            try ( ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    brandName = rs.getString("Name");
+                }
+            }
+        }
+        return brandName;
+    }
+
 }

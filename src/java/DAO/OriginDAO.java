@@ -94,4 +94,19 @@ public class OriginDAO {
         }
         return false;
     }
+
+    public String getOriginNameByProductId(int productId) throws SQLException, ClassNotFoundException {
+        String originName = null;
+        String sql = "SELECT o.Name FROM Product p JOIN Origin o ON p.OriginID = o.OriginID WHERE p.ProductID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, productId);
+            try ( ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    originName = rs.getString("Name");
+                }
+            }
+        }
+        return originName;
+    }
+
 }

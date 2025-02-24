@@ -12,7 +12,11 @@ import Model.PriceRange;
 import Model.Brand;
 import Model.Material;
 import Model.Origin;
+import Model.Product;
+import Model.ProductImage;
 
+import DAO.ProductDAO;
+import DAO.ProductImageDAO;
 import DAO.OriginDAO;
 import DAO.MaterialDAO;
 import DAO.BrandDAO;
@@ -84,65 +88,58 @@ public class getList extends HttpServlet {
         BrandDAO brandDAO = new BrandDAO();
         MaterialDAO materialDAO = new MaterialDAO();
         OriginDAO originDAO = new OriginDAO();
-        
-        
+        ProductDAO productDAO = new ProductDAO();
+        ProductImageDAO productImageDAO = new ProductImageDAO();
+        int itemsPerPage = 10; // Số sản phẩm mỗi trang
+        int page = 1;
+        String pageParam = request.getParameter("page");
+        if (pageParam != null) {
+            try {
+                page = Integer.parseInt(pageParam);
+            } catch (NumberFormatException e) {
+                page = 1;
+            }
+        }
+        int offset = (page - 1) * itemsPerPage;
+
         try {
+            // Lấy giá trị lọc từ request (nếu có)
+            Integer categoryID = request.getParameter("categoryID") != null ? Integer.parseInt(request.getParameter("categoryID")) : null;
+            Integer ageID = request.getParameter("ageID") != null ? Integer.parseInt(request.getParameter("ageID")) : null;
+            Integer sexID = request.getParameter("sexID") != null ? Integer.parseInt(request.getParameter("sexID")) : null;
+            Integer priceRangeID = request.getParameter("priceRangeID") != null ? Integer.parseInt(request.getParameter("priceRangeID")) : null;
+            Integer brandID = request.getParameter("brandID") != null ? Integer.parseInt(request.getParameter("brandID")) : null;
+            Integer materialID = request.getParameter("materialID") != null ? Integer.parseInt(request.getParameter("materialID")) : null;
+            Integer originID = request.getParameter("originID") != null ? Integer.parseInt(request.getParameter("originID")) : null;
 
-            List<SuperCategory> listSuperCategorys = superCategoryDAO.getAllSuperCategories();
-            List<Category> listCategories = categoryDAO.getAllCategories();
-            List<Age> listAges = ageDAO.getAllAges();
-            List<Sex> listSex = sexDAO.getAllSexes();
-            List<PriceRange> listPriceRange = priceRangeDAO.getAllPriceRanges();
-            List<Brand> listBrand = brandDAO.getAllBrands();
-            List<Material> materials = materialDAO.getAllMaterials();
-            List<Origin> origins = originDAO.getAllOrigins();
-            
-            
-            // Kiểm tra danh sách có dữ liệu hay không
-            if (listSuperCategorys.isEmpty()) {
-                System.out.println("Không có dữ liệu trong danh sách SuperCategory.");
-            }
-            if (listCategories.isEmpty()) {
-                System.out.println("Không có dữ liệu trong danh sách Category.");
-            }
-            if (listAges.isEmpty()) {
-                System.out.println(" có dữ liệu trong danh sách Age.");
-            }
-            if (listSex.isEmpty()) {
-                System.out.println(" có dữ liệu trong danh sách Sex.");
-            }
-          
-            // In ra console để kiểm tra dữ liệu trước khi truyền vào JSP
-            System.out.println("Danh sách SuperCategory:");
-            for (SuperCategory category : listSuperCategorys) {
-                System.out.println("ID: " + category.getSuperCategoryID() + ", Name: " + category.getName());
+            // Kiểm tra xem có bộ lọc nào không
+            boolean hasFilters = categoryID != null || ageID != null || sexID != null
+                    || priceRangeID != null || brandID != null || materialID != null || originID != null;
+
+            List<Product> products;
+            if (hasFilters) {
+                // Nếu có bộ lọc -> lấy danh sách sản phẩm phù hợp
+                products = productDAO.getFilteredProducts(categoryID, ageID, sexID, priceRangeID, brandID, materialID, originID);
+            } else {
+                // Nếu không có bộ lọc nào -> lấy tất cả sản phẩm
+                products = productDAO.getAllProducts();
             }
 
-            System.out.println("Danh sách Category:");
-            for (Category listCategory : listCategories) {
-                System.out.println("ID: " + listCategory.getCategoryID() + ", Name: " + listCategory.getName());
-            }
-
-            System.out.println("Danh sách Age:");
-            for (Age age : listAges) {
-                System.out.println("ID: " + age.getAgeID() + ", Age Range: " + age.getAgeRange() + ", Created At: " + age.getCreatedAt());
-            }
-
-            System.out.println("Danh sách Sex:");
-            for (Sex sex : listSex) {
-                System.out.println("ID: " + sex.getSexID() + ", Name: " + sex.getName() + ", Created At: " + sex.getCreatedAt());
-            }
+            int totalProducts = products.size();
 
             // Gửi dữ liệu đến JSP
-            request.setAttribute("listPriceRanges", listPriceRange);
-            request.setAttribute("superCategories", listSuperCategorys);
-            request.setAttribute("categories", listCategories);
-            request.setAttribute("ages", listAges);
-            request.setAttribute("listS", listSex);
-            request.setAttribute("listB", listBrand);
-            request.setAttribute("listM", materials);
-            request.setAttribute("listO", origins);
-            
+            request.setAttribute("totalProducts", totalProducts);
+            request.setAttribute("listP", products);
+            request.setAttribute("superCategories", superCategoryDAO.getAllSuperCategories());
+            request.setAttribute("categories", categoryDAO.getAllCategories());
+            request.setAttribute("ages", ageDAO.getAllAges());
+            request.setAttribute("listS", sexDAO.getAllSexes());
+            request.setAttribute("listB", brandDAO.getAllBrands());
+            request.setAttribute("listM", materialDAO.getAllMaterials());
+            request.setAttribute("listO", originDAO.getAllOrigins());
+            request.setAttribute("listPriceRanges", priceRangeDAO.getAllPriceRanges());
+            request.setAttribute("mainImages", ProductImageDAO.getMainProductImages());
+
             request.getRequestDispatcher("home.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace(); // Log lỗi ra console

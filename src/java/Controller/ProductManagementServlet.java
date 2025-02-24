@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.util.List;
 import Model.*;
 import DAO.*;
-import com.oracle.wls.shaded.org.apache.bcel.generic.AALOAD;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -110,21 +109,23 @@ public class ProductManagementServlet extends HttpServlet {
                 if (part.getName().equals("detailImages") && part.getSize() > 0) {
                     String detailImageFileName = handleImageProduct.generateUniqueFileName(part);
                     String detailImageFilePath = handleImageProduct.saveFile(part, uploadPath, detailImageFileName);
+                    System.out.println(detailImageFilePath);
                     imagePaths.add(detailImageFilePath);
+                    System.out.println(detailImageFilePath);
                 }
             }
             // Thêm sản phẩm và ảnh vào DB
             boolean addRow = ProductDAO.addProduct(p, imagePaths, 1);
             if (addRow) {
-                response.sendRedirect("AddProductSuccess.jsp");
+                response.sendRedirect("AddNewProduct.jsp?updateSuccess=true");
             } else {
                 request.setAttribute("errorMessage", "Failed to add product to database.");
                 request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
             }
+
         } catch (Exception e) {
-            Logger.getLogger(ProductManagementServlet.class.getName()).log(Level.SEVERE, "Error processing product", e);
-            request.setAttribute("error", "An error occurred: " + e.getMessage());
-            request.getRequestDispatcher("error.jsp").forward(request, response);
+            request.setAttribute("errorMessage", "Failed to add product can not empty.");
+            request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
         }
     }
 

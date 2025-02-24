@@ -13,11 +13,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./CSS/resetPasswordPage.css"/>
 </head>
-<body>
+<body style="background-image: url(./assets/img/back-forgot.jpg);
+             background-size: cover;">
     <div class="container mt-5">
-        <div class="reset-password-container">
+        <div class="reset-password-container" style="background-color: rgb(231, 231, 231);">
             <h3>Reset Your Password</h3>
-            <form action="ResetPasswordServlet" method="POST">
+            <form action="ResetPasswordPage" method="POST">
                 <input type="hidden" name="token" value="${param.token}">
                 <div class="mb-3">
                     <input type="password" class="form-control" name="password" placeholder="New Password">
@@ -26,7 +27,7 @@
             </form>
 
             <c:if test="${not empty requestScope.message}">
-                <div class="alert alert-info mt-3">${requestScope.message}</div>
+                <div class="alert alert-info mt-3" style="background-color: rgb(231, 231, 231);">${requestScope.message}</div>
             </c:if>
         </div>
     </div>
@@ -42,7 +43,7 @@
             var countdownInterval = setInterval(function() {
                 if (countdown <= 0) {
                     clearInterval(countdownInterval);
-                    window.location.href = 'login.jsp'; // Chuyển hướng đến login.jsp
+                    window.location.href = 'loginPage.jsp'; // Chuyển hướng đến login
                 } else {
                     document.querySelector('.alert').innerHTML = 'Password has been reset successfully. Redirecting to login in ' + countdown + ' seconds...';
                     countdown--;

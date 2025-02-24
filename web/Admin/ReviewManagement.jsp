@@ -16,7 +16,6 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="JS/SideBarToggle.js"></script>
     </head>
-
     <body class="sb-nav-fixed">
         <div id="layoutSidenav">
             <div id="layoutSidenav_content">
@@ -25,7 +24,6 @@
                     <main>
                         <div class="container-fluid px-5">
                             <h1 class="mt-4">Review Management</h1>
-
                             <!-- Success/Error Messages -->
                             <c:if test="${not empty message}">
                                 <div class="alert alert-${messageType} alert-dismissible fade show" role="alert">
@@ -38,7 +36,7 @@
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <i class="fas fa-table me-1"></i> Status Order List
+                                            <i class="fas fa-table me-1"></i> Review List
                                         </div>
                                     </div>
                                 </div>
@@ -48,9 +46,8 @@
                                         <input type="hidden" name="action" value="search">
                                         <div class="row g-2">
                                             <div class="col-md-4">
-                                                <input type="text" value="0" class="form-control" name="filterUserProduct" placeholder="Search ID by user or product">
+                                                <input type="text" class="form-control hide-zero" name="filterUserProduct" placeholder="Search ID by user or product">
                                             </div>
-
                                             <div class="col-md-2">
                                                 <select class="form-select" name="filterRating">
                                                     <option value="0">Filter by rating</option>
@@ -82,6 +79,7 @@
 
                                     <!-- Review Table -->
                                     <div class="table-responsive">
+                                        <%@include file="Component/PaginationReview.jsp" %>
                                         <table class="table table-bordered table-striped table-hover">
                                             <thead class="table-dark text-center">
                                                 <tr>
@@ -155,59 +153,57 @@
                                                                     </button>
                                                                 </td>
                                                             </tr>
-
                                                             <!-- Edit Review Modal -->
-                                                        <div class="modal fade" id="editStatusReviewModal${s.reviewID}">
-                                                            <div class="modal-dialog modal-lg">
-                                                                <div class="modal-content">
-                                                                    <form action="ReviewManagementServlet" method="POST">
-                                                                        <input type="hidden" name="action" value="update">
-                                                                        <input type="hidden" name="reviewID" value="${s.reviewID}">
+                                                            <div class="modal fade" id="editStatusReviewModal${s.reviewID}">
+                                                                <div class="modal-dialog modal-lg">
+                                                                    <div class="modal-content">
+                                                                        <form action="ReviewManagementServlet" method="POST">
+                                                                            <input type="hidden" name="action" value="update">
+                                                                            <input type="hidden" name="reviewID" value="${s.reviewID}">
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title">Edit Review Status</h5>
+                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                <div class="mb-3">
+                                                                                    <label class="form-label">Review Status</label>
+                                                                                    <select class="form-select" name="status">
+                                                                                        <option value="0" ${s.status == 0 ? 'selected' : ''}>Approved</option>
+                                                                                        <option value="1" ${s.status == 1 ? 'selected' : ''}>Pending</option>
+                                                                                        <option value="2" ${s.status == 2 ? 'selected' : ''}>Rejected</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
 
+                                                            <!-- Delete Confirmation Modal -->
+                                                            <div class="modal fade" id="deleteModal${s.reviewID}">
+                                                                <div class="modal-dialog">
+                                                                    <div class="modal-content">
                                                                         <div class="modal-header">
-                                                                            <h5 class="modal-title">Edit Review Status</h5>
+                                                                            <h5 class="modal-title">Confirm Delete</h5>
                                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                                         </div>
                                                                         <div class="modal-body">
-                                                                            <div class="mb-3">
-                                                                                <label class="form-label">Review Status</label>
-                                                                                <select class="form-select" name="status">
-                                                                                    <option value="0" ${s.status == 0 ? 'selected' : ''}>Approved</option>
-                                                                                    <option value="1" ${s.status == 1 ? 'selected' : ''}>Pending</option>
-                                                                                    <option value="2" ${s.status == 2 ? 'selected' : ''}>Rejected</option>
-                                                                                </select>
-                                                                            </div>
+                                                                            Are you sure you want to delete review: <strong>${s.reviewID}</strong>?
                                                                         </div>
                                                                         <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                                            <a href="ReviewManagementServlet?action=delete&reviewID=${s.reviewID}" class="btn btn-danger">Delete</a>
                                                                         </div>
-                                                                    </form>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <!-- Delete Confirmation Modal -->
-                                                        <div class="modal fade" id="deleteModal${s.reviewID}">
-                                                            <div class="modal-dialog">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title">Confirm Delete</h5>
-                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        Are you sure you want to delete review: <strong>${s.reviewID}</strong>?
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                                        <a href="ReviewManagementServlet?action=delete&reviewID=${s.reviewID}" class="btn btn-danger">Delete</a>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    </c:forEach>
-                                                </c:otherwise>
-                                            </c:choose>
+                                                        </c:forEach>
+                                                    </c:otherwise>
+                                                </c:choose>
                                             </tbody>
                                         </table>
                                     </div>

@@ -32,6 +32,25 @@ public class Review {
         this.Status = Status;
     }
 
+    public Review(int accountID, int productID, String imgReview, int Rating, String Comment ) {
+        this.accountID = accountID;
+        this.productID = productID;
+        this.imgReview = imgReview;
+        this.Rating = Rating;
+        this.Comment = Comment;
+
+    }
+
+    public Review(int accountID, int productID, String imgReview, int Rating, String Comment, Timestamp reviewAt) {
+        this.accountID = accountID;
+        this.productID = productID;
+        this.imgReview = imgReview;
+        this.Rating = Rating;
+        this.Comment = Comment;
+        this.reviewAt = reviewAt;
+    }
+    
+    
     public int getReviewID() {
         return reviewID;
     }

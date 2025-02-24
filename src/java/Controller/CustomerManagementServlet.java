@@ -16,9 +16,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
@@ -35,6 +32,7 @@ import java.util.List;
 public class CustomerManagementServlet extends HttpServlet {
 
     private static final String UPLOAD_DIR = "images";
+    private static final String FOLDER = "images";
     private static final int ROLE_CUSTOMER = 3;
     private static final MyUntilsDAO myUntilsDAO = new MyUntilsDAO();
     private static int PAGE = 1;
@@ -62,10 +60,10 @@ public class CustomerManagementServlet extends HttpServlet {
                         searchCustomer(request, response);
                         break;
                     default:
-                        showCustomer(request, response);
+                        showListCustomer(request, response);
                 }
             } else {
-                showCustomer(request, response);
+                showListCustomer(request, response);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,16 +86,16 @@ public class CustomerManagementServlet extends HttpServlet {
             if (action != null) {
                 switch (action) {
                     case "add":
-                        addCustomer(request, response);
+//                        addCustomer(request, response);
                         break;
                     case "update":
                         updateCustomer(request, response);
                         break;
                     default:
-                        showCustomer(request, response);
+                        showListCustomer(request, response);
                 }
             } else {
-                showCustomer(request, response);
+                showListCustomer(request, response);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -108,32 +106,24 @@ public class CustomerManagementServlet extends HttpServlet {
      * Displays the list of customers in the management interface. Retrieves
      * customers with a specific role and the available roles.
      */
-    protected void showCustomer(HttpServletRequest request, HttpServletResponse response)
+    protected void showListCustomer(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, ClassNotFoundException {
         try {
             if (request.getParameter("page") != null) {
                 PAGE = Integer.parseInt(request.getParameter("page"));
             }
-            int totalPages = myUntilsDAO.getTotalPages(PAGE_SIZE, ROLE_CUSTOMER);
+            int totalPages = myUntilsDAO.getTotalPagesAccount(PAGE_SIZE, ROLE_CUSTOMER);
             List<Account> listAccount = AccountDAO.getAllAccount(ROLE_CUSTOMER, PAGE, PAGE_SIZE);
             List<Role> listRole = AccountDAO.showListRoleTest();
+             request.setAttribute("roles", listRole);
             request.setAttribute("customers", listAccount);
             request.setAttribute("currentPage", PAGE);
-            request.setAttribute("roles", listRole);
             request.setAttribute("totalPages", totalPages);
+            request.setAttribute("forward", "CustomerManagementServlet");
             request.getRequestDispatcher("CustomerManagement.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Adds a new customer to the system. This method is currently empty and
-     * needs to be implemented.
-     */
-    protected void addCustomer(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
     }
 
     /**
@@ -157,12 +147,12 @@ public class CustomerManagementServlet extends HttpServlet {
             // Nếu có file mới, upload ảnh mới, ngược lại giữ ảnh cũ
             Part filePart = request.getPart("image");
             String image = (filePart.getSize() > 0)
-                    ? UploadImage.uploadFile(filePart, uploadPath)
+                    ? UploadImage.uploadFile(filePart, uploadPath, FOLDER)
                     : oldImage;
             Account a = new Account(accountID, roleID, userName, phoneNumber, image, email, passwordHashed, address, status);
             boolean isUpdate = AccountDAO.updateProfileStaff(a);
             if (isUpdate) {
-                showCustomer(request, response);
+                showListCustomer(request, response);
             } else {
                 System.out.println("Loi Update");
             }
@@ -186,7 +176,7 @@ public class CustomerManagementServlet extends HttpServlet {
             String id = request.getParameter("accountId");
             Boolean isDeleted = AccountDAO.DeleteSoftAccountById(Integer.parseInt(id));
             if (isDeleted) {
-                showCustomer(request, response);
+                showListCustomer(request, response);
             } else {
                 System.out.println("loi r");
             }
@@ -202,10 +192,33 @@ public class CustomerManagementServlet extends HttpServlet {
     protected void searchCustomer(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            String keyword = request.getParameter("search");
-            int totalPages = myUntilsDAO.getTotalPages(PAGE_SIZE, ROLE_CUSTOMER);
-            List<Account> list = AccountDAO.searchUser(keyword, ROLE_CUSTOMER, PAGE, PAGE_SIZE);
+            String keyword = request.getParameter("search"); // Lấy từ ô nhập
+            if (keyword == null) {
+                keyword = ""; // Tránh null gây lỗi
+            }
+            String pageParam = request.getParameter("page");
+            if (pageParam != null && !pageParam.trim().isEmpty()) {
+                try {
+                    PAGE = Integer.parseInt(pageParam.trim()); // Chuyển đổi số nguyên
+                    if (PAGE < 1) {
+                        PAGE = 1; // Không cho phép số âm
+                    }
+                } catch (NumberFormatException e) {
+                    PAGE = 1; // Nếu lỗi, quay về trang đầu
+                }
+            }
+
+            int totalPages = myUntilsDAO.getTotalPagesAccountSearch(PAGE_SIZE, ROLE_CUSTOMER, keyword);
+            List<Account> list = AccountDAO.findUser(keyword, ROLE_CUSTOMER, PAGE, PAGE_SIZE);
+            List<Role> roleList = AccountDAO.showListRoleTest();
+
             request.setAttribute("customers", list);
+            request.setAttribute("currentPage", PAGE);
+            request.setAttribute("roles", roleList);
+            request.setAttribute("totalPages", totalPages);
+            request.setAttribute("action", "search");
+            request.setAttribute("keyword", keyword); // Giữ lại keyword
+
             request.getRequestDispatcher("CustomerManagement.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
