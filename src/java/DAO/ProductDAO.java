@@ -4,8 +4,6 @@
  */
 package DAO;
 
-import static DAO.ProductImageDAO.conn;
-import static DAO.ProductImageDAO.stm;
 import DBConnect.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -30,6 +28,7 @@ public class ProductDAO {
     private static String ADD_PRODUCT = "INSERT INTO Product ( SKU, CategoryID, MaterialID, AgeID, SexID, "
             + "PriceRangeID, BrandID, OriginID, Name, Price, Quantity, "
             + " Description ) VALUES ( ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+    private static String SELECT_PRODUCT_BY_ID ="SELECT * FROM Product WHERE ProductID = ?";
     private static String DELETE_REVIEW_BY_ID = "DELETE FROM Review WHERE ReviewID = ?";
     private static String ADD_PRODUCT_IMAGE = "INSERT INTO ProductImages (ProductID, Image, IsMain) VALUES (?, ?, ?)";
 
@@ -277,6 +276,33 @@ public class ProductDAO {
             e.printStackTrace();
         }
         return product;
+    }
+
+    public Product getProduct(int id) {
+        Product p = null;
+        try {
+            conn = DBConnection.getConnection();
+            stm = conn.prepareStatement(SELECT_PRODUCT_BY_ID);
+            stm.setInt(1, id);
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                p = new Product(rs.getString("SKU"),
+                        rs.getInt("CategoryID"),
+                        rs.getInt("MaterialID"),
+                        rs.getInt("AgeID"),
+                        rs.getInt("SexID"),
+                        rs.getInt("PriceRangeID"),
+                        rs.getInt("BrandID"),
+                        rs.getInt("OriginID"),
+                        rs.getString("Name"),
+                        rs.getDouble("Price"),
+                        rs.getInt("Quantity"),
+                        rs.getString("Description"));
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+        return p;
     }
 
 }

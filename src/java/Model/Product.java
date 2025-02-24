@@ -28,6 +28,7 @@ public class Product {
     private String description;
     private Timestamp createdAt;
     private Timestamp updatedAt;
+    private String mainImageUrl;
 
     public Product(String SKU, Integer categoryID, Integer materialID, Integer ageID, Integer sexID, Integer priceRangeID, Integer brandID, Integer originID, String name, double price, int quantity, String status, String description) {
         this.SKU = SKU;
@@ -95,6 +96,21 @@ public class Product {
     }
 
     public Product() {
+    }
+
+    public Product(int productID, String name, double price) {
+        this.productID = productID;
+        this.name = name;
+        this.price = price;
+    }
+
+
+    public String getMainImageUrl() {
+        return mainImageUrl;
+    }
+
+    public void setMainImageUrl(String mainImageUrl) {
+        this.mainImageUrl = mainImageUrl;
     }
 
     public int getProductID() {
