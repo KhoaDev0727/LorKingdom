@@ -14,6 +14,7 @@
         <link rel="stylesheet" href="CSS/style.css" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="JS/SideBarToggle.js"></script>
     </head>
     <body class="sb-nav-fixed">
         <!-- Sidebar (Included) -->
@@ -51,7 +52,7 @@
 
                             <!-- Search by Minimum Amount -->
                             <div class="col-md-4">
-                                <form action="${pageContext.request.contextPath}/Admin/orderView" method="POST" class="d-flex">
+                                <form action="${pageContext.request.contextPath}/Admin/OrderView" method="POST" class="d-flex">
                                     <input type="hidden" name="action" value="money">
                                     <input type="text" name="minAmount" class="form-control" placeholder="Enter Minimum Amount" required>
                                     <button class="btn btn-outline-secondary" type="submit">
@@ -101,7 +102,6 @@
                                                 <th>Total Amount</th>
                                                 <th>Update</th>
                                                 <th>Action</th>
-                                                <th>View</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -123,12 +123,10 @@
                                                             <td>${o.updatedAt}</td>
                                                             <td>
                                                                 <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" onclick="setDeleteOrderID(${o.orderId})">
-                                                                    <i class="fas fa-trash"></i> Delete
+                                                                    <i class="fas fa-trash"></i>
                                                                 </button>
-                                                            </td>
-                                                            <td> 
                                                                 <a href="${pageContext.request.contextPath}/Admin/OrderView?action=view&orderId=${o.orderId}" class="btn btn-sm btn-info">
-                                                                    <i class="fas fa-eye"></i> View
+                                                                    <i class="fas fa-eye"></i>
                                                                 </a>
                                                             </td>
                                                         </tr>
