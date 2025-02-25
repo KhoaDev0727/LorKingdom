@@ -15,6 +15,7 @@ import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.File;
 import java.util.List;
@@ -93,6 +94,8 @@ public class StaffManagementServlet extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            request.getSession().setAttribute("errorMessage", "An error occurred: " + e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
         }
     }
 
@@ -125,6 +128,8 @@ public class StaffManagementServlet extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            request.getSession().setAttribute("errorMessage", "An error occurred: " + e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
         }
     }
 
@@ -145,105 +150,210 @@ public class StaffManagementServlet extends HttpServlet {
             request.getRequestDispatcher("StaffManagement.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
+            request.getSession().setAttribute("errorMessage", "Error loading staff: " + e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
         }
     }
 
     protected void addStaff(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
         try {
             String uploadPath = request.getServletContext().getRealPath("/") + File.separator + UPLOAD_DIR;
             String userName = request.getParameter("userName");
             String phoneNumber = request.getParameter("phoneNumber");
             String email = request.getParameter("email");
-            String passwordHashed = MyUtils.hashPassword(request.getParameter("password"));
-            String address = request.getParameter("address");
-            String status = request.getParameter("status");
-            int roleID = Integer.parseInt(request.getParameter("roleID"));
-            // Lấy ảnh cũ từ request
-            String oldImage = request.getParameter("currentImage");
-            // Nếu có file mới, upload ảnh mới, ngược lại giữ ảnh cũ
+            String password = request.getParameter("password");
+            String address = request.getParameter("address").trim();
+            String status = request.getParameter("status").trim();
+            int roleID;
+            // Validate required fields
+            if (userName.isEmpty() || phoneNumber.isEmpty() || email.isEmpty() || address.isEmpty()) {
+                session.setAttribute("errorMessage", "All fields are required.");
+                response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
+                return;
+            }
+            // Validate email format
+            if (!email.matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+                session.setAttribute("errorMessage", "Invalid email format.");
+                response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
+                return;
+            }
+            // Validate phone number (assumes 10 digits)
+            if (!phoneNumber.matches("\\d{10}")) {
+                session.setAttribute("errorMessage", "Phone number must be 10 digits.");
+                response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
+                return;
+            }
+            // Check for existing email or username
+            if (AccountDAO.isEmailExists(email)) {
+                session.setAttribute("errorMessage", "Email already exists.");
+                response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
+                return;
+            }
+            if (password == null || password.trim().isEmpty()) {
+                request.getSession().setAttribute("errorMessage", "Password cannot be empty.");
+                showStaff(request, response);
+                return;
+            }
+
+            try {
+                roleID = Integer.parseInt(request.getParameter("roleID"));
+            } catch (NumberFormatException e) {
+                request.getSession().setAttribute("errorMessage", "Invalid role ID.");
+                showStaff(request, response);
+                return;
+            }
+            String passwordHashed = MyUtils.hashPassword(password);
+            String oldImage = request.getParameter("currentImage").trim();
             Part filePart = request.getPart("image");
             String image = (filePart.getSize() > 0)
                     ? UploadImage.uploadFile(filePart, uploadPath, FOLDER)
                     : oldImage;
+
             Account a = new Account(roleID, userName, phoneNumber, email, image, passwordHashed, address, status);
-            boolean isUpdate = AccountDAO.addAdmin(a);
-            if (isUpdate) {
-                showStaff(request, response);
+            boolean isAdded = AccountDAO.addAdmin(a);
+            if (isAdded) {
+                request.getSession().setAttribute("successMessage", "Staff added successfully.");
             } else {
-                System.out.println("Loi Update");
+                request.getSession().setAttribute("errorMessage", "Failed to add staff. Email may already exist.");
             }
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "Invalid input format.");
+        } catch (IOException | ServletException e) {
+            request.getSession().setAttribute("errorMessage", "Error uploading image: " + e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            request.getSession().setAttribute("errorMessage", "Error adding staff: " + e.getMessage());
+        } finally {
+            response.sendRedirect("/Admin/StaffManagementServlet");
         }
     }
 
     protected void updateStaff(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
         try {
             String uploadPath = request.getServletContext().getRealPath("/") + File.separator + UPLOAD_DIR;
-            int accountID = Integer.parseInt(request.getParameter("accountId"));
-            String userName = request.getParameter("userName");
-            String phoneNumber = request.getParameter("phoneNumber");
-            String email = request.getParameter("email");
-            String passwordHashed = MyUtils.hashPassword(request.getParameter("password"));
-            String address = request.getParameter("address");
-            String status = request.getParameter("status");
+            int accountID;
+            try {
+                accountID = Integer.parseInt(request.getParameter("accountId"));
+            } catch (NumberFormatException e) {
+                request.getSession().setAttribute("errorMessage", "Invalid account ID.");
+                 response.sendRedirect("/Admin/StaffManagementServlet");
+                return;
+            }
+            String userName = request.getParameter("userName").trim();
+            String phoneNumber = request.getParameter("phoneNumber").trim();
+            String email = request.getParameter("email").trim();
+            String password = request.getParameter("password").trim();
+            String address = request.getParameter("address").trim();
+            String status = request.getParameter("status").trim();
             int roleID = Integer.parseInt(request.getParameter("roleID"));
-            // Lấy ảnh cũ từ request
-            String oldImage = request.getParameter("currentImage");
-            // Nếu có file mới, upload ảnh mới, ngược lại giữ ảnh cũ
+            String oldImage = request.getParameter("currentImage").trim();
+            // Validate required fields
+            if (userName.isEmpty() || phoneNumber.isEmpty() || email.isEmpty() || address.isEmpty()) {
+                session.setAttribute("errorMessage", "All fields are required.");
+                response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
+                return;
+            }
+            // Validate email format
+            if (!email.matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+                session.setAttribute("errorMessage", "Invalid email format.");
+                response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
+                return;
+            }
+            // Validate phone number (assumes 10 digits)
+            if (!phoneNumber.matches("\\d{10}")) {
+                session.setAttribute("errorMessage", "Phone number must be 10 digits.");
+                response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
+                return;
+            }
+            // Check for existing email or username
+            if (AccountDAO.isEmailExists(email)) {
+                session.setAttribute("errorMessage", "Email already exists.");
+                response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
+                return;
+            }
+            // Handle password
+            String passwordHashed;
+            if (!password.isEmpty()) {
+                passwordHashed = MyUtils.hashPassword(password);
+            } else {
+                // Retrieve existing password if not changed
+                Account existingAccount = AccountDAO.getInforAccountByID(accountID);
+                passwordHashed = existingAccount.getPassword();
+            }
+            try {
+                roleID = Integer.parseInt(request.getParameter("roleID"));
+            } catch (NumberFormatException e) {
+                request.getSession().setAttribute("errorMessage", "Invalid role ID.");
+                response.sendRedirect("/Admin/StaffManagementServlet");
+                return;
+            }
+
             Part filePart = request.getPart("image");
             String image = (filePart.getSize() > 0)
                     ? UploadImage.uploadFile(filePart, uploadPath, FOLDER)
                     : oldImage;
+
             Account a = new Account(accountID, roleID, userName, phoneNumber, image, email, passwordHashed, address, status);
-            boolean isUpdate = AccountDAO.updateProfileStaff(a);
-            if (isUpdate) {
-                showStaff(request, response);
+            boolean isUpdated = AccountDAO.updateProfileStaff(a);
+            if (isUpdated) {
+                request.getSession().setAttribute("successMessage", "Staff updated successfully.");
             } else {
-                System.out.println("Loi Update");
+                request.getSession().setAttribute("errorMessage", "Failed to update staff.");
             }
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "Invalid input format.");
+        } catch (IOException | ServletException e) {
+            request.getSession().setAttribute("errorMessage", "Error uploading image: " + e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            request.getSession().setAttribute("errorMessage", "Error updating staff: " + e.getMessage());
+        } finally {
+            response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
         }
     }
 
     protected void deleteStaff(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            String id = request.getParameter("accountId");
-            Boolean isDeleted = AccountDAO.DeleteSoftAccountById(Integer.parseInt(id));
-            if (isDeleted) {
+            String idParam = request.getParameter("accountId").trim();
+            if (idParam == null || idParam.isEmpty()) {
+                request.getSession().setAttribute("errorMessage", "Account ID is missing.");
                 showStaff(request, response);
-            } else {
-                System.out.println("loi r");
+                return;
             }
+            int accountId = Integer.parseInt(idParam.trim());
+            boolean isDeleted = AccountDAO.DeleteSoftAccountById(accountId);
+            if (isDeleted) {
+                request.getSession().setAttribute("successMessage", "Staff deleted successfully.");
+            } else {
+                request.getSession().setAttribute("errorMessage", "Failed to delete staff.");
+            }
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "Invalid account ID format.");
         } catch (Exception e) {
-            e.printStackTrace();
+            request.getSession().setAttribute("errorMessage", "Error deleting staff: " + e.getMessage());
+        } finally {
+            response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
         }
     }
 
     protected void searchStaff(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            String keyword = request.getParameter("search"); // Lấy từ ô nhập
-            if (keyword == null) {
-                keyword = ""; // Tránh null gây lỗi
-            }
-            String pageParam = request.getParameter("page");
-            int page = 1; // Mặc định là trang 1 nếu không có tham số
+            String keyword = request.getParameter("search").trim();
+            keyword = keyword != null ? keyword : "";
+            int page = 1;
+            String pageParam = request.getParameter("page").trim();
             if (pageParam != null && !pageParam.trim().isEmpty()) {
                 try {
-                    page = Integer.parseInt(pageParam.trim()); // Chuyển đổi số nguyên
-                    if (page < 1) {
-                        page = 1; // Không cho phép số âm
-                    }
+                    page = Integer.parseInt(pageParam.trim());
+                    page = page < 1 ? 1 : page;
                 } catch (NumberFormatException e) {
-                    page = 1; // Nếu lỗi, quay về trang đầu
+                    page = 1;
                 }
             }
-
             int totalPages = myUntilsDAO.getTotalPagesAccountSearch(PAGE_SIZE, ROLE_STAFF, keyword);
             List<Account> list = AccountDAO.findUser(keyword, ROLE_STAFF, page, PAGE_SIZE);
             List<Role> roleList = AccountDAO.showListRoleTest();
@@ -252,11 +362,14 @@ public class StaffManagementServlet extends HttpServlet {
             request.setAttribute("roles", roleList);
             request.setAttribute("totalPages", totalPages);
             request.setAttribute("action", "search");
-            request.setAttribute("keyword", keyword); // Giữ lại keyword
-
+            request.setAttribute("keyword", keyword);
             request.getRequestDispatcher("StaffManagement.jsp").forward(request, response);
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "Invalid page number.");
+            response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
         } catch (Exception e) {
-            e.printStackTrace();
+            request.getSession().setAttribute("errorMessage", "Error searching staff: " + e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
         }
     }
 

@@ -11432,3 +11432,14 @@ body {
         font-size: 14px;
     }
 }
+/*Show message Password*/
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+    display: block;
+}
+.input-error {
+    border: 2px solid red !important;
+    background-color: #ffe6e6; /* Nhẹ nhàng báo hiệu lỗi */
+}

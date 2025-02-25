@@ -1,4 +1,4 @@
- /*
+/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
@@ -14,6 +14,7 @@ import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.File;
 import java.sql.Timestamp;
@@ -39,6 +40,13 @@ public class CustomerManagementServlet extends HttpServlet {
     private static final int PAGE_SIZE = 10;
 
     /**
+     *
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
+    /*
      * Handles the HTTP <code>GET</code> method.
      *
      * @param request servlet request
@@ -67,6 +75,8 @@ public class CustomerManagementServlet extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            request.getSession().setAttribute("errorMessage", "Đã xảy ra lỗi không mong muốn: " + e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/Admin/CustomerManagementServlet");
         }
     }
 
@@ -85,9 +95,6 @@ public class CustomerManagementServlet extends HttpServlet {
             String action = request.getParameter("action");
             if (action != null) {
                 switch (action) {
-                    case "add":
-//                        addCustomer(request, response);
-                        break;
                     case "update":
                         updateCustomer(request, response);
                         break;
@@ -99,6 +106,8 @@ public class CustomerManagementServlet extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            request.getSession().setAttribute("errorMessage", "Đã xảy ra lỗi không mong muốn: " + e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/Admin/CustomerManagementServlet");
         }
     }
 
@@ -109,13 +118,22 @@ public class CustomerManagementServlet extends HttpServlet {
     protected void showListCustomer(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, ClassNotFoundException {
         try {
-            if (request.getParameter("page") != null) {
-                PAGE = Integer.parseInt(request.getParameter("page"));
+            String pageParam = request.getParameter("page");
+            if (pageParam != null && !pageParam.trim().isEmpty()) {
+                try {
+                    PAGE = Integer.parseInt(pageParam.trim());
+                    if (PAGE < 1) {
+                        PAGE = 1; // Ensure page is positive
+                    }
+                } catch (NumberFormatException e) {
+                    PAGE = 1; // Default to page 1 for invalid input
+                }
             }
+            HttpSession session = request.getSession();
             int totalPages = myUntilsDAO.getTotalPagesAccount(PAGE_SIZE, ROLE_CUSTOMER);
             List<Account> listAccount = AccountDAO.getAllAccount(ROLE_CUSTOMER, PAGE, PAGE_SIZE);
             List<Role> listRole = AccountDAO.showListRoleTest();
-             request.setAttribute("roles", listRole);
+            request.setAttribute("roles", listRole);
             request.setAttribute("customers", listAccount);
             request.setAttribute("currentPage", PAGE);
             request.setAttribute("totalPages", totalPages);
@@ -123,6 +141,8 @@ public class CustomerManagementServlet extends HttpServlet {
             request.getRequestDispatcher("CustomerManagement.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
+            request.getSession().setAttribute("errorMessage", "Lỗi tải khách hàng: " + e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/Admin/CustomerManagementServlet");
         }
     }
 
@@ -132,19 +152,52 @@ public class CustomerManagementServlet extends HttpServlet {
      */
     protected void updateCustomer(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, ClassNotFoundException {
+        HttpSession session = request.getSession();
         try {
             String uploadPath = request.getServletContext().getRealPath("/") + File.separator + UPLOAD_DIR;
+            // Retrieve parameters
             int accountID = Integer.parseInt(request.getParameter("accountId"));
-            String userName = request.getParameter("userName");
-            String phoneNumber = request.getParameter("phoneNumber");
-            String email = request.getParameter("email");
-            String passwordHashed = MyUtils.hashPassword(request.getParameter("password"));
-            String address = request.getParameter("address");
+            String userName = request.getParameter("userName").trim();
+            String phoneNumber = request.getParameter("phoneNumber").trim();
+            String email = request.getParameter("email").trim();
+            String password = request.getParameter("password").trim();
+            String address = request.getParameter("address").trim();
             String status = request.getParameter("status");
             int roleID = Integer.parseInt(request.getParameter("roleID"));
-            // Lấy ảnh cũ từ request
             String oldImage = request.getParameter("currentImage");
-            // Nếu có file mới, upload ảnh mới, ngược lại giữ ảnh cũ
+            // Validate required fields
+            if (userName.isEmpty() || phoneNumber.isEmpty() || email.isEmpty() || address.isEmpty()) {
+                session.setAttribute("errorMessage", "Tất cả các trường đều bắt buộc.");
+                response.sendRedirect(request.getContextPath() + "/Admin/CustomerManagementServlet");
+                return;
+            }
+            // Validate email format
+            if (!email.matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+                session.setAttribute("errorMessage", "Định dạng email không hợp lệ.");
+                response.sendRedirect(request.getContextPath() + "/Admin/CustomerManagementServlet");
+                return;
+            }
+            // Validate phone number (assumes 10 digits)
+            if (!phoneNumber.matches("\\d{10}")) {
+                session.setAttribute("errorMessage", "Số điện thoại phải có 10 chữ số.");
+                response.sendRedirect(request.getContextPath() + "/Admin/CustomerManagementServlet");
+                return;
+            }
+            // Check for existing email or username
+            if (AccountDAO.isEmailExists(email)) {
+                session.setAttribute("errorMessage", "Email đã tồn tại.");
+                response.sendRedirect(request.getContextPath() + "/Admin/CustomerManagementServlet");
+                return;
+            }
+            // Handle password
+            String passwordHashed;
+            if (!password.isEmpty()) {
+                passwordHashed = MyUtils.hashPassword(password);
+            } else {
+                // Retrieve existing password if not changed
+                Account existingAccount = AccountDAO.getInforAccountByID(accountID);
+                passwordHashed = existingAccount.getPassword();
+            }
             Part filePart = request.getPart("image");
             String image = (filePart.getSize() > 0)
                     ? UploadImage.uploadFile(filePart, uploadPath, FOLDER)
@@ -152,13 +205,18 @@ public class CustomerManagementServlet extends HttpServlet {
             Account a = new Account(accountID, roleID, userName, phoneNumber, image, email, passwordHashed, address, status);
             boolean isUpdate = AccountDAO.updateProfileStaff(a);
             if (isUpdate) {
-                showListCustomer(request, response);
+                request.getSession().setAttribute("successMessage", "Cập nhật khách hàng thành công..");
             } else {
-                System.out.println("Loi Update");
+                request.getSession().setAttribute("errorMessage", "Cập nhật khách hàng thất bại.");
             }
-        } catch (ServletException | IOException | NumberFormatException e) {
+        } catch (NumberFormatException e) {
             e.printStackTrace();
+            request.getSession().setAttribute("errorMessage", "Định dạng đầu vào không hợp lệ.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.getSession().setAttribute("errorMessage", "Lỗi khi cập nhật khách hàng:" + e.getMessage());
         }
+        response.sendRedirect(request.getContextPath() + "/Admin/CustomerManagementServlet");
     }
 
     /**
@@ -172,17 +230,26 @@ public class CustomerManagementServlet extends HttpServlet {
      */
     protected void deleteCustomer(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession(true);
         try {
             String id = request.getParameter("accountId");
+            if (id == null || id.trim().isEmpty()) {
+                session.setAttribute("errorMessage", "Mã khách hàng là bắt buộc");
+                response.sendRedirect("/Admin/CustomerManagementServlet");
+                return;
+            }
             Boolean isDeleted = AccountDAO.DeleteSoftAccountById(Integer.parseInt(id));
             if (isDeleted) {
-                showListCustomer(request, response);
+                session.setAttribute("successMessage", "Xóa khách hàng thành công.");
             } else {
-                System.out.println("loi r");
+                session.setAttribute("errorMessage", "Xóa khách hàng thất bại.");
             }
+        } catch (NumberFormatException e) {
+            session.setAttribute("errorMessage", "Định dạng mã khách hàng không hợp lệ.");
         } catch (Exception e) {
-            e.printStackTrace();
+            session.setAttribute("errorMessage", "Lỗi xóa: " + e.getMessage());
         }
+        response.sendRedirect("/Admin/CustomerManagementServlet");
     }
 
     /**
@@ -191,37 +258,37 @@ public class CustomerManagementServlet extends HttpServlet {
      */
     protected void searchCustomer(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        int PAGE = 1;
         try {
-            String keyword = request.getParameter("search"); // Lấy từ ô nhập
+            String keyword = request.getParameter("search");
             if (keyword == null) {
-                keyword = ""; // Tránh null gây lỗi
+                keyword = "";
             }
             String pageParam = request.getParameter("page");
             if (pageParam != null && !pageParam.trim().isEmpty()) {
                 try {
-                    PAGE = Integer.parseInt(pageParam.trim()); // Chuyển đổi số nguyên
+                    PAGE = Integer.parseInt(pageParam.trim());
                     if (PAGE < 1) {
-                        PAGE = 1; // Không cho phép số âm
+                        PAGE = 1;
                     }
                 } catch (NumberFormatException e) {
-                    PAGE = 1; // Nếu lỗi, quay về trang đầu
+                    PAGE = 1;
                 }
             }
-
             int totalPages = myUntilsDAO.getTotalPagesAccountSearch(PAGE_SIZE, ROLE_CUSTOMER, keyword);
             List<Account> list = AccountDAO.findUser(keyword, ROLE_CUSTOMER, PAGE, PAGE_SIZE);
             List<Role> roleList = AccountDAO.showListRoleTest();
-
             request.setAttribute("customers", list);
             request.setAttribute("currentPage", PAGE);
             request.setAttribute("roles", roleList);
             request.setAttribute("totalPages", totalPages);
             request.setAttribute("action", "search");
-            request.setAttribute("keyword", keyword); // Giữ lại keyword
-
+            request.setAttribute("keyword", keyword);
             request.getRequestDispatcher("CustomerManagement.jsp").forward(request, response);
         } catch (Exception e) {
-            e.printStackTrace();
+            session.setAttribute("errorMessage", "Lỗi tìm kiếm: " + e.getMessage());
+            response.sendRedirect("/Admin/CustomerManagementServlet");
         }
     }
 

@@ -43,6 +43,17 @@
             background-color: black;
             z-index: -1;
         }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+            display: block;
+        }
+        .input-error {
+            border: 2px solid red !important;
+            background-color: #ffe6e6; /* Nhẹ nhàng báo hiệu lỗi */
+        }
+        </style
     </style>
     <body class="sb-nav-fixed">
         <div id="layoutSidenav">
@@ -246,9 +257,9 @@
                                                                                            class="form-control" 
                                                                                            name="password" 
                                                                                            value="${s.password}" 
-                                                                                           required>
+                                                                                           value="${customer.password}" onblur="checkPassword(this)" required>
+                                                                                    <span id="error-Pass" class="error-message"></span>
                                                                                 </div>
-
                                                                                 <div class="col-12">
                                                                                     <label class="form-label">Address</label>
                                                                                     <textarea class="form-control" 
@@ -279,7 +290,7 @@
 
                                                                         <div class="modal-footer">
                                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                                            <button type="submit" id="submitBtn-Cus" class="btn btn-primary" disable>Save Changes</button>
                                                                         </div>
                                                                     </form>
                                                                 </div>
@@ -331,7 +342,7 @@
                     <form action="StaffManagementServlet" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="action" value="add">
                         <div class="modal-header">
-                            <h5 class="modal-title">Add New StaffS</h5>
+                            <h5 class="modal-title">Add New Staff</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
 
@@ -362,7 +373,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Password</label>
-                                    <input type="password" class="form-control" name="password" required>
+                                    <input type="password" class="form-control" name="password"  onblur="checkPassword(this)" required>
+                                    <span id="error-Pass" class="error-message"></span>
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Address</label>
@@ -391,22 +403,105 @@
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Add Staff</button>
+                            <button type="submit" id="submitBtn" class="btn btn-primary" disable>Add Staff</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-                var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                    return new bootstrap.Tooltip(tooltipTriggerEl, {
-                        html: true
-                    });
+        <!-- Modal Error -->
+        <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>${sessionScope.errorMessage}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <!-- Success Message Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="successModalLabel">Success</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-dark">
+                    ${sessionScope.successMessage}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        window.onload = function () {
+            const successMessage = "${sessionScope.successMessage}";
+            const errorMessage = "${sessionScope.errorMessage}";
+            if (errorMessage && errorMessage.trim() !== "") {
+                const errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
+                errorModal.show();
+        <% request.getSession().removeAttribute("errorMessage"); %>
+            }
+            if (successMessage && successMessage.trim() !== "") {
+                let successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                successModal.show();
+        <% request.getSession().removeAttribute("successMessage"); %>
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl, {
+                    html: true
                 });
             });
+        });
+        const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 
-        </script>
-    </body>
+        function checkPassword(input) {
+            var password = input.value.trim();
+            var errorMessage = input.nextElementSibling; // Lấy phần tử `<span>` ngay sau input
+            var submitBtn = document.getElementById("submitBtn"); // Nút submit
+            var modal = input.closest(".modal"); // Tìm modal chứa input này
+            var submitBtn2 = modal ? modal.querySelector(".btn-primary") : null; // Tìm nút submit trong 
+
+            if (!errorMessage) {
+                console.error("Không tìm thấy phần tử lỗi!");
+                return;
+            }
+            if (password === "") {
+                errorMessage.textContent = "Password cannot be empty!";
+                submitBtn.disabled = true;
+                submitBtn2.disabled = true;
+            } else if (password.length < 8) {
+                errorMessage.textContent = "Password must be at least 8 characters.";
+                submitBtn.disabled = true;
+                submitBtn2.disabled = true;
+            } else if (!regex.test(password)) {
+                errorMessage.textContent = "Password must contain at least one letter, one number, and one special character.";
+                submitBtn.disabled = true;
+                submitBtn2.disabled = true;
+            } else {
+                errorMessage.textContent = ""; // Hợp lệ
+                submitBtn.disabled = false;
+                submitBtn2.disabled = false;
+            }
+        }
+
+    </script>
+</body>
 </html>

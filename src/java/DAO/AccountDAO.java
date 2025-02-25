@@ -34,7 +34,23 @@ public class AccountDAO {
     private static String DELETE_ACCOUNT_SOFT = "UPDATE Account SET isDeleted = ?, Status= ? WHERE AccountID = ?";
     private static String DELETE_ACCOUNT_BY_ID = "DELETE FROM Account WHERE AccountID = ?";
     private static String SEARCH_ACCOUNT = "SELECT * FROM Account WHERE ( AccountID = ? OR AccountName LIKE ? OR PhoneNumber LIKE ? OR email LIKE ? ) AND RoleID = ? ORDER BY AccountID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY;";
-    private static String ADD_ADMIN = "INSERT INTO Account (AccountName, PhoneNumber, Email, Image, Password, Address, Status, RoleID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static String ADD_ADMIN = "INSERT INTO Account (AccountName, PhoneNumber, Email, Image, Password, Address, Status, RoleID) VALUES (N?, N?, N?, N?, N?, N?, N?, N?)";
+    private static String IS_EMAIL_EXIST = "SELECT COUNT(*) FROM Account WHERE Email = ?";
+
+    public static boolean isEmailExists(String email) throws SQLException, ClassNotFoundException {
+               conn = DBConnection.getConnection();
+        try {
+            stm = conn.prepareStatement(IS_EMAIL_EXIST);
+            stm.setString(1, email);
+            rs = stm.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 1;  // If count > 0, email exists
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();  // Handle exception properly in production
+        }
+        return false;
+    }
 
     public Account getAccountByEmail(String email) {
         String query = "SELECT * FROM Account WHERE Email = ?";
@@ -321,14 +337,13 @@ public class AccountDAO {
             return false; // Trả về false nếu có lỗi xảy ra
         }
     }
-    
+
     public void insertNewStaff(String username, String email, String password, String phoneNumber) {
         String sql = "INSERT INTO Account (RoleID, AccountName, Email, Password, PhoneNumber, Image) VALUES (?, ?, ?, ?, ?, ?)";
         String defaultImageUrl = "./assets/img/default-img-profile.png";
         int defaultRoleID = 2; // Assuming default role ID is 2 for staff
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, defaultRoleID);
             stmt.setString(2, username);
@@ -342,14 +357,13 @@ public class AccountDAO {
             e.printStackTrace();
         }
     }
-    
+
     public void insertNewAccount(String username, String email, String password, String phoneNumber) {
         String sql = "INSERT INTO Account (RoleID, AccountName, Email, Password, PhoneNumber, Image) VALUES (?, ?, ?, ?, ?, ?)";
         String defaultImageUrl = "./assets/img/default-img-profile.png";
         int defaultRoleID = 3; // Assuming default role ID is 3 for customers
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, defaultRoleID);
             stmt.setString(2, username);
@@ -366,26 +380,25 @@ public class AccountDAO {
 
     public Account authenticateUser(String email, String hashedPassword) {
         String query = "SELECT * FROM Account WHERE Email = ? AND Password = ? AND IsDeleted = 0";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, email);
             stmt.setString(2, hashedPassword); // Comparing with hashed password from the database
-            try (ResultSet rs = stmt.executeQuery()) {
+            try ( ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return new Account(
-                        rs.getInt("AccountID"),
-                        rs.getInt("RoleID"),
-                        rs.getString("AccountName"),
-                        rs.getString("PhoneNumber"),
-                        rs.getString("Email"),
-                        rs.getString("Image"),
-                        rs.getString("Password"),
-                        rs.getString("Address"),
-                        rs.getInt("IsDeleted"),
-                        rs.getString("Status"),
-                        rs.getDouble("Balance"),
-                        rs.getTimestamp("CreatedAt"),
-                        rs.getTimestamp("UpdatedAt")
+                            rs.getInt("AccountID"),
+                            rs.getInt("RoleID"),
+                            rs.getString("AccountName"),
+                            rs.getString("PhoneNumber"),
+                            rs.getString("Email"),
+                            rs.getString("Image"),
+                            rs.getString("Password"),
+                            rs.getString("Address"),
+                            rs.getInt("IsDeleted"),
+                            rs.getString("Status"),
+                            rs.getDouble("Balance"),
+                            rs.getTimestamp("CreatedAt"),
+                            rs.getTimestamp("UpdatedAt")
                     );
                 }
             }
@@ -394,19 +407,17 @@ public class AccountDAO {
         }
         return null;
     }
-    
-    
+
     public Account authenticateAdminStaff(String email, String password) {
         String hashedPassword = MyUtils.hashPassword(password);
         String query = "SELECT * FROM Account WHERE Email = ? AND Password = ? AND IsDeleted = 0";
-        
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            
+
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement(query)) {
+
             stmt.setString(1, email);
             stmt.setString(2, hashedPassword);
-            
-            try (ResultSet rs = stmt.executeQuery()) {
+
+            try ( ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     Account account = new Account();
                     account.setAccountId(rs.getInt("AccountID"));
@@ -427,15 +438,13 @@ public class AccountDAO {
         }
         return null;
     }
-    
-    
+
     // cua customer
     public String validateResetToken(String token) {
         String query = "SELECT Email FROM Account WHERE ResetToken = ? AND TokenExpiry > CURRENT_TIMESTAMP";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, token);
-            try (ResultSet rs = stmt.executeQuery()) {
+            try ( ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return rs.getString("Email");
                 }
@@ -445,14 +454,11 @@ public class AccountDAO {
         }
         return null;
     }
-    
-    
-    
+
     public boolean updatePassword(String email, String newPassword) {
         String hashedPassword = MyUtils.hashPassword(newPassword);
         String query = "UPDATE Account SET Password = ?, ResetToken = NULL, TokenExpiry = NULL WHERE Email = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, hashedPassword);
             stmt.setString(2, email);
             return stmt.executeUpdate() > 0;
@@ -461,15 +467,13 @@ public class AccountDAO {
             return false;
         }
     }
-    
-    
+
     // cua admin va staff 
     public String validateResetTokenAdmin(String token) {
         String query = "SELECT Email FROM Account WHERE ResetToken = ? AND TokenExpiry > CURRENT_TIMESTAMP";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, token);
-            try (ResultSet rs = stmt.executeQuery()) {
+            try ( ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return rs.getString("Email");
                 }
@@ -479,14 +483,11 @@ public class AccountDAO {
         }
         return null;
     }
-    
-    
-    
+
     public boolean updatePasswordAdmin(String email, String newPassword) {
         String hashedPassword = MyUtils.hashPassword(newPassword);
         String query = "UPDATE Account SET Password = ?, ResetToken = NULL, TokenExpiry = NULL WHERE Email = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, hashedPassword);
             stmt.setString(2, email);
             return stmt.executeUpdate() > 0;
