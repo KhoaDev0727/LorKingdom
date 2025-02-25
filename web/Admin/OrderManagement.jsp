@@ -86,7 +86,9 @@
                         <div class="card mb-4">
                             <div class="card-header">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <i class="fas fa-truck me-1"></i> Order List
+                                    <div>
+                                        <i class="fas fa-table me-1"></i> Orders List
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -116,7 +118,7 @@
                                                         <tr>
                                                             <td>${o.orderId}</td>
                                                             <td>${o.accountName}</td>
-                                                            <td>${o.payMentMethodName}</td>
+                                                            <td>${o.payMentMethodName}</td>                                
                                                             <td>${o.orderDate}</td>
                                                             <td>${o.status}</td>
                                                             <td>${o.totalAmount}</td>
