@@ -1,5 +1,6 @@
 package Controller;
 
+import DAO.AccountDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
@@ -18,28 +19,41 @@ public class RegisterPageServlet extends HttpServlet {
 
         // Kiểm tra dữ liệu đầu vào
         if (username.isEmpty()) {
-            usernameError = "Username is required.";
+            usernameError = "Tên người dùng là bắt buộc.";
             hasError = true;
         }
         if (email.isEmpty()) {
-            emailError = "Email is required.";
+            emailError = "Cần phải có email.";
             hasError = true;
         } else if (!isValidEmail(email)) {
-            emailError = "Invalid email format.";
+            emailError = "Định dạng email không hợp lệ.";
             hasError = true;
         }
         if (password.isEmpty()) {
-            passwordError = "Password is required.";
+            passwordError = "Cần phải nhập mật khẩu.";
             hasError = true;
         } else if (password.length() < 6) {
-            passwordError = "Password must be at least 6 characters long.";
+            passwordError = "Mật khẩu phải dài ít nhất 6 ký tự.";
             hasError = true;
         }
         if (phoneNumber.isEmpty()) {
-            phoneNumberError = "Phone number is required.";
+            phoneNumberError = "Bắt buộc phải nhập số điện thoại.";
             hasError = true;
         } else if (!phoneNumber.matches("\\d{10}")) {
-            phoneNumberError = "Phone number must be 10 digits.";
+            phoneNumberError = "Số điện thoại phải có 10 chữ số.";
+            hasError = true;
+        }
+
+        // Kiểm tra email đã tồn tại chưa
+        AccountDAO accountDAO = new AccountDAO();
+        try {
+            if (!hasError && accountDAO.isEmailExists(email)) {
+                emailError = "Email này đã được sử dụng.";
+                hasError = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            emailError = "Lỗi khi kiểm tra email. Vui lòng thử lại.";
             hasError = true;
         }
 
@@ -56,11 +70,14 @@ public class RegisterPageServlet extends HttpServlet {
             return;
         }
 
+        // Hash mật khẩu trước khi lưu vào session
+        String hashedPassword = MyUtils.hashPassword(password);
+
         // Lưu thông tin tạm thời vào session
         HttpSession session = request.getSession();
         session.setAttribute("tempUsername", username);
         session.setAttribute("tempEmail", email);
-        session.setAttribute("tempPassword", password);
+        session.setAttribute("tempPassword", hashedPassword); // Lưu mật khẩu đã hash
         session.setAttribute("tempPhoneNumber", phoneNumber);
         
         response.sendRedirect("SendVerificationPage");

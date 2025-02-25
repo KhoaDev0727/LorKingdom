@@ -15,14 +15,14 @@ public class LoginPageServlet extends HttpServlet {
 
         // Validation logic
         if (email == null || email.trim().isEmpty()) {
-            request.setAttribute("emailError", "Email cannot be empty!");
+            request.setAttribute("emailError", "Email không được để trống!");
         } else if (!email.matches("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$")) {
-            request.setAttribute("emailError", "Invalid email format!");
+            request.setAttribute("emailError", "Định dạng email không hợp lệ!");
         }
         if (password == null || password.trim().isEmpty()) {
-            request.setAttribute("passwordError", "Password cannot be empty!");
+            request.setAttribute("passwordError", "Mật khẩu không được để trống!");
         } else if (password.length() < 6) {
-            request.setAttribute("passwordError", "Password must be at least 6 characters long!");
+            request.setAttribute("passwordError", "Mật khẩu phải dài ít nhất 6 ký tự!");
         }
 
         if (request.getAttribute("emailError") != null || request.getAttribute("passwordError") != null) {
@@ -53,7 +53,7 @@ public class LoginPageServlet extends HttpServlet {
                 response.sendRedirect("home.jsp"); // Or wherever you want non-admin/staff to go
             }
         } else {
-            request.setAttribute("error", "Invalid email or password!");
+            request.setAttribute("error", "Email hoặc mật khẩu không hợp lệ!");
             request.getRequestDispatcher("loginPage.jsp").forward(request, response);
         }
     }

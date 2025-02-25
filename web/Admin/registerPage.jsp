@@ -11,7 +11,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Register Page</title>
+        <title>Trang Đăng ký</title>
         <!-- Bootstrap 5 CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> <!-- Bootstrap Import -->
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
@@ -31,13 +31,13 @@
                 <div class="logo">
                     <img src="./assets/img/logo-login.png" alt="Lorkingdom Logo" class="logo-img">
                 </div>
-                <h2 class="mb-4" style="font-weight: 600;">Create Account</h2>
+                <h2 class="mb-4" style="font-weight: 600;">Tạo tài khoản</h2>
                 <form action="RegisterPageServlet" method="POST">
                     <!-- Username Input -->
                     <div class="mb-3">
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-user"></i></span>
-                            <input type="text" class="form-control" id="username" name="username" placeholder="Username" 
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Tên người dùng" 
                                    value="<%= request.getAttribute("usernameValue") != null ? request.getAttribute("usernameValue") : "" %>" />
                         </div>
                         <% 
@@ -54,7 +54,7 @@
                     <div class="mb-3">
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                            <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone Number" 
+                            <input type="text" class="form-control" id="phone" name="phone" placeholder="Số điện thoại" 
                                    value="<%= request.getAttribute("phoneValue") != null ? request.getAttribute("phoneValue") : "" %>" />
                         </div>
                         <%
@@ -88,7 +88,7 @@
                     <div class="mb-3">
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                            <input type="password" class="form-control" id="password" name="password" placeholder="Password" 
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Mật khẩu" 
                                    value="<%= request.getAttribute("passwordValue") != null ? request.getAttribute("passwordValue") : "" %>" />
                         </div>                   
                         <% 
@@ -102,11 +102,11 @@
                     </div>                   
                 
                     <!-- Register Button -->
-                    <button type="submit" class="btn btn-primary register-btn">Register</button>
+                    <button type="submit" class="btn btn-primary register-btn">Đăng ký</button>
                 
                     <!-- Login Link -->
                     <div class="login-link mt-3" >
-                        <span>Already have an account? <a href="loginPage.jsp">Login</a></span>
+                        <span>Bạn đã có tài khoản? <a href="loginPage.jsp">Đăng nhập</a></span>
                     </div>
                 </form>
 

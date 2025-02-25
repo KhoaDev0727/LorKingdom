@@ -5,7 +5,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Register Page</title>
+        <title>Trang Đăng ký</title>
         <!-- Bootstrap 5 CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> <!-- Bootstrap Import -->
         <!-- Custom CSS -->
@@ -22,11 +22,11 @@
         <div class="container-fluid2"> <!-- Đổi tên lớp ở đây -->
             <div class="form-container">
                 <div class="container form">
-                    <h3>Create Your Account</h3>
+                    <h3>Tạo tài khoản của bạn</h3>
                     <form action="RegisterServlet" method="POST">
                         <!-- Username Input -->
                         <div class="mb-3">
-                            <input type="text" class="form-control" id="username" name="username" placeholder="Username" 
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Tên người dùng" 
                                    value="<%= request.getAttribute("usernameValue") != null ? request.getAttribute("usernameValue") : "" %>" />
                             <% 
                                 String usernameError = (String) request.getAttribute("usernameError");
@@ -40,7 +40,7 @@
 
                         <!-- Phone Number Input -->
                         <div class="mb-3">
-                            <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone Number" 
+                            <input type="text" class="form-control" id="phone" name="phone" placeholder="Số điện thoại" 
                                    value="<%= request.getAttribute("phoneValue") != null ? request.getAttribute("phoneValue") : "" %>" />
                             <%
                                String phoneNumberError = (String) request.getAttribute("phoneNumberError");
@@ -68,7 +68,7 @@
 
                         <!-- Password Input -->
                         <div class="mb-3">
-                            <input type="password" class="form-control" id="password" name="password" placeholder="Password" 
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Mật khẩu" 
                                    value="<%= request.getAttribute("passwordValue") != null ? request.getAttribute("passwordValue") : "" %>" />
                             <% 
                                 String passwordError = (String) request.getAttribute("passwordError");
@@ -81,11 +81,11 @@
                         </div>                   
 
                         <!-- Register Button -->
-                        <button type="submit" class="btn btn-primary register-btn">Register</button>
+                        <button type="submit" class="btn btn-primary register-btn">Đăng ký</button>
 
                         <!-- Login Link -->
                         <div class="login-link mt-3" >
-                            <span>Already have an account? <a href="login.jsp">Login</a></span>
+                            <span>Bạn đã có tài khoản? <a href="login.jsp">Đăng nhập</a></span>
                         </div>
                     </form>
                 </div>

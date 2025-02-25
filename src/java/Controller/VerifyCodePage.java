@@ -26,7 +26,7 @@ public class VerifyCodePage extends HttpServlet {
             // Mã đã hết hạn
             session.removeAttribute("verificationCode");
             session.removeAttribute("codeExpiryTime");
-            request.setAttribute("errorMessage", "Verification code has expired. Please resend a new code.");
+            request.setAttribute("errorMessage", "Mã xác minh đã hết hạn. Vui lòng gửi lại mã mới.");
             request.getRequestDispatcher("verifyCodePage.jsp").forward(request, response);
             return;
         }
@@ -58,7 +58,7 @@ public class VerifyCodePage extends HttpServlet {
             response.sendRedirect("verifyCodePage.jsp?status=success");
         } else {
             // Xác thực thất bại
-            request.setAttribute("errorMessage", "Verification code is incorrect or empty. Please try again.");
+            request.setAttribute("errorMessage", "Mã xác minh không đúng hoặc trống. Vui lòng thử lại.");
             request.getRequestDispatcher("verifyCodePage.jsp").forward(request, response);
         }
     }

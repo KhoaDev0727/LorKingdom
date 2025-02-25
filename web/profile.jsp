@@ -25,7 +25,7 @@
               crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <link rel="stylesheet" href="./assets/styleUser/styleProfile.css">
-        <title>Profile</title>
+        <title>Hồ sơ</title>
     </head>
     <body>
         <div class="page-content" id="page-content">
@@ -47,11 +47,11 @@
                                             </label>
                                             <input id="file-upload" type="file" name="avatar" accept="image/*" required
                                                    hidden>
-                                            <button type="submit">Upload Avatar</button>
+                                            <button type="submit">Tải lên Avatar</button>
                                         </form>
                                     </div>
 
-                                    <h6 class="f-w-600 title" style="font-size: 20px;">Hello, ${account.userName}</h6>
+                                    <h6 class="f-w-600 title" style="font-size: 20px;">Xin chào, ${account.userName}</h6>
                                     <i class="mdi mdi-square-edit-outline feather icon-edit m-t-10 f-16"></i>
                                 </div>
                             </div>
@@ -63,58 +63,58 @@
                                 <form action="ProfileServlet" method="post">
                                     <div class="right">
                                         <div class="card-block">
-                                            <h3 class="">Profile Information</h3>
+                                            <h3 class="">Thông tin hồ sơ</h3>
                                             <div class="">
                                                 <div class="">
                                                     <p class="">Email</p>
                                                     <h6 class="">${account.email}</h6>
                                                 </div>
                                                 <div class="">
-                                                    <p class="">Status</p>
+                                                    <p class="">Trạng thái</p>
                                                     <h6 class="">${account.status}</h6>
                                                 </div>
                                                 <div class="">
-                                                    <p class="">Balance</p>
+                                                    <p class="">Số dư</p>
                                                     <h6 class="">${account.balance}</h6>
                                                 </div>
 
 
                                                 <!-- Phone -->
                                                 <div class="">
-                                                    <p class="">Phone</p>
+                                                    <p class="">Điện thoại</p>
                                                     <div class="d-flex">
                                                         <h6 id="displayPhone">${account.phoneNumber}</h6>
                                                         <input type="hidden" name="phoneNumber" id="phoneNumberInput" value="${account.phoneNumber}">
                                                         <a href="#" class="text-primary text-decoration-none change-btn"
-                                                           data-bs-toggle="modal" data-bs-target="#editPhoneModal">Change</a>
+                                                           data-bs-toggle="modal" data-bs-target="#editPhoneModal">Thay đổi</a>
                                                     </div>
                                                 </div>
 
                                                 <!-- Address -->
                                                 <div class="">
-                                                    <p class="">Address</p>
+                                                    <p class="">Địa chỉ</p>
                                                     <div class="d-flex">
-                                                        <h6 id="displayAddress">${empty account.address ? "Address is not available" : account.address}</h6>
+                                                        <h6 id="displayAddress">${empty account.address ? "Địa chỉ không có sẵn" : account.address}</h6>
                                                         <input type="hidden" name="address" id="addressInput" value="${account.address}">
                                                         <a href="#" class="text-primary text-decoration-none change-btn"
-                                                           data-bs-toggle="modal" data-bs-target="#editAddressModal">Change</a>
+                                                           data-bs-toggle="modal" data-bs-target="#editAddressModal">Thay đổi</a>
                                                     </div>
                                                 </div>
 
                                                 <!-- Password -->
                                                 <div class="">
-                                                    <p class="">Password</p>
+                                                    <p class="">Mật khẩu</p>
                                                     <div class="d-flex">
                                                         <h6 id="displayPassword">${account.password}</h6>
                                                         <input type="hidden" name="password" id="passwordInput" value="${account.password}">
                                                         <a href="#" class="text-primary text-decoration-none change-btn"
-                                                           data-bs-toggle="modal" data-bs-target="#editPasswordModal">Change</a>
+                                                           data-bs-toggle="modal" data-bs-target="#editPasswordModal">Thay đổi</a>
                                                     </div>
                                                 </div>
 
                                             </div>
 
-                                            <button type="submit btn-update">Update</button>
+                                            <button type="submit btn-update">Cập nhật</button>
                                         </div>
                                     </div>
                                 </form>
@@ -126,20 +126,20 @@
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="editPhoneModalLabel">Edit Phone Number</h5>
+                                            <h5 class="modal-title" id="editPhoneModalLabel">Sửa số điện thoại</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <label for="newPhoneNumber" class="form-label">New Phone Number:</label>
+                                            <label for="newPhoneNumber" class="form-label">Số điện thoại mới:</label>
                                             <input type="text" id="newPhoneNumber" class="form-control"
-                                                   placeholder="Enter new phone number">
+                                                   placeholder="Nhập số điện thoại mới">
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">Cancel</button>
+                                                    data-bs-dismiss="modal">Hủy bỏ</button>
                                             <button type="button" class="btn btn-save"
-                                                    onclick="updatePhoneNumber()">Save</button>
+                                                    onclick="updatePhoneNumber()">Lưu</button>
                                         </div>
                                     </div>
                                 </div>
@@ -150,20 +150,20 @@
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="editAddressModalLabel">Edit Address</h5>
+                                            <h5 class="modal-title" id="editAddressModalLabel">Sửa Địa Chỉ</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <label for="newAddress" class="form-label">New Address:</label>
+                                            <label for="newAddress" class="form-label">Địa chỉ mới:</label>
                                             <input type="text" id="newAddress" class="form-control"
-                                                   placeholder="Enter new address">
+                                                   placeholder="Nhập địa chỉ mới">
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">Cancel</button>
+                                                    data-bs-dismiss="modal">Hủy bỏ</button>
                                             <button type="button" class="btn btn-save"
-                                                    onclick="updateAddress()">Save</button>
+                                                    onclick="updateAddress()">Lưu</button>
                                         </div>
                                     </div>
                                 </div>
@@ -173,16 +173,16 @@
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="editPasswordModalLabel">Edit Password</h5>
+                                            <h5 class="modal-title" id="editPasswordModalLabel">Chỉnh sửa mật khẩu</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <label for="newPassword" class="form-label">New Password:</label>
-                                            <input type="password" id="newPassword" class="form-control" placeholder="Enter new Password">
+                                            <label for="newPassword" class="form-label">Mật khẩu mới:</label>
+                                            <input type="password" id="newPassword" class="form-control" placeholder="Nhập mật khẩu mới">
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                            <button type="button" class="btn btn-save" onclick="updatePassword()">Save</button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
+                                            <button type="button" class="btn btn-save" onclick="updatePassword()">Lưu</button>
                                         </div>
                                     </div>
                                 </div>

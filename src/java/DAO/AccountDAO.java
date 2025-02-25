@@ -38,19 +38,24 @@ public class AccountDAO {
     private static String IS_EMAIL_EXIST = "SELECT COUNT(*) FROM Account WHERE Email = ?";
 
     public static boolean isEmailExists(String email) throws SQLException, ClassNotFoundException {
-               conn = DBConnection.getConnection();
-        try {
-            stm = conn.prepareStatement(IS_EMAIL_EXIST);
-            stm.setString(1, email);
-            rs = stm.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1) > 1;  // If count > 0, email exists
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();  // Handle exception properly in production
+    conn = DBConnection.getConnection();
+    try {
+        stm = conn.prepareStatement(IS_EMAIL_EXIST);
+        stm.setString(1, email);
+        rs = stm.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1) > 0; 
         }
-        return false;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        // Đóng tài nguyên để tránh rò rỉ
+        if (rs != null) rs.close();
+        if (stm != null) stm.close();
+        if (conn != null) conn.close();
     }
+    return false;
+}
 
     public Account getAccountByEmail(String email) {
         String query = "SELECT * FROM Account WHERE Email = ?";
@@ -343,16 +348,16 @@ public class AccountDAO {
         String defaultImageUrl = "./assets/img/default-img-profile.png";
         int defaultRoleID = 2; // Assuming default role ID is 2 for staff
 
-        try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement(sql)) {
+        String hashedPassword = MyUtils.hashPassword(password); // Hash mật khẩu
 
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, defaultRoleID);
             stmt.setString(2, username);
             stmt.setString(3, email);
-            stmt.setString(4, password); // Now the password is hashed
+            stmt.setString(4, hashedPassword); // Sử dụng mật khẩu đã hash
             stmt.setString(5, phoneNumber);
             stmt.setString(6, defaultImageUrl);
             stmt.executeUpdate();
-
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -363,16 +368,16 @@ public class AccountDAO {
         String defaultImageUrl = "./assets/img/default-img-profile.png";
         int defaultRoleID = 3; // Assuming default role ID is 3 for customers
 
-        try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement(sql)) {
+        String hashedPassword = MyUtils.hashPassword(password); // Hash mật khẩu
 
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, defaultRoleID);
             stmt.setString(2, username);
             stmt.setString(3, email);
-            stmt.setString(4, password); // Now the password is hashed
+            stmt.setString(4, hashedPassword); // Sử dụng mật khẩu đã hash
             stmt.setString(5, phoneNumber);
             stmt.setString(6, defaultImageUrl);
             stmt.executeUpdate();
-
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }

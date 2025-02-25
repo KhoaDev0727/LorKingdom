@@ -247,7 +247,7 @@ public class CartManagementServlet extends HttpServlet {
     private static int getSession(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(true);
 //        return session.getAttribute(2408);
-        return 2408;
+        return 3;
     }
 
     @Override

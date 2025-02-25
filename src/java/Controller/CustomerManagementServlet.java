@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.File;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
@@ -40,13 +41,6 @@ public class CustomerManagementServlet extends HttpServlet {
     private static final int PAGE_SIZE = 10;
 
     /**
-     *
-     * @param request
-     * @param response
-     * @throws ServletException
-     * @throws IOException
-     */
-    /*
      * Handles the HTTP <code>GET</code> method.
      *
      * @param request servlet request
@@ -57,38 +51,26 @@ public class CustomerManagementServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
         try {
-            Integer roleID = (Integer) session.getAttribute("roleID");
-            if (roleID == null) {
-                response.sendRedirect(request.getContextPath() + "/Admin/loginPage.jsp");
-                return;
-            }
             String action = request.getParameter("action");
             if (action != null) {
-                try {
-                    switch (action) {
-                        case "delete":
-                            deleteCustomer(request, response);
-                            break;
-                        case "search":
-                            searchCustomer(request, response);
-                            break;
-                        default:
-                            showListCustomer(request, response);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    session.setAttribute("errorMessage", "Lỗi xử lý yêu cầu: " + e.getMessage());
-                    response.sendRedirect(request.getContextPath() + "/Admin/CustomerManagementServlet");
+                switch (action) {
+                    case "delete":
+                        deleteCustomer(request, response);
+                        break;
+                    case "search":
+                        searchCustomer(request, response);
+                        break;
+                    default:
+                        showListCustomer(request, response);
                 }
             } else {
                 showListCustomer(request, response);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            session.setAttribute("errorMessage", "Lỗi hệ thống: " + e.getMessage());
-            response.sendRedirect(request.getContextPath() + "/Admin/loginPage.jsp");
+            request.getSession().setAttribute("errorMessage", "Đã xảy ra lỗi không mong muốn: " + e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/Admin/CustomerManagementServlet");
         }
     }
 
@@ -132,16 +114,8 @@ public class CustomerManagementServlet extends HttpServlet {
         try {
             String pageParam = request.getParameter("page");
             if (pageParam != null && !pageParam.trim().isEmpty()) {
-                try {
-                    PAGE = Integer.parseInt(pageParam.trim());
-                    if (PAGE < 1) {
-                        PAGE = 1; // Ensure page is positive
-                    }
-                } catch (NumberFormatException e) {
-                    PAGE = 1; // Default to page 1 for invalid input
-                }
+                PAGE = Integer.parseInt(request.getParameter("page"));
             }
-            HttpSession session = request.getSession();
             int totalPages = myUntilsDAO.getTotalPagesAccount(PAGE_SIZE, ROLE_CUSTOMER);
             List<Account> listAccount = AccountDAO.getAllAccount(ROLE_CUSTOMER, PAGE, PAGE_SIZE);
             List<Role> listRole = AccountDAO.showListRoleTest();
@@ -155,6 +129,7 @@ public class CustomerManagementServlet extends HttpServlet {
             e.printStackTrace();
             request.getSession().setAttribute("errorMessage", "Lỗi tải khách hàng: " + e.getMessage());
             response.sendRedirect(request.getContextPath() + "/Admin/CustomerManagementServlet");
+
         }
     }
 
@@ -163,11 +138,10 @@ public class CustomerManagementServlet extends HttpServlet {
      * if a new image is provided.
      */
     protected void updateCustomer(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, ClassNotFoundException {
+            throws ServletException, IOException, ClassNotFoundException, SQLException {
         HttpSession session = request.getSession();
         try {
             String uploadPath = request.getServletContext().getRealPath("/") + File.separator + UPLOAD_DIR;
-            // Retrieve parameters
             int accountID = Integer.parseInt(request.getParameter("accountId"));
             String userName = request.getParameter("userName").trim();
             String phoneNumber = request.getParameter("phoneNumber").trim();
@@ -217,7 +191,7 @@ public class CustomerManagementServlet extends HttpServlet {
             Account a = new Account(accountID, roleID, userName, phoneNumber, image, email, passwordHashed, address, status);
             boolean isUpdate = AccountDAO.updateProfileStaff(a);
             if (isUpdate) {
-                request.getSession().setAttribute("successMessage", "Cập nhật khách hàng thành công..");
+                request.getSession().setAttribute("successMessage", "Cập nhật khách hàng thành công.");
             } else {
                 request.getSession().setAttribute("errorMessage", "Cập nhật khách hàng thất bại.");
             }
@@ -229,6 +203,7 @@ public class CustomerManagementServlet extends HttpServlet {
             request.getSession().setAttribute("errorMessage", "Lỗi khi cập nhật khách hàng:" + e.getMessage());
         }
         response.sendRedirect(request.getContextPath() + "/Admin/CustomerManagementServlet");
+
     }
 
     /**
@@ -247,7 +222,7 @@ public class CustomerManagementServlet extends HttpServlet {
             String id = request.getParameter("accountId");
             if (id == null || id.trim().isEmpty()) {
                 session.setAttribute("errorMessage", "Mã khách hàng là bắt buộc");
-                response.sendRedirect("/Admin/CustomerManagementServlet");
+                response.sendRedirect(request.getContextPath() + "/Admin/CustomerManagementServlet");
                 return;
             }
             Boolean isDeleted = AccountDAO.DeleteSoftAccountById(Integer.parseInt(id));
@@ -261,7 +236,7 @@ public class CustomerManagementServlet extends HttpServlet {
         } catch (Exception e) {
             session.setAttribute("errorMessage", "Lỗi xóa: " + e.getMessage());
         }
-        response.sendRedirect("/Admin/CustomerManagementServlet");
+        response.sendRedirect(request.getContextPath() + "/Admin/CustomerManagementServlet");
     }
 
     /**
@@ -270,24 +245,24 @@ public class CustomerManagementServlet extends HttpServlet {
      */
     protected void searchCustomer(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        int PAGE = 1;
+            HttpSession session = request.getSession();
         try {
-            String keyword = request.getParameter("search");
+            String keyword = request.getParameter("search"); // Lấy từ ô nhập
             if (keyword == null) {
-                keyword = "";
+                keyword = ""; // Tránh null gây lỗi
             }
             String pageParam = request.getParameter("page");
             if (pageParam != null && !pageParam.trim().isEmpty()) {
                 try {
-                    PAGE = Integer.parseInt(pageParam.trim());
+                    PAGE = Integer.parseInt(pageParam.trim()); // Chuyển đổi số nguyên
                     if (PAGE < 1) {
-                        PAGE = 1;
+                        PAGE = 1; // Không cho phép số âm
                     }
                 } catch (NumberFormatException e) {
-                    PAGE = 1;
+                    PAGE = 1; // Nếu lỗi, quay về trang đầu
                 }
             }
+
             int totalPages = myUntilsDAO.getTotalPagesAccountSearch(PAGE_SIZE, ROLE_CUSTOMER, keyword);
             List<Account> list = AccountDAO.findUser(keyword, ROLE_CUSTOMER, PAGE, PAGE_SIZE);
             List<Role> roleList = AccountDAO.showListRoleTest();
@@ -296,11 +271,11 @@ public class CustomerManagementServlet extends HttpServlet {
             request.setAttribute("roles", roleList);
             request.setAttribute("totalPages", totalPages);
             request.setAttribute("action", "search");
-            request.setAttribute("keyword", keyword);
+            request.setAttribute("keyword", keyword); // Giữ lại keyword
             request.getRequestDispatcher("CustomerManagement.jsp").forward(request, response);
         } catch (Exception e) {
-            session.setAttribute("errorMessage", "Lỗi tìm kiếm: " + e.getMessage());
-            response.sendRedirect("/Admin/CustomerManagementServlet");
+             session.setAttribute("errorMessage", "Lỗi tìm kiếm: " + e.getMessage());
+            response.sendRedirect(request.getContextPath() +"/Admin/CustomerManagementServlet");
         }
     }
 

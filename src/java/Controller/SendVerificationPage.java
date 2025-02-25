@@ -35,7 +35,7 @@ public class SendVerificationPage extends HttpServlet {
         session.setAttribute("verificationCode", verificationCode);
         session.setAttribute("codeExpiryTime", expiryTime);
 
-        String subject = "Register Verification Code - LorKingdom";
+        String subject = "Xác minh email - LorKingdom";
         String bannerImageURL = "https://i.imgur.com/VS2VFkL.jpeg";
         String logoImageURL = "https://i.imgur.com/BRMPjnk.png";
 
@@ -47,14 +47,14 @@ public class SendVerificationPage extends HttpServlet {
                 + "<div style='padding: 10px;'>"
                 + "<img src='" + logoImageURL + "' alt='LorKingdom Logo' style='width: 50px;'>"
                 + "</div>"
-                + "<p>Dear " + username + ",</p>"
-                + "<p>Welcome to the LorKingdom team! We're excited to have you onboard as a new staff member.</p>"
-                + "<p>To complete your registration and gain access to the staff portal, please use the verification code below:</p>"
-                + "<h2>Your verification code: " + verificationCode + "</h2>"
-                + "<p>This code is necessary to confirm your identity and finalize your account setup. Please note that the code will expire in 2 minutes.</p>"
-                + "<p>If you did not request this verification code, please contact us immediately.</p>"
+                + "<p>Kính gửi " + username + ",</p>"
+                + "<p>Chào mừng đến với đội ngũ LorKingdom! Chúng tôi rất vui mừng khi bạn trở thành thành viên mới của đội ngũ.</p>"
+                + "<p>Để hoàn tất đăng ký và truy cập vào cổng thông tin nhân viên, vui lòng sử dụng mã xác minh bên dưới:</p>"
+                + "<h2>Mã xác minh của bạn: " + verificationCode + "</h2>"
+                + "<p>Mã này cần thiết để xác nhận danh tính của bạn và hoàn tất thiết lập tài khoản. Xin lưu ý rằng mã sẽ hết hạn sau 2 phút.</p>"
+                + "<p>Nếu bạn không yêu cầu mã xác minh này, vui lòng liên hệ với chúng tôi ngay lập tức.</p>"
                 + "<br>"
-                + "<p>Best regards,</p>"
+                + "<p>Trân trọng,</p>"
                 + "<p>LorKingdom HR Team</p>"
                 + "<p>lorkingdom99@gmail.com | 09123456789</p>"
                 + "<p>LorKingdom.com.vn</p>"
@@ -66,7 +66,7 @@ public class SendVerificationPage extends HttpServlet {
             EmailUtility.sendEmail(email, subject, body);
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("errorMessage", "The verification email could not be sent. Please try again later.");
+            request.setAttribute("errorMessage", "Không thể gửi email xác minh. Vui lòng thử lại sau.");
             request.getRequestDispatcher("registerPage.jsp").forward(request, response);
             return;
         }

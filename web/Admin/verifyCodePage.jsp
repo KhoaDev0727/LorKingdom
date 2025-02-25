@@ -10,7 +10,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Verification Page</title>
+        <title>Trang xác minh</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
@@ -19,12 +19,12 @@
     <body>
         <div class="verify-container">
             <i class="fas fa-envelope"></i>
-            <h3>Email Verification</h3>
-            <p>We’ve sent a verification code to your email address. Please enter it below to verify your account.</p>
+            <h3>Xác minh Email</h3>
+            <p>Chúng tôi đã gửi mã xác minh đến địa chỉ email của bạn. Vui lòng nhập mã bên dưới để xác minh tài khoản của bạn.</p>
             <form action="VerifyCodePage" method="POST">
                 <div class="mb-3 text-start">
-                    <label for="code" class="form-label">Verification Code</label>
-                    <input type="text" class="form-control" id="code" name="code" placeholder="Enter verification code">
+                    <label for="code" class="form-label">Mã xác minh</label>
+                    <input type="text" class="form-control" id="code" name="code" placeholder="Nhập mã xác minh">
                     <% 
                         String errorMessage = (String) request.getAttribute("errorMessage");
                         if (errorMessage != null) { 
@@ -32,19 +32,19 @@
                     <div class="text-danger mt-2"><%= errorMessage %></div>
                     <% } %>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Verify</button>
+                <button type="submit" class="btn btn-primary w-100">Xác minh</button>
             </form>
             <form action="ResendVerificationPage" method="POST" class="mt-3">
-                <button type="submit" class="btn btn-link">Resend Verification Code</button>
+                <button type="submit" class="btn btn-link">Gửi lại mã xác minh</button>
             </form>
             <div class="timer">
-                Remaining time: <span id="time">02:00</span>
+                Thời gian còn lại: <span id="time">02:00</span>
             </div>
             <div class="mt-3">
-                <button class="btn btn-secondary w-100" onclick="location.href = 'loginPage.jsp'">Back to Login</button>
+                <button class="btn btn-secondary w-100" onclick="location.href = 'loginPage.jsp'">Quay lại Đăng nhập</button>
             </div>
             <div class="footer text-center">
-                <p>Need help? <a href="ContactUs.jsp">Contact us</a></p>
+                <p>Cần giúp đỡ? <a href="ContactUs.jsp">Liên hệ với chúng tôi</a></p>
             </div>
         </div>
 
@@ -53,15 +53,15 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="successModalLabel">Verification Successful</h5>
+                        <h5 class="modal-title" id="successModalLabel">Xác minh thành công</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" style="display: flex; flex-direction: column; align-items: center;">
                         <img src="./assets/img/verified.gif" alt="Success" width="100">
-                        Your account has been successfully verified! You can now log in.
+                        Tài khoản của bạn đã được xác minh thành công! Bây giờ bạn có thể đăng nhập.
                     </div>
                     <div class="modal-footer">
-                        <a href="loginPage.jsp" class="btn btn-primary">Go to Login</a>
+                        <a href="loginPage.jsp" class="btn btn-primary">Đi đến Đăng nhập</a>
                     </div>
                 </div>
             </div>
@@ -83,7 +83,7 @@
 
                     if (--timer < 0) {
                         clearInterval(countdown);
-                        display.textContent = "Code has expired.";
+                        display.textContent = "Mã đã hết hạn.";
                     }
                 }, 1000);
             }
