@@ -124,12 +124,12 @@
                                                             <td>${o.totalAmount}</td>
                                                             <td>${o.updatedAt}</td>
                                                             <td>
-                                                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" onclick="setDeleteOrderID(${o.orderId})">
-                                                                    <i class="fas fa-trash"></i>
-                                                                </button>
                                                                 <a href="${pageContext.request.contextPath}/Admin/OrderView?action=view&orderId=${o.orderId}" class="btn btn-sm btn-info">
                                                                     <i class="fas fa-eye"></i>
                                                                 </a>
+                                                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" onclick="setDeleteOrderID(${o.orderId})">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
                                                             </td>
                                                         </tr>
                                                     </c:forEach>
