@@ -30,6 +30,9 @@
         }
     </style>
     <body class="sb-nav-fixed">
+        <c:if test="${empty sessionScope.roleID}">
+            <c:redirect url="/Admin/loginPage.jsp"/>
+        </c:if>
         <div id="layoutSidenav">
             <div id="layoutSidenav_content">
                 <!-- Side Bar -->

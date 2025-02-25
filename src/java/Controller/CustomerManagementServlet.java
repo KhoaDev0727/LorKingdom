@@ -57,26 +57,38 @@ public class CustomerManagementServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
         try {
+            Integer roleID = (Integer) session.getAttribute("roleID");
+            if (roleID == null) {
+                response.sendRedirect(request.getContextPath() + "/Admin/loginPage.jsp");
+                return;
+            }
             String action = request.getParameter("action");
             if (action != null) {
-                switch (action) {
-                    case "delete":
-                        deleteCustomer(request, response);
-                        break;
-                    case "search":
-                        searchCustomer(request, response);
-                        break;
-                    default:
-                        showListCustomer(request, response);
+                try {
+                    switch (action) {
+                        case "delete":
+                            deleteCustomer(request, response);
+                            break;
+                        case "search":
+                            searchCustomer(request, response);
+                            break;
+                        default:
+                            showListCustomer(request, response);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    session.setAttribute("errorMessage", "Lỗi xử lý yêu cầu: " + e.getMessage());
+                    response.sendRedirect(request.getContextPath() + "/Admin/CustomerManagementServlet");
                 }
             } else {
                 showListCustomer(request, response);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            request.getSession().setAttribute("errorMessage", "Đã xảy ra lỗi không mong muốn: " + e.getMessage());
-            response.sendRedirect(request.getContextPath() + "/Admin/CustomerManagementServlet");
+            session.setAttribute("errorMessage", "Lỗi hệ thống: " + e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/Admin/loginPage.jsp");
         }
     }
 

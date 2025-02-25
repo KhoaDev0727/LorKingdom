@@ -77,7 +77,13 @@ public class StaffManagementServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
+            HttpSession session = request.getSession();
+            Integer roleID = (Integer) session.getAttribute("roleID");
             String action = request.getParameter("action");
+            if (roleID == null) {
+                response.sendRedirect(request.getContextPath() + "/Admin/loginPage.jsp"); // Chưa đăng nhập, chuyển hướng đến trang login
+                return;
+            }
             if (action != null) {
                 switch (action) {
                     case "delete":
@@ -111,7 +117,13 @@ public class StaffManagementServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
+            HttpSession session = request.getSession();
+            Integer roleID = (Integer) session.getAttribute("roleID");
             String action = request.getParameter("action");
+            if (roleID == null) {
+                response.sendRedirect(request.getContextPath() + "/Admin/loginPage.jsp"); // Chưa đăng nhập, chuyển hướng đến trang login
+                return;
+            }
             if (action != null) {
                 switch (action) {
                     case "add":
@@ -239,7 +251,7 @@ public class StaffManagementServlet extends HttpServlet {
                 accountID = Integer.parseInt(request.getParameter("accountId"));
             } catch (NumberFormatException e) {
                 request.getSession().setAttribute("errorMessage", "Invalid account ID.");
-                 response.sendRedirect("/Admin/StaffManagementServlet");
+                response.sendRedirect("/Admin/StaffManagementServlet");
                 return;
             }
             String userName = request.getParameter("userName").trim();

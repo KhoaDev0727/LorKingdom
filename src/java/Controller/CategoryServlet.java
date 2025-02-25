@@ -15,6 +15,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -95,9 +96,14 @@ public class CategoryServlet extends HttpServlet {
     }// </editor-fold>
 
     private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
         String action = request.getParameter("action");
-
         try {
+            Integer roleID = (Integer) session.getAttribute("roleID");
+            if (roleID == null) {
+                response.sendRedirect(request.getContextPath() + "/Admin/loginPage.jsp"); // Chưa đăng nhập, chuyển hướng đến trang login
+                return;
+            }
             if (action == null || action.equals("list")) {
                 listCategories(request, response);
             } else {
@@ -126,8 +132,7 @@ public class CategoryServlet extends HttpServlet {
         }
     }
 
-
-     private void listCategories(HttpServletRequest request, HttpServletResponse response)
+    private void listCategories(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         List<Category> categories = categoryDAO.getAllCategories();
         List<SuperCategory> superCategories = superCategoryDAO.getAllSuperCategories();
