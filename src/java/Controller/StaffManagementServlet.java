@@ -75,7 +75,14 @@ public class StaffManagementServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
         try {
+              // Kiểm tra đăng nhập (ở đây giả sử roleID của người dùng được lưu trong session)
+            Integer userRoleID = (Integer) session.getAttribute("roleID");
+            if (userRoleID == null) {
+                response.sendRedirect(request.getContextPath() + "/Admin/loginPage.jsp");
+                return;
+            }
             String action = request.getParameter("action");
             if (action != null) {
                 switch (action) {
@@ -293,7 +300,7 @@ public class StaffManagementServlet extends HttpServlet {
             boolean isUpdate = AccountDAO.updateProfileStaff(a);
             if (isUpdate) {
                 request.getSession().setAttribute("successMessage", "Cập nhật nhân viên thành công.");
-
+                showStaff(request, response);
             } else {
                 request.getSession().setAttribute("errorMessage", "Cập nhật nhân viên thất bại.");
             }
@@ -303,8 +310,6 @@ public class StaffManagementServlet extends HttpServlet {
             request.getSession().setAttribute("errorMessage", "Lỗi tải lên hình ảnh: " + e.getMessage());
         } catch (Exception e) {
             request.getSession().setAttribute("errorMessage", "Lỗi cập nhật nhân viên.: " + e.getMessage());
-        } finally {
-            response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
         }
     }
 
@@ -324,7 +329,7 @@ public class StaffManagementServlet extends HttpServlet {
             } else {
                 request.getSession().setAttribute("errorMessage", "Xóa nhân viên thất bại.");
             }
-       } catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             request.getSession().setAttribute("errorMessage", "Định dạng ID tài khoản không hợp lệ.");
         } catch (Exception e) {
             request.getSession().setAttribute("errorMessage", "Lỗi xóa nhân viên: " + e.getMessage());
@@ -372,6 +377,7 @@ public class StaffManagementServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
         }
     }
+
     /**
      * Returns a short description of the servlet.
      *

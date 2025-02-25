@@ -6,9 +6,9 @@ import java.sql.SQLException;
 
 public class DBConnection {
 
-    private static String url = "jdbc:sqlserver://DESKTOP-FAPV9II\\KHOADEV;databaseName=LorKingDom;encrypt=false;";
-    private static String user = "sa";
-    private static String pass = "12345";
+//    private static String url = "jdbc:sqlserver://DESKTOP-FAPV9II\\KHOADEV;databaseName=LorKingDom;encrypt=false;";
+//    private static String user = "sa";
+//    private static String pass = "12345";
     
 //    private static String url = "jdbc:sqlserver://QUIN;databaseName=LorKingDom;encrypt=true;trustServerCertificate=true";
 //    private static String user = "sa";
@@ -18,9 +18,9 @@ public class DBConnection {
 //    private static String user = "sa";
 //    private static String pass = "12345";   
 
-//    private static String url = "jdbc:sqlserver://localhost:1433;databaseName=LorKingDom;encrypt=true;trustServerCertificate=true";
-//    private static String user = "sa";
-//    private static String pass = "khangmc1502@";
+    private static String url = "jdbc:sqlserver://localhost:1433;databaseName=LorKingDom;encrypt=true;trustServerCertificate=true";
+    private static String user = "sa";
+    private static String pass = "khangmc1502@";
 
 //    private static String url = "jdbc:sqlserver://localhost:1433;databaseName=LorKingDom;encrypt=true;trustServerCertificate=true";
 //    private static String user = "sa";

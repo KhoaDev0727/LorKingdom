@@ -11,10 +11,10 @@
         <welcome-file>formComment.jsp</welcome-file>
     </welcome-file-list>
     -->
-<!--    <welcome-file-list>
+    <!--    <welcome-file-list>
         <welcome-file>ViewReview.jsp</welcome-file>
     </welcome-file-list> -->
-<!--   Servlet Configurations -->
+    <!--   Servlet Configurations -->
     <servlet>
         <servlet-name>ForgotPasswordServlet</servlet-name>
         <servlet-class>Controller.ForgotPasswordServlet</servlet-class>
@@ -409,6 +409,14 @@
     <servlet-mapping>
         <servlet-name>CartManagementServlet</servlet-name>
         <url-pattern>/Cart</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>RoleServlet</servlet-name>
+        <servlet-class>Controller.RoleServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RoleServlet</servlet-name>
+        <url-pattern>/Admin/RoleServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

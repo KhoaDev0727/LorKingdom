@@ -40,13 +40,12 @@ public class LoginPageServlet extends HttpServlet {
             session.setAttribute("userID", account.getAccountId());
             session.setAttribute("roleID", account.getRoleID());
             session.setAttribute("account", account);
-            session.setMaxInactiveInterval(10); // 10 giây
+            session.setMaxInactiveInterval(300); // 10 giây
 
             // Redirect based on role
             if (account.getRoleID() == 1) {
                 response.sendRedirect("DashBoard.jsp"); // Admin dashboard
-            } else if (account.getRoleID() == 2) {
-
+            } else if (account.getRoleID() == 2 || account.getRoleID() == 4 ) {
                 response.sendRedirect("staffDashboard.jsp"); // Staff dashboard
             } else {
                 request.setAttribute("error", "Bạn không có quyền đăng nhập!");

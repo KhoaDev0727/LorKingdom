@@ -51,7 +51,14 @@ public class CustomerManagementServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
         try {
+            // Kiểm tra đăng nhập (ở đây giả sử roleID của người dùng được lưu trong session)
+            Integer userRoleID = (Integer) session.getAttribute("roleID");
+            if (userRoleID == null) {
+                response.sendRedirect(request.getContextPath() + "/Admin/loginPage.jsp");
+                return;
+            }
             String action = request.getParameter("action");
             if (action != null) {
                 switch (action) {
@@ -245,7 +252,7 @@ public class CustomerManagementServlet extends HttpServlet {
      */
     protected void searchCustomer(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-            HttpSession session = request.getSession();
+        HttpSession session = request.getSession();
         try {
             String keyword = request.getParameter("search"); // Lấy từ ô nhập
             if (keyword == null) {
@@ -274,8 +281,8 @@ public class CustomerManagementServlet extends HttpServlet {
             request.setAttribute("keyword", keyword); // Giữ lại keyword
             request.getRequestDispatcher("CustomerManagement.jsp").forward(request, response);
         } catch (Exception e) {
-             session.setAttribute("errorMessage", "Lỗi tìm kiếm: " + e.getMessage());
-            response.sendRedirect(request.getContextPath() +"/Admin/CustomerManagementServlet");
+            session.setAttribute("errorMessage", "Lỗi tìm kiếm: " + e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/Admin/CustomerManagementServlet");
         }
     }
 

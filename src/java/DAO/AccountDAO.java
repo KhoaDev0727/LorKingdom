@@ -44,16 +44,11 @@ public class AccountDAO {
         stm.setString(1, email);
         rs = stm.executeQuery();
         if (rs.next()) {
-            return rs.getInt(1) > 0; 
+            return rs.getInt(1) > 1; 
         }
     } catch (SQLException e) {
         e.printStackTrace();
-    } finally {
-        // Đóng tài nguyên để tránh rò rỉ
-        if (rs != null) rs.close();
-        if (stm != null) stm.close();
-        if (conn != null) conn.close();
-    }
+    } 
     return false;
 }
 

@@ -256,11 +256,11 @@ public class CategoryServlet extends HttpServlet {
             return;
         }
 
-        if (categoryDAO.isCategoryExists(name)) {
-            request.getSession().setAttribute("errorMessage", "Tên danh mục đã tồn tại.");
-            response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
-            return;
-        }
+//        if (categoryDAO.isCategoryExists(name)) {
+//            request.getSession().setAttribute("errorMessage", "Tên danh mục đã tồn tại.");
+//            response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
+//            return;
+//        }
 
         int superCategoryID;
         try {

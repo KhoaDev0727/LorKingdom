@@ -179,11 +179,11 @@ public class MaterialServlet extends HttpServlet {
                 response.sendRedirect("MaterialServlet?action=list&showErrorModal=true");
                 return;
             }
-            if (materialDAO.isMaterial(name.trim())) {
-                request.getSession().setAttribute("errorMessage", "Tên chất vật liệu đã tồn tại. Vui lòng nhập tên khác.");
-                response.sendRedirect("MaterialServlet?action=list&showErrorModal=true");
-                return;
-            }
+//            if (materialDAO.isMaterial(name.trim())) {
+//                request.getSession().setAttribute("errorMessage", "Tên chất vật liệu đã tồn tại. Vui lòng nhập tên khác.");
+//                response.sendRedirect("MaterialServlet?action=list&showErrorModal=true");
+//                return;
+//            }
 
             Material material = new Material(materialID, name.trim(), description);
             materialDAO.updateMaterial(material);

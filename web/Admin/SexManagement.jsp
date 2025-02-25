@@ -55,7 +55,7 @@
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <i class="fas fa-table me-1"></i> Age List
+                                            <i class="fas fa-table me-1"></i> Sex List
                                         </div>
                                     </div>
                                 </div>
