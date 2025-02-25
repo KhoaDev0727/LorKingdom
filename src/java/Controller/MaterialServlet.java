@@ -135,14 +135,24 @@ public class MaterialServlet extends HttpServlet {
         String description = request.getParameter("description");
 
         if (name == null || name.trim().isEmpty()) {
-            request.getSession().setAttribute("errorMessage", "Tên vật liệu không được để trống.");
+            request.getSession().setAttribute("errorMessage", "Tên chất vật liệu không được để trống.");
+            response.sendRedirect("MaterialServlet?action=list&showErrorModal=true");
+            return;
+        }
+        if (!name.matches("^[\\p{L} _-]+$")) {
+            request.getSession().setAttribute("errorMessage", "Tên vật liệu chỉ được chứa chữ cái và khoảng trắng.");
+            response.sendRedirect("MaterialServlet?action=list&showErrorModal=true");
+            return;
+        }
+        if (materialDAO.isMaterial(name.trim())) {
+            request.getSession().setAttribute("errorMessage", "Tên vật liệu đã tồn tại. Vui lòng nhập tên khác.");
             response.sendRedirect("MaterialServlet?action=list&showErrorModal=true");
             return;
         }
         Material material = new Material(0, name.trim(), description);
         materialDAO.addMaterial(material);
 
-        request.getSession().setAttribute("successMessage", "Vật liệu được thêm thành công.");
+        request.getSession().setAttribute("successMessage", "Đã thêm vật liệu thành công.");
         response.sendRedirect("MaterialServlet?action=list&showSuccessModal=true");
     }
 
@@ -154,14 +164,24 @@ public class MaterialServlet extends HttpServlet {
             String description = request.getParameter("description");
 
             if (name == null || name.trim().isEmpty()) {
-                request.getSession().setAttribute("errorMessage", "Tên vật liệu không được để trống.");
+                request.getSession().setAttribute("errorMessage", "Tên chất vật liệu không được để trống.");
+                response.sendRedirect("MaterialServlet?action=list&showErrorModal=true");
+                return;
+            }
+            if (!name.matches("^[\\p{L} _-]+$")) {
+                request.getSession().setAttribute("errorMessage", "Tên chất vật liệu chỉ được chứa chữ cái và khoảng trắng.");
+                response.sendRedirect("MaterialServlet?action=list&showErrorModal=true");
+                return;
+            }
+            if (materialDAO.isMaterial(name.trim())) {
+                request.getSession().setAttribute("errorMessage", "Tên chất vật liệu đã tồn tại. Vui lòng nhập tên khác.");
                 response.sendRedirect("MaterialServlet?action=list&showErrorModal=true");
                 return;
             }
 
             Material material = new Material(materialID, name.trim(), description);
             materialDAO.updateMaterial(material);
-            request.getSession().setAttribute("successMessage", "Vật liệu được cập nhật thành công.");
+            request.getSession().setAttribute("successMessage", "Chất liệu đã được cập nhật thành công");
         } catch (NumberFormatException e) {
             request.getSession().setAttribute("errorMessage", "ID không hợp lệ.");
         }
@@ -173,7 +193,7 @@ public class MaterialServlet extends HttpServlet {
         try {
             int materialID = Integer.parseInt(request.getParameter("materialID"));
             materialDAO.deleteMaterial(materialID);
-            request.getSession().setAttribute("successMessage", "Vật liệu được xóa thành công.");
+            request.getSession().setAttribute("successMessage", "Đã xóa chất liệu thành công.");
         } catch (NumberFormatException e) {
             request.getSession().setAttribute("errorMessage", "ID không hợp lệ.");
         }
@@ -182,19 +202,15 @@ public class MaterialServlet extends HttpServlet {
 
     private void searchMaterial(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
-        String keyword = request.getParameter("search");
+        String keyword = request.getParameter("search".toLowerCase());
         if (keyword == null || keyword.trim().isEmpty()) {
             listMaterials(request, response);
             return;
         }
-        List<Material> allMaterials = materialDAO.getAllMaterials();
-        List<Material> filteredMaterials = new ArrayList<>();
-        for (Material m : allMaterials) {
-            if (m.getName() != null && m.getName().toLowerCase().contains(keyword.trim().toLowerCase())) {
-                filteredMaterials.add(m);
-            }
-        }
+
+        List<Material> filteredMaterials = materialDAO.searchMaterials(keyword.toLowerCase());
         request.setAttribute("materials", filteredMaterials);
         request.getRequestDispatcher("MaterialManagement.jsp").forward(request, response);
     }
+
 }

@@ -40,12 +40,24 @@
                         <div class="container-fluid px-5">
                             <h1 class="mt-4">Category Management</h1>
                             <!-- Form Add category -->
+                            <!-- Form Add category -->
                             <form action="CategoryServlet" method="POST">
                                 <input type="hidden" name="action" value="add">
-                                <label>category Name</label>
+
+                                <label>Category Name</label>
                                 <input type="text" name="categoryName" required />
+
+                                <label>SuperCategory</label>
+                                <select name="superCategoryID" required>
+                                    <option value="">-- Select SuperCategory --</option>
+                                    <c:forEach var="superCategory" items="${superCategories}">
+                                        <option value="${superCategory.superCategoryID}">${superCategory.name}</option>
+                                    </c:forEach>
+                                </select>
+
                                 <button class="btn btn-primary ms-2" type="submit">Add Category</button>
                             </form>
+
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
@@ -75,6 +87,7 @@
                                             <thead class="table-dark">
                                                 <tr>
                                                     <th>category ID</th>
+                                                    <th>SuperCategory ID</th>
                                                     <th>category Name</th>
                                                     <th>Date Created</th>
                                                     <th>Actions</th>
@@ -92,6 +105,7 @@
                                                         <c:forEach var="category" items="${categories}">
                                                             <tr>
                                                                 <td>${category.categoryID}</td>
+                                                                <td>${category.superCategoryID}</td>
                                                                 <td>${category.name}</td>
                                                                 <td>${category.createdAt}</td>
                                                                 <td>
@@ -116,6 +130,7 @@
                                                             </tr>
 
                                                             <!-- Edit Modal -->
+                                                            <!-- Edit Category Modal -->
                                                         <div class="modal fade" id="editCategoryModal-${category.categoryID}" tabindex="-1">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
@@ -127,9 +142,25 @@
                                                                         <div class="modal-body">
                                                                             <input type="hidden" name="action" value="update">
                                                                             <input type="hidden" name="categoryID" value="${category.categoryID}">
+
+                                                                            <!-- Category Name -->
                                                                             <div class="mb-3">
                                                                                 <label class="form-label">Category Name</label>
                                                                                 <input type="text" class="form-control" name="categoryName" value="${category.name}" required>
+                                                                            </div>
+
+                                                                            <!-- SuperCategory Selection -->
+                                                                            <div class="mb-3">
+                                                                                <label class="form-label">SuperCategory</label>
+                                                                                <select class="form-control" name="superCategoryID" required>
+                                                                                    <option value="">-- Select SuperCategory --</option>
+                                                                                    <c:forEach var="superCategory" items="${superCategories}">
+                                                                                        <option value="${superCategory.superCategoryID}"
+                                                                                                ${superCategory.superCategoryID == category.superCategoryID ? 'selected' : ''}>
+                                                                                            ${superCategory.name}
+                                                                                        </option>
+                                                                                    </c:forEach>
+                                                                                </select>
                                                                             </div>
                                                                         </div>
                                                                         <div class="modal-footer">
@@ -141,7 +172,6 @@
                                                             </div>
                                                         </div>
 
-                                                        <!-- Delete Confirmation Modal -->
                                                         <div class="modal fade" id="confirmDeleteModal" tabindex="-1">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
@@ -193,6 +223,45 @@
                     </div>
                 </div>
             </div>
-        </div>s
+        </div>
+        <!-- Success Message Modal -->
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title" id="successModalLabel">Success</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-dark">
+                        <p id="successMessage">${sessionScope.successMessage}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </body>
+    <script>
+        function setDeletecategoryID(categoryID) {
+            document.getElementById("deletecategoryID").value = categoryID;
+        }
+
+        window.onload = function () {
+            let errorMessage = "${sessionScope.errorMessage}";
+            if (errorMessage && errorMessage.trim() !== "") {
+                let errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+                errorModal.show();
+        <% request.getSession().removeAttribute("errorMessage"); %>
+            }
+
+            let successMessage = "${sessionScope.successMessage}";
+            if (successMessage && successMessage.trim() !== "") {
+                let successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                successModal.show();
+        <% request.getSession().removeAttribute("successMessage"); %>
+            }
+        };
+    </script>
 </html>

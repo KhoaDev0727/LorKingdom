@@ -1,3 +1,4 @@
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
@@ -143,6 +144,11 @@ public class OriginServlet extends HttpServlet {
             response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
             return;
         }
+        if (!name.matches("^[\\p{L} _-]+$")) {
+            request.getSession().setAttribute("errorMessage", "Origin names must contain only letters and spaces.");
+            response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
+            return;
+        }
         if (originDAO.isOriginExists(name.trim())) {
             request.getSession().setAttribute("errorMessage", "Origin already exists.");
             response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
@@ -165,8 +171,23 @@ public class OriginServlet extends HttpServlet {
                 response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
                 return;
             }
+            if (name == null || name.trim().isEmpty()) {
+                request.getSession().setAttribute("errorMessage", "Origin name cannot be empty.");
+                response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
+                return;
+            }
             if (name.length() > 255) {
                 request.getSession().setAttribute("errorMessage", "Origin name is too long. Maximum 255 characters allowed.");
+                response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
+                return;
+            }
+            if (!name.matches("^[\\p{L} _-]+$")) {
+                request.getSession().setAttribute("errorMessage", "Origin names must contain only letters and spaces.");
+                response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
+                return;
+            }
+            if (originDAO.isOriginExists(name.trim())) {
+                request.getSession().setAttribute("errorMessage", "Origin already exists.");
                 response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
                 return;
             }
@@ -179,7 +200,6 @@ public class OriginServlet extends HttpServlet {
         response.sendRedirect("OriginServlet?action=list");
     }
 
-    // Xóa Origin
     private void deleteOrigin(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         try {

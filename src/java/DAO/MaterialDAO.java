@@ -42,8 +42,7 @@ public class MaterialDAO {
         }
     }
 
-    // Kiểm tra xem vật liệu đã tồn tại chưa
-    public boolean isMaterialExists(String name) throws SQLException, ClassNotFoundException {
+    public boolean isMaterial(String name) throws SQLException, ClassNotFoundException {
         String query = "SELECT COUNT(*) FROM Material WHERE Name = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, name);
@@ -75,7 +74,7 @@ public class MaterialDAO {
 
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
 
-            System.out.println("Deleting Material ID: " + materialID); // Debug
+            System.out.println("Deleting Material ID: " + materialID); 
             ps.setInt(1, materialID);
             int rowsAffected = ps.executeUpdate();
 
@@ -97,6 +96,24 @@ public class MaterialDAO {
             }
         }
         return materialName;
+    }
+
+    public List<Material> searchMaterials(String keyword) throws SQLException, ClassNotFoundException {
+        List<Material> materials = new ArrayList<>();
+        String query = "SELECT MaterialID, Name, Description FROM Material WHERE LOWER(Name) LIKE ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, "%" + keyword.trim().toLowerCase() + "%");
+            try ( ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    materials.add(new Material(
+                            rs.getInt("MaterialID"),
+                            rs.getString("Name"),
+                            rs.getString("Description")
+                    ));
+                }
+            }
+        }
+        return materials;
     }
 
 }

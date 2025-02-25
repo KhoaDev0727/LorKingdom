@@ -16,6 +16,7 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <script src="https://cdn.tailwindcss.com"></script>
         <title>Chi Tiết Sản Phẩm</title>
+        
     </head>
     <body>
         <section class="p-0">
@@ -48,25 +49,21 @@
                                 <div class="carousel-inner">
 
                                     <c:forEach var="img" items="${listImages}" varStatus="status">
-                                        <!-- Mở thẻ slide mới nếu index % 4 == 0 -->
                                         <c:if test="${status.index % 4 == 0}">
                                             <div class="carousel-item
                                                  <c:if test='${status.index == 0}'>active</c:if>">
                                                      <div class="row">
                                                  </c:if>
-
-                                                 <!-- Nội dung 1 ảnh (1 cột) -->
-                                                 <div class="col-3">
+                                                 <div class="col-3" style="width: 210px; height: 150px; overflow: hidden;">
                                                      <img 
                                                          src="${pageContext.request.contextPath}/${img.imageUrl}"
-                                                         class="d-block w-100" 
+                                                         class="object-cover w-full h-full"
                                                          alt="Ảnh phụ" />
                                                  </div>
 
-                                                 <!-- Đóng slide khi index % 4 == 3 hoặc là phần tử cuối cùng -->
                                                  <c:if test="${status.index % 4 == 3 || status.last}">
-                                                 </div> <!-- đóng .row -->
-                                            </div> <!-- đóng .carousel-item -->
+                                                 </div> 
+                                            </div> 
                                         </c:if>
                                     </c:forEach>
 
@@ -210,7 +207,7 @@
                     </div>
                 </c:if>
             </main>
-            <div class="mt-8 bg-white rounded-md shadow p-4">
+            <div class="mt-8 bg-white rounded-md shadow p-4 container">
                 <h2 class="text-xl font-bold mb-4">Mô tả sản phẩm</h2>
                 <p class="text-gray-700 mb-4">
                     ${product.description}

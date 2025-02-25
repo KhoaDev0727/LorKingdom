@@ -16,7 +16,6 @@ import java.util.List;
 
 public class OriginDAO {
 
-    // Lấy danh sách tất cả Origin
     public List<Origin> getAllOrigins() throws SQLException, ClassNotFoundException {
         List<Origin> origins = new ArrayList<>();
         String query = "SELECT OriginID, Name, CreatedAt FROM Origin";
@@ -33,7 +32,6 @@ public class OriginDAO {
         return origins;
     }
 
-    // Thêm mới Origin
     public void addOrigin(Origin origin) throws SQLException, ClassNotFoundException {
         String query = "INSERT INTO Origin (Name) VALUES (?)";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
@@ -42,7 +40,6 @@ public class OriginDAO {
         }
     }
 
-    // Cập nhật Origin
     public void updateOrigin(Origin origin) throws SQLException, ClassNotFoundException {
         String query = "UPDATE Origin SET Name = ? WHERE OriginID = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
@@ -52,7 +49,6 @@ public class OriginDAO {
         }
     }
 
-    // Xóa Origin theo OriginID
     public void deleteOrigin(int originID) throws SQLException, ClassNotFoundException {
         String query = "DELETE FROM Origin WHERE OriginID = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
@@ -61,7 +57,6 @@ public class OriginDAO {
         }
     }
 
-    // Tìm kiếm Origin theo từ khóa (dựa trên tên)
     public List<Origin> searchOrigin(String keyword) throws SQLException, ClassNotFoundException {
         List<Origin> origins = new ArrayList<>();
         String query = "SELECT OriginID, Name, CreatedAt FROM Origin WHERE Name LIKE ?";
@@ -81,7 +76,6 @@ public class OriginDAO {
         return origins;
     }
 
-    // Kiểm tra xem Origin đã tồn tại hay chưa (theo tên)
     public boolean isOriginExists(String name) throws SQLException, ClassNotFoundException {
         String query = "SELECT COUNT(*) FROM Origin WHERE Name = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {

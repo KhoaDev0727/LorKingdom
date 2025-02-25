@@ -102,4 +102,16 @@ public class CategoryDAO {
         return categoryName;
     }
 
+
+    public void updateCategory(Category category) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE Category SET SuperCategoryID = ?, Name = ? WHERE CategoryID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, category.getSuperCategoryID());
+            ps.setString(2, category.getName());
+            ps.setInt(3, category.getCategoryID());
+            ps.executeUpdate();
+        }
+    }
+
 }
+    

@@ -143,8 +143,8 @@ public class SuperCategoryServlet extends HttpServlet {
             return;
         }
 
-        if (!name.matches("^[a-zA-Z0-9\\s]+$")) {
-            request.getSession().setAttribute("errorMessage", "Category name must contain only letters, numbers, and spaces.");
+        if (!name.matches("^[\\p{L} _-]+$")) {
+            request.getSession().setAttribute("errorMessage", "SuperCategory name must contain only letters and spaces.");
             response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
             return;
         }
@@ -165,15 +165,33 @@ public class SuperCategoryServlet extends HttpServlet {
     private void updateSuperCategory(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException, ClassNotFoundException {
         int superCategoryID = Integer.parseInt(request.getParameter("superCategoryID"));
-        String newName = request.getParameter("name");
+        String name = request.getParameter("name");
 
-        if (newName == null || newName.trim().isEmpty()) {
+        if (name == null || name.trim().isEmpty()) {
             request.getSession().setAttribute("errorMessage", "Category name cannot be empty.");
             response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
             return;
         }
 
-        superCategoryDAO.updateSuperCategory(superCategoryID, newName);
+        if (name.length() > 50) {
+            request.getSession().setAttribute("errorMessage", "Category name is too long. Maximum 50 characters.");
+            response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
+            return;
+        }
+
+        if (!name.matches("^[\\p{L} _-]+$")) {
+            request.getSession().setAttribute("errorMessage", "SuperCategory name must contain only letters and spaces.");
+            response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
+            return;
+        }
+
+        if (superCategoryDAO.isSuperCategoryExists(name)) {
+            request.getSession().setAttribute("errorMessage", "Category name already exists.");
+            response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
+            return;
+        }
+
+        superCategoryDAO.updateSuperCategory(superCategoryID, name);
         request.getSession().setAttribute("successMessage", "Category updated successfully.");
         response.sendRedirect("SuperCategoryServlet?action=list&showSuccessModal=true");
     }

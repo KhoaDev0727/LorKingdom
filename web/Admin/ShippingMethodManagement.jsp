@@ -236,6 +236,7 @@
                 if (errorMessage && errorMessage.trim() !== "") {
                     const errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
                     errorModal.show();
+                    <% request.getSession().removeAttribute("errorMessage"); %>  //
                 }
             };
         </script>

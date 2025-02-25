@@ -11,20 +11,12 @@
         <link rel="stylesheet" href="./assets/styleUser/styleHome.css">
         <link rel="stylesheet" href="./assets/styleUser/styleheader.css">
         <link rel="stylesheet" href="assets/styleUser/newProductPage.css"/>
-
-
         <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css"
-              rel="stylesheet">
-        <!-- Bootstrap JS Bundle -->
-
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
         <script src="https://cdn.tailwindcss.com"></script>
-
-        <link rel="stylesheet" href="assets/styleUser/newProductPage.css"/>
         <script src="./assets/js/script.js"></script>
         <title>LorKingdom</title>
-
     </head>
 
     <body class="bg-white font-sans text-l" style="margin-top: 120px;">
@@ -32,17 +24,13 @@
         <jsp:include page="assets/Component/header.jsp"/>
         <!-- end Header Section -->
 
-
         <section class="banner-section">
             <div id="horizontalBannerCarousel" class="carousel slide" data-bs-ride="carousel">
                 <!-- Indicators/Dots -->
                 <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#horizontalBannerCarousel" data-bs-slide-to="0" class="active"
-                            aria-current="true" aria-label="Slide 1"></button>
-                    <button type="button" data-bs-target="#horizontalBannerCarousel" data-bs-slide-to="1"
-                            aria-label="Slide 2"></button>
-                    <button type="button" data-bs-target="#horizontalBannerCarousel" data-bs-slide-to="2"
-                            aria-label="Slide 3"></button>
+                    <button type="button" data-bs-target="#horizontalBannerCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#horizontalBannerCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#horizontalBannerCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
                 </div>
 
                 <!-- Slides -->
@@ -59,19 +47,16 @@
                 </div>
 
                 <!-- Controls/Arrows -->
-                <button class="carousel-control-prev" type="button" data-bs-target="#horizontalBannerCarousel"
-                        data-bs-slide="prev">
+                <button class="carousel-control-prev" type="button" data-bs-target="#horizontalBannerCarousel" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Previous</span>
                 </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#horizontalBannerCarousel"
-                        data-bs-slide="next">
+                <button class="carousel-control-next" type="button" data-bs-target="#horizontalBannerCarousel" data-bs-slide="next">
                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Next</span>
                 </button>
             </div>
         </section>
-
 
         <div class="bg-white" style="margin-top: 30px;">
             <div class="flex flex-col lg:flex-row">
@@ -226,58 +211,8 @@
                     </div>
                     <div style="margin-bottom: 50px;" >
 
-                        <div class="grid grid-cols-3 gap-4 " id="productListContainer">
-                            <c:forEach var="product" items="${listP}" begin="0" end="8">
-
-                                <a href="ProductDetailServlet?productID=${product.productID}"
-                                   class="border border-gray-400 rounded-4 p-4 transform transition duration-200 hover:scale-105 no-underline"
-                                   style="width: 350px; height: 450px; display: block;"> 
-
-                                    <div class="main-image mb-4 w-full h-50 overflow-hidden group"
-                                         style="height: 200px;">
-                                        <c:forEach var="img" items="${mainImages}">
-                                            <c:if test="${img.productID == product.productID}">
-                                                <img 
-                                                    src="${pageContext.request.contextPath}/${img.imageUrl}"
-                                                    alt="Main Image"
-                                                    class="w-full h-full object-cover rounded shadown duration-300" />
-                                            </c:if>
-                                        </c:forEach>
-                                    </div>
-
-                                    <!-- Thông tin sản phẩm -->
-                                    <div class="mt-4">
-                                        <h3 class="text-gray-600 mb-2">
-                                            ${product.name}
-                                        </h3>
-                                        <div class="d-flex justify-content-between">
-                                            <p class="text-gray-400 text-l mb-4">
-                                                SKU: ${product.SKU}
-                                            </p>
-                                            <p class="text-gray-400 mb-2 text-sm">
-                                                <!-- Lấy Category Name -->
-                                                <c:forEach var="cat" items="${categories}">
-                                                    <c:if test="${cat.categoryID == product.categoryID}">
-                                                        ${cat.name}
-                                                    </c:if>
-                                                </c:forEach>
-                                            </p>
-                                        </div>
-                                        <p class="text-red-500 font-bold mb-2">
-                                            ${product.price}₫
-                                        </p>
-
-                                        <!-- Nút Thêm Vào Giỏ Hàng -->
-                                        <button class="bg-red-500 text-white py-2 px-4 rounded-full mb-2 mt-3"
-                                                onclick="event.preventDefault(); location.href = 'AddToCartServlet?sku=${product.SKU}'">
-                                            Thêm Vào Giỏ Hàng
-                                        </button>
-                                        <button class="text-red-500" onclick="toggleFavorite('${product.SKU}')">
-                                            <i class="far fa-heart"></i>
-                                        </button>
-                                    </div>
-                                </a>
-                            </c:forEach>
+                        <div id="productListContainer">
+                            <jsp:include page="productList.jsp"/>
                         </div>
                     </div>
                 </div>
@@ -286,27 +221,17 @@
 
 
         <script>
-            document.querySelector('.dropdown-btn').addEventListener('click', function () {
-                const menu = document.querySelector('.dropdown-menu');
-                if (menu.style.display === 'block') {
-                    menu.style.display = 'none';
-                } else {
-                    menu.style.display = 'block';
-                }
-            });
+            // Ví dụ điều khiển hiển thị menu dropdown
             function toggleMenu(menuId) {
                 var menu = document.getElementById(menuId);
-                if (menu.classList.contains('hidden')) {
-                    menu.classList.remove('hidden');
-                } else {
-                    menu.classList.add('hidden');
-                }
+                menu.classList.toggle('hidden');
             }
+
+            // Hàm gửi bộ lọc bằng AJAX
             function submitFilter() {
-                // Lấy dữ liệu của form
                 const form = document.getElementById("filterForm");
                 const formData = new FormData(form);
-                // Chuyển đổi dữ liệu sang URL parameters
+                formData.append("partial", "true");
                 const params = new URLSearchParams(formData).toString();
 
                 fetch("getList?" + params, {
@@ -314,15 +239,16 @@
                 })
                         .then(response => response.text())
                         .then(data => {
-                            // Cập nhật lại phần danh sách sản phẩm
                             document.getElementById("productListContainer").innerHTML = data;
-
                         })
                         .catch(error => console.error("Lỗi khi load dữ liệu:", error));
             }
 
+            function resetFilter() {
+                document.getElementById("filterForm").reset();
+                submitFilter();
+            }
         </script>
 
     </body>
-
 </html>

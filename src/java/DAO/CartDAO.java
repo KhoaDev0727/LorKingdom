@@ -103,7 +103,7 @@ public class CartDAO {
                         rs.getString("Name"),
                         rs.getDouble("Price")
                 );
-                // Lấy ảnh chính
+               
                 ProductImage mainImage = ProductImageDAO.getMainImage(product.getProductID());
                 if (mainImage != null) {
                     product.setMainImageUrl(mainImage.getImageUrl());

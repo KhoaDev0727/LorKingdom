@@ -108,4 +108,23 @@ public class SexDAO {
         return sexName;
     }
 
+    public List<Sex> searchSex(String keyword) throws SQLException, ClassNotFoundException {
+        List<Sex> sexes = new ArrayList<>();
+        String query = "SELECT SexID, Name FROM Sex WHERE LOWER(Name) LIKE LOWER(?)";
+
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, "%" + keyword.toLowerCase() + "%");
+            try ( ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    sexes.add(new Sex(
+                            rs.getInt("SexID"),
+                            rs.getString("Name"),
+                            null
+                    ));
+                }
+            }
+        }
+        return sexes;
+    }
+
 }

@@ -47,7 +47,7 @@
                                 <button class="btn btn-primary ms-2" type="submit">Add Category</button>
                             </form>
                             <div class="card mb-4">
-                                    <div class="card-header">
+                                <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <i class="fas fa-table me-1"></i> Super Category List
@@ -194,23 +194,43 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="successModalLabel" tabindex="-1" aria-labelledby="successModalTitle" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title" id="successModalTitle">Success</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-dark">
+                        <p id="successMessageContent">${sessionScope.successMessage}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <script>
             function setDeleteCategoryID(superCategoryID) {
                 document.getElementById("deleteCategoryID").value = superCategoryID;
             }
-            <c:if test="${not empty sessionScope.errorMessage}">
-            var errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
-            errorModal.show();
-            </c:if>
 
-            // Xóa thông báo lỗi sau khi hiển thị modal
             window.onload = function () {
-            <c:if test="${not empty sessionScope.errorMessage}">
-                setTimeout(function () {
-                <c:remove var="errorMessage" scope="session"/>
-                }, 1000);
-            </c:if>
+                const errorMessage = "${sessionScope.errorMessage}";
+                if (errorMessage && errorMessage.trim() !== "") {
+                    const errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
+                    errorModal.show();
+            <% request.getSession().removeAttribute("errorMessage"); %>
+                }
+
+                let successMessage = '<%= session.getAttribute("successMessage") %>';
+                if (successMessage && successMessage.trim() !== "null" && successMessage.trim() !== "") {
+                    let successModal = new bootstrap.Modal(document.getElementById("successModalLabel"));
+                    successModal.show();
+            <% session.removeAttribute("successMessage"); %>
+                }
             };
         </script>
+
     </body>
 </html>

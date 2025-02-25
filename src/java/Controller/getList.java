@@ -90,7 +90,7 @@ public class getList extends HttpServlet {
         OriginDAO originDAO = new OriginDAO();
         ProductDAO productDAO = new ProductDAO();
         ProductImageDAO productImageDAO = new ProductImageDAO();
-        int itemsPerPage = 10; // Số sản phẩm mỗi trang
+        int itemsPerPage = 10; 
         int page = 1;
         String pageParam = request.getParameter("page");
         if (pageParam != null) {
@@ -103,7 +103,7 @@ public class getList extends HttpServlet {
         int offset = (page - 1) * itemsPerPage;
 
         try {
-            // Lấy giá trị lọc từ request (nếu có)
+         
             Integer categoryID = request.getParameter("categoryID") != null ? Integer.parseInt(request.getParameter("categoryID")) : null;
             Integer ageID = request.getParameter("ageID") != null ? Integer.parseInt(request.getParameter("ageID")) : null;
             Integer sexID = request.getParameter("sexID") != null ? Integer.parseInt(request.getParameter("sexID")) : null;
@@ -112,22 +112,22 @@ public class getList extends HttpServlet {
             Integer materialID = request.getParameter("materialID") != null ? Integer.parseInt(request.getParameter("materialID")) : null;
             Integer originID = request.getParameter("originID") != null ? Integer.parseInt(request.getParameter("originID")) : null;
 
-            // Kiểm tra xem có bộ lọc nào không
+        
             boolean hasFilters = categoryID != null || ageID != null || sexID != null
                     || priceRangeID != null || brandID != null || materialID != null || originID != null;
 
             List<Product> products;
             if (hasFilters) {
-                // Nếu có bộ lọc -> lấy danh sách sản phẩm phù hợp
+           
                 products = productDAO.getFilteredProducts(categoryID, ageID, sexID, priceRangeID, brandID, materialID, originID);
             } else {
-                // Nếu không có bộ lọc nào -> lấy tất cả sản phẩm
+                 
                 products = productDAO.getAllProducts();
             }
 
             int totalProducts = products.size();
 
-            // Gửi dữ liệu đến JSP
+           
             request.setAttribute("totalProducts", totalProducts);
             request.setAttribute("listP", products);
             request.setAttribute("superCategories", superCategoryDAO.getAllSuperCategories());
@@ -140,9 +140,14 @@ public class getList extends HttpServlet {
             request.setAttribute("listPriceRanges", priceRangeDAO.getAllPriceRanges());
             request.setAttribute("mainImages", ProductImageDAO.getMainProductImages());
 
-            request.getRequestDispatcher("home.jsp").forward(request, response);
+            String partial = request.getParameter("partial");
+            if ("true".equals(partial)) {
+                request.getRequestDispatcher("productList.jsp").forward(request, response);
+            } else {
+                request.getRequestDispatcher("home.jsp").forward(request, response);
+            }
         } catch (Exception e) {
-            e.printStackTrace(); // Log lỗi ra console
+            e.printStackTrace();
             request.getRequestDispatcher("error.jsp").forward(request, response);
         }
     }

@@ -16,20 +16,6 @@
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="JS/SideBarToggle.js"></script>
-        <style>
-            .rating-filter button {
-                margin: 5px;
-                padding: 8px 15px;
-            }
-            .rating-filter button.active {
-                background-color: #0d6efd;
-                color: white;
-            }
-            .star {
-                color: red;
-                font-size: 1.2em;
-            }
-        </style>
     </head>
     <body class="sb-nav-fixed">
         <div id="layoutSidenav">
@@ -115,6 +101,7 @@
                                                                             onclick="setDeleteMaterialID(${material.materialID})">
                                                                         <i class="fas fa-trash"></i> 
                                                                     </button>
+
                                                                 </td>
                                                             </tr>
                                                             <!-- Edit Material Modal -->
@@ -177,6 +164,22 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="successModalLabel" tabindex="-1" aria-labelledby="successModalTitle" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title" id="successModalTitle">Success</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-dark">
+                        <p id="successMessageContent">${sessionScope.successMessage}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Confirm Delete Modal -->
         <div class="modal fade" id="confirmDeleteModal" tabindex="-1">
@@ -205,14 +208,22 @@
             function setDeleteMaterialID(materialID) {
                 document.getElementById("deleteMaterialID").value = materialID;
             }
-
             window.onload = function () {
                 const errorMessage = "${sessionScope.errorMessage}";
                 if (errorMessage && errorMessage.trim() !== "") {
                     const errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
                     errorModal.show();
+            <% request.getSession().removeAttribute("errorMessage"); %>
+                }
+
+                let successMessage = '<%= session.getAttribute("successMessage") %>';
+                if (successMessage && successMessage.trim() !== "null" && successMessage.trim() !== "") {
+                    let successModal = new bootstrap.Modal(document.getElementById("successModalLabel"));
+                    successModal.show();
+            <% session.removeAttribute("successMessage"); %>
                 }
             };
         </script>
+
     </body>
 </html>
