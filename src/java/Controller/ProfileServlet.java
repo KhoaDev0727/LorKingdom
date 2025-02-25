@@ -25,8 +25,10 @@ public class ProfileServlet extends HttpServlet {
             return;
         }
 
-        session.setAttribute("account", account); 
-        
+        // Không hiển thị mật khẩu hash, để mặc định là placeholder
+        account.setPassword("****"); // Placeholder thay cho hash
+
+        session.setAttribute("account", account);
         request.setAttribute("account", account);
         request.getRequestDispatcher("profile.jsp").forward(request, response);
     }
@@ -41,23 +43,28 @@ public class ProfileServlet extends HttpServlet {
             return;
         }
 
-        // Lấy dữ liệu từ form
         String newUserName = request.getParameter("username");
         String newPhoneNumber = request.getParameter("phoneNumber");
         String newAddress = request.getParameter("address");
         String newPassword = request.getParameter("password");
 
-        // Cập nhật dữ liệu
+        AccountDAO accountDAO = new AccountDAO();
+        // Nếu người dùng nhập mật khẩu mới, hash nó trước khi lưu
+        if (newPassword != null && !newPassword.isEmpty()) {
+            String hashedPassword = MyUtils.hashPassword(newPassword);
+            account.setPassword(hashedPassword); // Lưu hash vào account
+        } else {
+            account.setPassword(accountDAO.getAccountByEmail(account.getEmail()).getPassword()); // Giữ nguyên hash cũ
+        }
+
         account.setUserName(newUserName);
         account.setPhoneNumber(newPhoneNumber);
         account.setAddress(newAddress);
-        account.setPassword(newPassword);
-
-        AccountDAO accountDAO = new AccountDAO();
-        boolean isUpdated = accountDAO.updateProfileCustomer(account.getEmail(), newAddress, newPhoneNumber, newPassword); // Gọi phương thức cập nhật
+      
+        boolean isUpdated = accountDAO.updateProfileCustomer(account.getEmail(), newAddress, newPhoneNumber, account.getPassword());
 
         if (isUpdated) {
-            session.setAttribute("account", accountDAO.getAccountByEmail(account.getEmail())); // Cập nhật lại session với thông tin mới
+            session.setAttribute("account", accountDAO.getAccountByEmail(account.getEmail()));
         }
 
         response.sendRedirect("profile.jsp");

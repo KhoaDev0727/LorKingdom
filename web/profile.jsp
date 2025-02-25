@@ -105,10 +105,9 @@
                                                 <div class="">
                                                     <p class="">Mật khẩu</p>
                                                     <div class="d-flex">
-                                                        <h6 id="displayPassword">${account.password}</h6>
-                                                        <input type="hidden" name="password" id="passwordInput" value="${account.password}">
-                                                        <a href="#" class="text-primary text-decoration-none change-btn"
-                                                           data-bs-toggle="modal" data-bs-target="#editPasswordModal">Thay đổi</a>
+                                                        <h6 id="displayPassword">${account.password}</h6> <!-- Hiển thị **** -->
+                                                        <input type="hidden" name="password" id="passwordInput" value="">
+                                                        <a href="#" class="text-primary text-decoration-none change-btn" data-bs-toggle="modal" data-bs-target="#editPasswordModal">Thay đổi</a>
                                                     </div>
                                                 </div>
 
@@ -220,12 +219,12 @@
             function updatePassword() {
                 let newPassword = document.getElementById("newPassword").value;
                 if (newPassword.trim() !== "") {
-                    document.getElementById("displayPassword").innerText = newPassword;
-                    document.getElementById("passwordInput").value = newPassword;
+                    document.getElementById("displayPassword").innerText = "****"; // Luôn hiển thị placeholder
+                    document.getElementById("passwordInput").value = newPassword; // Lưu mật khẩu mới để gửi form
                     var passwordModal = bootstrap.Modal.getInstance(document.getElementById("editPasswordModal"));
                     passwordModal.hide();
                 }
-            }    
+            }
         </script>
 
 

@@ -49,8 +49,8 @@ public class LoginPageServlet extends HttpServlet {
 
                 response.sendRedirect("staffDashboard.jsp"); // Staff dashboard
             } else {
-                // Handle other roles or default case
-                response.sendRedirect("home.jsp"); // Or wherever you want non-admin/staff to go
+                request.setAttribute("error", "Bạn không có quyền đăng nhập!");
+                request.getRequestDispatcher("loginPage.jsp").forward(request, response);
             }
         } else {
             request.setAttribute("error", "Email hoặc mật khẩu không hợp lệ!");
