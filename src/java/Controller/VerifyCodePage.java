@@ -23,7 +23,6 @@ public class VerifyCodePage extends HttpServlet {
         long currentTime = System.currentTimeMillis();
 
         if (currentTime > expiryTime) {
-            // Mã đã hết hạn
             session.removeAttribute("verificationCode");
             session.removeAttribute("codeExpiryTime");
             request.setAttribute("errorMessage", "Mã xác minh đã hết hạn. Vui lòng gửi lại mã mới.");
@@ -32,23 +31,18 @@ public class VerifyCodePage extends HttpServlet {
         }
 
         if (enteredCode != null && enteredCode.equals(actualCode)) {
-            // Xác thực thành công, loại bỏ mã xác minh khỏi session
             session.removeAttribute("verificationCode");
             session.removeAttribute("codeExpiryTime");
             session.setAttribute("isVerified", true);
 
-            // Retrieve user information from session
             String username = (String) session.getAttribute("tempUsername");
             String email = (String) session.getAttribute("tempEmail");
-            String password = (String) session.getAttribute("tempPassword");
+            String hashedPassword = (String) session.getAttribute("tempPassword"); // Lấy hashed password trực tiếp
             String phoneNumber = (String) session.getAttribute("tempPhoneNumber");
 
-            if (username != null && email != null && password != null && phoneNumber != null) {
-                // Hash the password before sending it to DAO
-                String hashedPassword = MyUtils.hashPassword(password);
-                saveUserToDatabase(username, email, hashedPassword, phoneNumber, session);
+            if (username != null && email != null && hashedPassword != null && phoneNumber != null) {
+                saveUserToDatabase(username, email, hashedPassword, phoneNumber, session); // Sử dụng hashed password
 
-                // Clear session attributes after successful account creation
                 session.removeAttribute("tempUsername");
                 session.removeAttribute("tempEmail");
                 session.removeAttribute("tempPassword");
@@ -57,7 +51,6 @@ public class VerifyCodePage extends HttpServlet {
 
             response.sendRedirect("verifyCodePage.jsp?status=success");
         } else {
-            // Xác thực thất bại
             request.setAttribute("errorMessage", "Mã xác minh không đúng hoặc trống. Vui lòng thử lại.");
             request.getRequestDispatcher("verifyCodePage.jsp").forward(request, response);
         }
@@ -65,6 +58,6 @@ public class VerifyCodePage extends HttpServlet {
 
     private void saveUserToDatabase(String username, String email, String password, String phoneNumber, HttpSession session) {
         AccountDAO accountDAO = new AccountDAO();
-        accountDAO.insertNewStaff(username, email, password, phoneNumber);
+        accountDAO.insertNewStaff(username, email, password, phoneNumber); // Truyền hashed password trực tiếp
     }
 }

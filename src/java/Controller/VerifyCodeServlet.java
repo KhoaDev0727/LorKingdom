@@ -6,6 +6,7 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 
 public class VerifyCodeServlet extends HttpServlet {
+
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -23,7 +24,6 @@ public class VerifyCodeServlet extends HttpServlet {
         long currentTime = System.currentTimeMillis();
 
         if (currentTime > expiryTime) {
-            // Mã đã hết hạn
             session.removeAttribute("verificationCode");
             session.removeAttribute("codeExpiryTime");
             request.setAttribute("errorMessage", "Mã xác minh đã hết hạn. Vui lòng gửi lại mã mới.");
@@ -32,23 +32,18 @@ public class VerifyCodeServlet extends HttpServlet {
         }
 
         if (enteredCode != null && enteredCode.equals(actualCode)) {
-            // Xác thực thành công, loại bỏ mã xác minh khỏi session
             session.removeAttribute("verificationCode");
             session.removeAttribute("codeExpiryTime");
             session.setAttribute("isVerified", true);
 
-            // Retrieve user information from session
             String username = (String) session.getAttribute("tempUsername");
             String email = (String) session.getAttribute("tempEmail");
-            String password = (String) session.getAttribute("tempPassword");
+            String hashedPassword = (String) session.getAttribute("tempPassword"); // Lấy hashed password từ session
             String phoneNumber = (String) session.getAttribute("tempPhoneNumber");
 
-            if (username != null && email != null && password != null && phoneNumber != null) {
-                // Hash the password before sending it to DAO
-                String hashedPassword = MyUtils.hashPassword(password);
-                saveUserToDatabase(username, email, hashedPassword, phoneNumber, session);
+            if (username != null && email != null && hashedPassword != null && phoneNumber != null) {
+                saveUserToDatabase(username, email, hashedPassword, phoneNumber, session); // Không hash lại
 
-                // Clear session attributes after successful account creation
                 session.removeAttribute("tempUsername");
                 session.removeAttribute("tempEmail");
                 session.removeAttribute("tempPassword");
@@ -57,7 +52,6 @@ public class VerifyCodeServlet extends HttpServlet {
 
             response.sendRedirect("verifyCode.jsp?status=success");
         } else {
-            // Xác thực thất bại
             request.setAttribute("errorMessage", "Mã xác minh không đúng hoặc trống. Vui lòng thử lại.");
             request.getRequestDispatcher("verifyCode.jsp").forward(request, response);
         }

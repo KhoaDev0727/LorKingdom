@@ -44,11 +44,16 @@ public class AccountDAO {
         stm.setString(1, email);
         rs = stm.executeQuery();
         if (rs.next()) {
-            return rs.getInt(1) > 1; 
+            return rs.getInt(1) > 0; 
         }
     } catch (SQLException e) {
         e.printStackTrace();
-    } 
+    } finally {
+        // Đóng tài nguyên để tránh rò rỉ bộ nhớ
+        if (rs != null) rs.close();
+        if (stm != null) stm.close();
+        if (conn != null) conn.close();
+    }
     return false;
 }
 
@@ -341,15 +346,13 @@ public class AccountDAO {
     public void insertNewStaff(String username, String email, String password, String phoneNumber) {
         String sql = "INSERT INTO Account (RoleID, AccountName, Email, Password, PhoneNumber, Image) VALUES (?, ?, ?, ?, ?, ?)";
         String defaultImageUrl = "./assets/img/default-img-profile.png";
-        int defaultRoleID = 2; // Assuming default role ID is 2 for staff
-
-        String hashedPassword = MyUtils.hashPassword(password); // Hash mật khẩu
+        int defaultRoleID = 2; // RoleID cho staff
 
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, defaultRoleID);
             stmt.setString(2, username);
             stmt.setString(3, email);
-            stmt.setString(4, hashedPassword); // Sử dụng mật khẩu đã hash
+            stmt.setString(4, password);
             stmt.setString(5, phoneNumber);
             stmt.setString(6, defaultImageUrl);
             stmt.executeUpdate();
@@ -361,15 +364,13 @@ public class AccountDAO {
     public void insertNewAccount(String username, String email, String password, String phoneNumber) {
         String sql = "INSERT INTO Account (RoleID, AccountName, Email, Password, PhoneNumber, Image) VALUES (?, ?, ?, ?, ?, ?)";
         String defaultImageUrl = "./assets/img/default-img-profile.png";
-        int defaultRoleID = 3; // Assuming default role ID is 3 for customers
-
-        String hashedPassword = MyUtils.hashPassword(password); // Hash mật khẩu
+        int defaultRoleID = 3;
 
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, defaultRoleID);
             stmt.setString(2, username);
             stmt.setString(3, email);
-            stmt.setString(4, hashedPassword); // Sử dụng mật khẩu đã hash
+            stmt.setString(4, password); 
             stmt.setString(5, phoneNumber);
             stmt.setString(6, defaultImageUrl);
             stmt.executeUpdate();
@@ -378,44 +379,45 @@ public class AccountDAO {
         }
     }
 
-    public Account authenticateUser(String email, String hashedPassword) {
-        String query = "SELECT * FROM Account WHERE Email = ? AND Password = ? AND IsDeleted = 0";
-        try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, email);
-            stmt.setString(2, hashedPassword); // Comparing with hashed password from the database
-            try ( ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return new Account(
-                            rs.getInt("AccountID"),
-                            rs.getInt("RoleID"),
-                            rs.getString("AccountName"),
-                            rs.getString("PhoneNumber"),
-                            rs.getString("Email"),
-                            rs.getString("Image"),
-                            rs.getString("Password"),
-                            rs.getString("Address"),
-                            rs.getInt("IsDeleted"),
-                            rs.getString("Status"),
-                            rs.getDouble("Balance"),
-                            rs.getTimestamp("CreatedAt"),
-                            rs.getTimestamp("UpdatedAt")
-                    );
-                }
+    public Account authenticateUser(String email, String password) {
+    String hashedPassword = MyUtils.hashPassword(password); // Hash mật khẩu người dùng nhập
+    String query = "SELECT * FROM Account WHERE Email = ? AND Password = ? AND IsDeleted = 0";
+    
+    try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+        
+        stmt.setString(1, email);
+        stmt.setString(2, hashedPassword); // So sánh với chuỗi hash trong DB
+        
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                Account account = new Account();
+                    account.setAccountId(rs.getInt("AccountID"));
+                    account.setRoleID(rs.getInt("RoleID"));
+                    account.setUserName(rs.getString("AccountName"));
+                    account.setEmail(rs.getString("Email"));
+                    account.setPhoneNumber(rs.getString("PhoneNumber"));
+                    account.setStatus(rs.getString("Status"));
+                    account.setBalance(rs.getDouble("Balance"));
+                    account.setImage(rs.getString("Image"));
+                    account.setIsDeleted(rs.getInt("IsDeleted"));
+                    account.setAddress(rs.getString("Address"));
+                    account.setPassword(rs.getString("Password"));
+                    return account;
             }
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
         }
-        return null;
+    } catch (SQLException | ClassNotFoundException e) {
+        e.printStackTrace();
     }
+    return null;
+}
 
     public Account authenticateAdminStaff(String email, String password) {
-        String hashedPassword = MyUtils.hashPassword(password);
+        String hashedPassword = MyUtils.hashPassword(password); // Hash mật khẩu người dùng nhập
         String query = "SELECT * FROM Account WHERE Email = ? AND Password = ? AND IsDeleted = 0";
 
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement(query)) {
-
             stmt.setString(1, email);
-            stmt.setString(2, hashedPassword);
+            stmt.setString(2, hashedPassword); // So sánh với chuỗi hash trong DB
 
             try ( ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -429,7 +431,7 @@ public class AccountDAO {
                     account.setBalance(rs.getDouble("Balance"));
                     account.setImage(rs.getString("Image"));
                     account.setAddress(rs.getString("Address"));
-                    account.setPassword(rs.getString("Password")); // Not storing actual password, just for consistency in the model
+                    account.setPassword(rs.getString("Password"));
                     return account;
                 }
             }

@@ -12,6 +12,7 @@ import java.util.Properties;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeUtility;
 import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 
@@ -83,7 +84,7 @@ public class ForgotPasswordPage extends HttpServlet {
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress(fromEmail, "Lor-Kingdom"));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
-        message.setSubject("Yêu cầu đặt lại mật khẩu");
+        message.setSubject(MimeUtility.encodeText("Yêu cầu đặt lại mật khẩu", "UTF-8", "B"));
 
         // Tạo nội dung email 
         String htmlContent = "<html>"
@@ -115,7 +116,7 @@ public class ForgotPasswordPage extends HttpServlet {
                 + "</body>"
                 + "</html>";
 
-        message.setContent(htmlContent, "text/html");
+        message.setContent(htmlContent, "text/html; charset=UTF-8");
         Transport.send(message);
     }
 

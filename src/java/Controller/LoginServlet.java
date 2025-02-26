@@ -20,24 +20,33 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
-        // Hash the password before checking
-        String hashedPassword = MyUtils.hashPassword(password);
+        AccountDAO accountDAO = new AccountDAO();
+        Account account = accountDAO.authenticateUser(email, password);
 
-        Account account = new AccountDAO().authenticateUser(email, hashedPassword);
-
-        if (account != null && account.getRoleID() == 3) { // Check if RoleID is 3 for customers
+        if (account != null) { 
             HttpSession session = request.getSession();
             session.setAttribute("user", account.getUserName());
             session.setAttribute("email", account.getEmail());
             session.setAttribute("userID", account.getAccountId());
             session.setAttribute("userStatus", account.getStatus());
-            session.setAttribute("account", account); // Store account in session
-
-            response.sendRedirect("home.jsp");
+            session.setAttribute("roleID", account.getRoleID());
+            session.setAttribute("account", account);
+            
+            if (account.getRoleID() == 3) {
+                response.sendRedirect("home.jsp");
+            } else {
+                request.setAttribute("error", "Bạn không có quyền đăng nhập!");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+            }
+            
+            
+            
         } else {
             request.setAttribute("error", "Email hoặc mật khẩu không hợp lệ hoặc bạn không có quyền đăng nhập!");
             request.getRequestDispatcher("login.jsp").forward(request, response);
         }
+        
+        
     }
 
     private void validateInput(HttpServletRequest request, String email, String password) {

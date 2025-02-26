@@ -49,10 +49,10 @@ public class ProfileServlet extends HttpServlet {
         String newPassword = request.getParameter("password");
 
         AccountDAO accountDAO = new AccountDAO();
-        // Nếu người dùng nhập mật khẩu mới, hash nó trước khi lưu
+        // Nếu người dùng nhập mật khẩu mới, hash nó trước khi lưu vào database
         if (newPassword != null && !newPassword.isEmpty()) {
             String hashedPassword = MyUtils.hashPassword(newPassword);
-            account.setPassword(hashedPassword); // Lưu hash vào account
+            account.setPassword(hashedPassword); // Lưu hash để cập nhật vào database
         } else {
             account.setPassword(accountDAO.getAccountByEmail(account.getEmail()).getPassword()); // Giữ nguyên hash cũ
         }
@@ -60,13 +60,18 @@ public class ProfileServlet extends HttpServlet {
         account.setUserName(newUserName);
         account.setPhoneNumber(newPhoneNumber);
         account.setAddress(newAddress);
-      
+
         boolean isUpdated = accountDAO.updateProfileCustomer(account.getEmail(), newAddress, newPhoneNumber, account.getPassword());
 
         if (isUpdated) {
-            session.setAttribute("account", accountDAO.getAccountByEmail(account.getEmail()));
+            // Lấy lại thông tin tài khoản từ database
+            account = accountDAO.getAccountByEmail(account.getEmail());
+            // Gán mật khẩu hiển thị là "****" thay vì chuỗi hash
+            account.setPassword("****");
+            session.setAttribute("account", account); // Cập nhật session với account mới
         }
 
-        response.sendRedirect("profile.jsp");
+        // Forward thay vì redirect để giữ trạng thái ngay lập tức
+        request.getRequestDispatcher("profile.jsp").forward(request, response);
     }
 }

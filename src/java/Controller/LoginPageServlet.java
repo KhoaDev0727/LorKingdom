@@ -54,5 +54,6 @@ public class LoginPageServlet extends HttpServlet {
             request.setAttribute("error", "Email hoặc mật khẩu không hợp lệ!");
             request.getRequestDispatcher("loginPage.jsp").forward(request, response);
         }
+        
     }
 }
