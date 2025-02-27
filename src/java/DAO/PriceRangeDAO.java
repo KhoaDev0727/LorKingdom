@@ -15,19 +15,34 @@ import java.util.List;
  * @author admin1
  */
 public class PriceRangeDAO {
-    // Lấy danh sách tất cả khoảng giá
 
+    // Lấy danh sách tất cả khoảng giá
     public List<PriceRange> getAllPriceRanges() throws SQLException, ClassNotFoundException {
         List<PriceRange> priceRanges = new ArrayList<>();
-        String query = "SELECT PriceRangeID, PriceRange, CreatedAt FROM PriceRange";
-
+        String query = "SELECT PriceRangeID, PriceRange, CreatedAt, IsDeleted FROM PriceRange";
         try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
-
             while (rs.next()) {
                 priceRanges.add(new PriceRange(
                         rs.getInt("PriceRangeID"),
                         rs.getString("PriceRange"),
-                        rs.getTimestamp("CreatedAt")
+                        rs.getDate("CreatedAt"),
+                        rs.getInt("IsDeleted")
+                ));
+            }
+        }
+        return priceRanges;
+    }
+
+    public List<PriceRange> getActivePriceRanges() throws SQLException, ClassNotFoundException {
+        List<PriceRange> priceRanges = new ArrayList<>();
+        String query = "SELECT PriceRangeID, PriceRange, CreatedAt, IsDeleted FROM PriceRange WHERE IsDeleted = 0";
+        try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                priceRanges.add(new PriceRange(
+                        rs.getInt("PriceRangeID"),
+                        rs.getString("PriceRange"),
+                        rs.getDate("CreatedAt"),
+                        rs.getInt("IsDeleted")
                 ));
             }
         }
@@ -73,18 +88,24 @@ public class PriceRangeDAO {
 
     // Xóa khoảng giá theo ID
     public void deletePriceRange(int priceRangeID) throws SQLException, ClassNotFoundException {
-        String query = "DELETE FROM PriceRange WHERE PriceRangeID = ?";
-
+        String query = "UPDATE PriceRange SET IsDeleted = 1 WHERE PriceRangeID = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
-
             ps.setInt(1, priceRangeID);
             ps.executeUpdate();
         }
     }
 
-    public List<PriceRange> searchPriceRanges(String keyword) throws SQLException, ClassNotFoundException {
+    public void restorePriceRange(int priceRangeID) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE PriceRange SET IsDeleted = 0 WHERE PriceRangeID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, priceRangeID);
+            ps.executeUpdate();
+        }
+    }
+
+    public List<PriceRange> searchPriceRange(String keyword) throws SQLException, ClassNotFoundException {
         List<PriceRange> priceRanges = new ArrayList<>();
-        String query = "SELECT PriceRangeID, PriceRange, CreatedAt FROM PriceRange WHERE PriceRange LIKE ?";
+        String query = "SELECT PriceRangeID, PriceRange, CreatedAt, IsDeleted FROM PriceRange WHERE PriceRange LIKE ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, "%" + keyword + "%");
             try ( ResultSet rs = ps.executeQuery()) {
@@ -92,7 +113,8 @@ public class PriceRangeDAO {
                     priceRanges.add(new PriceRange(
                             rs.getInt("PriceRangeID"),
                             rs.getString("PriceRange"),
-                            rs.getTimestamp("CreatedAt")
+                            rs.getDate("CreatedAt"),
+                            rs.getInt("IsDeleted")
                     ));
                 }
             }

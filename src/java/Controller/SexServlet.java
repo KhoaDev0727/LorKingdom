@@ -157,13 +157,13 @@ public class SexServlet extends HttpServlet {
             response.sendRedirect("SexServlet?action=list&showErrorModal=true");
             return;
         }
-        if (sexDAO.isSexExists(name)) {
-            request.getSession().setAttribute("errorMessage", "Gender already exists.");
-            response.sendRedirect("SexServlet?action=list&showErrorModal=true");
-            return;
-        }
-        Sex sex = new Sex(0, name.trim(), null);
-        sexDAO.addSex(sex);
+//        if (sexDAO(name)) {
+//            request.getSession().setAttribute("errorMessage", "Gender already exists.");
+//            response.sendRedirect("SexServlet?action=list&showErrorModal=true");
+//            return;
+//        }
+//        Sex sex = new Sex(0, name.trim(), null);
+//        sexDAO.addSex(sex);
 
         request.getSession().setAttribute("successMessage", "Gender added successfully.");
         response.sendRedirect("SexServlet?action=list&showSuccessModal=true");
@@ -196,8 +196,8 @@ public class SexServlet extends HttpServlet {
                 return;
             }
 
-            Sex sex = new Sex(sexID, name.trim(), null);
-            sexDAO.updateSex(sex);
+//            Sex sex = new Sex(sexID, name.trim(), null);
+//            sexDAO.updateSex(sex);
             request.getSession().setAttribute("showSuccessModal", "Gender updated successfully.");
         } catch (NumberFormatException e) {
             request.getSession().setAttribute("errorMessage", "Invalid ID.");

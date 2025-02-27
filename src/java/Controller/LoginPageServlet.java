@@ -40,7 +40,7 @@ public class LoginPageServlet extends HttpServlet {
             session.setAttribute("userID", account.getAccountId());
             session.setAttribute("roleID", account.getRoleID());
             session.setAttribute("account", account);
-            session.setMaxInactiveInterval(500); // 10 giây
+            session.setMaxInactiveInterval(10000000); // 10 giây
             // Redirect based on role
             if (account.getRoleID() == 1) {
                 response.sendRedirect("DashBoard.jsp"); // Admin dashboard

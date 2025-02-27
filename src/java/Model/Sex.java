@@ -4,6 +4,7 @@
  */
 package Model;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 
 /**
@@ -12,16 +13,15 @@ import java.sql.Timestamp;
  */
 public class Sex {
 
-    private int sexID;          // ID của giới tính
-    private String name;        // Tên giới tính (Male, Female, Unisex, ...)
-    private Timestamp createdAt; // Ngày tạo
+    private int sexID;
+    private String name;
+    private int isDeleted; // Thêm thuộc tính này để tương ứng với cột IsDeleted trong bảng
+    private Date createdAt;
 
-    public Sex() {
-    }
-
-    public Sex(int sexID, String name, Timestamp createdAt) {
+    public Sex(int sexID, String name, int isDeleted, Date createdAt) {
         this.sexID = sexID;
         this.name = name;
+        this.isDeleted = isDeleted;
         this.createdAt = createdAt;
     }
 
@@ -41,20 +41,21 @@ public class Sex {
         this.name = name;
     }
 
-    public Timestamp getCreatedAt() {
+    public int getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(int isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
-    @Override
-    public String toString() {
-        return "Sex{"
-                + "sexID=" + sexID
-                + ", name='" + name + '\''
-                + ", createdAt=" + createdAt
-                + '}';
-    }
+   
 }

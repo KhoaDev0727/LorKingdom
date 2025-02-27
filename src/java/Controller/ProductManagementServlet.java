@@ -45,12 +45,12 @@ public class ProductManagementServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             List<Category> listCategorys = c.getAllCategories();
-            List<Sex> listGenders = s.getAllSexes();
-            List<PriceRange> listPriceRanges = p.getAllPriceRanges();
-            List<Brand> listBrands = b.getAllBrands();
-            List<Age> listAges = a.getAllAges();
-            List<Material> listMaterials = m.getAllMaterials();
-            List<Origin> listOrigins = originDAO.getAllOrigins();
+            List<Sex> listGenders = s.getActiveSex();
+            List<PriceRange> listPriceRanges = p.getActivePriceRanges();
+            List<Brand> listBrands = b.getActiveBrand();
+            List<Age> listAges = a.getActiveAges();
+            List<Material> listMaterials = m.getActiveMaterials();
+            List<Origin> listOrigins = originDAO.getActiveOrigins();
             request.setAttribute("ages", listAges);
             request.setAttribute("sexes", listGenders);
             request.setAttribute("Categories", listCategorys);

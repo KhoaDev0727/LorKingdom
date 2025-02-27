@@ -11,19 +11,22 @@ import java.sql.Date;
  * @author admin1
  */
 public class Category {
-    private int categoryID;
+   private int categoryID;
     private int superCategoryID;
     private String name;
     private Date createdAt;
+    private int isDeleted;
 
     public Category() {
+        this.isDeleted = 0;
     }
 
-    public Category(int categoryID, int superCategoryID, String name, Date createdAt) {
+    public Category(int categoryID, int superCategoryID, String name, Date createdAt, int isDeleted) {
         this.categoryID = categoryID;
         this.superCategoryID = superCategoryID;
         this.name = name;
         this.createdAt = createdAt;
+        this.isDeleted = isDeleted;
     }
 
     public int getCategoryID() {
@@ -56,5 +59,13 @@ public class Category {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public int getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(int isDeleted) {
+        this.isDeleted = isDeleted;
     }
 }

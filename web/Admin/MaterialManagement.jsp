@@ -73,6 +73,7 @@
                                                     <th>Material ID</th>
                                                     <th>Material Name</th>
                                                     <th>Description</th>
+                                                    <th>Status</th>
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
@@ -86,28 +87,42 @@
                                                     </c:when>
                                                     <c:otherwise>
                                                         <c:forEach var="material" items="${materials}">
-                                                            <tr>
+                                                            <tr class="${material.isDeleted == 1 ? 'deleted-row' : ''}">
                                                                 <td>${material.materialID}</td>
                                                                 <td>${material.name}</td>
                                                                 <td>${material.description}</td>
                                                                 <td>
-                                                                    <!-- Edit Button -->
-                                                                    <button class="btn btn-sm btn-warning" 
-                                                                            data-bs-toggle="modal" 
-                                                                            data-bs-target="#editMaterialModal-${material.materialID}">
-                                                                        <i class="fas fa-edit"></i>
-                                                                    </button>
-                                                                    <!-- Delete Button -->
-                                                                    <button class="btn btn-sm btn-danger"
-                                                                            data-bs-toggle="modal"
-                                                                            data-bs-target="#confirmDeleteModal"
-                                                                            onclick="setDeleteMaterialID(${material.materialID})">
-                                                                        <i class="fas fa-trash"></i> 
-                                                                    </button>
-
+                                                                    <c:choose>
+                                                                        <c:when test="${material.isDeleted == 1}">
+                                                                            <span class="badge bg-secondary">Deleted</span>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <span class="badge bg-success">Active</span>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
+                                                                </td>
+                                                                <td>
+                                                                    <c:if test="${material.isDeleted == 0}">
+                                                                        <button class="btn btn-sm btn-warning" 
+                                                                                data-bs-toggle="modal" 
+                                                                                data-bs-target="#editMaterialModal-${material.materialID}">
+                                                                            <i class="fas fa-edit"></i> 
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#confirmDeleteModal"
+                                                                                onclick="setDeleteMaterialID(${material.materialID})">
+                                                                            <i class="fas fa-trash"></i>
+                                                                        </button>
+                                                                    </c:if>
+                                                                    <c:if test="${material.isDeleted == 1}">
+                                                                        <button class="btn btn-sm btn-success" onclick="location.href = 'MaterialServlet?action=restore&materialID=${material.materialID}'">
+                                                                            Restore
+                                                                        </button>
+                                                                    </c:if>
                                                                 </td>
                                                             </tr>
-                                                            <!-- Edit Material Modal -->
+                                                            <!-- Modal Edit Material -->
                                                         <div class="modal fade" id="editMaterialModal-${material.materialID}" tabindex="-1">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
@@ -125,7 +140,7 @@
                                                                             </div>
                                                                             <div class="mb-3">
                                                                                 <label class="form-label">Description</label>
-                                                                                <input type="text" class="form-control" name="description" value="${material.description}">
+                                                                                <textarea class="form-control" name="description" required>${material.description}</textarea>
                                                                             </div>
                                                                         </div>
                                                                         <div class="modal-footer">

@@ -83,6 +83,7 @@
                                                     <th>Brand ID</th>
                                                     <th>Brand Name</th>
                                                     <th>Date Created</th>
+                                                    <th>Status</th>
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
@@ -95,30 +96,44 @@
                                                         </tr>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <c:forEach var="brand" items="${brands}">
-                                                            <tr>
-                                                                <td>${brand.brandID}</td>
-                                                                <td>${brand.name}</td>
-                                                                <td>${brand.createdAt}</td>
+                                                        <c:forEach var="br" items="${brands}">
+                                                            <tr class="${br.isDeleted == 1 ? 'deleted-row' : ''}">
+                                                                <td>${br.brandID}</td>
+                                                                <td>${br.name}</td>
+                                                                <td>${br.createdAt}</td>
                                                                 <td>
-                                                                    <!-- Edit Button -->
-                                                                    <button class="btn btn-sm btn-warning" 
-                                                                            data-bs-toggle="modal" 
-                                                                            data-bs-target="#editBrandModal-${brand.brandID}">
-                                                                        <i class="fas fa-edit"></i> 
-                                                                    </button>
-
-                                                                    <!-- Delete Button -->
-                                                                    <button class="btn btn-sm btn-danger"
-                                                                            data-bs-toggle="modal"
-                                                                            data-bs-target="#confirmDeleteModal"
-                                                                            onclick="setDeleteBrandID(${brand.brandID})">
-                                                                        <i class="fas fa-trash"></i>
-                                                                    </button>
+                                                                    <c:choose>
+                                                                        <c:when test="${br.isDeleted == 1}">
+                                                                            <span class="badge bg-secondary">Deleted</span>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <span class="badge bg-success">Active</span>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
+                                                                </td>
+                                                                <td>
+                                                                    <c:if test="${br.isDeleted == 0}">
+                                                                        <button class="btn btn-sm btn-warning" 
+                                                                                data-bs-toggle="modal" 
+                                                                                data-bs-target="#editBrandModal-${br.brandID}">
+                                                                            <i class="fas fa-edit"></i> 
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#confirmDeleteModal"
+                                                                                onclick="setDeleteBrandID(${br.brandID})">
+                                                                            <i class="fas fa-trash"></i>
+                                                                        </button>
+                                                                    </c:if>
+                                                                    <c:if test="${br.isDeleted == 1}">
+                                                                        <button class="btn btn-sm btn-success" onclick="location.href = 'BrandServlet?action=restore&brandID=${br.brandID}'">
+                                                                            Restore
+                                                                        </button>
+                                                                    </c:if>
                                                                 </td>
                                                             </tr>
-                                                            <!-- Edit Modal -->
-                                                        <div class="modal fade" id="editBrandModal-${brand.brandID}" tabindex="-1">
+                                                            <!-- Modal Edit Brand -->
+                                                        <div class="modal fade" id="editBrandModal-${br.brandID}" tabindex="-1">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
                                                                     <form method="post" action="BrandServlet">
@@ -128,10 +143,10 @@
                                                                         </div>
                                                                         <div class="modal-body">
                                                                             <input type="hidden" name="action" value="update">
-                                                                            <input type="hidden" name="brandID" value="${brand.brandID}">
+                                                                            <input type="hidden" name="brandID" value="${br.brandID}">
                                                                             <div class="mb-3">
                                                                                 <label class="form-label">Brand Name</label>
-                                                                                <input type="text" class="form-control" name="name" value="${brand.name}" required>
+                                                                                <input type="text" class="form-control" name="name" value="${br.name}" required>
                                                                             </div>
                                                                         </div>
                                                                         <div class="modal-footer">
@@ -165,7 +180,24 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p>${sessionScope.errorMessage}</p>
+                        <p id="errorMessage">${sessionScope.errorMessage}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Success Message Modal -->
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title" id="successModalLabel">Success</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-dark">
+                        <p id="successMessage">${sessionScope.successMessage}</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -202,10 +234,18 @@
             }
 
             window.onload = function () {
-                const errorMessage = "${sessionScope.errorMessage}";
+                let errorMessage = "${sessionScope.errorMessage}";
                 if (errorMessage && errorMessage.trim() !== "") {
-                    const errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
+                    let errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
                     errorModal.show();
+            <% request.getSession().removeAttribute("errorMessage"); %>
+                }
+
+                let successMessage = "${sessionScope.successMessage}";
+                if (successMessage && successMessage.trim() !== "") {
+                    let successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                    successModal.show();
+            <% request.getSession().removeAttribute("successMessage"); %>
                 }
             };
         </script>

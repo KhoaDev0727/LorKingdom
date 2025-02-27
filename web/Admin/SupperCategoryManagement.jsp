@@ -29,6 +29,17 @@
                 color: red;
                 font-size: 1.2em;
             }
+
+            /*            .deleted-row {
+                            background-color: #cccccc;  Gray background for deleted rows 
+                            color: #666666;            Dim the text color 
+                        }
+            
+                        .deleted-row button {
+                            pointer-events: none;     Disable all button interactions 
+                            opacity: 0.5;             Fade the button 
+                        }*/
+
         </style>
     </head>
     <body class="sb-nav-fixed">
@@ -79,6 +90,7 @@
                                                 <tr>
                                                     <th>Category ID</th>
                                                     <th>Category Name</th>
+                                                    <th>Status</th>
                                                     <th>Date Created</th>
                                                     <th>Actions</th>
                                                 </tr>
@@ -93,32 +105,43 @@
                                                     </c:when>
                                                     <c:otherwise>
                                                         <c:forEach var="category" items="${superCategories}">
-                                                            <tr>
+                                                            <tr class="${category.isDeleted == 1 ? 'deleted-row' : ''}"> <!-- Apply the deleted-row class if the category is deleted -->
                                                                 <td>${category.superCategoryID}</td>
                                                                 <td>${category.name}</td>
+                                                                <td>
+                                                                    <c:choose>
+                                                                        <c:when test="${category.isDeleted == 1}">
+                                                                            <span class="badge bg-secondary">Deleted</span>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <span class="badge bg-success">Active</span>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
+                                                                </td>
                                                                 <td>${category.createdAt}</td>
                                                                 <td>
-                                                                    <!-- Edit Button -->
-                                                                    <button class="btn btn-sm btn-warning" 
-                                                                            data-bs-toggle="modal" 
-                                                                            data-bs-target="#editCategoryModal-${category.superCategoryID}">
-                                                                        <i class="fas fa-edit"></i> 
-                                                                    </button>
-                                                                    <!-- Delete Button -->
-                                                                    <form method="post" action="SuperCategoryServlet" class="d-inline">
-                                                                        <input type="hidden" name="action" value="delete">
-                                                                        <input type="hidden" name="superCategoryID" value="${category.superCategoryID}">
+                                                                    <c:if test="${category.isDeleted == 0}">
+                                                                        <!-- Only show the edit and delete button if the category is active -->
+                                                                        <button class="btn btn-sm btn-warning" 
+                                                                                data-bs-toggle="modal" 
+                                                                                data-bs-target="#editCategoryModal-${category.superCategoryID}">
+                                                                            <i class="fas fa-edit"></i> 
+                                                                        </button>
                                                                         <button type="button" class="btn btn-sm btn-danger"
                                                                                 data-bs-toggle="modal"
                                                                                 data-bs-target="#confirmDeleteModal"
                                                                                 onclick="setDeleteCategoryID(${category.superCategoryID})">
                                                                             <i class="fas fa-trash"></i>
                                                                         </button>
-                                                                    </form>
+                                                                    </c:if>
+                                                                    <c:if test="${category.isDeleted == 1}">
+                                                                        <button class="btn btn-sm btn-success" onclick="location.href = 'SuperCategoryServlet?action=restore&superCategoryID=${category.superCategoryID}'">
+                                                                            Restore
+                                                                        </button>
+                                                                    </c:if>
+
                                                                 </td>
                                                             </tr>
-
-                                                            <!-- Edit Modal -->
                                                         <div class="modal fade" id="editCategoryModal-${category.superCategoryID}" tabindex="-1">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
@@ -157,6 +180,7 @@
                 </div>
             </div>
         </div>
+
         <!-- Modal Error -->
         <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
             <div class="modal-dialog">

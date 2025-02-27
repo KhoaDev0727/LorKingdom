@@ -106,6 +106,9 @@ public class PriceRangeServlet extends HttpServlet {
                     case "update":
                         updatePriceRange(request, response);
                         break;
+                    case "restore":
+                        restorePriceRange(request, response);
+                        break;
                     case "search":
                         searchPriceRange(request, response);
                         break;
@@ -132,6 +135,7 @@ public class PriceRangeServlet extends HttpServlet {
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         String name = request.getParameter("priceRange");
 
+        // Kiểm tra nếu giá trị name null hoặc rỗng
         if (name == null || name.trim().isEmpty()) {
             request.getSession().setAttribute("errorMessage", "Khoảng giá không được để trống.");
             response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
@@ -143,13 +147,53 @@ public class PriceRangeServlet extends HttpServlet {
             return;
         }
 
+// Regex để kiểm tra định dạng "số - số"
+// Cho phép số nguyên hoặc số thập phân với tối đa 2 chữ số sau dấu phẩy hoặc dấu chấm
+        String pattern = "^(\\d+(?:[,.]\\d{1,2})?)\\s*-\\s*(\\d+(?:[,.]\\d{1,2})?)$";
+        if (!name.matches(pattern)) {
+            request.getSession().setAttribute("errorMessage", "Khoảng giá phải có định dạng 'số - số' (ví dụ: 0-100,00).");
+            response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
+            return;
+        }
+
+// Sử dụng regex để tách hai số
+        java.util.regex.Pattern regex = java.util.regex.Pattern.compile(pattern);
+        java.util.regex.Matcher matcher = regex.matcher(name);
+        if (matcher.matches()) {
+            // Chuyển đổi dấu phẩy thành dấu chấm nếu có, để có thể parse thành số thực
+            String firstNumStr = matcher.group(1).replace(",", ".");
+            String secondNumStr = matcher.group(2).replace(",", ".");
+
+            double firstNum = Double.parseDouble(firstNumStr);
+            double secondNum = Double.parseDouble(secondNumStr);
+
+            // Kiểm tra số đầu không được bé hơn 0
+            if (firstNum < 0) {
+                request.getSession().setAttribute("errorMessage", "Số đầu không được bé hơn 0.");
+                response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
+                return;
+            }
+
+            // Kiểm tra số sau không được bé hơn số đầu
+            if (secondNum < firstNum) {
+                request.getSession().setAttribute("errorMessage", "Số sau không được bé hơn số đầu.");
+                response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
+                return;
+            }
+        } else {
+            // Nếu không khớp định dạng, báo lỗi
+            request.getSession().setAttribute("errorMessage", "Khoảng giá không đúng định dạng.");
+            response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
+            return;
+        }
+
         if (priceRangeDAO.isPriceRangeExists(name)) {
             request.getSession().setAttribute("errorMessage", "Khoảng giá đã tồn tại.");
             response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
             return;
         }
 
-        PriceRange priceRange = new PriceRange(0, name.trim(), null);
+        PriceRange priceRange = new PriceRange(0, name.trim(), null, 0);
         priceRangeDAO.addPriceRange(priceRange);
 
         request.getSession().setAttribute("successMessage", "Khoảng giá được thêm thành công.");
@@ -160,8 +204,58 @@ public class PriceRangeServlet extends HttpServlet {
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("priceRangeID"));
         String name = request.getParameter("priceRange");
+      
+        if (name == null || name.trim().isEmpty()) {
+            request.getSession().setAttribute("errorMessage", "Khoảng giá không được để trống.");
+            response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
+            return;
+        }
+        if (name.length() > 100) {
+            request.getSession().setAttribute("errorMessage", "Tên quá dài. Tối đa 100 ký tự.");
+            response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
+            return;
+        }
 
-        PriceRange priceRange = new PriceRange(id, name.trim(), null);
+        String pattern = "^(\\d+(?:[,.]\\d{1,2})?)\\s*-\\s*(\\d+(?:[,.]\\d{1,2})?)$";
+        if (!name.matches(pattern)) {
+            request.getSession().setAttribute("errorMessage", "Khoảng giá phải có định dạng 'số - số' (ví dụ: 0-100,00).");
+            response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
+            return;
+        }
+
+        java.util.regex.Pattern regex = java.util.regex.Pattern.compile(pattern);
+        java.util.regex.Matcher matcher = regex.matcher(name);
+        if (matcher.matches()) {
+            String firstNumStr = matcher.group(1).replace(",", ".");
+            String secondNumStr = matcher.group(2).replace(",", ".");
+
+            double firstNum = Double.parseDouble(firstNumStr);
+            double secondNum = Double.parseDouble(secondNumStr);
+
+            if (firstNum < 0) {
+                request.getSession().setAttribute("errorMessage", "Số đầu không được bé hơn 0.");
+                response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
+                return;
+            }
+
+            if (secondNum < firstNum) {
+                request.getSession().setAttribute("errorMessage", "Số sau không được bé hơn số đầu.");
+                response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
+                return;
+            }
+        } else {
+            request.getSession().setAttribute("errorMessage", "Khoảng giá không đúng định dạng.");
+            response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
+            return;
+        }
+
+        if (priceRangeDAO.isPriceRangeExists(name)) {
+            request.getSession().setAttribute("errorMessage", "Khoảng giá đã tồn tại.");
+            response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
+            return;
+        }
+
+        PriceRange priceRange = new PriceRange(0, name.trim(), null, 0);
         priceRangeDAO.updatePriceRange(priceRange);
         response.sendRedirect("PriceRangeServlet?action=list");
     }
@@ -170,20 +264,29 @@ public class PriceRangeServlet extends HttpServlet {
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("priceRangeID"));
         priceRangeDAO.deletePriceRange(id);
-        response.sendRedirect("PriceRangeServlet?action=list");
+        request.getSession().setAttribute("successMessage", "Khoảng giá xóa thành công.");
+        response.sendRedirect("PriceRangeServlet?action=list&showSuccessModal=true");
     }
 
     private void searchPriceRange(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException, ClassNotFoundException {
-        String keyword = request.getParameter("keyword");
+        String keyword = request.getParameter("search");
         List<PriceRange> priceRanges;
         if (keyword == null || keyword.trim().isEmpty()) {
             priceRanges = priceRangeDAO.getAllPriceRanges();
         } else {
-            priceRanges = priceRangeDAO.searchPriceRanges(keyword.trim());
+            priceRanges = priceRangeDAO.searchPriceRange(keyword.trim());
         }
         request.setAttribute("priceRanges", priceRanges);
         request.getRequestDispatcher("PriceRangeManagement.jsp").forward(request, response);
+    }
+
+    private void restorePriceRange(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, IOException, ServletException, ClassNotFoundException {
+        int priceRangeID = Integer.parseInt(request.getParameter("priceRangeID"));
+        priceRangeDAO.restorePriceRange(priceRangeID);
+        request.getSession().setAttribute("successMessage", "Đã khôi phục phạm vi giá thành công.");
+        response.sendRedirect("PriceRangeServlet?action=list&showSuccessModal=true");
     }
 
 }

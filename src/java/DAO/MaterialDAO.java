@@ -12,18 +12,32 @@ import java.util.List;
 
 public class MaterialDAO {
 
-    // Lấy danh sách tất cả vật liệu
     public List<Material> getAllMaterials() throws SQLException, ClassNotFoundException {
         List<Material> materials = new ArrayList<>();
-        String query = "SELECT MaterialID, Name, Description FROM Material";
-
+        String query = "SELECT MaterialID, Name, Description, IsDeleted FROM Material";
         try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
-
             while (rs.next()) {
                 materials.add(new Material(
                         rs.getInt("MaterialID"),
                         rs.getString("Name"),
-                        rs.getString("Description")
+                        rs.getString("Description"),
+                        rs.getInt("IsDeleted")
+                ));
+            }
+        }
+        return materials;
+    }
+
+    public List<Material> getActiveMaterials() throws SQLException, ClassNotFoundException {
+        List<Material> materials = new ArrayList<>();
+        String query = "SELECT MaterialID, Name, Description, IsDeleted FROM Material WHERE IsDeleted = 0";
+        try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                materials.add(new Material(
+                        rs.getInt("MaterialID"),
+                        rs.getString("Name"),
+                        rs.getString("Description"),
+                        rs.getInt("IsDeleted")
                 ));
             }
         }
@@ -69,18 +83,33 @@ public class MaterialDAO {
     }
 
     // Xóa vật liệu theo ID
+//    public void deleteMaterial(int materialID) throws SQLException, ClassNotFoundException {
+//        String query = "DELETE FROM Material WHERE MaterialID = ?";
+//
+//        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+//
+//            System.out.println("Deleting Material ID: " + materialID);
+//            ps.setInt(1, materialID);
+//            int rowsAffected = ps.executeUpdate();
+//
+//            if (rowsAffected == 0) {
+//                System.out.println("No rows deleted. Material ID may not exist.");
+//            }
+//        }
+//    }
     public void deleteMaterial(int materialID) throws SQLException, ClassNotFoundException {
-        String query = "DELETE FROM Material WHERE MaterialID = ?";
-
+        String query = "UPDATE Material SET IsDeleted = 1 WHERE MaterialID = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
-
-            System.out.println("Deleting Material ID: " + materialID); 
             ps.setInt(1, materialID);
-            int rowsAffected = ps.executeUpdate();
+            ps.executeUpdate();
+        }
+    }
 
-            if (rowsAffected == 0) {
-                System.out.println("No rows deleted. Material ID may not exist.");
-            }
+    public void restoreMaterial(int materialID) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE Material SET IsDeleted = 0 WHERE MaterialID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, materialID);
+            ps.executeUpdate();
         }
     }
 
@@ -98,17 +127,18 @@ public class MaterialDAO {
         return materialName;
     }
 
-    public List<Material> searchMaterials(String keyword) throws SQLException, ClassNotFoundException {
+    public List<Material> searchMaterial(String keyword) throws SQLException, ClassNotFoundException {
         List<Material> materials = new ArrayList<>();
-        String query = "SELECT MaterialID, Name, Description FROM Material WHERE LOWER(Name) LIKE ?";
+        String query = "SELECT MaterialID, Name, Description, IsDeleted FROM Material WHERE Name LIKE ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setString(1, "%" + keyword.trim().toLowerCase() + "%");
+            ps.setString(1, "%" + keyword + "%");
             try ( ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     materials.add(new Material(
                             rs.getInt("MaterialID"),
                             rs.getString("Name"),
-                            rs.getString("Description")
+                            rs.getString("Description"),
+                            rs.getInt("IsDeleted")
                     ));
                 }
             }

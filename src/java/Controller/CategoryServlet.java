@@ -120,6 +120,9 @@ public class CategoryServlet extends HttpServlet {
                     case "search":
                         searchCategory(request, response);
                         break;
+                    case "restore":
+                        restoreCategory(request, response);
+                        break;
                     default:
                         listCategories(request, response);
                         break;
@@ -135,7 +138,7 @@ public class CategoryServlet extends HttpServlet {
     private void listCategories(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         List<Category> categories = categoryDAO.getAllCategories();
-        List<SuperCategory> superCategories = superCategoryDAO.getAllSuperCategories();
+        List<SuperCategory> superCategories = superCategoryDAO.getActiveSuperCategories();
 
         request.setAttribute("superCategories", superCategories);
         request.setAttribute("categories", categories);
@@ -188,7 +191,7 @@ public class CategoryServlet extends HttpServlet {
             return;
         }
 
-        Category category = new Category(0, superCategoryID, name, null);
+        Category category = new Category(0, superCategoryID, name, null, 0);
         categoryDAO.addCategory(category);
 
         request.getSession().setAttribute("successMessage", "Danh mục đã được thêm thành công.");
@@ -261,7 +264,6 @@ public class CategoryServlet extends HttpServlet {
 //            response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
 //            return;
 //        }
-
         int superCategoryID;
         try {
             superCategoryID = Integer.parseInt(superCategoryIDStr);
@@ -271,11 +273,27 @@ public class CategoryServlet extends HttpServlet {
             return;
         }
 
-        Category category = new Category(categoryID, superCategoryID, name, null);
+        Category category = new Category(categoryID, superCategoryID, name, null, 0);
         categoryDAO.updateCategory(category);
 
         request.getSession().setAttribute("successMessage", "Danh mục đã được cập nhật thành công.");
         response.sendRedirect("CategoryServlet?action=list&showSuccessModal=true");
+    }
+
+    private void restoreCategory(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, IOException, ClassNotFoundException {
+        try {
+            int categoryID = Integer.parseInt(request.getParameter("categoryID"));
+            categoryDAO.restoreCategory(categoryID);
+            request.getSession().setAttribute("successMessage", "Category restored successfully.");
+            response.sendRedirect("CategoryServlet?action=list&showSuccessModal=true");
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "Invalid category ID.");
+            response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
+        } catch (SQLException | ClassNotFoundException ex) {
+            request.getSession().setAttribute("errorMessage", "Error restoring category: " + ex.getMessage());
+            response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
+        }
     }
 
 }

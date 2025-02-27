@@ -10,14 +10,13 @@ public class Brand {
 
     private int brandID;
     private String name;
+    private int isDeleted;
     private Date createdAt;
 
-    public Brand() {
-    }
-
-    public Brand(int brandID, String name, Date createdAt) {
+    public Brand(int brandID, String name, int isDeleted, Date createdAt) {
         this.brandID = brandID;
         this.name = name;
+        this.isDeleted = isDeleted;
         this.createdAt = createdAt;
     }
 
@@ -37,6 +36,14 @@ public class Brand {
         this.name = name;
     }
 
+    public int getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(int isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -44,4 +51,6 @@ public class Brand {
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
+
+    
 }

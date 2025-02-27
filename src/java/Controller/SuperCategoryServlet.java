@@ -1,6 +1,6 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
+     * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+     * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 package Controller;
 
@@ -90,12 +90,8 @@ public class SuperCategoryServlet extends HttpServlet {
     private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         String action = request.getParameter("action");
+
         try {
-            Integer roleID = (Integer) session.getAttribute("roleID");
-            if (roleID == null) {
-                response.sendRedirect(request.getContextPath() + "/Admin/loginPage.jsp"); // Chưa đăng nhập, chuyển hướng đến trang login
-                return;
-            }
             if (action == null || action.equals("list")) {
                 listSuperCategories(request, response);
             } else {
@@ -108,6 +104,9 @@ public class SuperCategoryServlet extends HttpServlet {
                         break;
                     case "delete":
                         deleteSuperCategory(request, response);
+                        break;
+                    case "restore":
+                        restoreSuperCategory(request, response);
                         break;
                     case "search":
                         searchSuperCategory(request, response);
@@ -124,11 +123,28 @@ public class SuperCategoryServlet extends HttpServlet {
         }
     }
 
+    private void restoreSuperCategory(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, IOException, ClassNotFoundException {
+        int superCategoryID = Integer.parseInt(request.getParameter("superCategoryID"));
+
+        try {
+            superCategoryDAO.restoreSuperCategory(superCategoryID);
+            request.getSession().setAttribute("successMessage", "Category restored successfully.");
+            response.sendRedirect("SuperCategoryServlet?action=list&showSuccessModal=true");
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "Invalid category ID.");
+            response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
+        }
+    }
+
     private void listSuperCategories(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         List<SuperCategory> superCategories = superCategoryDAO.getAllSuperCategories();
         request.setAttribute("superCategories", superCategories);
         request.getRequestDispatcher("SupperCategoryManagement.jsp").forward(request, response);
+        for (SuperCategory category : superCategories) {
+            System.out.println("Category ID: " + category.getSuperCategoryID() + " - Is Deleted: " + category.getIsDeleted());
+        }
     }
 
     private void addSuperCategory(HttpServletRequest request, HttpServletResponse response)
@@ -162,7 +178,7 @@ public class SuperCategoryServlet extends HttpServlet {
         }
 
         // Thêm danh mục mới
-        SuperCategory superCategory = new SuperCategory(0, name, null);
+        SuperCategory superCategory = new SuperCategory(0, name, null, 0); // Không xóa mềm khi mới tạo
         superCategoryDAO.addSuperCategory(superCategory);
         request.getSession().setAttribute("successMessage", "Category added successfully.");
         response.sendRedirect("SuperCategoryServlet?action=list&showSuccessModal=true");
@@ -171,9 +187,9 @@ public class SuperCategoryServlet extends HttpServlet {
     private void updateSuperCategory(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException, ClassNotFoundException {
         int superCategoryID = Integer.parseInt(request.getParameter("superCategoryID"));
-        String name = request.getParameter("name");
+        String name = request.getParameter("name").trim();
 
-        if (name == null || name.trim().isEmpty()) {
+        if (name.isEmpty()) {
             request.getSession().setAttribute("errorMessage", "Category name cannot be empty.");
             response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
             return;
@@ -191,12 +207,19 @@ public class SuperCategoryServlet extends HttpServlet {
             return;
         }
 
+//        if (superCategoryDAO.isSuperCategoryExists(name)) {
+//            int errorCount = (Integer) request.getSession().getAttribute("errorCount");
+//            if (errorCount > 1) {
+//                request.getSession().setAttribute("errorMessage", "Category name already exists.");
+//                response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
+//            }
+//            return;
+//        }
         if (superCategoryDAO.isSuperCategoryExists(name)) {
             request.getSession().setAttribute("errorMessage", "Category name already exists.");
             response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
             return;
         }
-
         superCategoryDAO.updateSuperCategory(superCategoryID, name);
         request.getSession().setAttribute("successMessage", "Category updated successfully.");
         response.sendRedirect("SuperCategoryServlet?action=list&showSuccessModal=true");
@@ -223,7 +246,7 @@ public class SuperCategoryServlet extends HttpServlet {
             return;
         }
 
-        List<SuperCategory> superCategories = superCategoryDAO.searchSuperCategory(keyword);
+        List<SuperCategory> superCategories = superCategoryDAO.searchSuperCategory(keyword.trim().toLowerCase());
         request.setAttribute("superCategories", superCategories);
         request.getRequestDispatcher("SupperCategoryManagement.jsp").forward(request, response);
     }

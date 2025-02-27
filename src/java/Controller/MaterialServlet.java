@@ -116,6 +116,9 @@ public class MaterialServlet extends HttpServlet {
                     case "search":
                         searchMaterial(request, response);
                         break;
+                    case "restore":
+                        restoreMaterial(request, response);
+                        break;
                     default:
                         listMaterials(request, response);
                         break;
@@ -155,7 +158,7 @@ public class MaterialServlet extends HttpServlet {
             response.sendRedirect("MaterialServlet?action=list&showErrorModal=true");
             return;
         }
-        Material material = new Material(0, name.trim(), description);
+        Material material = new Material(0, name, description, 0);
         materialDAO.addMaterial(material);
 
         request.getSession().setAttribute("successMessage", "Đã thêm vật liệu thành công.");
@@ -185,7 +188,7 @@ public class MaterialServlet extends HttpServlet {
 //                return;
 //            }
 
-            Material material = new Material(materialID, name.trim(), description);
+            Material material = new Material(0, name, description, 0);
             materialDAO.updateMaterial(material);
             request.getSession().setAttribute("successMessage", "Chất liệu đã được cập nhật thành công");
         } catch (NumberFormatException e) {
@@ -214,9 +217,16 @@ public class MaterialServlet extends HttpServlet {
             return;
         }
 
-        List<Material> filteredMaterials = materialDAO.searchMaterials(keyword.toLowerCase());
+        List<Material> filteredMaterials = materialDAO.searchMaterial(keyword.trim().toLowerCase());
         request.setAttribute("materials", filteredMaterials);
         request.getRequestDispatcher("MaterialManagement.jsp").forward(request, response);
     }
 
+    private void restoreMaterial(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, IOException, ServletException, ClassNotFoundException {
+        int materialID = Integer.parseInt(request.getParameter("materialID"));
+        materialDAO.restoreMaterial(materialID);
+        request.getSession().setAttribute("successMessage", "Material restored successfully.");
+        response.sendRedirect("MaterialServlet?action=list&showSuccessModal=true");
+    }
 }

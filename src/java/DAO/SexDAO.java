@@ -20,25 +20,38 @@ import java.util.List;
  */
 public class SexDAO {
 
-    // Lấy danh sách tất cả các giới tính
     public List<Sex> getAllSexes() throws SQLException, ClassNotFoundException {
         List<Sex> sexes = new ArrayList<>();
-        String query = "SELECT SexID, Name, CreatedAt FROM Sex";
-
+        String query = "SELECT SexID, Name, IsDeleted, CreatedAt FROM Sex";
         try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
-
             while (rs.next()) {
                 sexes.add(new Sex(
                         rs.getInt("SexID"),
                         rs.getString("Name"),
-                        rs.getTimestamp("CreatedAt")
+                        rs.getInt("IsDeleted"),
+                        rs.getDate("CreatedAt")
                 ));
             }
         }
         return sexes;
     }
 
-    // Thêm giới tính mới
+    public List<Sex> getActiveSex() throws SQLException, ClassNotFoundException {
+        List<Sex> sexes = new ArrayList<>();
+        String query = "SELECT SexID, Name, IsDeleted, CreatedAt FROM Sex WHERE IsDeleted = 0";
+        try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                sexes.add(new Sex(
+                        rs.getInt("SexID"),
+                        rs.getString("Name"),
+                        rs.getInt("IsDeleted"),
+                        rs.getDate("CreatedAt")
+                ));
+            }
+        }
+        return sexes;
+    }
+
     public void addSex(Sex sex) throws SQLException, ClassNotFoundException {
         String query = "INSERT INTO Sex (Name) VALUES (?)";
 
@@ -119,7 +132,8 @@ public class SexDAO {
                     sexes.add(new Sex(
                             rs.getInt("SexID"),
                             rs.getString("Name"),
-                            null
+                            rs.getInt("IsDeleted"),
+                            rs.getDate("CreatedAt")
                     ));
                 }
             }

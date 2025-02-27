@@ -46,7 +46,7 @@
                 <div class="dashboard-container">
                     <main>
                         <div class="container-fluid px-5">
-                            <h1 class="mt-4">OriginManagement</h1>
+                            <h1 class="mt-4">Origin Management</h1>
                             <!-- Add Origin Form -->
                             <form action="OriginServlet" method="POST">
                                 <input type="hidden" name="action" value="add">
@@ -85,6 +85,7 @@
                                                     <th>Origin ID</th>
                                                     <th>Origin Name</th>
                                                     <th>Date Created</th>
+                                                    <th>Status</th>
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
@@ -98,22 +99,42 @@
                                                     </c:when>
                                                     <c:otherwise>
                                                         <c:forEach var="origin" items="${origins}">
-                                                            <tr>
+                                                            <tr class="${origin.isDeleted == 1 ? 'deleted-row' : ''}">
                                                                 <td>${origin.originID}</td>
                                                                 <td>${origin.name}</td>
                                                                 <td>${origin.createdAt}</td>
                                                                 <td>
-                                                                    <!-- Update Button -->
-                                                                    <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editOriginModal-${origin.originID}">
-                                                                        <i class="fas fa-edit"></i>
-                                                                    </button>
-                                                                    <!-- Delete Button -->
-                                                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" onclick="setDeleteOriginID(${origin.originID})">
-                                                                        <i class="fas fa-trash"></i>
-                                                                    </button>  
+                                                                    <c:choose>
+                                                                        <c:when test="${origin.isDeleted == 1}">
+                                                                            <span class="badge bg-secondary">Deleted</span>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <span class="badge bg-success">Active</span>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
+                                                                </td>
+                                                                <td>
+                                                                    <c:if test="${origin.isDeleted == 0}">
+                                                                        <button class="btn btn-sm btn-warning" 
+                                                                                data-bs-toggle="modal" 
+                                                                                data-bs-target="#editOriginModal-${origin.originID}">
+                                                                            <i class="fas fa-edit"></i> 
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#confirmDeleteModal"
+                                                                                onclick="setDeleteOriginID(${origin.originID})">
+                                                                            <i class="fas fa-trash"></i>
+                                                                        </button>
+                                                                    </c:if>
+                                                                    <c:if test="${origin.isDeleted == 1}">
+                                                                        <button class="btn btn-sm btn-success" onclick="location.href = 'OriginServlet?action=restore&originID=${origin.originID}'">
+                                                                            Restore
+                                                                        </button>
+                                                                    </c:if>
                                                                 </td>
                                                             </tr>
-                                                            <!-- Edit Modal -->
+                                                            <!-- Modal Edit Origin -->
                                                         <div class="modal fade" id="editOriginModal-${origin.originID}" tabindex="-1">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">

@@ -106,6 +106,9 @@ public class AgeServlet extends HttpServlet {
                     case "search":
                         searchAge(request, response);
                         break;
+                    case "restore":
+                        restoreAge(request, response);
+                        break;
                     default:
                         listAges(request, response);
                         break;
@@ -131,25 +134,31 @@ public class AgeServlet extends HttpServlet {
         String ageRange = request.getParameter("ageRange");
 
         // Kiểm tra nếu trống hoặc không hợp lệ (chỉ cho phép số và dấu '-')
-        if (ageRange == null || ageRange.trim().isEmpty() || !ageRange.matches("^[0-9-]+$")) {
-            request.getSession().setAttribute("errorMessage", "Age range must only contain numbers and dashes (e.g., '0-3', '4-6').");
+        if (ageRange == null || ageRange.trim().isEmpty() || !ageRange.matches("^[\\p{L}\\p{N} _-]+$")) {
+            request.getSession().setAttribute("errorMessage", "Độ tuổi chỉ được chứa số và dấu gạch ngang (ví dụ: '0-3', '4-6').");
             response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
             return;
         }
 
         // Kiểm tra độ dài tối đa
         if (ageRange.length() > 50) {
-            request.getSession().setAttribute("errorMessage", "Age range is too long. Maximum 50 characters allowed.");
+            request.getSession().setAttribute("errorMessage", "Độ tuổi quá dài. Chỉ được phép nhập tối đa 50 ký tự.");
+            response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
+            return;
+        }
+
+        if (ageDAO.isAgeExists(ageRange)) {
+            request.getSession().setAttribute("errorMessage", "Khoản tuổi đã tồn tại.");
             response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
             return;
         }
 
         // Nếu hợp lệ, thêm vào cơ sở dữ liệu
-        Age age = new Age(0, ageRange.trim(), null);
+        Age age = new Age(0, ageRange, null, 0);
         ageDAO.addAge(age);
 
         // Đặt thông báo thành công
-        request.getSession().setAttribute("successMessage", "Age range added successfully.");
+        request.getSession().setAttribute("successMessage", "Đã thêm độ tuổi thành công.");
         response.sendRedirect("AgeServlet?action=list&showSuccessModal=true");
     }
 
@@ -158,9 +167,9 @@ public class AgeServlet extends HttpServlet {
         try {
             int ageID = Integer.parseInt(request.getParameter("ageID"));
             ageDAO.deleteAge(ageID);
-            request.getSession().setAttribute("successMessage", "Age deleted successfully.");
+            request.getSession().setAttribute("successMessage", "Đã xóa tuổi thành công.");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "Invalid Age ID.");
+            request.getSession().setAttribute("errorMessage", "Mã số tuổi không hợp lệ.");
         }
         response.sendRedirect("AgeServlet?action=list");
     }
@@ -183,27 +192,37 @@ public class AgeServlet extends HttpServlet {
             int ageID = Integer.parseInt(request.getParameter("ageID"));
             String ageRange = request.getParameter("ageRange");
 
-           // Kiểm tra nếu trống hoặc không hợp lệ (chỉ cho phép số và dấu '-')
-        if (ageRange == null || ageRange.trim().isEmpty() || !ageRange.matches("^[0-9-]+$")) {
-            request.getSession().setAttribute("errorMessage", "Age range must only contain numbers and dashes (e.g., '0-3', '4-6').");
-            response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
-            return;
-        }
+            if (ageRange == null || ageRange.trim().isEmpty() || !ageRange.matches("^[\\p{L}\\p{N} _-]+$")) {
+                request.getSession().setAttribute("errorMessage", "Độ tuổi chỉ được chứa số và dấu gạch ngang (ví dụ: '0-3', '4-6').");
+                response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
+                return;
+            }
 
-        // Kiểm tra độ dài tối đa
-        if (ageRange.length() > 50) {
-            request.getSession().setAttribute("errorMessage", "Age range is too long. Maximum 50 characters allowed.");
-            response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
-            return;
-        }
-
-            Age age = new Age(ageID, ageRange.trim(), null);
+            // Kiểm tra độ dài tối đa
+            if (ageRange.length() > 50) {
+                request.getSession().setAttribute("errorMessage", "Độ tuổi quá dài. Chỉ được phép nhập tối đa 50 ký tự.");
+                response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
+                return;
+            }
+            if (ageDAO.isAgeExists(ageRange)) {
+                request.getSession().setAttribute("errorMessage", "Khoản tuổi đã tồn tại.");
+                response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
+                return;
+            }
+            Age age = new Age(0, ageRange, null, 0);
             ageDAO.updateAge(age);
-            request.getSession().setAttribute("successMessage", "Age updated successfully.");
+            request.getSession().setAttribute("successMessage", "Đã cập nhật tuổi thành công.");
         } catch (NumberFormatException e) {
             request.getSession().setAttribute("errorMessage", "Invalid Age ID.");
         }
         response.sendRedirect("AgeServlet?action=list");
     }
 
+    private void restoreAge(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, IOException, ServletException, ClassNotFoundException {
+        int ageID = Integer.parseInt(request.getParameter("ageID"));
+        ageDAO.restoreAge(ageID);
+        request.getSession().setAttribute("successMessage", "Age restored successfully.");
+        response.sendRedirect("AgeServlet?action=list&showSuccessModal=true");
+    }
 }

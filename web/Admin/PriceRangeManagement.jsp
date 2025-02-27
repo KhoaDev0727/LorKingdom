@@ -39,13 +39,13 @@
                     <main>
                         <div class="container-fluid px-5">
                             <h1 class="mt-4">Price Range Management</h1>
-                           <!-- Form thêm Price Range -->
-                        <form action="PriceRangeServlet" method="POST">
-                            <input type="hidden" name="action" value="add">
-                            <label for="priceRange">Price Range</label>
-                            <input type="text" id="priceRange" name="priceRange" placeholder="Enter price range" required />
-                            <button class="btn btn-primary ms-2" type="submit">Add Price Range</button>
-                        </form>
+                            <!-- Form thêm Price Range -->
+                            <form action="PriceRangeServlet" method="POST">
+                                <input type="hidden" name="action" value="add">
+                                <label for="priceRange">Price Range</label>
+                                <input type="text" id="priceRange" name="priceRange" placeholder="Enter price range" required />
+                                <button class="btn btn-primary ms-2" type="submit">Add Price Range</button>
+                            </form>
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
@@ -77,6 +77,7 @@
                                                     <th>Price Range ID</th>
                                                     <th>Price Range</th>
                                                     <th>Date Created</th>
+                                                    <th>Status</th>
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
@@ -89,29 +90,44 @@
                                                         </tr>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <c:forEach var="priceRange" items="${priceRanges}">
-                                                            <tr>
-                                                                <td>${priceRange.priceRangeID}</td>
-                                                                <td>${priceRange.priceRange}</td>
-                                                                <td>${priceRange.createdAt}</td>
+                                                        <c:forEach var="pr" items="${priceRanges}">
+                                                            <tr class="${pr.isDeleted == 1 ? 'deleted-row' : ''}">
+                                                                <td>${pr.priceRangeID}</td>
+                                                                <td>${pr.priceRange}</td>
+                                                                <td>${pr.createdAt}</td>
                                                                 <td>
-                                                                    <!-- Nút Update -->
-                                                                    <button class="btn btn-sm btn-warning" 
-                                                                            data-bs-toggle="modal" 
-                                                                            data-bs-target="#editPriceRangeModal-${priceRange.priceRangeID}">
-                                                                        <i class="fas fa-edit"></i>
-                                                                    </button>
-                                                                    <!-- Nút Delete -->
-                                                                    <button class="btn btn-sm btn-danger"
-                                                                            data-bs-toggle="modal"
-                                                                            data-bs-target="#confirmDeleteModal"
-                                                                            onclick="setDeletePriceRangeID(${priceRange.priceRangeID})">
-                                                                        <i class="fas fa-trash"></i> 
-                                                                    </button>
+                                                                    <c:choose>
+                                                                        <c:when test="${pr.isDeleted == 1}">
+                                                                            <span class="badge bg-secondary">Deleted</span>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <span class="badge bg-success">Active</span>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
+                                                                </td>
+                                                                <td>
+                                                                    <c:if test="${pr.isDeleted == 0}">
+                                                                        <button class="btn btn-sm btn-warning" 
+                                                                                data-bs-toggle="modal" 
+                                                                                data-bs-target="#editPriceRangeModal-${pr.priceRangeID}">
+                                                                            <i class="fas fa-edit"></i> 
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#confirmDeleteModal"
+                                                                                onclick="setDeletePriceRangeID(${pr.priceRangeID})">
+                                                                            <i class="fas fa-trash"></i>
+                                                                        </button>
+                                                                    </c:if>
+                                                                    <c:if test="${pr.isDeleted == 1}">
+                                                                        <button class="btn btn-sm btn-success" onclick="location.href = 'PriceRangeServlet?action=restore&priceRangeID=${pr.priceRangeID}'">
+                                                                            Restore
+                                                                        </button>
+                                                                    </c:if>
                                                                 </td>
                                                             </tr>
                                                             <!-- Modal Edit Price Range -->
-                                                        <div class="modal fade" id="editPriceRangeModal-${priceRange.priceRangeID}" tabindex="-1">
+                                                        <div class="modal fade" id="editPriceRangeModal-${pr.priceRangeID}" tabindex="-1">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
                                                                     <form method="post" action="PriceRangeServlet">
@@ -121,10 +137,10 @@
                                                                         </div>
                                                                         <div class="modal-body">
                                                                             <input type="hidden" name="action" value="update">
-                                                                            <input type="hidden" name="priceRangeID" value="${priceRange.priceRangeID}">
+                                                                            <input type="hidden" name="priceRangeID" value="${pr.priceRangeID}">
                                                                             <div class="mb-3">
                                                                                 <label class="form-label">Price Range</label>
-                                                                                <input type="text" class="form-control" name="priceRange" value="${priceRange.priceRange}" required>
+                                                                                <input type="text" class="form-control" name="priceRange" value="${pr.priceRange}" required>
                                                                             </div>
                                                                         </div>
                                                                         <div class="modal-footer">
@@ -148,7 +164,40 @@
                 </div>
             </div>
         </div>
-
+        <!-- Modal Error -->
+        <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="errorMessage">${sessionScope.errorMessage}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Success Message Modal -->
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title" id="successModalLabel">Success</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-dark">
+                        <p id="successMessage">${sessionScope.successMessage}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Modal xác nhận xóa Price Range -->
         <div class="modal fade" id="confirmDeleteModal" tabindex="-1">
             <div class="modal-dialog">
@@ -176,6 +225,21 @@
             function setDeletePriceRangeID(priceRangeID) {
                 document.getElementById("deletePriceRangeID").value = priceRangeID;
             }
+            window.onload = function () {
+                let errorMessage = "${sessionScope.errorMessage}";
+                if (errorMessage && errorMessage.trim() !== "") {
+                    let errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+                    errorModal.show();
+            <% request.getSession().removeAttribute("errorMessage"); %>
+                }
+
+                let successMessage = "${sessionScope.successMessage}";
+                if (successMessage && successMessage.trim() !== "") {
+                    let successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                    successModal.show();
+            <% request.getSession().removeAttribute("successMessage"); %>
+                }
+            };
         </script>
     </body>
 </html>

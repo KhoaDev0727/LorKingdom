@@ -117,6 +117,9 @@ public class OriginServlet extends HttpServlet {
                     case "search":
                         searchOrigin(request, response);
                         break;
+                    case "restore":
+                        restoreOrigin(request, response);
+                        break;
                     default:
                         listOrigins(request, response);
                         break;
@@ -127,6 +130,14 @@ public class OriginServlet extends HttpServlet {
             request.setAttribute("errorMessage", "Error: " + e.getMessage());
             request.getRequestDispatcher("error.jsp").forward(request, response);
         }
+    }
+
+    private void restoreOrigin(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, IOException, ServletException, ClassNotFoundException {
+        int originID = Integer.parseInt(request.getParameter("originID"));
+        originDAO.restoreOrigin(originID);
+        request.getSession().setAttribute("successMessage", "Origin restored successfully.");
+        response.sendRedirect("OriginServlet?action=list&showSuccessModal=true");
     }
 
     // Hiển thị danh sách Origin
@@ -161,7 +172,7 @@ public class OriginServlet extends HttpServlet {
             response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
             return;
         }
-        Origin origin = new Origin(0, name.trim(), null);
+        Origin origin = new Origin(0, name, null, 0);
         originDAO.addOrigin(origin);
         request.getSession().setAttribute("successMessage", "Origin added successfully.");
         response.sendRedirect("OriginServlet?action=list&showSuccessModal=true");
@@ -198,7 +209,7 @@ public class OriginServlet extends HttpServlet {
                 response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
                 return;
             }
-            Origin origin = new Origin(originID, name.trim(), null);
+            Origin origin = new Origin(0, name, null, 0);
             originDAO.updateOrigin(origin);
             request.getSession().setAttribute("successMessage", "Origin updated successfully.");
         } catch (NumberFormatException e) {

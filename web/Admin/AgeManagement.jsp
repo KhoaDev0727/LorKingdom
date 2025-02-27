@@ -78,6 +78,7 @@
                                                     <th>Age ID</th>
                                                     <th>Age Range</th>
                                                     <th>Date Created</th>
+                                                    <th>Status</th>
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
@@ -91,27 +92,42 @@
                                                     </c:when>
                                                     <c:otherwise>
                                                         <c:forEach var="age" items="${ages}">
-                                                            <tr>
+                                                            <tr class="${age.isDeleted == 1 ? 'deleted-row' : ''}">
                                                                 <td>${age.ageID}</td>
                                                                 <td>${age.ageRange}</td>
+                                                                <td>
+                                                                    <c:choose>
+                                                                        <c:when test="${age.isDeleted == 1}">
+                                                                            <span class="badge bg-secondary">Deleted</span>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <span class="badge bg-success">Active</span>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
+                                                                </td>
                                                                 <td>${age.createdAt}</td>
                                                                 <td>
-                                                                    <!-- Edit Button -->
-                                                                    <button class="btn btn-sm btn-warning" 
-                                                                            data-bs-toggle="modal" 
-                                                                            data-bs-target="#editAgeModal-${age.ageID}">
-                                                                        <i class="fas fa-edit"></i> 
-                                                                    </button>
-                                                                    <!-- Delete Button -->
-                                                                    <button class="btn btn-sm btn-danger"
-                                                                            data-bs-toggle="modal"
-                                                                            data-bs-target="#confirmDeleteModal"
-                                                                            onclick="setDeleteAgeID(${age.ageID})">
-                                                                        <i class="fas fa-trash"></i>
-                                                                    </button>
+                                                                    <c:if test="${age.isDeleted == 0}">
+                                                                        <button class="btn btn-sm btn-warning" 
+                                                                                data-bs-toggle="modal" 
+                                                                                data-bs-target="#editAgeModal-${age.ageID}">
+                                                                            <i class="fas fa-edit"></i> 
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#confirmDeleteModal"
+                                                                                onclick="setDeleteAgeID(${age.ageID})">
+                                                                            <i class="fas fa-trash"></i>
+                                                                        </button>
+                                                                    </c:if>
+                                                                    <c:if test="${age.isDeleted == 1}">
+                                                                        <button class="btn btn-sm btn-success" onclick="location.href = 'AgeServlet?action=restore&ageID=${age.ageID}'">
+                                                                            Restore
+                                                                        </button>
+                                                                    </c:if>
                                                                 </td>
                                                             </tr>
-                                                            <!-- Edit Modal -->
+                                                            <!-- Modal Edit Age -->
                                                         <div class="modal fade" id="editAgeModal-${age.ageID}" tabindex="-1">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
@@ -190,15 +206,42 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="successModalLabel" tabindex="-1" aria-labelledby="successModalTitle" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title" id="successModalTitle">Success</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-dark">
+                        <p id="successMessageContent">${sessionScope.successMessage}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <script>
             function setDeleteAgeID(ageID) {
                 document.getElementById("deleteAgeID").value = ageID;
             }
 
-            <c:if test="${not empty sessionScope.errorMessage}">
-            var errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
-            errorModal.show();
-            </c:if>
+            window.onload = function () {
+                const errorMessage = "${sessionScope.errorMessage}";
+                if (errorMessage && errorMessage.trim() !== "") {
+                    const errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
+                    errorModal.show();
+            <% request.getSession().removeAttribute("errorMessage"); %>
+                }
+
+                let successMessage = '<%= session.getAttribute("successMessage") %>';
+                if (successMessage && successMessage.trim() !== "null" && successMessage.trim() !== "") {
+                    let successModal = new bootstrap.Modal(document.getElementById("successModalLabel"));
+                    successModal.show();
+            <% session.removeAttribute("successMessage"); %>
+                }
+            };
         </script>
     </body>
 </html>

@@ -93,6 +93,7 @@
                                                     <th>category ID</th>
                                                     <th>SuperCategory ID</th>
                                                     <th>category Name</th>
+                                                    <th>Status</th>
                                                     <th>Date Created</th>
                                                     <th>Actions</th>
                                                 </tr>
@@ -107,34 +108,44 @@
                                                     </c:when>
                                                     <c:otherwise>
                                                         <c:forEach var="category" items="${categories}">
-                                                            <tr>
+                                                            <tr class="${category.isDeleted == 1 ? 'deleted-row' : ''}">
                                                                 <td>${category.categoryID}</td>
                                                                 <td>${category.superCategoryID}</td>
                                                                 <td>${category.name}</td>
+                                                                <td>
+                                                                    <c:choose>
+                                                                        <c:when test="${category.isDeleted == 1}">
+                                                                            <span class="badge bg-secondary">Deleted</span>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <span class="badge bg-success">Active</span>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
+                                                                </td>
                                                                 <td>${category.createdAt}</td>
                                                                 <td>
-                                                                    <!-- Edit Button -->
-                                                                    <button class="btn btn-sm btn-warning" 
-                                                                            data-bs-toggle="modal" 
-                                                                            data-bs-target="#editCategoryModal-${category.categoryID}">
-                                                                        <i class="fas fa-edit"></i> 
-                                                                    </button>
-                                                                    <!-- Delete Button -->
-                                                                    <form method="post" action="CategoryServlet" class="d-inline">
-                                                                        <input type="hidden" name="action" value="delete">
-                                                                        <input type="hidden" name="categoryID" value="${category.categoryID}">
-                                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                                    <c:if test="${category.isDeleted == 0}">
+                                                                        <!-- Chỉ hiển thị nút sửa và xóa khi danh mục đang active -->
+                                                                        <button class="btn btn-sm btn-warning" 
+                                                                                data-bs-toggle="modal" 
+                                                                                data-bs-target="#editCategoryModal-${category.categoryID}">
+                                                                            <i class="fas fa-edit"></i> 
+                                                                        </button>
+                                                                       <button type="button" class="btn btn-sm btn-danger"
                                                                                 data-bs-toggle="modal"
                                                                                 data-bs-target="#confirmDeleteModal"
                                                                                 onclick="setDeletecategoryID(${category.categoryID})">
                                                                             <i class="fas fa-trash"></i>
                                                                         </button>
-                                                                    </form>
+                                                                    </c:if>
+                                                                    <c:if test="${category.isDeleted == 1}">
+                                                                        <button class="btn btn-sm btn-success" 
+                                                                                onclick="location.href = 'CategoryServlet?action=restore&categoryID=${category.categoryID}'">
+                                                                            Restore
+                                                                        </button>
+                                                                    </c:if>
                                                                 </td>
                                                             </tr>
-
-                                                            <!-- Edit Modal -->
-                                                            <!-- Edit Category Modal -->
                                                         <div class="modal fade" id="editCategoryModal-${category.categoryID}" tabindex="-1">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
@@ -146,22 +157,16 @@
                                                                         <div class="modal-body">
                                                                             <input type="hidden" name="action" value="update">
                                                                             <input type="hidden" name="categoryID" value="${category.categoryID}">
-
-                                                                            <!-- Category Name -->
                                                                             <div class="mb-3">
                                                                                 <label class="form-label">Category Name</label>
                                                                                 <input type="text" class="form-control" name="categoryName" value="${category.name}" required>
                                                                             </div>
-
-                                                                            <!-- SuperCategory Selection -->
                                                                             <div class="mb-3">
-                                                                                <label class="form-label">SuperCategory</label>
-                                                                                <select class="form-control" name="superCategoryID" required>
-                                                                                    <option value="">-- Select SuperCategory --</option>
-                                                                                    <c:forEach var="superCategory" items="${superCategories}">
-                                                                                        <option value="${superCategory.superCategoryID}"
-                                                                                                ${superCategory.superCategoryID == category.superCategoryID ? 'selected' : ''}>
-                                                                                            ${superCategory.name}
+                                                                                <label class="form-label">Super Category</label>
+                                                                                <select class="form-control" name="superCategoryID">
+                                                                                    <c:forEach var="sc" items="${superCategories}">
+                                                                                        <option value="${sc.superCategoryID}" <c:if test="${sc.superCategoryID == category.superCategoryID}">selected</c:if>>
+                                                                                            ${sc.name}
                                                                                         </option>
                                                                                     </c:forEach>
                                                                                 </select>
@@ -175,7 +180,6 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-
                                                         <div class="modal fade" id="confirmDeleteModal" tabindex="-1">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
