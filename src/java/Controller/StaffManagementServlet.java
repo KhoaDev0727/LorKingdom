@@ -77,7 +77,7 @@ public class StaffManagementServlet extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         try {
-              // Kiểm tra đăng nhập (ở đây giả sử roleID của người dùng được lưu trong session)
+            // Kiểm tra đăng nhập (ở đây giả sử roleID của người dùng được lưu trong session)
             Integer userRoleID = (Integer) session.getAttribute("roleID");
             if (userRoleID == null) {
                 response.sendRedirect(request.getContextPath() + "/Admin/loginPage.jsp");
@@ -174,6 +174,8 @@ public class StaffManagementServlet extends HttpServlet {
             String password = request.getParameter("password").trim();
             String address = request.getParameter("address").trim();
             String status = request.getParameter("status");
+            // Handle password
+            String passwordHashed = "";
             int roleID;
             // Validate required fields
             if (userName.isEmpty() || phoneNumber.isEmpty() || email.isEmpty() || address.isEmpty()) {
@@ -211,6 +213,11 @@ public class StaffManagementServlet extends HttpServlet {
                 showStaff(request, response);
                 return;
             }
+
+            if (!password.isEmpty()) {
+                passwordHashed = MyUtils.hashPassword(password);
+            }
+            System.out.println(userName + "  " + phoneNumber + " " + email + " " + passwordHashed + " " + address + " " + status);
             // Lấy ảnh cũ từ request
             String oldImage = request.getParameter("currentImage");
             // Nếu có file mới, upload ảnh mới, ngược lại giữ ảnh cũ
@@ -218,7 +225,7 @@ public class StaffManagementServlet extends HttpServlet {
             String image = (filePart.getSize() > 0)
                     ? UploadImage.uploadFile(filePart, uploadPath, FOLDER)
                     : oldImage;
-            Account a = new Account(roleID, userName, phoneNumber, email, image, password, address, status);
+            Account a = new Account(roleID, userName, phoneNumber, email, image, passwordHashed, address, status);
             boolean isUpdate = AccountDAO.addAdmin(a);
             if (isUpdate) {
                 request.getSession().setAttribute("successMessage", "Thêm nhân viên thành công.");

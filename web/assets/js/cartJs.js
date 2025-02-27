@@ -1,4 +1,4 @@
-function updateQuantity(productId, action, phep) {
+function updateQuantity(productId, action, operation) {
     console.log(phep)
     console.log(productId)
     $.ajax({
@@ -7,7 +7,7 @@ function updateQuantity(productId, action, phep) {
         data: {
             productID: productId,
             action: action,
-            phep: phep
+            phep: operation
         },
         dataType: "json",
         success: function (response) {

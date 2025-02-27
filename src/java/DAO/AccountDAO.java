@@ -34,7 +34,7 @@ public class AccountDAO {
     private static String DELETE_ACCOUNT_SOFT = "UPDATE Account SET isDeleted = ?, Status= ? WHERE AccountID = ?";
     private static String DELETE_ACCOUNT_BY_ID = "DELETE FROM Account WHERE AccountID = ?";
     private static String SEARCH_ACCOUNT = "SELECT * FROM Account WHERE ( AccountID = ? OR AccountName LIKE ? OR PhoneNumber LIKE ? OR email LIKE ? ) AND RoleID = ? ORDER BY AccountID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY;";
-    private static String ADD_ADMIN = "INSERT INTO Account (AccountName, PhoneNumber, Email, Image, Password, Address, Status, RoleID) VALUES (N?, N?, N?, N?, N?, N?, N?, N?)";
+    private static String ADD_ADMIN = "INSERT INTO Account (AccountName, PhoneNumber, Email, Image, Password, Address, Status, RoleID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     private static String IS_EMAIL_EXIST = "SELECT COUNT(*) FROM Account WHERE Email = ?";
 
     public static boolean isEmailExists(String email) throws SQLException, ClassNotFoundException {

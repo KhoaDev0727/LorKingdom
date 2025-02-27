@@ -101,27 +101,23 @@ public class CartManagementServlet extends HttpServlet {
             int userId = getSession(request, response);
             int productId = Integer.parseInt(request.getParameter("productID"));
             String act = request.getParameter("action");
-            String Phep = request.getParameter("phep");
-            System.out.println(Phep);
+            String operation = request.getParameter("operation");
             List<CartItems> list = cartDAO.getCartItems(userId);
             CartItems currentItem = null;
-
             for (CartItems item : list) {
                 if (item.getProduct() != null && item.getProduct().getProductID() == productId) {
                     currentItem = item;
                     break;
                 }
             }
-
             if (currentItem == null) {
-                sendErrorResponse(response, "Item not found");
+                sendErrorResponse(response, "Sản phẩm không tìm thấy trong giỏ hàng.");
                 return;
             }
-
             int newQuantity = currentItem.getQuantity();
-            if ("increase".equalsIgnoreCase(Phep)) {
+            if ("increase".equalsIgnoreCase(operation)) {
                 newQuantity++;
-            } else if ("decrease".equalsIgnoreCase(Phep)) {
+            } else if ("decrease".equalsIgnoreCase(operation)) {
                 newQuantity--;
             }
 
@@ -134,10 +130,9 @@ public class CartManagementServlet extends HttpServlet {
             }
 
             if (!success) {
-                sendErrorResponse(response, "Failed to update cart");
+                sendErrorResponse(response, "Cập nhật giỏ hàng thất bại.");
                 return;
             }
-
             list = cartDAO.getCartItems(userId);
             double totalMoney = calculateTotalMoney(list);
             int cartSize = list.size();
@@ -147,11 +142,10 @@ public class CartManagementServlet extends HttpServlet {
             responseData.put("itemTotal", currentItem.getPrice() * newQuantity);
             responseData.put("totalMoney", totalMoney);
             responseData.put("cartSize", cartSize);
-
             sendJsonResponse(response, responseData);
         } catch (Exception e) {
             e.printStackTrace();
-            sendErrorResponse(response, "Error updating item");
+            sendErrorResponse(response, "Lỗi cập nhật sản phẩm.");
         }
     }
 
@@ -175,7 +169,7 @@ public class CartManagementServlet extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            sendErrorResponse(response, "Error deleting item");
+            sendErrorResponse(response, "Lỗi xóa danh mục.");
         }
     }
 
@@ -186,7 +180,6 @@ public class CartManagementServlet extends HttpServlet {
             int userId = getSession(request, response);
             // Gọi phương thức removeAll trong cartDAO
             boolean rowUpdate = cartDAO.removeAll(userId);
-
             if (rowUpdate) {
                 // Trả về phản hồi JSON nếu xóa thành công
                 response.setContentType("application/json");
@@ -194,11 +187,11 @@ public class CartManagementServlet extends HttpServlet {
                 response.getWriter().write("{\"totalMoney\": 0, \"cartSize\": 0}");
             } else {
                 // Trả về lỗi nếu không xóa được
-                sendErrorResponse(response, "Failed to delete all items");
+                sendErrorResponse(response, "Không thể xóa tất cả các mục.");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            sendErrorResponse(response, "Error deleting all items");
+            sendErrorResponse(response, "Lỗi khi xóa tất cả các mục.");
         }
     }
 
