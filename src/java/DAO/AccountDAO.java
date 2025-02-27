@@ -48,12 +48,7 @@ public class AccountDAO {
         }
     } catch (SQLException e) {
         e.printStackTrace();
-    } finally {
-        // Đóng tài nguyên để tránh rò rỉ bộ nhớ
-        if (rs != null) rs.close();
-        if (stm != null) stm.close();
-        if (conn != null) conn.close();
-    }
+    } 
     return false;
 }
 
