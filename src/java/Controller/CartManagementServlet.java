@@ -49,7 +49,7 @@ public class CartManagementServlet extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            sendErrorResponse(response, "Server error");
+            sendErrorResponse(response, "Lỗi máy chủ.");
         }
     }
 
@@ -72,7 +72,7 @@ public class CartManagementServlet extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            sendErrorResponse(response, "Server error");
+            sendErrorResponse(response, "Lỗi máy chủ.");
         }
     }
 
@@ -88,6 +88,9 @@ public class CartManagementServlet extends HttpServlet {
             if (list == null) {
                 list = new ArrayList<>();
             }
+            for (CartItems cartItems : list) {
+                System.out.println(cartItems.getProduct().getMainImageUrl());
+            }
             double totalMoney = calculateTotalMoney(list);
             request.setAttribute("listCart", list);
             request.setAttribute("totalMoney", totalMoney);
@@ -95,20 +98,20 @@ public class CartManagementServlet extends HttpServlet {
             request.getRequestDispatcher("cart.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
-            sendErrorResponse(response, "Error loading cart");
+            sendErrorResponse(response, "Lỗi tải giỏ hàng.");
         }
     }
 
     private void updateItem(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            int userId = getSession(request, response);
+             int userId = getSession(request, response);
             if (userId == -1) {
                 response.sendRedirect("login.jsp");
                 return;
             }
             int productId = Integer.parseInt(request.getParameter("productID"));
-            String phep = request.getParameter("phep");
+            String operation = request.getParameter("operation");
             List<CartItems> list = cartDAO.getCartItems(userId);
             CartItems currentItem = null;
 
@@ -118,16 +121,15 @@ public class CartManagementServlet extends HttpServlet {
                     break;
                 }
             }
-
             if (currentItem == null) {
                 sendErrorResponse(response, "Item not found");
                 return;
             }
 
             int newQuantity = currentItem.getQuantity();
-            if ("increase".equalsIgnoreCase(phep)) {
+            if ("increase".equalsIgnoreCase(operation)) {
                 newQuantity++;
-            } else if ("decrease".equalsIgnoreCase(phep)) {
+            } else if ("decrease".equalsIgnoreCase(operation)) {
                 newQuantity--;
             }
 
@@ -140,7 +142,7 @@ public class CartManagementServlet extends HttpServlet {
             }
 
             if (!success) {
-                sendErrorResponse(response, "Failed to update cart");
+                sendErrorResponse(response, "Thêm sản phẩm vào giỏ hàng thất bại.");
                 return;
             }
 
@@ -157,7 +159,7 @@ public class CartManagementServlet extends HttpServlet {
             sendJsonResponse(response, responseData);
         } catch (Exception e) {
             e.printStackTrace();
-            sendErrorResponse(response, "Error updating item");
+            sendErrorResponse(response, "Lỗi khi cập nhật số lượng sản phẩm.");
         }
     }
 
@@ -185,7 +187,7 @@ public class CartManagementServlet extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            sendErrorResponse(response, "Error deleting item");
+            sendErrorResponse(response, "Lỗi khi xóa sản phẩm.");
         }
     }
 
@@ -204,11 +206,11 @@ public class CartManagementServlet extends HttpServlet {
                 response.setCharacterEncoding("UTF-8");
                 response.getWriter().write("{\"totalMoney\": 0, \"cartSize\": 0}");
             } else {
-                sendErrorResponse(response, "Failed to delete all items");
+                sendErrorResponse(response, "Lỗi khi xóa tất cả các sản phẩm trong giỏ hàng.");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            sendErrorResponse(response, "Error deleting all items");
+            sendErrorResponse(response, "Lỗi khi xóa tất cả các sản phẩm trong giỏ hàng.");
         }
     }
 
@@ -244,9 +246,7 @@ public class CartManagementServlet extends HttpServlet {
                     return;
                 }
             }
-
             response.sendRedirect("CartManagementServlet");
-
         } catch (Exception e) {
             e.printStackTrace();
             sendErrorResponse(response, "Lỗi khi thêm sản phẩm vào giỏ hàng");

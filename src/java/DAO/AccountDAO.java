@@ -451,23 +451,23 @@ public class AccountDAO {
         }
     }
 
-    public void insertNewAccount(String username, String email, String password, String phoneNumber) {
-        String sql = "INSERT INTO Account (RoleID, AccountName, Email, Password, PhoneNumber, Image) VALUES (?, ?, ?, ?, ?, ?)";
-        String defaultImageUrl = "./assets/img/default-img-profile.png";
-        int defaultRoleID = 3;
-
-        try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, defaultRoleID);
-            stmt.setString(2, username);
-            stmt.setString(3, email);
-            stmt.setString(4, password);
-            stmt.setString(5, phoneNumber);
-            stmt.setString(6, defaultImageUrl);
-            stmt.executeUpdate();
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
+//    public void insertNewAccount(String username, String email, String password, String phoneNumber) {
+//        String sql = "INSERT INTO Account (RoleID, AccountName, Email, Password, PhoneNumber, Image) VALUES (?, ?, ?, ?, ?, ?)";
+//        String defaultImageUrl = "./assets/img/default-img-profile.png";
+//        int defaultRoleID = 3;
+//
+//        try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement(sql)) {
+//            stmt.setInt(1, defaultRoleID);
+//            stmt.setString(2, username);
+//            stmt.setString(3, email);
+//            stmt.setString(4, password);
+//            stmt.setString(5, phoneNumber);
+//            stmt.setString(6, defaultImageUrl);
+//            stmt.executeUpdate();
+//        } catch (SQLException | ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public Account authenticateUser(String email, String password) {
         String hashedPassword = MyUtils.hashPassword(password); // Hash mật khẩu người dùng nhập
