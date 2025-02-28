@@ -26,7 +26,7 @@
                 <div class="cart-items">
                     <div class="cart-header">
                         <span>Sản phẩm trong giỏ hàng:</span> 
-                        <span>${not empty sessionScope.size ? sessionScope.size : 0}</span>
+                        <span>${not empty size ? size : 0}</span>
                     </div>
 
                     <div class="cart-table">
