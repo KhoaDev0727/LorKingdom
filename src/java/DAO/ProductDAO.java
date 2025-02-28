@@ -28,16 +28,28 @@ public class ProductDAO {
     private static String ADD_PRODUCT = "INSERT INTO Product ( SKU, CategoryID, MaterialID, AgeID, SexID, "
             + "PriceRangeID, BrandID, OriginID, Name, Price, Quantity, "
             + " Description ) VALUES ( ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-    private static String SELECT_PRODUCT_BY_ID ="SELECT * FROM Product WHERE ProductID = ?";
+    private static String SELECT_PRODUCT_BY_ID = "SELECT * FROM Product WHERE ProductID = ?";
     private static String DELETE_REVIEW_BY_ID = "DELETE FROM Review WHERE ReviewID = ?";
     private static String ADD_PRODUCT_IMAGE = "INSERT INTO ProductImages (ProductID, Image, IsMain) VALUES (?, ?, ?)";
 
     private static String SELECT_ALL_PRODUCTS = "SELECT * FROM Product";
     // Câu lệnh SQL cho xóa, sửa sản phẩm
     private static String DELETE_PRODUCT = "DELETE FROM Product WHERE ProductID = ?";
-    private static String UPDATE_PRODUCT = "UPDATE Product SET SKU = ?, CategoryID = ?, MaterialID = ?, "
-            + "AgeID = ?, SexID = ?, PriceRangeID = ?, BrandID = ?, OriginID = ?, Name = ?, Price = ?, Quantity = ?, "
-            + "Description = ? WHERE ProductID = ?";
+    private static final String UPDATE_PRODUCT
+            = "UPDATE Product "
+            + "SET SKU = ?, "
+            + "    CategoryID = ?, "
+            + "    MaterialID = ?, "
+            + "    AgeID = ?, "
+            + "    SexID = ?, "
+            + "    PriceRangeID = ?, "
+            + "    BrandID = ?, "
+            + "    OriginID = ?, "
+            + "    Name = ?, "
+            + "    Price = ?, "
+            + "    Quantity = ?, "
+            + "    Description = ? "
+            + "WHERE ProductID = ?";
 
     public static boolean addProduct(Product p, List<String> imagePaths, int isMain) throws ClassNotFoundException {
         boolean addRowProduct = false;
@@ -101,19 +113,31 @@ public class ProductDAO {
         }
         return addRowProduct && addRowProductImage;
     }
-// Phương thức xóa sản phẩm theo ProductID
 
-    public static boolean deleteProduct(int productId) throws ClassNotFoundException {
-        boolean deleted = false;
-        try {
-            conn = DBConnection.getConnection();
-            stm = conn.prepareStatement(DELETE_PRODUCT);
-            stm.setInt(1, productId);
-            deleted = stm.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public void softDeleteProduct(int productID) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE Product SET IsDeleted = 1 WHERE ProductID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, productID);
+            ps.executeUpdate();
         }
-        return deleted;
+    }
+
+    // 6. Xóa cứng sản phẩm (DELETE khỏi bảng)
+    public void hardDeleteProduct(int productID) throws SQLException, ClassNotFoundException {
+        String query = "DELETE FROM Product WHERE ProductID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, productID);
+            ps.executeUpdate();
+        }
+    }
+
+    // 7. Khôi phục sản phẩm (set IsDeleted = 0)
+    public void restoreProduct(int productID) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE Product SET IsDeleted = 0 WHERE ProductID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, productID);
+            ps.executeUpdate();
+        }
     }
 
     // Phương thức sửa thông tin sản phẩm
@@ -122,6 +146,7 @@ public class ProductDAO {
         try {
             conn = DBConnection.getConnection();
             stm = conn.prepareStatement(UPDATE_PRODUCT);
+
             stm.setString(1, p.getSKU());
             stm.setInt(2, p.getCategoryID());
             stm.setInt(3, p.getMaterialID());
@@ -135,7 +160,8 @@ public class ProductDAO {
             stm.setInt(11, p.getQuantity());
             stm.setString(12, p.getDescription());
             stm.setInt(13, p.getProductID());
-            updated = stm.executeUpdate() > 0;
+
+            updated = (stm.executeUpdate() > 0);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -143,33 +169,63 @@ public class ProductDAO {
     }
 
     // Phương thức lấy danh sách tất cả các sản phẩm
-    public static List<Product> getAllProducts() throws ClassNotFoundException {
+    public List<Product> getAllProducts() throws SQLException, ClassNotFoundException {
         List<Product> products = new ArrayList<>();
-        try {
-            conn = DBConnection.getConnection();
-            stm = conn.prepareStatement(SELECT_ALL_PRODUCTS);
-            rs = stm.executeQuery();
+        String query = "SELECT * FROM Product WHERE IsDeleted = 0";
+        try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
-                Product p = new Product(
-                        rs.getString("SKU"),
-                        rs.getInt("CategoryID"),
-                        rs.getInt("MaterialID"),
-                        rs.getInt("AgeID"),
-                        rs.getInt("SexID"),
-                        rs.getInt("PriceRangeID"),
-                        rs.getInt("BrandID"),
-                        rs.getInt("OriginID"),
-                        rs.getString("Name"),
-                        rs.getDouble("Price"),
-                        rs.getInt("Quantity"),
-                        rs.getString("Description")
-                );
-                p.setProductID(rs.getInt("ProductID"));
-                // Nếu cần set các thuộc tính khác như status, createdAt, updatedAt, hãy bổ sung ở đây.
-                products.add(p);
+                Product product = new Product();
+                product.setProductID(rs.getInt("ProductID"));
+                product.setSKU(rs.getString("SKU"));
+                product.setCategoryID(rs.getObject("CategoryID") != null ? rs.getInt("CategoryID") : null);
+                product.setMaterialID(rs.getObject("MaterialID") != null ? rs.getInt("MaterialID") : null);
+                product.setAgeID(rs.getObject("AgeID") != null ? rs.getInt("AgeID") : null);
+                product.setSexID(rs.getObject("SexID") != null ? rs.getInt("SexID") : null);
+                product.setPriceRangeID(rs.getObject("PriceRangeID") != null ? rs.getInt("PriceRangeID") : null);
+                product.setBrandID(rs.getObject("BrandID") != null ? rs.getInt("BrandID") : null);
+                product.setOriginID(rs.getObject("OriginID") != null ? rs.getInt("OriginID") : null);
+                product.setName(rs.getString("Name"));
+                product.setPrice(rs.getDouble("Price"));
+                product.setQuantity(rs.getInt("Quantity"));
+                product.setStatus(rs.getString("Status"));
+                product.setDescription(rs.getString("Description"));
+                product.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                product.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
+                product.setIsDeleted(rs.getInt("IsDeleted"));
+
+                // Nếu có cột mainImageUrl, có thể set thêm tại đây
+                products.add(product);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        }
+        return products;
+    }
+
+    // 2. Lấy danh sách sản phẩm đã bị xóa mềm (IsDeleted = 1)
+    public List<Product> getDeletedProducts() throws SQLException, ClassNotFoundException {
+        List<Product> products = new ArrayList<>();
+        String query = "SELECT * FROM Product WHERE IsDeleted = 1";
+        try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                Product product = new Product();
+                product.setProductID(rs.getInt("ProductID"));
+                product.setSKU(rs.getString("SKU"));
+                product.setCategoryID(rs.getObject("CategoryID") != null ? rs.getInt("CategoryID") : null);
+                product.setMaterialID(rs.getObject("MaterialID") != null ? rs.getInt("MaterialID") : null);
+                product.setAgeID(rs.getObject("AgeID") != null ? rs.getInt("AgeID") : null);
+                product.setSexID(rs.getObject("SexID") != null ? rs.getInt("SexID") : null);
+                product.setPriceRangeID(rs.getObject("PriceRangeID") != null ? rs.getInt("PriceRangeID") : null);
+                product.setBrandID(rs.getObject("BrandID") != null ? rs.getInt("BrandID") : null);
+                product.setOriginID(rs.getObject("OriginID") != null ? rs.getInt("OriginID") : null);
+                product.setName(rs.getString("Name"));
+                product.setPrice(rs.getDouble("Price"));
+                product.setQuantity(rs.getInt("Quantity"));
+                product.setStatus(rs.getString("Status"));
+                product.setDescription(rs.getString("Description"));
+                product.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                product.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
+                product.setIsDeleted(rs.getInt("IsDeleted"));
+                products.add(product);
+            }
         }
         return products;
     }
@@ -303,6 +359,68 @@ public class ProductDAO {
             e.printStackTrace();
         }
         return p;
+    }
+// (Tùy chọn) Tìm kiếm sản phẩm theo từ khóa
+
+    public List<Product> searchProducts(String keyword) throws SQLException, ClassNotFoundException {
+        List<Product> products = new ArrayList<>();
+        String query = "SELECT * FROM Product WHERE Name LIKE ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, "%" + keyword + "%");
+            try ( ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Product product = new Product();
+                    product.setProductID(rs.getInt("ProductID"));
+                    product.setSKU(rs.getString("SKU"));
+                    product.setCategoryID(rs.getObject("CategoryID") != null ? rs.getInt("CategoryID") : null);
+                    product.setMaterialID(rs.getObject("MaterialID") != null ? rs.getInt("MaterialID") : null);
+                    product.setAgeID(rs.getObject("AgeID") != null ? rs.getInt("AgeID") : null);
+                    product.setSexID(rs.getObject("SexID") != null ? rs.getInt("SexID") : null);
+                    product.setPriceRangeID(rs.getObject("PriceRangeID") != null ? rs.getInt("PriceRangeID") : null);
+                    product.setBrandID(rs.getObject("BrandID") != null ? rs.getInt("BrandID") : null);
+                    product.setOriginID(rs.getObject("OriginID") != null ? rs.getInt("OriginID") : null);
+                    product.setName(rs.getString("Name"));
+                    product.setPrice(rs.getDouble("Price"));
+                    product.setQuantity(rs.getInt("Quantity"));
+                    product.setStatus(rs.getString("Status"));
+                    product.setDescription(rs.getString("Description"));
+                    product.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                    product.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
+                    products.add(product);
+                }
+            }
+        }
+        return products;
+    }
+
+    public static boolean isProductNameExists(String productName, int excludeProductID)
+            throws SQLException, ClassNotFoundException {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        boolean exists = false;
+        try {
+            conn = DBConnection.getConnection();
+            String sql = "SELECT COUNT(*) FROM Product WHERE Name = ? AND ProductID <> ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, productName);
+            ps.setInt(2, excludeProductID);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                exists = rs.getInt(1) > 0; // true nếu đếm được > 0 dòng
+            }
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (ps != null) {
+                ps.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return exists;
     }
 
 }

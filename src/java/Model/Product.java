@@ -26,10 +26,12 @@ public class Product {
     private int quantity;
     private String status;
     private String description;
+    private int isDeleted;
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private String mainImageUrl;
 
+    // hien ra giao dien
     public Product(String SKU, Integer categoryID, Integer materialID, Integer ageID, Integer sexID, Integer priceRangeID, Integer brandID, Integer originID, String name, double price, int quantity, String status, String description) {
         this.SKU = SKU;
         this.categoryID = categoryID;
@@ -91,7 +93,6 @@ public class Product {
         this.name = productName;
         this.price = price;
         this.quantity = stockQuantity;
-
         this.description = description;
     }
 
@@ -103,7 +104,6 @@ public class Product {
         this.name = name;
         this.price = price;
     }
-
 
     public String getMainImageUrl() {
         return mainImageUrl;
@@ -239,6 +239,14 @@ public class Product {
 
     public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public int getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(int isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
 }

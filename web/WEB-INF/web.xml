@@ -182,6 +182,14 @@
         <servlet-name>UpdateAvatarPage</servlet-name>
         <servlet-class>Controller.UpdateAvatarPage</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ProductServlet</servlet-name>
+        <servlet-class>Controller.ProductServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>updateProductServlet</servlet-name>
+        <servlet-class>Controller.updateProductServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>VerifyCodeServlet</servlet-name>
         <url-pattern>/VerifyCodeServlet</url-pattern>
@@ -357,6 +365,14 @@
     <servlet-mapping>
         <servlet-name>UpdateAvatarPage</servlet-name>
         <url-pattern>/Admin/UpdateAvatarPage</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProductServlet</servlet-name>
+        <url-pattern>/Admin/ProductServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>updateProductServlet</servlet-name>
+        <url-pattern>/Admin/updateProductServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

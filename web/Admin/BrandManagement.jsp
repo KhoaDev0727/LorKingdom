@@ -39,6 +39,9 @@
     <body class="sb-nav-fixed">
         <div id="layoutSidenav">
             <div id="layoutSidenav_content">
+                <c:if test="${empty sessionScope.roleID}">
+                    <c:redirect url="/Admin/loginPage.jsp"/>
+                </c:if>
                 <%@ include file="Component/SideBar.jsp" %>
                 <div class="dashboard-container">
                     <main>
