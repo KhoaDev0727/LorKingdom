@@ -54,7 +54,7 @@
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <i class="fas fa-table me-1"></i> Customer List
+                                           <i class="fa-solid fa-user"></i> Customer List
                                         </div>
                                     </div>
                                 </div>

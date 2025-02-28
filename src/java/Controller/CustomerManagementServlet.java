@@ -123,8 +123,8 @@ public class CustomerManagementServlet extends HttpServlet {
             if (pageParam != null && !pageParam.trim().isEmpty()) {
                 PAGE = Integer.parseInt(request.getParameter("page"));
             }
-            int totalPages = myUntilsDAO.getTotalPagesAccount(PAGE_SIZE, ROLE_CUSTOMER);
-            List<Account> listAccount = AccountDAO.getAllAccount(ROLE_CUSTOMER, PAGE, PAGE_SIZE);
+            int totalPages = myUntilsDAO.getTotalPagesAccountCustomer(PAGE_SIZE, ROLE_CUSTOMER);
+            List<Account> listAccount = AccountDAO.getAllAccountCustomer(ROLE_CUSTOMER, PAGE, PAGE_SIZE);
             List<Role> listRole = AccountDAO.showListRoleTest();
             request.setAttribute("roles", listRole);
             request.setAttribute("customers", listAccount);
@@ -270,7 +270,7 @@ public class CustomerManagementServlet extends HttpServlet {
                 }
             }
 
-            int totalPages = myUntilsDAO.getTotalPagesAccountSearch(PAGE_SIZE, ROLE_CUSTOMER, keyword);
+            int totalPages = myUntilsDAO.getTotalPagesAccountSearchCustomer(PAGE_SIZE, ROLE_CUSTOMER, keyword);
             List<Account> list = AccountDAO.findUser(keyword, ROLE_CUSTOMER, PAGE, PAGE_SIZE);
             List<Role> roleList = AccountDAO.showListRoleTest();
             request.setAttribute("customers", list);

@@ -33,6 +33,8 @@ public class StaffManagementServlet extends HttpServlet {
 
     private static final String UPLOAD_DIR = "images";
     private static final int ROLE_STAFF = 2;
+        private static final int ROLE_ADMIN = 1;
+            private static final int ROLE_WAREHOUSE = 4;
     private static final String FOLDER = "images";
     private static final MyUntilsDAO myUntilsDAO = new MyUntilsDAO();
     private static int PAGE = 1;
@@ -147,8 +149,8 @@ public class StaffManagementServlet extends HttpServlet {
             if (request.getParameter("page") != null) {
                 PAGE = Integer.parseInt(request.getParameter("page"));
             }
-            int totalPages = myUntilsDAO.getTotalPagesAccount(PAGE_SIZE, ROLE_STAFF);
-            List<Account> list = AccountDAO.getAllAccount(ROLE_STAFF, PAGE, PAGE_SIZE);
+            int totalPages = myUntilsDAO.getTotalPagesAccountStaff(PAGE_SIZE, ROLE_STAFF, ROLE_ADMIN, ROLE_WAREHOUSE);
+            List<Account> list = AccountDAO.getAllAccountStaff(ROLE_STAFF, ROLE_ADMIN, ROLE_WAREHOUSE, PAGE, PAGE_SIZE);
             List<Role> listRole = AccountDAO.showListRoleTest();
             request.setAttribute("staffs", list);
             request.setAttribute("roles", listRole);
@@ -365,7 +367,7 @@ public class StaffManagementServlet extends HttpServlet {
                 }
             }
 
-            int totalPages = myUntilsDAO.getTotalPagesAccountSearch(PAGE_SIZE, ROLE_STAFF, keyword);
+            int totalPages = myUntilsDAO.getTotalPagesAccountSearchsTAFF(PAGE_SIZE,ROLE_ADMIN ,ROLE_STAFF, ROLE_WAREHOUSE, keyword);
             List<Account> list = AccountDAO.findUser(keyword, ROLE_STAFF, page, PAGE_SIZE);
             List<Role> roleList = AccountDAO.showListRoleTest();
             request.setAttribute("staffs", list);

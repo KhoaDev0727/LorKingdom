@@ -25,19 +25,40 @@ import java.util.List;
  */
 public class MyUntilsDAO {
 
-    protected static String TOTAL_PAGE = "SELECT COUNT(*) FROM Account Where RoleID = ? ";
+    protected static String TOTAL_PAGE_STAFF = "SELECT COUNT(*) FROM Account Where RoleID = ? OR RoleID = ? OR RoleID = ? ";
+    protected static String TOTAL_PAGE_CUSTOMER = "SELECT COUNT(*) FROM Account Where RoleID = ?";
     protected static String TOTAL_PAGE_REVIEW = "SELECT COUNT(*) FROM Reviews";
-    protected static String TOTAL_PAGE_CUSTOMER_SEARCH = "SELECT COUNT(*) FROM Account WHERE ( AccountID = ? OR AccountName LIKE ? OR PhoneNumber LIKE ? OR email LIKE ? ) AND RoleID = ? ";
+    protected static String TOTAL_PAGE_STAFF_SEARCH_STAFF = "SELECT COUNT(*) FROM Account WHERE ( AccountID = ? OR AccountName LIKE ? OR PhoneNumber LIKE ? OR email LIKE ? ) AND ( RoleID = ? OR RoleID = ? OR RoleID = ?)";
+    protected static String TOTAL_PAGE_CUSTOMER_SEARCH_CUSTOMER = "SELECT COUNT(*) FROM Account WHERE ( AccountID = ? OR AccountName LIKE ? OR PhoneNumber LIKE ? OR email LIKE ? ) AND RoleID = ? ";
     protected static PreparedStatement stm = null;
     protected static ResultSet rs = null;
     protected static Connection conn = null;
 
-    public int getTotalPagesAccount(int pageSize, int RoleID) throws ClassNotFoundException {
+    public int getTotalPagesAccountStaff(int pageSize, int roleStaff, int roleAdmin, int roleWareHouse) throws ClassNotFoundException {
         int totalRecords = 0;
         try {
             conn = DBConnection.getConnection();
-            stm = conn.prepareStatement(TOTAL_PAGE);
-            stm.setInt(1, RoleID);
+            stm = conn.prepareStatement(TOTAL_PAGE_STAFF);
+            stm.setInt(1, roleStaff);
+            stm.setInt(2, roleWareHouse);
+            stm.setInt(3, roleAdmin);
+            rs = stm.executeQuery();
+            if (rs.next()) {
+                totalRecords = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return (int) Math.ceil((double) totalRecords / pageSize);
+    }
+    
+    
+    public int getTotalPagesAccountCustomer(int pageSize, int roleCustomer) throws ClassNotFoundException {
+        int totalRecords = 0;
+        try {
+            conn = DBConnection.getConnection();
+            stm = conn.prepareStatement(TOTAL_PAGE_CUSTOMER);
+            stm.setInt(1, roleCustomer);
             rs = stm.executeQuery();
             if (rs.next()) {
                 totalRecords = rs.getInt(1);
@@ -48,11 +69,12 @@ public class MyUntilsDAO {
         return (int) Math.ceil((double) totalRecords / pageSize);
     }
 
-    public int getTotalPagesAccountSearch(int pageSize, int roleID, String keyword) throws ClassNotFoundException {
+    
+    public int getTotalPagesAccountSearchsTAFF(int pageSize, int roleStaff, int roleAdmin, int roleWareHouse, String keyword) throws ClassNotFoundException {
         int totalRecords = 0;
         try {
             conn = DBConnection.getConnection();
-            stm = conn.prepareStatement(TOTAL_PAGE_CUSTOMER_SEARCH);
+            stm = conn.prepareStatement(TOTAL_PAGE_STAFF_SEARCH_STAFF);
             // Check if keyword is a number (AccountID search)
             if (keyword.matches("\\d+")) {
                 stm.setInt(1, Integer.parseInt(keyword)); // Search by AccountID
@@ -64,7 +86,40 @@ public class MyUntilsDAO {
             stm.setString(2, searchPattern);
             stm.setString(3, searchPattern);
             stm.setString(4, searchPattern);
-            stm.setInt(5, roleID);
+            stm.setInt(5, roleStaff);
+            stm.setInt(6, roleWareHouse);
+            stm.setInt(7, roleAdmin);
+
+            try ( ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    totalRecords = rs.getInt(1);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();  // Consider proper logging instead
+        }
+
+        return (int) Math.ceil((double) totalRecords / pageSize);
+    }
+
+    public int getTotalPagesAccountSearchCustomer(int pageSize, int roleCustomer, String keyword) throws ClassNotFoundException {
+        int totalRecords = 0;
+        try {
+            conn = DBConnection.getConnection();
+            stm = conn.prepareStatement(TOTAL_PAGE_CUSTOMER_SEARCH_CUSTOMER);
+            // Check if keyword is a number (AccountID search)
+            if (keyword.matches("\\d+")) {
+                stm.setInt(1, Integer.parseInt(keyword)); // Search by AccountID
+            } else {
+                stm.setNull(1, java.sql.Types.INTEGER); // Ignore AccountID filter
+            }
+            // Wildcard search for other fields
+            String searchPattern = "%" + keyword + "%";
+            stm.setString(2, searchPattern);
+            stm.setString(3, searchPattern);
+            stm.setString(4, searchPattern);
+            stm.setInt(5, roleCustomer);
 
             try ( ResultSet rs = stm.executeQuery()) {
                 if (rs.next()) {
