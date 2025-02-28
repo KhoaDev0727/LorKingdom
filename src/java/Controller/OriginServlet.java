@@ -93,57 +93,68 @@ public class OriginServlet extends HttpServlet {
 
     private void handleRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         HttpSession session = request.getSession();
+        // Kiểm tra đăng nhập (nếu cần)
+        Integer roleID = (Integer) session.getAttribute("roleID");
+        if (roleID == null) {
+            response.sendRedirect(request.getContextPath() + "/Admin/loginPage.jsp");
+            return;
+        }
+
         String action = request.getParameter("action");
+        if (action == null) {
+            action = "list";
+        }
+
         try {
-            Integer roleID = (Integer) session.getAttribute("roleID");
-            if (roleID == null) {
-                response.sendRedirect(request.getContextPath() + "/Admin/loginPage.jsp"); // Chưa đăng nhập, chuyển hướng đến trang login
-                return;
+            switch (action) {
+                case "list":
+                    listOrigins(request, response);
+                    break;
+                case "listDeleted":
+                    listDeletedOrigins(request, response);
+                    break;
+                case "add":
+                    addOrigin(request, response);
+                    break;
+                case "update":
+                    updateOrigin(request, response);
+                    break;
+                case "delete": // Xóa mềm
+                    softDeleteOrigin(request, response);
+                    break;
+                case "hardDelete": // Xóa cứng
+                    hardDeleteOrigin(request, response);
+                    break;
+                case "restore":
+                    restoreOrigin(request, response);
+                    break;
+                case "search":
+                    searchOrigin(request, response);
+                    break;
+                default:
+                    listOrigins(request, response);
             }
-            if (action == null || action.equals("list")) {
-                listOrigins(request, response);
-            } else {
-                switch (action) {
-                    case "add":
-                        addOrigin(request, response);
-                        break;
-                    case "update":
-                        updateOrigin(request, response);
-                        break;
-                    case "delete":
-                        deleteOrigin(request, response);
-                        break;
-                    case "search":
-                        searchOrigin(request, response);
-                        break;
-                    case "restore":
-                        restoreOrigin(request, response);
-                        break;
-                    default:
-                        listOrigins(request, response);
-                        break;
-                }
-            }
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-            request.setAttribute("errorMessage", "Error: " + e.getMessage());
-            request.getRequestDispatcher("error.jsp").forward(request, response);
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+            session.setAttribute("errorMessage", "Error: " + ex.getMessage());
+            response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
         }
     }
 
-    private void restoreOrigin(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException, ServletException, ClassNotFoundException {
-        int originID = Integer.parseInt(request.getParameter("originID"));
-        originDAO.restoreOrigin(originID);
-        request.getSession().setAttribute("successMessage", "Origin restored successfully.");
-        response.sendRedirect("OriginServlet?action=list&showSuccessModal=true");
-    }
-
-    // Hiển thị danh sách Origin
+    // 1) Hiển thị danh sách active
     private void listOrigins(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
-        List<Origin> origins = originDAO.getAllOrigins();
+        List<Origin> origins = originDAO.getAllActiveOrigins();
+        request.setAttribute("origins", origins);
+        request.getRequestDispatcher("OriginManagement.jsp").forward(request, response);
+    }
+
+    // 2) Hiển thị danh sách đã xóa mềm
+    private void listDeletedOrigins(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, ServletException, IOException {
+        List<Origin> origins = originDAO.getDeletedOrigins();
         request.setAttribute("origins", origins);
         request.getRequestDispatcher("OriginManagement.jsp").forward(request, response);
     }
@@ -218,18 +229,6 @@ public class OriginServlet extends HttpServlet {
         response.sendRedirect("OriginServlet?action=list");
     }
 
-    private void deleteOrigin(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, ClassNotFoundException, ServletException, IOException {
-        try {
-            int originID = Integer.parseInt(request.getParameter("originID"));
-            originDAO.deleteOrigin(originID);
-            request.getSession().setAttribute("successMessage", "Origin deleted successfully.");
-        } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "Invalid Origin ID.");
-        }
-        response.sendRedirect("OriginServlet?action=list");
-    }
-
     // Tìm kiếm Origin theo từ khóa
     private void searchOrigin(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
@@ -241,5 +240,46 @@ public class OriginServlet extends HttpServlet {
         List<Origin> origins = originDAO.searchOrigin(keyword.trim());
         request.setAttribute("origins", origins);
         request.getRequestDispatcher("OriginManagement.jsp").forward(request, response);
+    }
+    // 5) Xóa mềm
+
+    private void softDeleteOrigin(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, IOException {
+        try {
+            int originID = Integer.parseInt(request.getParameter("originID"));
+            originDAO.softDeleteOrigin(originID);
+            request.getSession().setAttribute("successMessage", "Xuất xứ đã được đưa vào thùng rác");
+            response.sendRedirect("OriginServlet?action=list");
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "ID xuất xứ không hợp lệ.");
+            response.sendRedirect("OriginServlet?action=list");
+        }
+    }
+
+    // 6) Xóa cứng
+    private void hardDeleteOrigin(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, IOException {
+        try {
+            int originID = Integer.parseInt(request.getParameter("originID"));
+            originDAO.hardDeleteOrigin(originID);
+            request.getSession().setAttribute("successMessage", "Xuất xứ đã được xóa vĩnh viễn.");
+            response.sendRedirect("OriginServlet?action=listDeleted");
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "ID xuất xứ không hợp lệ.");
+            response.sendRedirect("OriginServlet?action=listDeleted");
+        }
+    }
+
+    // 7) Khôi phục
+    private void restoreOrigin(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, IOException {
+        try {
+            int originID = Integer.parseInt(request.getParameter("originID"));
+            originDAO.restoreOrigin(originID);
+            request.getSession().setAttribute("successMessage", "Xuất xứ đã được khôi phục.");
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "ID xuất xứ không hợp lệ.");
+        }
+        response.sendRedirect("OriginServlet?action=list");
     }
 }

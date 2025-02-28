@@ -12,6 +12,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -86,44 +87,69 @@ public class AgeServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void handleRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        HttpSession session = request.getSession();
+      
+        Integer roleID = (Integer) session.getAttribute("roleID");
+        if (roleID == null) {
+            response.sendRedirect(request.getContextPath() + "/Admin/loginPage.jsp");
+            return;
+        }
+
         String action = request.getParameter("action");
+        if (action == null) {
+            action = "list";
+        }
 
         try {
-            if (action == null || action.equals("list")) {
-                listAges(request, response);
-            } else {
-                switch (action) {
-                    case "add":
-                        addAge(request, response);
-                        break;
-                    case "delete":
-                        deleteAge(request, response);
-                        break;
-                    case "update":
-                        updateAge(request, response);
-                        break;
-                    case "search":
-                        searchAge(request, response);
-                        break;
-                    case "restore":
-                        restoreAge(request, response);
-                        break;
-                    default:
-                        listAges(request, response);
-                        break;
-                }
+            switch (action) {
+                case "list":
+                    listAges(request, response);
+                    break;
+                case "listDeleted":
+                    listDeletedAges(request, response);
+                    break;
+                case "add":
+                    addAge(request, response);
+                    break;
+                case "update":
+                    updateAge(request, response);
+                    break;
+                case "delete":
+                    softDeleteAge(request, response);
+                    break;
+                case "hardDelete":
+                    hardDeleteAge(request, response);
+                    break;
+                case "restore":
+                    restoreAge(request, response);
+                    break;
+                case "search":
+                    searchAge(request, response);
+                    break;
+                default:
+                    listAges(request, response);
             }
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-            request.setAttribute("errorMessage", "Error: " + e.getMessage());
-            request.getRequestDispatcher("error.jsp").forward(request, response);
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+            session.setAttribute("errorMessage", "Error: " + ex.getMessage());
+            response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
         }
     }
-
+  // 1) Hiển thị danh sách active
     private void listAges(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         List<Age> ages = ageDAO.getAllAges();
+        request.setAttribute("ages", ages);
+        request.getRequestDispatcher("AgeManagement.jsp").forward(request, response);
+    }
+
+    // 2) Hiển thị danh sách đã xóa mềm
+    private void listDeletedAges(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, ServletException, IOException {
+        List<Age> ages = ageDAO.getDeletedAges();
         request.setAttribute("ages", ages);
         request.getRequestDispatcher("AgeManagement.jsp").forward(request, response);
     }
@@ -161,19 +187,43 @@ public class AgeServlet extends HttpServlet {
         request.getSession().setAttribute("successMessage", "Đã thêm độ tuổi thành công.");
         response.sendRedirect("AgeServlet?action=list&showSuccessModal=true");
     }
-
-    private void deleteAge(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException, ServletException, ClassNotFoundException {
+  private void softDeleteAge(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, IOException {
         try {
             int ageID = Integer.parseInt(request.getParameter("ageID"));
-            ageDAO.deleteAge(ageID);
-            request.getSession().setAttribute("successMessage", "Đã xóa tuổi thành công.");
+            ageDAO.softDeleteAge(ageID);
+            request.getSession().setAttribute("successMessage", "Đã xóa độ tuổi thành công.");
+            response.sendRedirect("AgeServlet?action=list");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "Mã số tuổi không hợp lệ.");
+            request.getSession().setAttribute("errorMessage", "Mã độ tuổi không hợp lệ.");
+            response.sendRedirect("AgeServlet?action=list");
+        }
+    }
+    private void restoreAge(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, IOException {
+        try {
+            int ageID = Integer.parseInt(request.getParameter("ageID"));
+            ageDAO.restoreAge(ageID);
+            request.getSession().setAttribute("successMessage", "Đã khôi phục độ tuổi  thành công.");
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "Mã độ tuổi không hợp lệ.");
         }
         response.sendRedirect("AgeServlet?action=list");
     }
-
+    
+    // 6) Xóa cứng
+    private void hardDeleteAge(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, IOException {
+        try {
+            int ageID = Integer.parseInt(request.getParameter("ageID"));
+            ageDAO.hardDeleteAge(ageID);
+            request.getSession().setAttribute("successMessage", "Đã xóa độ tuổi thành công.");
+            response.sendRedirect("AgeServlet?action=listDeleted");
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "Invalid Age ID.");
+            response.sendRedirect("AgeServlet?action=listDeleted");
+        }
+    }
     private void searchAge(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException, ClassNotFoundException {
         String keyword = request.getParameter("search");
@@ -218,11 +268,5 @@ public class AgeServlet extends HttpServlet {
         response.sendRedirect("AgeServlet?action=list");
     }
 
-    private void restoreAge(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException, ServletException, ClassNotFoundException {
-        int ageID = Integer.parseInt(request.getParameter("ageID"));
-        ageDAO.restoreAge(ageID);
-        request.getSession().setAttribute("successMessage", "Age restored successfully.");
-        response.sendRedirect("AgeServlet?action=list&showSuccessModal=true");
-    }
+  
 }

@@ -75,6 +75,11 @@
                                             <a href="OriginServlet" class="btn btn-outline-danger">
                                                 <i class="fas fa-sync"></i>
                                             </a>
+                                            <c:if test="${sessionScope.roleID == 1}">
+                                                <a href="OriginServlet?action=listDeleted" class="btn btn-outline-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </c:if> 
                                         </div>
                                     </form>
                                     <!-- Customer Table -->
@@ -115,21 +120,29 @@
                                                                 </td>
                                                                 <td>
                                                                     <c:if test="${origin.isDeleted == 0}">
-                                                                        <button class="btn btn-sm btn-warning" 
-                                                                                data-bs-toggle="modal" 
+                                                                        <button class="btn btn-sm btn-warning"
+                                                                                data-bs-toggle="modal"
                                                                                 data-bs-target="#editOriginModal-${origin.originID}">
-                                                                            <i class="fas fa-edit"></i> 
+                                                                            <i class="fas fa-edit"></i>
                                                                         </button>
                                                                         <button type="button" class="btn btn-sm btn-danger"
                                                                                 data-bs-toggle="modal"
-                                                                                data-bs-target="#confirmDeleteModal"
-                                                                                onclick="setDeleteOriginID(${origin.originID})">
+                                                                                data-bs-target="#confirmSoftDeleteModal"
+                                                                                onclick="setSoftDeleteOriginID(${origin.originID})">
                                                                             <i class="fas fa-trash"></i>
                                                                         </button>
                                                                     </c:if>
+                                                                    <!-- Nếu isDeleted=1 => Restore & Xóa cứng -->
                                                                     <c:if test="${origin.isDeleted == 1}">
-                                                                        <button class="btn btn-sm btn-success" onclick="location.href = 'OriginServlet?action=restore&originID=${origin.originID}'">
+                                                                        <button class="btn btn-sm btn-success"
+                                                                                onclick="location.href = 'OriginServlet?action=restore&originID=${origin.originID}'">
                                                                             Restore
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#confirmHardDeleteModal"
+                                                                                -       onclick="setHardDeleteOriginID(${origin.originID})">
+                                                                            <i class="fas fa-trash"></i>
                                                                         </button>
                                                                     </c:if>
                                                                 </td>
@@ -138,7 +151,7 @@
                                                         <div class="modal fade" id="editOriginModal-${origin.originID}" tabindex="-1">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
-                                                                    <form method="post" action="OriginServlet">
+                                                                    <form method="POST" action="OriginServlet">
                                                                         <div class="modal-header">
                                                                             <h5 class="modal-title">Edit Origin</h5>
                                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -148,7 +161,7 @@
                                                                             <input type="hidden" name="originID" value="${origin.originID}">
                                                                             <div class="mb-3">
                                                                                 <label class="form-label">Origin Name</label>
-                                                                                <input type="text" class="form-control" name="name" value="${origin.name}" required>
+                                                                                <input type="text" class="form-control" name="originName" value="${origin.name}" required>
                                                                             </div>
                                                                         </div>
                                                                         <div class="modal-footer">
@@ -159,6 +172,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
+
                                                     </c:forEach>
                                                 </c:otherwise>
                                             </c:choose>
@@ -191,22 +205,46 @@
             </div>
         </div>
         <!-- Confirm Delete Modal -->
-        <div class="modal fade" id="confirmDeleteModal" tabindex="-1">
+        <!-- Modal XÓA MỀM -->
+        <div class="modal fade" id="confirmSoftDeleteModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Confirm Deletion</h5>
+                        <h5 class="modal-title">Xác nhận xóa </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        Are you sure you want to delete this Origin entry?
+                        Bạn có chắc chắn muốn đưa xuất xứ này vào thùng rác không?
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <form id="deleteOriginForm" method="POST" action="OriginServlet">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <form method="POST" action="OriginServlet">
                             <input type="hidden" name="action" value="delete">
-                            <input type="hidden" name="originID" id="deleteOriginID">
-                            <button type="submit" class="btn btn-danger">Delete</button>
+                            <input type="hidden" name="originID" id="softDeleteOriginID">
+                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal XÓA CỨNG -->
+        <div class="modal fade" id="confirmHardDeleteModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Xác nhận xóa </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        Bạn có chắc chắn muốn xóa vĩnh viễn xuất xứ này không?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <form method="POST" action="OriginServlet">
+                            <input type="hidden" name="action" value="hardDelete">
+                            <input type="hidden" name="originID" id="hardDeleteOriginID">
+                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
                         </form>
                     </div>
                 </div>
@@ -230,8 +268,11 @@
         </div>
 
         <script>
-            function setDeleteOriginID(originID) {
-                document.getElementById("deleteOriginID").value = originID;
+            function setSoftDeleteOriginID(id) {
+                document.getElementById("softDeleteOriginID").value = id;
+            }
+            function setHardDeleteOriginID(id) {
+                document.getElementById("hardDeleteOriginID").value = id;
             }
 
             window.onload = function () {

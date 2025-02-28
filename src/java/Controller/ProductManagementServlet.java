@@ -46,11 +46,11 @@ public class ProductManagementServlet extends HttpServlet {
         try {
             List<Category> listCategorys = c.getAllCategories();
             List<Sex> listGenders = s.getActiveSex();
-            List<PriceRange> listPriceRanges = p.getActivePriceRanges();
+            List<PriceRange> listPriceRanges = p.getAllActivePriceRanges();
             List<Brand> listBrands = b.getActiveBrand();
-            List<Age> listAges = a.getActiveAges();
-            List<Material> listMaterials = m.getActiveMaterials();
-            List<Origin> listOrigins = originDAO.getActiveOrigins();
+            List<Age> listAges = a.getAllAges();
+            List<Material> listMaterials = m.getAllActiveMaterials();
+            List<Origin> listOrigins = originDAO.getAllActiveOrigins();
             request.setAttribute("ages", listAges);
             request.setAttribute("sexes", listGenders);
             request.setAttribute("Categories", listCategorys);

@@ -16,37 +16,43 @@ import java.util.List;
  */
 public class PriceRangeDAO {
 
-    // Lấy danh sách tất cả khoảng giá
-    public List<PriceRange> getAllPriceRanges() throws SQLException, ClassNotFoundException {
-        List<PriceRange> priceRanges = new ArrayList<>();
-        String query = "SELECT PriceRangeID, PriceRange, CreatedAt, IsDeleted FROM PriceRange";
+    public List<PriceRange> getAllActivePriceRanges() throws SQLException, ClassNotFoundException {
+        List<PriceRange> list = new ArrayList<>();
+        String query = "SELECT PriceRangeID, PriceRange, CreatedAt, IsDeleted "
+                + "FROM PriceRange "
+                + "WHERE IsDeleted = 0";
         try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
-                priceRanges.add(new PriceRange(
+                PriceRange pr = new PriceRange(
                         rs.getInt("PriceRangeID"),
                         rs.getString("PriceRange"),
                         rs.getDate("CreatedAt"),
                         rs.getInt("IsDeleted")
-                ));
+                );
+                list.add(pr);
             }
         }
-        return priceRanges;
+        return list;
     }
 
-    public List<PriceRange> getActivePriceRanges() throws SQLException, ClassNotFoundException {
-        List<PriceRange> priceRanges = new ArrayList<>();
-        String query = "SELECT PriceRangeID, PriceRange, CreatedAt, IsDeleted FROM PriceRange WHERE IsDeleted = 0";
+    // 2) Lấy tất cả PriceRange đã xóa mềm (isDeleted=1)
+    public List<PriceRange> getDeletedPriceRanges() throws SQLException, ClassNotFoundException {
+        List<PriceRange> list = new ArrayList<>();
+        String query = "SELECT PriceRangeID, PriceRange, CreatedAt, IsDeleted "
+                + "FROM PriceRange "
+                + "WHERE IsDeleted = 1";
         try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
-                priceRanges.add(new PriceRange(
+                PriceRange pr = new PriceRange(
                         rs.getInt("PriceRangeID"),
                         rs.getString("PriceRange"),
                         rs.getDate("CreatedAt"),
                         rs.getInt("IsDeleted")
-                ));
+                );
+                list.add(pr);
             }
         }
-        return priceRanges;
+        return list;
     }
 
     // Thêm khoảng giá mới
@@ -86,8 +92,8 @@ public class PriceRangeDAO {
         }
     }
 
-    // Xóa khoảng giá theo ID
-    public void deletePriceRange(int priceRangeID) throws SQLException, ClassNotFoundException {
+    // 4) Xóa mềm
+    public void softDeletePriceRange(int priceRangeID) throws SQLException, ClassNotFoundException {
         String query = "UPDATE PriceRange SET IsDeleted = 1 WHERE PriceRangeID = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, priceRangeID);
@@ -95,6 +101,16 @@ public class PriceRangeDAO {
         }
     }
 
+    // 5) Xóa cứng
+    public void hardDeletePriceRange(int priceRangeID) throws SQLException, ClassNotFoundException {
+        String query = "DELETE FROM PriceRange WHERE PriceRangeID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, priceRangeID);
+            ps.executeUpdate();
+        }
+    }
+
+    // 6) Khôi phục
     public void restorePriceRange(int priceRangeID) throws SQLException, ClassNotFoundException {
         String query = "UPDATE PriceRange SET IsDeleted = 0 WHERE PriceRangeID = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {

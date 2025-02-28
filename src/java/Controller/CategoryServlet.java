@@ -114,6 +114,9 @@ public class CategoryServlet extends HttpServlet {
                     case "delete":
                         deleteCategory(request, response);
                         break;
+                    case "hardDelete":
+                        hardDeleteCategory(request, response);
+                        break;
                     case "update":
                         updateCategory(request, response);
                         break;
@@ -122,6 +125,9 @@ public class CategoryServlet extends HttpServlet {
                         break;
                     case "restore":
                         restoreCategory(request, response);
+                        break;
+                    case "listDeleted": // Thêm case cho danh mục đã xóa
+                        listDeletedCategories(request, response);
                         break;
                     default:
                         listCategories(request, response);
@@ -177,7 +183,7 @@ public class CategoryServlet extends HttpServlet {
         }
 
         if (superCategoryIDStr == null || superCategoryIDStr.trim().isEmpty()) {
-            request.getSession().setAttribute("errorMessage", "Vui lòng chọn SuperCategory.");
+            request.getSession().setAttribute("errorMessage", "Vui lòng chọn Category.");
             response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
             return;
         }
@@ -186,7 +192,7 @@ public class CategoryServlet extends HttpServlet {
         try {
             superCategoryID = Integer.parseInt(superCategoryIDStr);
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "SuperCategory ID không hợp lệ.");
+            request.getSession().setAttribute("errorMessage", "Category ID không hợp lệ.");
             response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
             return;
         }
@@ -203,11 +209,24 @@ public class CategoryServlet extends HttpServlet {
         try {
             int categoryID = Integer.parseInt(request.getParameter("categoryID"));
             categoryDAO.deleteCategory(categoryID);
-            request.getSession().setAttribute("successMessage", "Danh mục đã được xóa.");
+            request.getSession().setAttribute("successMessage", "Danh mục đã đã được xóa mềm.");
             response.sendRedirect("CategoryServlet?action=list");
         } catch (NumberFormatException e) {
             request.getSession().setAttribute("errorMessage", "ID danh mục không hợp lệ.");
             response.sendRedirect("CategoryServlet?action=list");
+        }
+    }
+
+    private void hardDeleteCategory(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, IOException, ServletException, ClassNotFoundException {
+        try {
+           int categoryID = Integer.parseInt(request.getParameter("categoryID"));
+            categoryDAO.hardDeleteCategory(categoryID);
+            request.getSession().setAttribute("successMessage", "Danh mục đã được xóa cứng.");
+            response.sendRedirect("CategoryServlet?action=listDeleted");
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "ID danh mục không hợp lệ.");
+            response.sendRedirect("CategoryServlet?action=listDeleted");
         }
     }
 
@@ -268,7 +287,7 @@ public class CategoryServlet extends HttpServlet {
         try {
             superCategoryID = Integer.parseInt(superCategoryIDStr);
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "SuperCategory ID không hợp lệ.");
+            request.getSession().setAttribute("errorMessage", "Category ID không hợp lệ.");
             response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
             return;
         }
@@ -296,4 +315,13 @@ public class CategoryServlet extends HttpServlet {
         }
     }
 
+    private void listDeletedCategories(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, ServletException, IOException {
+        List<Category> categories = categoryDAO.getAcctiveCategories();
+        List<SuperCategory> superCategories = superCategoryDAO.getActiveSuperCategories();
+
+        request.setAttribute("categories", categories);
+        request.setAttribute("superCategories", superCategories);
+        request.getRequestDispatcher("CategoryManagement.jsp").forward(request, response);
+    }
 }

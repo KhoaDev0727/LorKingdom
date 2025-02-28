@@ -73,6 +73,11 @@
                                             <a href="BrandServlet" class="btn btn-outline-danger">
                                                 <i class="fas fa-sync"></i>
                                             </a>
+                                            <c:if test="${sessionScope.roleID == 1}">
+                                                <a href="BrandServlet?action=listDeleted" class="btn btn-outline-danger">
+                                                    <i class="fas fa-trash"></i> Deleted
+                                                </a>
+                                            </c:if>
                                         </div>
                                     </form>
                                     <!-- Customer Table -->
@@ -112,22 +117,32 @@
                                                                     </c:choose>
                                                                 </td>
                                                                 <td>
+                                                                    <!-- Nếu isDeleted=0 => Hiển thị Edit & Xóa mềm -->
                                                                     <c:if test="${br.isDeleted == 0}">
-                                                                        <button class="btn btn-sm btn-warning" 
-                                                                                data-bs-toggle="modal" 
+                                                                        <button class="btn btn-sm btn-warning"
+                                                                                data-bs-toggle="modal"
                                                                                 data-bs-target="#editBrandModal-${br.brandID}">
-                                                                            <i class="fas fa-edit"></i> 
+                                                                            <i class="fas fa-edit"></i>
                                                                         </button>
                                                                         <button type="button" class="btn btn-sm btn-danger"
                                                                                 data-bs-toggle="modal"
-                                                                                data-bs-target="#confirmDeleteModal"
-                                                                                onclick="setDeleteBrandID(${br.brandID})">
+                                                                                data-bs-target="#confirmSoftDeleteModal"
+                                                                                onclick="setSoftDeleteBrandID(${br.brandID})">
                                                                             <i class="fas fa-trash"></i>
                                                                         </button>
                                                                     </c:if>
+
+                                                                    <!-- Nếu isDeleted=1 => Hiển thị Restore & Xóa cứng -->
                                                                     <c:if test="${br.isDeleted == 1}">
-                                                                        <button class="btn btn-sm btn-success" onclick="location.href = 'BrandServlet?action=restore&brandID=${br.brandID}'">
+                                                                        <button class="btn btn-sm btn-success"
+                                                                                onclick="location.href = 'BrandServlet?action=restore&brandID=${br.brandID}'">
                                                                             Restore
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#confirmHardDeleteModal"
+                                                                                onclick="setHardDeleteBrandID(${br.brandID})">
+                                                                            <i class="fas fa-trash"></i>
                                                                         </button>
                                                                     </c:if>
                                                                 </td>
@@ -206,31 +221,58 @@
             </div>
         </div>
 
-        <!-- Confirm Delete Modal -->
-        <div class="modal fade" id="confirmDeleteModal" tabindex="-1">
+        <!-- Modal XÓA MỀM -->
+        <div class="modal fade" id="confirmSoftDeleteModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Confirm Deletion</h5>
+                        <h5 class="modal-title">Xác nhận xóa</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        Are you sure you want to delete this Brand entry?
+                        Bạn có chắc chắn muốn đưa thương hiệu này vào thùng rác không?
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <form id="deleteBrandForm" method="POST" action="BrandServlet">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <form method="POST" action="BrandServlet">
                             <input type="hidden" name="action" value="delete">
-                            <input type="hidden" name="brandID" id="deleteBrandID">
-                            <button type="submit" class="btn btn-danger">Delete</button>
+                            <input type="hidden" name="brandID" id="softDeleteBrandID">
+                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
                         </form>
                     </div>
                 </div>
             </div>
-        </div>S
+        </div>
+
+        <!-- Modal XÓA CỨNG -->
+        <div class="modal fade" id="confirmHardDeleteModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Xác nhận xóa </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        Bạn có chắc chắn muốn xóa vĩnh viễn thương hiệu này không?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <form method="POST" action="BrandServlet">
+                            <input type="hidden" name="action" value="hardDelete">
+                            <input type="hidden" name="brandID" id="hardDeleteBrandID">
+                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script>
-            function setDeleteBrandID(brandID) {
-                document.getElementById("deleteBrandID").value = brandID;
+            function setSoftDeleteBrandID(id) {
+                document.getElementById("softDeleteBrandID").value = id;
+            }
+            function setHardDeleteBrandID(id) {
+                document.getElementById("hardDeleteBrandID").value = id;
             }
 
             window.onload = function () {

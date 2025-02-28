@@ -80,9 +80,16 @@
                                             <button class="btn btn-outline-secondary" type="submit">
                                                 <i class="fas fa-search"></i>
                                             </button>
+
                                             <a href="CategoryServlet" class="btn btn-outline-danger">
                                                 <i class="fas fa-sync"></i>
                                             </a>
+                                            <c:if test="${sessionScope.roleID == 1}">
+                                                <a href="CategoryServlet?action=listDeleted" class="btn btn-outline-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </c:if>
+
                                         </div>
                                     </form>
                                     <!-- Customer Table -->
@@ -131,10 +138,11 @@
                                                                                 data-bs-target="#editCategoryModal-${category.categoryID}">
                                                                             <i class="fas fa-edit"></i> 
                                                                         </button>
-                                                                       <button type="button" class="btn btn-sm btn-danger"
+                                                                        <button type="button"
+                                                                                class="btn btn-sm btn-danger"
                                                                                 data-bs-toggle="modal"
-                                                                                data-bs-target="#confirmDeleteModal"
-                                                                                onclick="setDeletecategoryID(${category.categoryID})">
+                                                                                data-bs-target="#confirmSoftDeleteModal"
+                                                                                onclick="setSoftDeleteCategoryID(${category.categoryID})">
                                                                             <i class="fas fa-trash"></i>
                                                                         </button>
                                                                     </c:if>
@@ -143,7 +151,15 @@
                                                                                 onclick="location.href = 'CategoryServlet?action=restore&categoryID=${category.categoryID}'">
                                                                             Restore
                                                                         </button>
+                                                                        <button type="button"
+                                                                                class="btn btn-sm btn-danger"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#confirmHardDeleteModal"
+                                                                                onclick="setHardDeleteCategoryID(${category.categoryID})">
+                                                                            <i class="fas fa-trash"></i> 
+                                                                        </button>
                                                                     </c:if>
+
                                                                 </td>
                                                             </tr>
                                                         <div class="modal fade" id="editCategoryModal-${category.categoryID}" tabindex="-1">
@@ -249,13 +265,64 @@
                 </div>
             </div>
         </div>
+        <!-- Modal XÓA MỀM -->
+        <div class="modal fade" id="confirmSoftDeleteModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Xác nhận xóa</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        Bạn có chắc chắn muốn đưa danh mục này vào thùng rác không?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <form id="deletecategoryForm" method="POST" action="CategoryServlet">
+                            <!-- Gửi action = delete để gọi hàm deleteCategory -->
+                            <input type="hidden" name="action" value="delete">
+                            <!-- ID ẩn DÙNG RIÊNG cho xóa mềm -->
+                            <input type="hidden" name="categoryID" id="softDeleteCategoryID">
+                            <button type="submit" class="btn btn-danger">Xóa</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal XÓA CỨNG -->
+        <div class="modal fade" id="confirmHardDeleteModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Xác nhận xóa</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        Bạn có chắc chắn muốn xóa vĩnh viễn danh mục này không?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <form id="hardDeleteForm" method="POST" action="CategoryServlet">
+                            <!-- Gửi action = hardDelete để gọi hàm hardDeleteCategory -->
+                            <input type="hidden" name="action" value="hardDelete">
+                            <!-- ID ẩn DÙNG RIÊNG cho xóa cứng -->
+                            <input type="hidden" name="categoryID" id="hardDeleteCategoryID">
+                            <button type="submit" class="btn btn-danger">Xóa </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
     </body>
     <script>
-        function setDeletecategoryID(categoryID) {
-            document.getElementById("deletecategoryID").value = categoryID;
+        function setSoftDeleteCategoryID(categoryID) {
+            document.getElementById("softDeleteCategoryID").value = categoryID;
         }
-
+        function setHardDeleteCategoryID(categoryID) {
+            document.getElementById("hardDeleteCategoryID").value = categoryID;
+        }
         window.onload = function () {
             let errorMessage = "${sessionScope.errorMessage}";
             if (errorMessage && errorMessage.trim() !== "") {

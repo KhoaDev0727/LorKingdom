@@ -23,7 +23,25 @@ public class CategoryDAO {
 
     public List<Category> getAllCategories() throws SQLException, ClassNotFoundException {
         List<Category> categories = new ArrayList<>();
-        String query = "SELECT CategoryID, SuperCategoryID, Name, CreatedAt, IsDeleted FROM Category";
+        String query = "SELECT CategoryID, SuperCategoryID, Name, CreatedAt, IsDeleted FROM Category Where IsDeleted = 0 ";
+
+        try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                categories.add(new Category(
+                        rs.getInt("CategoryID"),
+                        rs.getInt("SuperCategoryID"),
+                        rs.getString("Name"),
+                        rs.getDate("CreatedAt"),
+                        rs.getInt("IsDeleted")
+                ));
+            }
+        }
+        return categories;
+    }
+
+    public List<Category> getAcctiveCategories() throws SQLException, ClassNotFoundException {
+        List<Category> categories = new ArrayList<>();
+        String query = "SELECT CategoryID, SuperCategoryID, Name, CreatedAt, IsDeleted FROM Category Where IsDeleted = 1 ";
 
         try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
@@ -48,13 +66,13 @@ public class CategoryDAO {
         }
     }
 
-//    public void deleteCategory(int categoryID) throws SQLException, ClassNotFoundException {
-//        String query = "Delete FROM Category WHERE CategoryID = ?";
-//        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
-//            ps.setInt(1, categoryID);
-//            ps.executeUpdate();
-//        }
-//    }
+    public void hardDeleteCategory(int categoryID) throws SQLException, ClassNotFoundException {
+        String query = "Delete FROM Category WHERE CategoryID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, categoryID);
+            ps.executeUpdate();
+        }
+    }
     public void deleteCategory(int categoryID) throws SQLException, ClassNotFoundException {
         String query = "UPDATE Category SET IsDeleted = 1 WHERE CategoryID = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {

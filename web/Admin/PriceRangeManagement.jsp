@@ -67,6 +67,11 @@
                                             <a href="PriceRangeServlet" class="btn btn-outline-danger">
                                                 <i class="fas fa-sync"></i>
                                             </a>
+                                            <c:if test="${sessionScope.roleID == 1}">
+                                                <a href="PriceRangeServlet?action=listDeleted" class="btn btn-outline-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </c:if>
                                         </div>
                                     </form>
                                     <!-- Customer Table -->
@@ -94,7 +99,9 @@
                                                             <tr class="${pr.isDeleted == 1 ? 'deleted-row' : ''}">
                                                                 <td>${pr.priceRangeID}</td>
                                                                 <td>${pr.priceRange}</td>
-                                                                <td>${pr.createdAt}</td>
+                                                                <td>
+                                                                    <fmt:formatDate value="${pr.createdAt}" pattern="yyyy-MM-dd"/>
+                                                                </td>
                                                                 <td>
                                                                     <c:choose>
                                                                         <c:when test="${pr.isDeleted == 1}">
@@ -106,31 +113,41 @@
                                                                     </c:choose>
                                                                 </td>
                                                                 <td>
+                                                                    <!-- Nếu isDeleted=0 => Edit & Xóa mềm -->
                                                                     <c:if test="${pr.isDeleted == 0}">
-                                                                        <button class="btn btn-sm btn-warning" 
-                                                                                data-bs-toggle="modal" 
+                                                                        <button class="btn btn-sm btn-warning"
+                                                                                data-bs-toggle="modal"
                                                                                 data-bs-target="#editPriceRangeModal-${pr.priceRangeID}">
-                                                                            <i class="fas fa-edit"></i> 
+                                                                            <i class="fas fa-edit"></i>
                                                                         </button>
                                                                         <button type="button" class="btn btn-sm btn-danger"
                                                                                 data-bs-toggle="modal"
-                                                                                data-bs-target="#confirmDeleteModal"
-                                                                                onclick="setDeletePriceRangeID(${pr.priceRangeID})">
+                                                                                data-bs-target="#confirmSoftDeleteModal"
+                                                                                onclick="setSoftDeletePriceRangeID(${pr.priceRangeID})">
                                                                             <i class="fas fa-trash"></i>
                                                                         </button>
                                                                     </c:if>
+
+                                                                    <!-- Nếu isDeleted=1 => Restore & Xóa cứng -->
                                                                     <c:if test="${pr.isDeleted == 1}">
-                                                                        <button class="btn btn-sm btn-success" onclick="location.href = 'PriceRangeServlet?action=restore&priceRangeID=${pr.priceRangeID}'">
+                                                                        <button class="btn btn-sm btn-success"
+                                                                                onclick="location.href = 'PriceRangeServlet?action=restore&priceRangeID=${pr.priceRangeID}'">
                                                                             Restore
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#confirmHardDeleteModal"
+                                                                                onclick="setHardDeletePriceRangeID(${pr.priceRangeID})">
+                                                                            <i class="fas fa-trash"></i>
                                                                         </button>
                                                                     </c:if>
                                                                 </td>
                                                             </tr>
-                                                            <!-- Modal Edit Price Range -->
+                                                            <!-- Modal Edit PriceRange -->
                                                         <div class="modal fade" id="editPriceRangeModal-${pr.priceRangeID}" tabindex="-1">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
-                                                                    <form method="post" action="PriceRangeServlet">
+                                                                    <form method="POST" action="PriceRangeServlet">
                                                                         <div class="modal-header">
                                                                             <h5 class="modal-title">Edit Price Range</h5>
                                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -198,33 +215,61 @@
                 </div>
             </div>
         </div>
-        <!-- Modal xác nhận xóa Price Range -->
-        <div class="modal fade" id="confirmDeleteModal" tabindex="-1">
+        <!-- Modal XÓA MỀM -->
+        <div class="modal fade" id="confirmSoftDeleteModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Confirm Deletion</h5>
+                        <h5 class="modal-title">Xác nhận xóa </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        Are you sure you want to delete this price range?
+                        Bạn có chắc chắn muốn đưa phạm vi giá này vào thùng rác không?
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <form id="deletePriceRangeForm" method="POST" action="PriceRangeServlet">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <form method="POST" action="PriceRangeServlet">
                             <input type="hidden" name="action" value="delete">
-                            <input type="hidden" name="priceRangeID" id="deletePriceRangeID">
-                            <button type="submit" class="btn btn-danger">Delete</button>
+                            <input type="hidden" name="priceRangeID" id="softDeletePriceRangeID">
+                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Xóa</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Modal XÓA CỨNG -->
+        <div class="modal fade" id="confirmHardDeleteModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Xác nhận xóa</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        Bạn có chắc chắn muốn xóa vĩnh viễn phạm vi giá này không?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <form method="POST" action="PriceRangeServlet">
+                            <input type="hidden" name="action" value="hardDelete">
+                            <input type="hidden" name="priceRangeID" id="hardDeletePriceRangeID">
+                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Xóa</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- JavaScript hỗ trợ thiết lập ID cho delete -->
         <script>
-            function setDeletePriceRangeID(priceRangeID) {
-                document.getElementById("deletePriceRangeID").value = priceRangeID;
+            function setSoftDeletePriceRangeID(id) {
+                document.getElementById("softDeletePriceRangeID").value = id;
             }
+            function setHardDeletePriceRangeID(id) {
+                document.getElementById("hardDeletePriceRangeID").value = id;
+            }
+
             window.onload = function () {
                 let errorMessage = "${sessionScope.errorMessage}";
                 if (errorMessage && errorMessage.trim() !== "") {

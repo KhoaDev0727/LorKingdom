@@ -12,6 +12,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -90,44 +91,68 @@ public class PriceRangeServlet extends HttpServlet {
 
     private void handleRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        HttpSession session = request.getSession();
+        // Kiểm tra đăng nhập (nếu cần)
+        Integer roleID = (Integer) session.getAttribute("roleID");
+        if (roleID == null) {
+            response.sendRedirect(request.getContextPath() + "/Admin/loginPage.jsp");
+            return;
+        }
+
         String action = request.getParameter("action");
+        if (action == null) {
+            action = "list";
+        }
 
         try {
-            if (action == null || action.equals("list")) {
-                listPriceRanges(request, response);
-            } else {
-                switch (action) {
-                    case "add":
-                        addPriceRange(request, response);
-                        break;
-                    case "delete":
-                        deletePriceRange(request, response);
-                        break;
-                    case "update":
-                        updatePriceRange(request, response);
-                        break;
-                    case "restore":
-                        restorePriceRange(request, response);
-                        break;
-                    case "search":
-                        searchPriceRange(request, response);
-                        break;
-                    default:
-                        listPriceRanges(request, response);
-                        break;
-                }
+            switch (action) {
+                case "list":
+                    listPriceRanges(request, response);
+                    break;
+                case "listDeleted":
+                    listDeletedPriceRanges(request, response);
+                    break;
+                case "add":
+                    addPriceRange(request, response);
+                    break;
+                case "update":
+                    updatePriceRange(request, response);
+                    break;
+                case "delete": // Xóa mềm
+                    softDeletePriceRange(request, response);
+                    break;
+                case "hardDelete": // Xóa cứng
+                    hardDeletePriceRange(request, response);
+                    break;
+                case "restore":
+                    restorePriceRange(request, response);
+                    break;
+                case "search":
+                    searchPriceRange(request, response);
+                    break;
+                default:
+                    listPriceRanges(request, response);
             }
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-            request.setAttribute("errorMessage", "Lỗi: " + e.getMessage());
-            request.getRequestDispatcher("error.jsp").forward(request, response);
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+            session.setAttribute("errorMessage", "Error: " + ex.getMessage());
+            response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
         }
     }
 
     private void listPriceRanges(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
-        List<PriceRange> priceRanges = priceRangeDAO.getAllPriceRanges();
-        request.setAttribute("priceRanges", priceRanges);
+        List<PriceRange> list = priceRangeDAO.getAllActivePriceRanges();
+        request.setAttribute("priceRanges", list);
+        request.getRequestDispatcher("PriceRangeManagement.jsp").forward(request, response);
+    }
+
+    // 2) Hiển thị danh sách đã xóa mềm
+    private void listDeletedPriceRanges(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, ServletException, IOException {
+        List<PriceRange> list = priceRangeDAO.getDeletedPriceRanges();
+        request.setAttribute("priceRanges", list);
         request.getRequestDispatcher("PriceRangeManagement.jsp").forward(request, response);
     }
 
@@ -204,7 +229,7 @@ public class PriceRangeServlet extends HttpServlet {
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("priceRangeID"));
         String name = request.getParameter("priceRange");
-      
+
         if (name == null || name.trim().isEmpty()) {
             request.getSession().setAttribute("errorMessage", "Khoảng giá không được để trống.");
             response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
@@ -260,12 +285,45 @@ public class PriceRangeServlet extends HttpServlet {
         response.sendRedirect("PriceRangeServlet?action=list");
     }
 
-    private void deletePriceRange(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, ClassNotFoundException, ServletException, IOException {
-        int id = Integer.parseInt(request.getParameter("priceRangeID"));
-        priceRangeDAO.deletePriceRange(id);
-        request.getSession().setAttribute("successMessage", "Khoảng giá xóa thành công.");
-        response.sendRedirect("PriceRangeServlet?action=list&showSuccessModal=true");
+    // 5) Xóa mềm
+    private void softDeletePriceRange(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, IOException {
+        try {
+            int prID = Integer.parseInt(request.getParameter("priceRangeID"));
+            priceRangeDAO.softDeletePriceRange(prID);
+            request.getSession().setAttribute("successMessage", "Đã xóa mềm Price Range thành công.");
+            response.sendRedirect("PriceRangeServlet?action=list");
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "ID phạm vi giá không hợp lệ.");
+            response.sendRedirect("PriceRangeServlet?action=list");
+        }
+    }
+
+    // 6) Xóa cứng
+    private void hardDeletePriceRange(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, IOException {
+        try {
+            int prID = Integer.parseInt(request.getParameter("priceRangeID"));
+            priceRangeDAO.hardDeletePriceRange(prID);
+            request.getSession().setAttribute("successMessage", "Đã xóa cứng phạm vi giá  thành công.");
+            response.sendRedirect("PriceRangeServlet?action=listDeleted");
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "ID phạm vi giá không hợp lệ.");
+            response.sendRedirect("PriceRangeServlet?action=listDeleted");
+        }
+    }
+
+    // 7) Khôi phục
+    private void restorePriceRange(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, IOException {
+        try {
+            int prID = Integer.parseInt(request.getParameter("priceRangeID"));
+            priceRangeDAO.restorePriceRange(prID);
+            request.getSession().setAttribute("successMessage", "Đã khôi phục Price Range thành công.");
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "ID phạm vi giá không hợp lệ.");
+        }
+        response.sendRedirect("PriceRangeServlet?action=list");
     }
 
     private void searchPriceRange(HttpServletRequest request, HttpServletResponse response)
@@ -273,7 +331,7 @@ public class PriceRangeServlet extends HttpServlet {
         String keyword = request.getParameter("search");
         List<PriceRange> priceRanges;
         if (keyword == null || keyword.trim().isEmpty()) {
-            priceRanges = priceRangeDAO.getAllPriceRanges();
+            priceRanges = priceRangeDAO.getAllActivePriceRanges();
         } else {
             priceRanges = priceRangeDAO.searchPriceRange(keyword.trim());
         }
@@ -281,12 +339,5 @@ public class PriceRangeServlet extends HttpServlet {
         request.getRequestDispatcher("PriceRangeManagement.jsp").forward(request, response);
     }
 
-    private void restorePriceRange(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException, ServletException, ClassNotFoundException {
-        int priceRangeID = Integer.parseInt(request.getParameter("priceRangeID"));
-        priceRangeDAO.restorePriceRange(priceRangeID);
-        request.getSession().setAttribute("successMessage", "Đã khôi phục phạm vi giá thành công.");
-        response.sendRedirect("PriceRangeServlet?action=list&showSuccessModal=true");
-    }
 
 }

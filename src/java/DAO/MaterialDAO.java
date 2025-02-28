@@ -12,33 +12,40 @@ import java.util.List;
 
 public class MaterialDAO {
 
-    public List<Material> getAllMaterials() throws SQLException, ClassNotFoundException {
+    public List<Material> getAllActiveMaterials() throws SQLException, ClassNotFoundException {
         List<Material> materials = new ArrayList<>();
-        String query = "SELECT MaterialID, Name, Description, IsDeleted FROM Material";
+        String query = "SELECT MaterialID, Name, Description, IsDeleted "
+                + "FROM Material "
+                + "WHERE IsDeleted = 0";
         try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
-                materials.add(new Material(
+                Material mat = new Material(
                         rs.getInt("MaterialID"),
                         rs.getString("Name"),
                         rs.getString("Description"),
                         rs.getInt("IsDeleted")
-                ));
+                );
+                materials.add(mat);
             }
         }
         return materials;
     }
 
-    public List<Material> getActiveMaterials() throws SQLException, ClassNotFoundException {
+    // 2) Lấy danh sách Material đã xóa mềm (isDeleted=1)
+    public List<Material> getDeletedMaterials() throws SQLException, ClassNotFoundException {
         List<Material> materials = new ArrayList<>();
-        String query = "SELECT MaterialID, Name, Description, IsDeleted FROM Material WHERE IsDeleted = 0";
+        String query = "SELECT MaterialID, Name, Description, IsDeleted "
+                + "FROM Material "
+                + "WHERE IsDeleted = 1";
         try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
-                materials.add(new Material(
+                Material mat = new Material(
                         rs.getInt("MaterialID"),
                         rs.getString("Name"),
                         rs.getString("Description"),
                         rs.getInt("IsDeleted")
-                ));
+                );
+                materials.add(mat);
             }
         }
         return materials;
@@ -82,22 +89,7 @@ public class MaterialDAO {
         }
     }
 
-    // Xóa vật liệu theo ID
-//    public void deleteMaterial(int materialID) throws SQLException, ClassNotFoundException {
-//        String query = "DELETE FROM Material WHERE MaterialID = ?";
-//
-//        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
-//
-//            System.out.println("Deleting Material ID: " + materialID);
-//            ps.setInt(1, materialID);
-//            int rowsAffected = ps.executeUpdate();
-//
-//            if (rowsAffected == 0) {
-//                System.out.println("No rows deleted. Material ID may not exist.");
-//            }
-//        }
-//    }
-    public void deleteMaterial(int materialID) throws SQLException, ClassNotFoundException {
+    public void softDeleteMaterial(int materialID) throws SQLException, ClassNotFoundException {
         String query = "UPDATE Material SET IsDeleted = 1 WHERE MaterialID = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, materialID);
@@ -105,6 +97,16 @@ public class MaterialDAO {
         }
     }
 
+    // 5) Xóa cứng (DELETE)
+    public void hardDeleteMaterial(int materialID) throws SQLException, ClassNotFoundException {
+        String query = "DELETE FROM Material WHERE MaterialID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, materialID);
+            ps.executeUpdate();
+        }
+    }
+
+    // 6) Khôi phục (IsDeleted=0)
     public void restoreMaterial(int materialID) throws SQLException, ClassNotFoundException {
         String query = "UPDATE Material SET IsDeleted = 0 WHERE MaterialID = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {

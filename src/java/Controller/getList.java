@@ -135,9 +135,9 @@ public class getList extends HttpServlet {
             request.setAttribute("ages", ageDAO.getAllAges());
             request.setAttribute("listS", sexDAO.getAllSexes());
             request.setAttribute("listB", brandDAO.getAllBrands());
-            request.setAttribute("listM", materialDAO.getAllMaterials());
-            request.setAttribute("listO", originDAO.getAllOrigins());
-            request.setAttribute("listPriceRanges", priceRangeDAO.getAllPriceRanges());
+            request.setAttribute("listM", materialDAO.getAllActiveMaterials());
+            request.setAttribute("listO", originDAO.getAllActiveOrigins());
+            request.setAttribute("listPriceRanges", priceRangeDAO.getAllActivePriceRanges());
             request.setAttribute("mainImages", ProductImageDAO.getMainProductImages());
 
             String partial = request.getParameter("partial");

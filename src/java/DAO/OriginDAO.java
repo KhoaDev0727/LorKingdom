@@ -16,36 +16,43 @@ import java.util.List;
 
 public class OriginDAO {
 
-    public List<Origin> getAllOrigins() throws SQLException, ClassNotFoundException {
-        List<Origin> origins = new ArrayList<>();
-        String query = "SELECT OriginID, Name, CreatedAt, IsDeleted FROM Origin";
+    public List<Origin> getAllActiveOrigins() throws SQLException, ClassNotFoundException {
+        List<Origin> list = new ArrayList<>();
+        String query = "SELECT OriginID, Name, CreatedAt, IsDeleted "
+                + "FROM Origin "
+                + "WHERE IsDeleted = 0";
         try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
-                origins.add(new Origin(
+                Origin origin = new Origin(
                         rs.getInt("OriginID"),
                         rs.getString("Name"),
                         rs.getDate("CreatedAt"),
                         rs.getInt("IsDeleted")
-                ));
+                );
+                list.add(origin);
             }
         }
-        return origins;
+        return list;
     }
 
-    public List<Origin> getActiveOrigins() throws SQLException, ClassNotFoundException {
-        List<Origin> origins = new ArrayList<>();
-        String query = "SELECT OriginID, Name, CreatedAt, IsDeleted FROM Origin WHERE IsDeleted = 0";
+    // 2) Lấy danh sách Origin đã xóa mềm (isDeleted=1)
+    public List<Origin> getDeletedOrigins() throws SQLException, ClassNotFoundException {
+        List<Origin> list = new ArrayList<>();
+        String query = "SELECT OriginID, Name, CreatedAt, IsDeleted "
+                + "FROM Origin "
+                + "WHERE IsDeleted = 1";
         try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
-                origins.add(new Origin(
+                Origin origin = new Origin(
                         rs.getInt("OriginID"),
                         rs.getString("Name"),
                         rs.getDate("CreatedAt"),
                         rs.getInt("IsDeleted")
-                ));
+                );
+                list.add(origin);
             }
         }
-        return origins;
+        return list;
     }
 
     public void addOrigin(Origin origin) throws SQLException, ClassNotFoundException {
@@ -65,8 +72,18 @@ public class OriginDAO {
         }
     }
 
-    public void deleteOrigin(int originID) throws SQLException, ClassNotFoundException {
+    // 4) Xóa mềm (IsDeleted=1)
+    public void softDeleteOrigin(int originID) throws SQLException, ClassNotFoundException {
         String query = "UPDATE Origin SET IsDeleted = 1 WHERE OriginID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, originID);
+            ps.executeUpdate();
+        }
+    }
+
+    // 5) Xóa cứng (DELETE FROM DB)
+    public void hardDeleteOrigin(int originID) throws SQLException, ClassNotFoundException {
+        String query = "DELETE FROM Origin WHERE OriginID = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, originID);
             ps.executeUpdate();

@@ -16,19 +16,39 @@ import java.util.List;
 
 public class BrandDAO {
 
-    // Lấy danh sách tất cả các Brand
-    // Lấy danh sách tất cả các Brand (bao gồm cả đã xóa)
+    // 1) Lấy tất cả brand đang active (isDeleted=0)
     public List<Brand> getAllBrands() throws SQLException, ClassNotFoundException {
         List<Brand> brands = new ArrayList<>();
-        String query = "SELECT BrandID, Name, IsDeleted, CreatedAt FROM Brand";
+        String query = "SELECT BrandID, Name, IsDeleted, CreatedAt FROM Brand WHERE IsDeleted = 0";
+
         try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
-                brands.add(new Brand(
+                Brand brand = new Brand(
                         rs.getInt("BrandID"),
                         rs.getString("Name"),
                         rs.getInt("IsDeleted"),
                         rs.getDate("CreatedAt")
-                ));
+                );
+                brands.add(brand);
+            }
+        }
+        return brands;
+    }
+
+    // 2) Lấy tất cả brand đã bị xóa mềm (isDeleted=1)
+    public List<Brand> getDeletedBrands() throws SQLException, ClassNotFoundException {
+        List<Brand> brands = new ArrayList<>();
+        String query = "SELECT BrandID, Name, IsDeleted, CreatedAt FROM Brand WHERE IsDeleted = 1";
+
+        try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                Brand brand = new Brand(
+                        rs.getInt("BrandID"),
+                        rs.getString("Name"),
+                        rs.getInt("IsDeleted"),
+                        rs.getDate("CreatedAt")
+                );
+                brands.add(brand);
             }
         }
         return brands;
@@ -49,6 +69,32 @@ public class BrandDAO {
             }
         }
         return brands;
+    }
+
+    public void softDeleteBrand(int brandID) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE Brand SET IsDeleted = 1 WHERE BrandID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, brandID);
+            ps.executeUpdate();
+        }
+    }
+
+    // 5) Xóa cứng brand (DELETE FROM DB)
+    public void hardDeleteBrand(int brandID) throws SQLException, ClassNotFoundException {
+        String query = "DELETE FROM Brand WHERE BrandID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, brandID);
+            ps.executeUpdate();
+        }
+    }
+
+    // 6) Khôi phục brand (isDeleted=0)
+    public void restoreBrand(int brandID) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE Brand SET IsDeleted = 0 WHERE BrandID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, brandID);
+            ps.executeUpdate();
+        }
     }
 
     // Thêm mới Brand
@@ -122,14 +168,6 @@ public class BrandDAO {
             }
         }
         return false;
-    }
-
-    public void restoreBrand(int brandID) throws SQLException, ClassNotFoundException {
-        String query = "UPDATE Brand SET IsDeleted = 0 WHERE BrandID = ?";
-        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setInt(1, brandID);
-            ps.executeUpdate();
-        }
     }
 
     public String getBrandNameByProductId(int productId) throws SQLException, ClassNotFoundException {

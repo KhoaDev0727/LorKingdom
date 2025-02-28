@@ -87,39 +87,54 @@ public class SuperCategoryServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void handleRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
         HttpSession session = request.getSession();
+        Integer roleID = (Integer) session.getAttribute("roleID");
+        if (roleID == null) {
+            response.sendRedirect(request.getContextPath() + "/Admin/loginPage.jsp");
+            return;
+        }
+
         String action = request.getParameter("action");
+        if (action == null) {
+            action = "list";
+        }
 
         try {
-            if (action == null || action.equals("list")) {
-                listSuperCategories(request, response);
-            } else {
-                switch (action) {
-                    case "add":
-                        addSuperCategory(request, response);
-                        break;
-                    case "update":
-                        updateSuperCategory(request, response);
-                        break;
-                    case "delete":
-                        deleteSuperCategory(request, response);
-                        break;
-                    case "restore":
-                        restoreSuperCategory(request, response);
-                        break;
-                    case "search":
-                        searchSuperCategory(request, response);
-                        break;
-                    default:
-                        listSuperCategories(request, response);
-                        break;
-                }
+            switch (action) {
+                case "list":
+                    listActive(request, response);
+                    break;
+                case "listDeleted":
+                    listDeleted(request, response);
+                    break;
+                case "add":
+                    addSuperCategory(request, response);
+                    break;
+                case "update":
+                    updateSuperCategory(request, response);
+                    break;
+                case "delete": // Xóa mềm
+                    softDelete(request, response);
+                    break;
+                case "hardDelete": // Xóa cứng
+                    hardDelete(request, response);
+                    break;
+                case "restore":
+                    restoreSuperCategory(request, response);
+                    break;
+                case "search":
+                    search(request, response);
+                    break;
+                default:
+                    listActive(request, response);
             }
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-            request.setAttribute("errorMessage", "Error: " + e.getMessage());
-            request.getRequestDispatcher("Admin/error.jsp").forward(request, response);
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+            session.setAttribute("errorMessage", "Error: " + ex.getMessage());
+            response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
         }
     }
 
@@ -129,30 +144,33 @@ public class SuperCategoryServlet extends HttpServlet {
 
         try {
             superCategoryDAO.restoreSuperCategory(superCategoryID);
-            request.getSession().setAttribute("successMessage", "Category restored successfully.");
+            request.getSession().setAttribute("successMessage", "Danh Mục Khôi Phục Thành Công.");
             response.sendRedirect("SuperCategoryServlet?action=list&showSuccessModal=true");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "Invalid category ID.");
+            request.getSession().setAttribute("errorMessage", "ID danh mục không hợp lệ.");
             response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
         }
     }
 
-    private void listSuperCategories(HttpServletRequest request, HttpServletResponse response)
+    private void listActive(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
-        List<SuperCategory> superCategories = superCategoryDAO.getAllSuperCategories();
-        request.setAttribute("superCategories", superCategories);
+        List<SuperCategory> list = superCategoryDAO.getActiveSuperCategories();
+        request.setAttribute("superCategories", list);
         request.getRequestDispatcher("SupperCategoryManagement.jsp").forward(request, response);
-        for (SuperCategory category : superCategories) {
-            System.out.println("Category ID: " + category.getSuperCategoryID() + " - Is Deleted: " + category.getIsDeleted());
-        }
+    }
+
+    private void listDeleted(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, ServletException, IOException {
+        List<SuperCategory> list = superCategoryDAO.getDeletedSuperCategories();
+        request.setAttribute("superCategories", list);
+        request.getRequestDispatcher("SupperCategoryManagement.jsp").forward(request, response);
     }
 
     private void addSuperCategory(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException, ServletException, ClassNotFoundException {
+            throws SQLException, ClassNotFoundException, IOException {
         String name = request.getParameter("superCategoryName");
-
         if (name == null || name.trim().isEmpty()) {
-            request.getSession().setAttribute("errorMessage", "Category name cannot be empty.");
+            request.getSession().setAttribute("errorMessage", "Tên danh mục không được để trống.");
             response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
             return;
         }
@@ -160,94 +178,105 @@ public class SuperCategoryServlet extends HttpServlet {
         name = name.trim();
 
         if (name.length() > 50) {
-            request.getSession().setAttribute("errorMessage", "Category name is too long. Maximum 50 characters.");
+            request.getSession().setAttribute("errorMessage", "Tên danh mục quá dài. Tối đa 50 ký tự.");
             response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
             return;
         }
 
         if (!name.matches("^[\\p{L} _-]+$")) {
-            request.getSession().setAttribute("errorMessage", "SuperCategory name must contain only letters and spaces.");
+            request.getSession().setAttribute("errorMessage", "Tên danh mục chỉ được chứa chữ cái và khoảng trắng.");
             response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
             return;
         }
 
         if (superCategoryDAO.isSuperCategoryExists(name)) {
-            request.getSession().setAttribute("errorMessage", "Category name already exists.");
+            request.getSession().setAttribute("errorMessage", "Tên danh mục đã tồn tại.");
             response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
             return;
         }
+        SuperCategory sc = new SuperCategory();
+        sc.setName(name);
+        superCategoryDAO.addSuperCategory(sc);
 
-        // Thêm danh mục mới
-        SuperCategory superCategory = new SuperCategory(0, name, null, 0); // Không xóa mềm khi mới tạo
-        superCategoryDAO.addSuperCategory(superCategory);
-        request.getSession().setAttribute("successMessage", "Category added successfully.");
+        request.getSession().setAttribute("successMessage", "Đã thêm danh mục thành công.");
         response.sendRedirect("SuperCategoryServlet?action=list&showSuccessModal=true");
     }
 
     private void updateSuperCategory(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException, ServletException, ClassNotFoundException {
-        int superCategoryID = Integer.parseInt(request.getParameter("superCategoryID"));
-        String name = request.getParameter("name").trim();
-
-        if (name.isEmpty()) {
-            request.getSession().setAttribute("errorMessage", "Category name cannot be empty.");
-            response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
-            return;
-        }
-
-        if (name.length() > 50) {
-            request.getSession().setAttribute("errorMessage", "Category name is too long. Maximum 50 characters.");
-            response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
-            return;
-        }
-
-        if (!name.matches("^[\\p{L} _-]+$")) {
-            request.getSession().setAttribute("errorMessage", "SuperCategory name must contain only letters and spaces.");
-            response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
-            return;
-        }
-
-//        if (superCategoryDAO.isSuperCategoryExists(name)) {
-//            int errorCount = (Integer) request.getSession().getAttribute("errorCount");
-//            if (errorCount > 1) {
-//                request.getSession().setAttribute("errorMessage", "Category name already exists.");
-//                response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
-//            }
-//            return;
-//        }
-        if (superCategoryDAO.isSuperCategoryExists(name)) {
-            request.getSession().setAttribute("errorMessage", "Category name already exists.");
-            response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
-            return;
-        }
-        superCategoryDAO.updateSuperCategory(superCategoryID, name);
-        request.getSession().setAttribute("successMessage", "Category updated successfully.");
-        response.sendRedirect("SuperCategoryServlet?action=list&showSuccessModal=true");
-    }
-
-    private void deleteSuperCategory(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException, ServletException, ClassNotFoundException {
+            throws SQLException, ClassNotFoundException, IOException {
+        String idStr = request.getParameter("superCategoryID");
+        String name = request.getParameter("name");
         try {
-            int superCategoryID = Integer.parseInt(request.getParameter("superCategoryID"));
-            superCategoryDAO.deleteSuperCategory(superCategoryID);
-            request.getSession().setAttribute("successMessage", "Category deleted successfully.");
+            int id = Integer.parseInt(idStr);
+            if (name == null || name.trim().isEmpty()) {
+                request.getSession().setAttribute("errorMessage", "Tên danh mục không được để trống.");
+                response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
+                return;
+            }
+
+            name = name.trim();
+
+            if (name.length() > 50) {
+                request.getSession().setAttribute("errorMessage", "Tên danh mục quá dài. Tối đa 50 ký tự.");
+                response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
+                return;
+            }
+
+            if (!name.matches("^[\\p{L} _-]+$")) {
+                request.getSession().setAttribute("errorMessage", "Tên SuperCategory chỉ được chứa chữ cái và khoảng trắng.");
+                response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
+                return;
+            }
+
+            if (superCategoryDAO.isSuperCategoryExists(name)) {
+                request.getSession().setAttribute("errorMessage", "Tên danh mục đã tồn tại.");
+                response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
+                return;
+            }
+            superCategoryDAO.updateSuperCategory(id, name.trim());
+            request.getSession().setAttribute("successMessage", "Đã cập nhật danh mục thành công.");
             response.sendRedirect("SuperCategoryServlet?action=list&showSuccessModal=true");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "Invalid category ID.");
+            request.getSession().setAttribute("errorMessage", "Invalid ID.");
             response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
         }
     }
 
-    private void searchSuperCategory(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, ServletException, IOException, ClassNotFoundException {
+    private void softDelete(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, IOException {
+        try {
+            int id = Integer.parseInt(request.getParameter("superCategoryID"));
+            superCategoryDAO.softDeleteSuperCategory(id);
+            request.getSession().setAttribute("successMessage", "Đã chuyển danh mục vào thùng rác thành công.");
+            response.sendRedirect("SuperCategoryServlet?action=list");
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "Invalid ID.");
+            response.sendRedirect("SuperCategoryServlet?action=list");
+        }
+    }
+
+    private void hardDelete(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, IOException {
+        try {
+            int id = Integer.parseInt(request.getParameter("superCategoryID"));
+            superCategoryDAO.hardDeleteSuperCategory(id);
+            request.getSession().setAttribute("successMessage", "Danh mục đã bị xóa vĩnh viễn.");
+            response.sendRedirect("SuperCategoryServlet?action=listDeleted");
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "Invalid ID.");
+            response.sendRedirect("SuperCategoryServlet?action=listDeleted");
+        }
+    }
+
+    private void search(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, ServletException, IOException {
         String keyword = request.getParameter("search");
         if (keyword == null || keyword.trim().isEmpty()) {
-            listSuperCategories(request, response);
+            listActive(request, response);
             return;
         }
-
-        List<SuperCategory> superCategories = superCategoryDAO.searchSuperCategory(keyword.trim().toLowerCase());
-        request.setAttribute("superCategories", superCategories);
+        List<SuperCategory> results = superCategoryDAO.searchSuperCategory(keyword.trim());
+        request.setAttribute("superCategories", results);
         request.getRequestDispatcher("SupperCategoryManagement.jsp").forward(request, response);
     }
 }

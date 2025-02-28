@@ -92,48 +92,67 @@ public class MaterialServlet extends HttpServlet {
 
     private void handleRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         HttpSession session = request.getSession();
+        // Kiểm tra login (nếu cần)
+        Integer roleID = (Integer) session.getAttribute("roleID");
+        if (roleID == null) {
+            response.sendRedirect(request.getContextPath() + "/Admin/loginPage.jsp");
+            return;
+        }
+
         String action = request.getParameter("action");
+        if (action == null) {
+            action = "list";
+        }
+
         try {
-            Integer roleID = (Integer) session.getAttribute("roleID");
-            if (roleID == null) {
-                response.sendRedirect(request.getContextPath() + "/Admin/loginPage.jsp"); // Chưa đăng nhập, chuyển hướng đến trang login
-                return;
+            switch (action) {
+                case "list":
+                    listMaterials(request, response);
+                    break;
+                case "listDeleted":
+                    listDeletedMaterials(request, response);
+                    break;
+                case "add":
+                    addMaterial(request, response);
+                    break;
+                case "update":
+                    updateMaterial(request, response);
+                    break;
+                case "delete": // Xóa mềm
+                    softDeleteMaterial(request, response);
+                    break;
+                case "hardDelete": // Xóa cứng
+                    hardDeleteMaterial(request, response);
+                    break;
+                case "restore":
+                    restoreMaterial(request, response);
+                    break;
+                case "search":
+                    searchMaterial(request, response);
+                    break;
+                default:
+                    listMaterials(request, response);
             }
-            if (action == null || action.equals("list")) {
-                listMaterials(request, response);
-            } else {
-                switch (action) {
-                    case "add":
-                        addMaterial(request, response);
-                        break;
-                    case "delete":
-                        deleteMaterial(request, response);
-                        break;
-                    case "update":
-                        updateMaterial(request, response);
-                        break;
-                    case "search":
-                        searchMaterial(request, response);
-                        break;
-                    case "restore":
-                        restoreMaterial(request, response);
-                        break;
-                    default:
-                        listMaterials(request, response);
-                        break;
-                }
-            }
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-            request.setAttribute("errorMessage", "Error: " + e.getMessage());
-            request.getRequestDispatcher("error.jsp").forward(request, response);
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+            session.setAttribute("errorMessage", "Error: " + ex.getMessage());
+            response.sendRedirect("MaterialServlet?action=list&showErrorModal=true");
         }
     }
 
     private void listMaterials(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
-        List<Material> materials = materialDAO.getAllMaterials();
+        List<Material> materials = materialDAO.getAllActiveMaterials();
+        request.setAttribute("materials", materials);
+        request.getRequestDispatcher("MaterialManagement.jsp").forward(request, response);
+    }
+
+    // 2) Hiển thị danh sách đã xóa mềm
+    private void listDeletedMaterials(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, ServletException, IOException {
+        List<Material> materials = materialDAO.getDeletedMaterials();
         request.setAttribute("materials", materials);
         request.getRequestDispatcher("MaterialManagement.jsp").forward(request, response);
     }
@@ -197,14 +216,43 @@ public class MaterialServlet extends HttpServlet {
         response.sendRedirect("MaterialServlet?action=list");
     }
 
-    private void deleteMaterial(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, ClassNotFoundException, ServletException, IOException {
+    // 5) Xóa mềm
+    private void softDeleteMaterial(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, IOException {
         try {
             int materialID = Integer.parseInt(request.getParameter("materialID"));
-            materialDAO.deleteMaterial(materialID);
-            request.getSession().setAttribute("successMessage", "Đã xóa chất liệu thành công.");
+            materialDAO.softDeleteMaterial(materialID);
+            request.getSession().setAttribute("successMessage", "Bạn có muốn đưa chất liệu này vào thùng rác không");
+            response.sendRedirect("MaterialServlet?action=list");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "ID không hợp lệ.");
+            request.getSession().setAttribute("errorMessage", "Invalid material ID.");
+            response.sendRedirect("MaterialServlet?action=list");
+        }
+    }
+
+    // 6) Xóa cứng
+    private void hardDeleteMaterial(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, IOException {
+        try {
+            int materialID = Integer.parseInt(request.getParameter("materialID"));
+            materialDAO.hardDeleteMaterial(materialID);
+            request.getSession().setAttribute("successMessage", "Chất liệu đã bị xóa vĩnh viễn.");
+            response.sendRedirect("MaterialServlet?action=listDeleted");
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "ID chất liệu không hợp lệ.");
+            response.sendRedirect("MaterialServlet?action=listDeleted");
+        }
+    }
+
+   
+    private void restoreMaterial(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, IOException {
+        try {
+            int materialID = Integer.parseInt(request.getParameter("materialID"));
+            materialDAO.restoreMaterial(materialID);
+            request.getSession().setAttribute("successMessage", "Chất liệu đã được phục hồi thành công.");
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "ID chất liệu không hợp lệ.");
         }
         response.sendRedirect("MaterialServlet?action=list");
     }
@@ -222,11 +270,4 @@ public class MaterialServlet extends HttpServlet {
         request.getRequestDispatcher("MaterialManagement.jsp").forward(request, response);
     }
 
-    private void restoreMaterial(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException, ServletException, ClassNotFoundException {
-        int materialID = Integer.parseInt(request.getParameter("materialID"));
-        materialDAO.restoreMaterial(materialID);
-        request.getSession().setAttribute("successMessage", "Material restored successfully.");
-        response.sendRedirect("MaterialServlet?action=list&showSuccessModal=true");
-    }
 }

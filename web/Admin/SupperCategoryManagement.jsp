@@ -34,7 +34,7 @@
                             background-color: #cccccc;  Gray background for deleted rows 
                             color: #666666;            Dim the text color 
                         }
-            
+
                         .deleted-row button {
                             pointer-events: none;     Disable all button interactions 
                             opacity: 0.5;             Fade the button 
@@ -81,6 +81,11 @@
                                             <a href="SuperCategoryServlet" class="btn btn-outline-danger">
                                                 <i class="fas fa-sync"></i>
                                             </a>
+                                            <c:if test="${sessionScope.roleID == 1}">
+                                                <a href="SuperCategoryServlet?action=listDeleted" class="btn btn-outline-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </c:if>
                                         </div>
                                     </form>
                                     <!-- Customer Table -->
@@ -121,28 +126,35 @@
                                                                 <td>${category.createdAt}</td>
                                                                 <td>
                                                                     <c:if test="${category.isDeleted == 0}">
-                                                                        <!-- Only show the edit and delete button if the category is active -->
-                                                                        <button class="btn btn-sm btn-warning" 
-                                                                                data-bs-toggle="modal" 
-                                                                                data-bs-target="#editCategoryModal-${category.superCategoryID}">
-                                                                            <i class="fas fa-edit"></i> 
+                                                                        <button class="btn btn-sm btn-warning"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#editSuperCategoryModal-${category.superCategoryID}">
+                                                                            <i class="fas fa-edit"></i>
                                                                         </button>
                                                                         <button type="button" class="btn btn-sm btn-danger"
                                                                                 data-bs-toggle="modal"
-                                                                                data-bs-target="#confirmDeleteModal"
-                                                                                onclick="setDeleteCategoryID(${category.superCategoryID})">
+                                                                                data-bs-target="#confirmSoftDeleteModal"
+                                                                                onclick="setSoftDeleteSuperCategoryID(${category.superCategoryID})">
                                                                             <i class="fas fa-trash"></i>
                                                                         </button>
                                                                     </c:if>
+
+                                                                    <!-- Nếu isDeleted == 1 => Hiển thị Restore & Xóa cứng -->
                                                                     <c:if test="${category.isDeleted == 1}">
-                                                                        <button class="btn btn-sm btn-success" onclick="location.href = 'SuperCategoryServlet?action=restore&superCategoryID=${category.superCategoryID}'">
+                                                                        <button class="btn btn-sm btn-success"
+                                                                                onclick="location.href = 'SuperCategoryServlet?action=restore&superCategoryID=${category.superCategoryID}'">
                                                                             Restore
                                                                         </button>
+                                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#confirmHardDeleteModal"
+                                                                                onclick="setHardDeleteSuperCategoryID(${category.superCategoryID})">
+                                                                            <i class="fas fa-trash"></i>
+                                                                        </button>
                                                                     </c:if>
-
                                                                 </td>
                                                             </tr>
-                                                        <div class="modal fade" id="editCategoryModal-${category.superCategoryID}" tabindex="-1">
+                                                        <div class="modal fade" id="editSuperCategoryModal-${category.superCategoryID}" tabindex="-1">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
                                                                     <form method="post" action="SuperCategoryServlet">
@@ -199,23 +211,48 @@
             </div>
         </div>
 
-        <!-- Delete Confirmation Modal -->
-        <div class="modal fade" id="confirmDeleteModal" tabindex="-1">
+        <!-- Modal XÓA MỀM -->
+        <div class="modal fade" id="confirmSoftDeleteModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Confirm Deletion</h5>
+                        <h5 class="modal-title">Xác nhận xóa mềm</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        Are you sure you want to delete this category?
+                        Bạn có muốn danh mục sẽ được đưa vào thùng rác!!
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <form id="deleteCategoryForm" method="POST" action="SuperCategoryServlet">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <form id="softDeleteForm" method="POST" action="SuperCategoryServlet">
+                            <!-- Xóa mềm => action=delete -->
                             <input type="hidden" name="action" value="delete">
-                            <input type="hidden" name="superCategoryID" id="deleteCategoryID">
-                            <button type="submit" class="btn btn-danger">Delete</button>
+                            <input type="hidden" name="superCategoryID" id="softDeleteSuperCategoryID">
+                            <button type="submit" class="btn btn-danger">Xóa </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal XÓA CỨNG -->
+        <div class="modal fade" id="confirmHardDeleteModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Xác nhận xóa cứng</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        Bạn có chắc chắn muốn xóa vĩnh viễn danh mục này không?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <form id="hardDeleteForm" method="POST" action="SuperCategoryServlet">
+                            <!-- Xóa cứng => action=hardDelete -->
+                            <input type="hidden" name="action" value="hardDelete">
+                            <input type="hidden" name="superCategoryID" id="hardDeleteSuperCategoryID">
+                            <button type="submit" class="btn btn-danger">Xóa</button>
                         </form>
                     </div>
                 </div>
@@ -238,8 +275,12 @@
             </div>
         </div>
         <script>
-            function setDeleteCategoryID(superCategoryID) {
-                document.getElementById("deleteCategoryID").value = superCategoryID;
+            function setSoftDeleteSuperCategoryID(id) {
+                document.getElementById("softDeleteSuperCategoryID").value = id;
+            }
+            // Gán ID khi bấm "Xóa cứng"
+            function setHardDeleteSuperCategoryID(id) {
+                document.getElementById("hardDeleteSuperCategoryID").value = id;
             }
 
             window.onload = function () {

@@ -12,6 +12,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -91,44 +92,65 @@ public class BrandServlet extends HttpServlet {
 
     private void handleRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        HttpSession session = request.getSession();
+        Integer roleID = (Integer) session.getAttribute("roleID");
+        if (roleID == null) {
+            response.sendRedirect(request.getContextPath() + "/Admin/loginPage.jsp");
+            return;
+        }
+
         String action = request.getParameter("action");
+        if (action == null) {
+            action = "list";
+        }
 
         try {
-            if (action == null || action.equals("list")) {
-                listBrands(request, response);
-            } else {
-                switch (action) {
-                    case "add":
-                        addBrand(request, response);
-                        break;
-                    case "update":
-                        updateBrand(request, response);
-                        break;
-                    case "delete":
-                        deleteBrand(request, response);
-                        break;
-                    case "restore":
-                        restoreBrand(request, response);
-                        break;
-                    case "search":
-                        searchBrand(request, response);
-                        break;
-                    default:
-                        listBrands(request, response);
-                        break;
-                }
+            switch (action) {
+                case "list":
+                    listBrands(request, response);
+                    break;
+                case "listDeleted":
+                    listDeletedBrands(request, response);
+                    break;
+                case "add":
+                    addBrand(request, response);
+                    break;
+                case "update":
+                    updateBrand(request, response);
+                    break;
+                case "delete": // Xóa mềm
+                    softDeleteBrand(request, response);
+                    break;
+                case "hardDelete": // Xóa cứng
+                    hardDeleteBrand(request, response);
+                    break;
+                case "restore":
+                    restoreBrand(request, response);
+                    break;
+                case "search":
+                    searchBrand(request, response);
+                    break;
+                default:
+                    listBrands(request, response);
             }
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-            request.setAttribute("errorMessage", "Error: " + e.getMessage());
-            request.getRequestDispatcher("error.jsp").forward(request, response);
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+            session.setAttribute("errorMessage", "Error: " + ex.getMessage());
+            response.sendRedirect("BrandServlet?action=list&showErrorModal=true");
         }
     }
 
-    // Hiển thị danh sách Brand
     private void listBrands(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         List<Brand> brands = brandDAO.getAllBrands();
+        request.setAttribute("brands", brands);
+        request.getRequestDispatcher("BrandManagement.jsp").forward(request, response);
+    }
+
+    private void listDeletedBrands(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, ServletException, IOException {
+        List<Brand> brands = brandDAO.getDeletedBrands();
         request.setAttribute("brands", brands);
         request.getRequestDispatcher("BrandManagement.jsp").forward(request, response);
     }
@@ -212,20 +234,33 @@ public class BrandServlet extends HttpServlet {
         response.sendRedirect("BrandServlet?action=list");
     }
 
-    // Xóa Brand
-    private void deleteBrand(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException, ServletException, ClassNotFoundException {
+    private void softDeleteBrand(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, IOException {
         try {
-            int brandID = Integer.parseInt(request.getParameter("brandID"));
-            brandDAO.deleteBrand(brandID);
-            request.getSession().setAttribute("successMessage", "Brand deleted successfully.");
+            int id = Integer.parseInt(request.getParameter("brandID"));
+            brandDAO.softDeleteBrand(id);
+            request.getSession().setAttribute("successMessage", "Brand soft-deleted successfully.");
+            response.sendRedirect("BrandServlet?action=list");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "Invalid Brand ID.");
+            request.getSession().setAttribute("errorMessage", "Invalid brand ID.");
+            response.sendRedirect("BrandServlet?action=list");
         }
-        response.sendRedirect("BrandServlet?action=list");
     }
 
-    // Tìm kiếm Brand theo từ khóa
+ 
+    private void hardDeleteBrand(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, IOException {
+        try {
+            int id = Integer.parseInt(request.getParameter("brandID"));
+            brandDAO.hardDeleteBrand(id);
+            request.getSession().setAttribute("successMessage", "Brand permanently deleted.");
+            response.sendRedirect("BrandServlet?action=listDeleted");
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "Invalid brand ID.");
+            response.sendRedirect("BrandServlet?action=listDeleted");
+        }
+    }
+
     private void searchBrand(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException, ClassNotFoundException {
         String keyword = request.getParameter("search");

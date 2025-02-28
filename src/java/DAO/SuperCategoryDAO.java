@@ -51,6 +51,24 @@ public class SuperCategoryDAO {
         return categories;
     }
 
+    public List<SuperCategory> getDeletedSuperCategories() throws SQLException, ClassNotFoundException {
+        List<SuperCategory> categories = new ArrayList<>();
+        String query = "SELECT SuperCategoryID, Name, CreatedAt, IsDeleted "
+                + "FROM SuperCategory WHERE IsDeleted = 1";
+
+        try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                categories.add(new SuperCategory(
+                        rs.getInt("SuperCategoryID"),
+                        rs.getString("Name"),
+                        rs.getTimestamp("CreatedAt"),
+                        rs.getInt("IsDeleted")
+                ));
+            }
+        }
+        return categories;
+    }
+
     public void addSuperCategory(SuperCategory category) throws SQLException, ClassNotFoundException {
         String query = "INSERT INTO SuperCategory (Name, CreatedAt) VALUES (?, GETDATE())";
 
@@ -60,9 +78,17 @@ public class SuperCategoryDAO {
         }
     }
 
-    // Cập nhật để thực hiện xóa mềm
-    public void deleteSuperCategory(int superCategoryID) throws SQLException, ClassNotFoundException {
+    public void softDeleteSuperCategory(int superCategoryID) throws SQLException, ClassNotFoundException {
         String query = "UPDATE SuperCategory SET IsDeleted = 1 WHERE SuperCategoryID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, superCategoryID);
+            ps.executeUpdate();
+        }
+    }
+
+    // Xóa cứng (xóa hẳn khỏi DB)
+    public void hardDeleteSuperCategory(int superCategoryID) throws SQLException, ClassNotFoundException {
+        String query = "DELETE FROM SuperCategory WHERE SuperCategoryID = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, superCategoryID);
             ps.executeUpdate();
