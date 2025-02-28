@@ -28,6 +28,7 @@ public class AccountDAO {
     protected static ResultSet rs = null;
     protected static Connection conn = null;
     private static String SELECT_BY_ROLE_CUSTOMER = "SELECT * FROM Account WHERE RoleID = ? ORDER BY AccountID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+    private static String SELECT_BY_ROLE_STAFF = "SELECT * FROM Account WHERE RoleID = ? OR RoleID =? OR RoleID = ? ORDER BY AccountID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
     private static String SELECT_NAME_ACCOUNT_BY_ID = "SELECT AccountID, AccountName, Image  FROM Account WHERE AccountID = ?";
     private static String UPDATE_PROFILE = "UPDATE Account SET AccountName = ?, PhoneNumber = ?, Email ail = ?,Image = ?, Password = ?, Address = ?, Status = ?, Balance = ?, UpdatedAt = ? WHERE AccountID = ?";
     private static String UPDATE_PROFILE_STAFF = "UPDATE Account SET AccountName = ?, PhoneNumber = ?, Email = ?, Password = ?, Address = ?, Status = ?,Image = ?, UpdatedAt = ? WHERE AccountID = ?";
@@ -44,7 +45,7 @@ public class AccountDAO {
             stm.setString(1, email);
             rs = stm.executeQuery();
             if (rs.next()) {
-                return rs.getInt(1) > 0;
+                return rs.getInt(1) > 1;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -120,7 +121,7 @@ public class AccountDAO {
         return account;
     }
 
-    public static List<Account> getAllAccount(int roleId, int page, int pageSize) {
+    public static List<Account> getAllAccountCustomer(int roleCustomer, int page, int pageSize) {
         List<Account> list = new ArrayList<>();
         try {
             if (page <= 0) {
@@ -133,9 +134,52 @@ public class AccountDAO {
 
             conn = DBConnection.getConnection();
             stm = conn.prepareStatement(SELECT_BY_ROLE_CUSTOMER);
-            stm.setInt(1, roleId); // RoleID
+            stm.setInt(1, roleCustomer); // RoleID
             stm.setInt(2, offset); // OFFSET
             stm.setInt(3, pageSize); // FETCH NEXT
+
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                Account a = new Account(
+                        rs.getInt(1), // 1. AccountID (INT)
+                        rs.getInt(2), // 2. RoleID (INT, nullable)
+                        rs.getString(3), // 3. AccountName (NVARCHAR)
+                        rs.getString(4), // 4. PhoneNumber (NVARCHAR)
+                        rs.getString(5), // 5. Email (NVARCHAR)
+                        rs.getString(6), // 6. Image (NVARCHAR, nullable)
+                        rs.getString(7), // 7. Password (NVARCHAR)
+                        rs.getString(8), // 8. Address (NVARCHAR, nullable)
+                        rs.getInt(9), // 9. IsDeleted (BIT)
+                        rs.getString(10), // 10. Status (NVARCHAR)
+                        rs.getDouble(11), // 11. Balance (DECIMAL)
+                        rs.getTimestamp(12), // 12. CreatedAt (DATETIME)
+                        rs.getTimestamp(13) // 13. UpdatedAt (DATETIME, nullable)
+                );
+                list.add(a);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+      public static List<Account> getAllAccountStaff(int roleStaff, int roleAdmin, int roleWareHouse, int page, int pageSize) {
+        List<Account> list = new ArrayList<>();
+        try {
+            if (page <= 0) {
+                page = 1;
+            }
+            if (pageSize <= 0) {
+                pageSize = 5; // Mặc định mỗi trang 5 bản ghi
+            }
+            int offset = (page - 1) * pageSize; // Tính offset
+
+            conn = DBConnection.getConnection();
+            stm = conn.prepareStatement(SELECT_BY_ROLE_STAFF);
+            stm.setInt(1, roleStaff); // RoleID
+            stm.setInt(2, roleAdmin); // RoleID
+            stm.setInt(3, roleWareHouse); // RoleID
+            stm.setInt(4, offset); // OFFSET
+            stm.setInt(5, pageSize); // FETCH NEXT
 
             rs = stm.executeQuery();
             while (rs.next()) {
@@ -386,6 +430,24 @@ public class AccountDAO {
             System.out.println("Lỗi khi insert staff: " + e.getMessage());
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public void insertNewAccount(String username, String email, String password, String phoneNumber) {
+        String sql = "INSERT INTO Account (RoleID, AccountName, Email, Password, PhoneNumber, Image) VALUES (?, ?, ?, ?, ?, ?)";
+        String defaultImageUrl = "./assets/img/default-img-profile.png";
+        int defaultRoleID = 3;
+
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, defaultRoleID);
+            stmt.setString(2, username);
+            stmt.setString(3, email);
+            stmt.setString(4, password);
+            stmt.setString(5, phoneNumber);
+            stmt.setString(6, defaultImageUrl);
+            stmt.executeUpdate();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 

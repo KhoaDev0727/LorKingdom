@@ -49,7 +49,6 @@ public class Product {
     }
 
     public Product(String productID, Integer categoryID, Integer materialID, Integer ageID, Integer sexID, Integer priceRangeID, Integer brandID, Integer originID, String name, double price, int quantity, String status, String description, Timestamp createdAt, Timestamp updatedAt) {
-        this.SKU = SKU;
         this.categoryID = categoryID;
         this.materialID = materialID;
         this.ageID = ageID;

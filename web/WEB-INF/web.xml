@@ -58,10 +58,6 @@
         <servlet-class>Controller.StaffManagementServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>AdminManagementServlet</servlet-name>
-        <servlet-class>Controller.AdminManagementServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>SexServlet</servlet-name>
         <servlet-class>Controller.SexServlet</servlet-class>
     </servlet>
@@ -237,10 +233,6 @@
     <servlet-mapping>
         <servlet-name>StaffManagementServlet</servlet-name>
         <url-pattern>/Admin/StaffManagementServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>AdminManagementServlet</servlet-name>
-        <url-pattern>/Admin/AdminManagementServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ProductManagementServlet</servlet-name>
