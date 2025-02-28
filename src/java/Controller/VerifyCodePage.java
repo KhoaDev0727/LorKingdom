@@ -6,6 +6,7 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 
 public class VerifyCodePage extends HttpServlet {
+
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -58,6 +59,9 @@ public class VerifyCodePage extends HttpServlet {
 
     private void saveUserToDatabase(String username, String email, String password, String phoneNumber, HttpSession session) {
         AccountDAO accountDAO = new AccountDAO();
-        accountDAO.insertNewStaff(username, email, password, phoneNumber); // Truyền hashed password trực tiếp
+        boolean success = accountDAO.insertNewStaff(username, email, password, phoneNumber);
+        if (!success) {
+            System.out.println("Insert staff thất bại!");
+        }
     }
 }
