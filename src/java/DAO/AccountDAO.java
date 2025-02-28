@@ -38,19 +38,19 @@ public class AccountDAO {
     private static String IS_EMAIL_EXIST = "SELECT COUNT(*) FROM Account WHERE Email = ?";
 
     public static boolean isEmailExists(String email) throws SQLException, ClassNotFoundException {
-    conn = DBConnection.getConnection();
-    try {
-        stm = conn.prepareStatement(IS_EMAIL_EXIST);
-        stm.setString(1, email);
-        rs = stm.executeQuery();
-        if (rs.next()) {
-            return rs.getInt(1) > 0; 
+        conn = DBConnection.getConnection();
+        try {
+            stm = conn.prepareStatement(IS_EMAIL_EXIST);
+            stm.setString(1, email);
+            rs = stm.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    } 
-    return false;
-}
+        return false;
+    }
 
     public Account getAccountByEmail(String email) {
         String query = "SELECT * FROM Account WHERE Email = ?";
@@ -337,8 +337,8 @@ public class AccountDAO {
             return false; // Trả về false nếu có lỗi xảy ra
         }
     }
-    
-        public boolean updateProfileStaffs(String email, String address, String phoneNumber, String password) {
+
+    public boolean updateProfileStaffs(String email, String address, String phoneNumber, String password) {
         String query = "UPDATE Account SET Address = ?, PhoneNumber = ?, Password = ?, UpdatedAt = ? WHERE Email = ?";
         Timestamp currentTimestamp = Timestamp.valueOf(LocalDateTime.now()); // Lấy thời gian hiện tại
 
@@ -355,10 +355,44 @@ public class AccountDAO {
         }
     }
 
-    public void insertNewStaff(String username, String email, String password, String phoneNumber) {
+    public boolean isPhoneNumberExists(String phoneNumber) throws SQLException, ClassNotFoundException {
+        String sql = "SELECT COUNT(*) FROM Account WHERE PhoneNumber = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, phoneNumber);
+            try ( ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean insertNewStaff(String username, String email, String password, String phoneNumber) {
         String sql = "INSERT INTO Account (RoleID, AccountName, Email, Password, PhoneNumber, Image) VALUES (?, ?, ?, ?, ?, ?)";
         String defaultImageUrl = "./assets/img/default-img-profile.png";
-        int defaultRoleID = 2; // RoleID cho staff
+        int defaultRoleID = 2;
+
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, defaultRoleID);
+            stmt.setString(2, username);
+            stmt.setString(3, email);
+            stmt.setString(4, password);
+            stmt.setString(5, phoneNumber);
+            stmt.setString(6, defaultImageUrl);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println("Lỗi khi insert staff: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public void insertNewAccount(String username, String email, String password, String phoneNumber) {
+        String sql = "INSERT INTO Account (RoleID, AccountName, Email, Password, PhoneNumber, Image) VALUES (?, ?, ?, ?, ?, ?)";
+        String defaultImageUrl = "./assets/img/default-img-profile.png";
+        int defaultRoleID = 3;
 
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, defaultRoleID);
@@ -373,36 +407,18 @@ public class AccountDAO {
         }
     }
 
-    public void insertNewAccount(String username, String email, String password, String phoneNumber) {
-        String sql = "INSERT INTO Account (RoleID, AccountName, Email, Password, PhoneNumber, Image) VALUES (?, ?, ?, ?, ?, ?)";
-        String defaultImageUrl = "./assets/img/default-img-profile.png";
-        int defaultRoleID = 3;
-
-        try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, defaultRoleID);
-            stmt.setString(2, username);
-            stmt.setString(3, email);
-            stmt.setString(4, password); 
-            stmt.setString(5, phoneNumber);
-            stmt.setString(6, defaultImageUrl);
-            stmt.executeUpdate();
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
     public Account authenticateUser(String email, String password) {
-    String hashedPassword = MyUtils.hashPassword(password); // Hash mật khẩu người dùng nhập
-    String query = "SELECT * FROM Account WHERE Email = ? AND Password = ? AND IsDeleted = 0";
-    
-    try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-        
-        stmt.setString(1, email);
-        stmt.setString(2, hashedPassword); // So sánh với chuỗi hash trong DB
-        
-        try (ResultSet rs = stmt.executeQuery()) {
-            if (rs.next()) {
-                Account account = new Account();
+        String hashedPassword = MyUtils.hashPassword(password); // Hash mật khẩu người dùng nhập
+        String query = "SELECT * FROM Account WHERE Email = ? AND Password = ? AND IsDeleted = 0";
+
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, email);
+            stmt.setString(2, hashedPassword); // So sánh với chuỗi hash trong DB
+
+            try ( ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Account account = new Account();
                     account.setAccountId(rs.getInt("AccountID"));
                     account.setRoleID(rs.getInt("RoleID"));
                     account.setUserName(rs.getString("AccountName"));
@@ -415,13 +431,13 @@ public class AccountDAO {
                     account.setAddress(rs.getString("Address"));
                     account.setPassword(rs.getString("Password"));
                     return account;
+                }
             }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException | ClassNotFoundException e) {
-        e.printStackTrace();
+        return null;
     }
-    return null;
-}
 
     public Account authenticateAdminStaff(String email, String password) {
         String hashedPassword = MyUtils.hashPassword(password); // Hash mật khẩu người dùng nhập

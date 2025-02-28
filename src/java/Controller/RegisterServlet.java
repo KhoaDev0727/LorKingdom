@@ -44,16 +44,20 @@ public class RegisterServlet extends HttpServlet {
             hasError = true;
         }
 
-        // Kiểm tra email đã tồn tại chưa
+        // Kiểm tra email và số điện thoại đã tồn tại chưa
         AccountDAO accountDAO = new AccountDAO();
         try {
             if (!hasError && accountDAO.isEmailExists(email)) {
                 emailError = "Email này đã được sử dụng.";
                 hasError = true;
             }
+            if (!hasError && accountDAO.isPhoneNumberExists(phoneNumber)) {
+                phoneNumberError = "Số điện thoại này đã được sử dụng.";
+                hasError = true;
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            emailError = "Lỗi khi kiểm tra email. Vui lòng thử lại.";
+            emailError = "Lỗi khi kiểm tra email hoặc số điện thoại. Vui lòng thử lại.";
             hasError = true;
         }
 
