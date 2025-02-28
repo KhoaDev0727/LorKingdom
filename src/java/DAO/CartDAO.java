@@ -114,6 +114,7 @@ public class CartDAO {
                         rs.getString("Name"),
                         rs.getDouble("Price")
                 );
+
                 ProductImage mainImage = ProductImageDAO.getMainImage(product.getProductID());
                 if (mainImage != null) {
                     product.setMainImageUrl(mainImage.getImageUrl());
