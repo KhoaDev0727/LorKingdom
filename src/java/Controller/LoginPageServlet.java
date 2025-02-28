@@ -45,7 +45,7 @@ public class LoginPageServlet extends HttpServlet {
             if (account.getRoleID() == 1) {
                 response.sendRedirect("DashBoard.jsp"); // Admin dashboard
             } else if (account.getRoleID() == 2 || account.getRoleID() == 4 ) {
-                response.sendRedirect("staffDashboard.jsp"); // Staff dashboard
+                response.sendRedirect("profileStaff.jsp"); // Staff dashboard
             } else {
                 request.setAttribute("error", "Bạn không có quyền đăng nhập!");
                 request.getRequestDispatcher("loginPage.jsp").forward(request, response);

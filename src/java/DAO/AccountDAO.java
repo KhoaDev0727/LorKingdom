@@ -337,6 +337,23 @@ public class AccountDAO {
             return false; // Trả về false nếu có lỗi xảy ra
         }
     }
+    
+        public boolean updateProfileStaffs(String email, String address, String phoneNumber, String password) {
+        String query = "UPDATE Account SET Address = ?, PhoneNumber = ?, Password = ?, UpdatedAt = ? WHERE Email = ?";
+        Timestamp currentTimestamp = Timestamp.valueOf(LocalDateTime.now()); // Lấy thời gian hiện tại
+
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, address);         // Cập nhật địa chỉ
+            ps.setString(2, phoneNumber);     // Cập nhật số điện thoại
+            ps.setString(3, password);        // Cập nhật mật khẩu
+            ps.setTimestamp(4, currentTimestamp); // Cập nhật thời gian sửa đổi
+            ps.setString(5, email);           // Xác định tài khoản cần cập nhật bằng email
+            return ps.executeUpdate() > 0;    // Trả về true nếu cập nhật thành công
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return false; // Trả về false nếu có lỗi xảy ra
+        }
+    }
 
     public void insertNewStaff(String username, String email, String password, String phoneNumber) {
         String sql = "INSERT INTO Account (RoleID, AccountName, Email, Password, PhoneNumber, Image) VALUES (?, ?, ?, ?, ?, ?)";
