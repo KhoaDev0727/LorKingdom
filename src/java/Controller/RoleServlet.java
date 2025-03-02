@@ -143,7 +143,7 @@ public class RoleServlet extends HttpServlet {
             response.sendRedirect("RoleServlet?action=list&showErrorModal=true");
             return;
         }
-        if (!name.matches("^[a-zA-Z_-]+$")) {
+        if (!name.matches("^[\\p{L} _-]+$")) {
             request.getSession().setAttribute("errorMessage", "Tên vai trò chỉ được chứa chữ cái và khoảng trắng.");
             response.sendRedirect("RoleServlet?action=list&showErrorModal=true");
             return;

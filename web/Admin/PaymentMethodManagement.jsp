@@ -50,6 +50,11 @@
                                             <a href="PaymentMethodServlet?action=list" class="btn btn-outline-danger">
                                                 <i class="fas fa-sync"></i>
                                             </a>
+                                            <c:if test="${sessionScope.roleID == 1}">
+                                                <a href="PaymentMethodServlet?action=listDeleted" class="btn btn-outline-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </c:if>
                                         </div>
                                     </form>
 
@@ -60,6 +65,7 @@
                                                     <th>ID</th>
                                                     <th>Payment Method Name</th>
                                                     <th>Description</th>
+                                                    <th>Status</th>
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
@@ -67,89 +73,94 @@
                                                 <c:choose>
                                                     <c:when test="${empty paymentMethods}">
                                                         <tr>
-                                                            <td colspan="4" class="text-center text-muted">No payment methods found</td>
+                                                            <td colspan="5" class="text-center text-muted">No payment methods found</td>
                                                         </tr>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <c:forEach var="method" items="${paymentMethods}">
-                                                            <tr>
+                                                            <tr class="${method.isDeleted == 1 ? 'deleted-row' : ''}">
                                                                 <td>${method.paymentMethodID}</td>
                                                                 <td>${method.methodName}</td>
                                                                 <td>${method.description}</td>
                                                                 <td>
-                                                                    <button class="btn btn-sm btn-warning" 
-                                                                            data-bs-toggle="modal" 
-                                                                            data-bs-target="#editPaymentModal${method.paymentMethodID}">
-                                                                        <i class="fas fa-edit"></i>
-                                                                    </button>
-
-                                                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" 
-                                                                            data-bs-target="#confirmDeleteModal" 
-                                                                            onclick="setDeletePaymentMethodID(${method.paymentMethodID})">
-                                                                        <i class="fas fa-trash"></i>
-                                                                    </button>
+                                                                    <c:choose>
+                                                                        <c:when test="${method.isDeleted == 1}">
+                                                                            <span class="badge bg-secondary">Deleted</span>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <span class="badge bg-success">Active</span>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
+                                                                </td>
+                                                                <td>
+                                                                    <!-- Nếu isDeleted=0 => Edit & Xóa mềm -->
+                                                                    <c:if test="${method.isDeleted == 0}">
+                                                                        <button class="btn btn-sm btn-warning"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#editPaymentModal${method.paymentMethodID}">
+                                                                            <i class="fas fa-edit"></i>
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#confirmSoftDeleteModal"
+                                                                                onclick="setSoftDeletePaymentMethodID(${method.paymentMethodID})">
+                                                                            <i class="fas fa-trash"></i>
+                                                                        </button>
+                                                                    </c:if>
+                                                                    <!-- Nếu isDeleted=1 => Restore & Xóa cứng -->
+                                                                    <c:if test="${method.isDeleted == 1}">
+                                                                        <button class="btn btn-sm btn-success"
+                                                                                onclick="location.href = 'PaymentMethodServlet?action=restore&paymentMethodID=${method.paymentMethodID}'">
+                                                                            Restore
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#confirmHardDeleteModal"
+                                                                                onclick="setHardDeletePaymentMethodID(${method.paymentMethodID})">
+                                                                            <i class="fas fa-trash"></i>
+                                                                        </button>
+                                                                    </c:if>
                                                                 </td>
                                                             </tr>
 
                                                             <!-- Edit Modal -->
-                                                        <div class="modal fade" id="editPaymentModal${method.paymentMethodID}">
-                                                            <div class="modal-dialog">
-                                                                <div class="modal-content">
-                                                                    <form action="PaymentMethodServlet" method="POST">
-                                                                        <input type="hidden" name="action" value="update">
-                                                                        <input type="hidden" name="paymentMethodID" value="${method.paymentMethodID}">
-                                                                        <div class="modal-header">
-                                                                            <h5 class="modal-title">Edit Payment Method</h5>
-                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                                        </div>
-                                                                        <div class="modal-body">
-                                                                            <div class="mb-3">
-                                                                                <label class="form-label">Method Name</label>
-                                                                                <input type="text" class="form-control" name="methodName" value="${method.methodName}" required>
+                                                            <div class="modal fade" id="editPaymentModal${method.paymentMethodID}">
+                                                                <div class="modal-dialog">
+                                                                    <div class="modal-content">
+                                                                        <form action="PaymentMethodServlet" method="POST">
+                                                                            <input type="hidden" name="action" value="update">
+                                                                            <input type="hidden" name="paymentMethodID" value="${method.paymentMethodID}">
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title">Edit Payment Method</h5>
+                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                                             </div>
-                                                                            <div class="mb-3">
-                                                                                <label class="form-label">Description</label>
-                                                                                <textarea class="form-control" name="description" rows="3">${method.description}</textarea>
+                                                                            <div class="modal-body">
+                                                                                <div class="mb-3">
+                                                                                    <label class="form-label">Method Name</label>
+                                                                                    <input type="text" class="form-control" name="methodName" value="${method.methodName}" required>
+                                                                                </div>
+                                                                                <div class="mb-3">
+                                                                                    <label class="form-label">Description</label>
+                                                                                    <textarea class="form-control" name="description" rows="3">${method.description}</textarea>
+                                                                                </div>
                                                                             </div>
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                                                                        </div>
-                                                                    </form>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <!-- Delete Confirmation Modal -->
-                                                        <div class="modal fade" id="confirmDeleteModal">
-                                                            <div class="modal-dialog">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title">Confirm Deletion</h5>
-                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                                    </div>
-                                                                    <div class="modal-body">Are you sure you want to delete this payment method?</div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                                        <form id="deleteForm" method="POST" action="PaymentMethodServlet">
-                                                                            <input type="hidden" name="action" value="delete">
-                                                                            <input type="hidden" name="paymentMethodID" id="deletePaymentMethodID">
-                                                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                                            </div>
                                                                         </form>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    </c:forEach>
-                                                </c:otherwise>
-                                            </c:choose>
+                                                        </c:forEach>
+                                                    </c:otherwise>
+                                                </c:choose>
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
                             </div>
-                        </div> 
+                        </div>
                     </main>
                 </div>
             </div>
@@ -184,6 +195,7 @@
             </div>
         </div>
 
+        <!-- Error Message Modal -->
         <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -192,7 +204,7 @@
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body text-dark">
-                        ${errorMessage}
+                        ${sessionScope.errorMessage}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -201,22 +213,98 @@
             </div>
         </div>
 
-        <script>
-            // Nếu có lỗi, hiển thị modal
-            window.onload = function () {
-                let errorMessage = "${sessionScope.errorMessage}";
-                if (errorMessage && errorMessage.trim() !== "") {
-                    let errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
-                    errorModal.show();
-            <% request.getSession().removeAttribute("errorMessage"); %>  // Xóa thông báo lỗi sau khi hiển thị
-                }
-            };
-        </script>
+        <!-- Success Message Modal -->
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title" id="successModalLabel">Success</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-dark">
+                        ${sessionScope.successMessage}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Soft Delete Confirmation Modal -->
+        <div class="modal fade" id="confirmSoftDeleteModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirm Deletion</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        Phương thức này sẽ được chuyển vào thùng rác!
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <form method="POST" action="PaymentMethodServlet">
+                            <input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="paymentMethodID" id="softDeletePaymentMethodID">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hard Delete Confirmation Modal -->
+        <div class="modal fade" id="confirmHardDeleteModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirm Permanent Deletion</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        Phương thức này sẽ bị xóa vĩnh viễn!
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <form method="POST" action="PaymentMethodServlet">
+                            <input type="hidden" name="action" value="hardDelete">
+                            <input type="hidden" name="paymentMethodID" id="hardDeletePaymentMethodID">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <script>
-            function setDeletePaymentMethodID(paymentMethodID) {
-                document.getElementById('deletePaymentMethodID').value = paymentMethodID;
+            function setSoftDeletePaymentMethodID(paymentMethodID) {
+                document.getElementById("softDeletePaymentMethodID").value = paymentMethodID;
             }
+
+            function setHardDeletePaymentMethodID(paymentMethodID) {
+                document.getElementById("hardDeletePaymentMethodID").value = paymentMethodID;
+            }
+
+            window.onload = function () {
+                const errorMessage = "${sessionScope.errorMessage}";
+                if (errorMessage && errorMessage.trim() !== "") {
+                    const errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
+                    errorModal.show();
+                    <% session.removeAttribute("errorMessage"); %>
+                }
+
+                const successMessage = "${sessionScope.successMessage}";
+                if (successMessage && successMessage.trim() !== "" && successMessage.trim() !== "null") {
+                    const successModal = new bootstrap.Modal(document.getElementById("successModal"));
+                    successModal.show();
+                    <% session.removeAttribute("successMessage"); %>
+                }
+            };
         </script>
     </body>
 </html>

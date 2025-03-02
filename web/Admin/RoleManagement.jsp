@@ -33,7 +33,7 @@
                         <div class="container-fluid px-5">
                             <h1 class="mt-4">Role Management</h1>
                             <!-- Add Role Form -->
-                            <form action="RoleServlet" method="POST" class="d-flex align-items-end">
+<!--                            <form action="RoleServlet" method="POST" class="d-flex align-items-end">
                                 <input type="hidden" name="action" value="add">
                                 <div class="me-2">
                                     <label for="roleName">Role Name</label>
@@ -43,9 +43,9 @@
                                     <label for="roleDescription">Description</label>
                                     <input type="text" id="roleDescription" name="description" class="form-control" />
                                 </div>
-                                <!-- Submit Button -->
+                                 Submit Button 
                                 <button class="btn btn-primary ms-2" type="submit">Add Role</button>
-                            </form>
+                            </form>-->
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
@@ -56,7 +56,7 @@
                                 </div>
                                 <div class="card-body">
                                     <!-- Search Form -->
-                                    <form action="RoleServlet" method="GET" class="mb-4">
+<!--                                    <form action="RoleServlet" method="GET" class="mb-4">
                                         <div class="input-group">
                                             <input type="hidden" name="action" value="search">
                                             <input type="text" name="search" class="form-control" placeholder="Find Role Name..." aria-label="Search">
@@ -67,7 +67,7 @@
                                                 <i class="fas fa-sync"></i>
                                             </a>
                                         </div>
-                                    </form>
+                                    </form>-->
                                     <!-- Role Table -->
                                     <div class="table-responsive">
                                         <table class="table table-bordered table-striped table-hover">
@@ -76,7 +76,7 @@
                                                     <th>Role ID</th>
                                                     <th>Role Name</th>
                                                     <th>Description</th>
-                                                    <th>Actions</th>
+                                                    
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -92,14 +92,14 @@
                                                                 <td>${role.roleID}</td>
                                                                 <td>${role.name}</td>
                                                                 <td>${role.description}</td>
-                                                                <td>
+                                                                
                                                                     <!-- Edit Button -->
-                                                                    <button class="btn btn-sm btn-warning" 
+<!--                                                                    <button class="btn btn-sm btn-warning" 
                                                                             data-bs-toggle="modal" 
                                                                             data-bs-target="#editRoleModal-${role.roleID}">
                                                                         <i class="fas fa-edit"></i>
                                                                     </button>
-                                                                    <!-- Delete Button -->
+                                                                     Delete Button 
                                                                     <button class="btn btn-sm btn-danger"
                                                                             data-bs-toggle="modal"
                                                                             data-bs-target="#confirmDeleteModal"
@@ -107,9 +107,9 @@
                                                                         <i class="fas fa-trash"></i>
                                                                     </button>
                                                                 </td>
-                                                            </tr>
+                                                            </tr>-->
                                                             <!-- Edit Role Modal -->
-                                                        <div class="modal fade" id="editRoleModal-${role.roleID}" tabindex="-1">
+<!--                                                        <div class="modal fade" id="editRoleModal-${role.roleID}" tabindex="-1">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
                                                                     <form method="post" action="RoleServlet">
@@ -136,7 +136,7 @@
                                                                     </form>
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        </div>-->
                                                     </c:forEach>
                                                 </c:otherwise>
                                             </c:choose>

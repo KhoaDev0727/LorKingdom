@@ -41,11 +41,20 @@ public class PaymentMethodServlet extends HttpServlet {
                     case "add":
                         addPaymentMethod(request, response);
                         break;
+                         case "listDeleted":
+                        listDeletedPaymentMethods(request, response);
+                        break;
                     case "update":
                         updatePaymentMethod(request, response);
                         break;
-                    case "delete":
-                        deletePaymentMethod(request, response);
+                    case "delete": // Xóa mềm
+                        softDeletePaymentMethod(request, response);
+                        break;
+                    case "hardDelete": // Xóa cứng
+                        hardDeletePaymentMethod(request, response);
+                        break;
+                    case "restore":
+                        restorePaymentMethod(request, response);
                         break;
                     case "search":
                         searchPaymentMethods(request, response);
@@ -68,6 +77,14 @@ public class PaymentMethodServlet extends HttpServlet {
         request.setAttribute("paymentMethods", paymentMethods);
         request.getRequestDispatcher("PaymentMethodManagement.jsp").forward(request, response);
     }
+    
+    private void listDeletedPaymentMethods(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, ServletException, IOException {
+        PaymentDAO paymentDAO = new PaymentDAO(); // Khởi tạo đối tượng DAO
+        List<Payment> paymentMethods = paymentDAO.getDeletedPaymentMethod();
+        request.setAttribute("paymentMethods", paymentMethods);
+        request.getRequestDispatcher("PaymentMethodManagement.jsp").forward(request, response);
+    }
 
     private void addPaymentMethod(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException, ClassNotFoundException {
@@ -81,20 +98,13 @@ public class PaymentMethodServlet extends HttpServlet {
     }
 
     // Kiểm tra methodName chỉ chứa số, chữ, dấu - và _
-    if (!methodName.matches("^[a-zA-Z_-]+$")) {
+    if (!methodName.matches("^[\\p{L} _-]+$")) {
         request.getSession().setAttribute("errorMessage", 
             "Method name can only contain letters, numbers, -, and _.");
         response.sendRedirect("PaymentMethodServlet?action=list&showErrorModal=true");
         return;
     }
 
-    if (!description.matches("^[a-zA-Z_-]+$")) {
-        request.getSession().setAttribute("errorMessage", 
-            "Description can only contain letters, numbers, -, and _.");
-        response.sendRedirect("PaymentMethodServlet?action=list&showErrorModal=true");
-        return;
-    }
-    
     if (paymentDAO.isPaymentMethodExists(methodName)) {
         request.getSession().setAttribute("errorMessage", "Payment method already exists.");
         response.sendRedirect("PaymentMethodServlet?action=list&showErrorModal=true");
@@ -119,16 +129,9 @@ public class PaymentMethodServlet extends HttpServlet {
     }
 
     // Kiểm tra methodName chỉ chứa số, chữ, dấu - và _
-    if (!methodName.matches("^[a-zA-Z_-]+$")) {
+    if (!methodName.matches("^[\\p{L} _-]+$")) {
         request.getSession().setAttribute("errorMessage", 
             "Method name can only contain letters, numbers, -, and _.");
-        response.sendRedirect("PaymentMethodServlet?action=list&showErrorModal=true");
-        return;
-    }
-
-    if (!description.matches("^[a-zA-Z_-]+$")) {
-        request.getSession().setAttribute("errorMessage", 
-            "Description can only contain letters, numbers, -, and _.");
         response.sendRedirect("PaymentMethodServlet?action=list&showErrorModal=true");
         return;
     }
@@ -138,14 +141,46 @@ public class PaymentMethodServlet extends HttpServlet {
         response.sendRedirect("PaymentMethodServlet?action=list&showSuccessModal=true");
     }
 
-    private void deletePaymentMethod(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException, ServletException, ClassNotFoundException {
-        int id = Integer.parseInt(request.getParameter("paymentMethodID"));
-        paymentDAO.deletePaymentMethod(id);
-        request.getSession().setAttribute("successMessage", "Payment method deleted successfully.");
-        response.sendRedirect("PaymentMethodServlet?action=list&showSuccessModal=true");
+    // 5) Xóa mềm
+    private void softDeletePaymentMethod(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, IOException {
+        try {
+            int paymentMethodID = Integer.parseInt(request.getParameter("paymentMethodID"));
+            paymentDAO.softDeletePaymentMethod(paymentMethodID);
+            request.getSession().setAttribute("successMessage", "Phương thức này đã được đưa vào thùng rác.");
+            response.sendRedirect("PaymentMethodServlet?action=list");
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "Invalid Payment method ID.");
+            response.sendRedirect("PaymentMethodServlet?action=list");
+        }
     }
 
+    // 6) Xóa cứng
+    private void hardDeletePaymentMethod(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, IOException {
+        try {
+            int paymentMethodID = Integer.parseInt(request.getParameter("paymentMethodID"));
+            paymentDAO.hardDeletePaymentMethod(paymentMethodID);
+            request.getSession().setAttribute("successMessage", "Phương thức đã bị xóa vĩnh viễn.");
+            response.sendRedirect("PaymentMethodServlet?action=listDeleted");
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "ID phương thức không hợp lệ.");
+            response.sendRedirect("PaymentMethodServlet?action=listDeleted");
+        }
+    }
+
+    private void restorePaymentMethod(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, IOException {
+        try {
+            int paymentMethodID = Integer.parseInt(request.getParameter("paymentMethodID"));
+            paymentDAO.restorePaymentMethod(paymentMethodID);
+            request.getSession().setAttribute("successMessage", "Phương thức đã được phục hồi thành công.");
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "ID phương thức không hợp lệ.");
+        }
+        response.sendRedirect("PaymentMethodServlet?action=list");
+    }
+    
     private void searchPaymentMethods(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException, ClassNotFoundException {
         String keyword = request.getParameter("search");
