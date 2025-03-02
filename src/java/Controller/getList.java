@@ -25,9 +25,6 @@ import DAO.SexDAO;
 import DAO.AgeDAO;
 import DAO.SuperCategoryDAO;
 import DAO.CategoryDAO;
-
-import static com.fasterxml.jackson.databind.util.ClassUtil.name;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -111,7 +108,6 @@ public class getList extends HttpServlet {
             Integer brandID = request.getParameter("brandID") != null ? Integer.parseInt(request.getParameter("brandID")) : null;
             Integer materialID = request.getParameter("materialID") != null ? Integer.parseInt(request.getParameter("materialID")) : null;
             Integer originID = request.getParameter("originID") != null ? Integer.parseInt(request.getParameter("originID")) : null;
-
         
             boolean hasFilters = categoryID != null || ageID != null || sexID != null
                     || priceRangeID != null || brandID != null || materialID != null || originID != null;

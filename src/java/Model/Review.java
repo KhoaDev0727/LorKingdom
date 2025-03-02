@@ -49,6 +49,10 @@ public class Review {
         this.Comment = Comment;
         this.reviewAt = reviewAt;
     }
+
+    public Review() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
     
     public int getReviewID() {

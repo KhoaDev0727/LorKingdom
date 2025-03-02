@@ -112,7 +112,7 @@
                     </p>
                 </div>
                 <div class="total">
-                    <p>Tổng đơn hàng: 
+                    <p>Tổng tiền: 
                         <span class="total-amount">
                             <fmt:formatNumber value="${not empty totalMoney ? totalMoney : 0}" pattern="#,###" /> VND
                         </span>

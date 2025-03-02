@@ -192,7 +192,7 @@ public class ReviewManagementServlet extends HttpServlet {
             request.setAttribute("totalComment", totalComment);
             request.setAttribute("totalImage", totalImage);
             request.setAttribute("inforCustomers", inforCustomers);
-            request.getRequestDispatcher("ViewReview.jsp").forward(request, response);
+//            request.getRequestDispatcher("ViewReview.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
         }

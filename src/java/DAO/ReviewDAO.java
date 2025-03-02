@@ -174,4 +174,42 @@ public class ReviewDAO {
         return list;
     }
 
+//    Search Review OF Custommer
+    public static List<Review> searchReviewsByRatingAndContent(int productId, Integer rating, Boolean hasComment, Boolean hasImage) throws SQLException, ClassNotFoundException {
+        List<Review> result = new ArrayList<>();
+        conn = DBConnection.getConnection();
+        StringBuilder sql = new StringBuilder("SELECT * FROM Reviews WHERE productID = ?");
+
+        if (rating != null) {
+            sql.append(" AND rating = ?");
+        }
+        if (hasComment != null && hasComment) {
+            sql.append(" AND comment IS NOT NULL AND comment != ''");
+        }
+        if (hasImage != null && hasImage) {
+            sql.append(" AND imgReview IS NOT NULL AND imgReview != ''");
+        }
+        try {
+            stm = conn.prepareStatement(sql.toString());
+            int paramIndex = 1;
+            stm.setInt(paramIndex++, productId);
+            if (rating != null) {
+                stm.setInt(paramIndex++, rating);
+            }
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                Review review = new Review();
+                review.setAccountID(rs.getInt("AccountID"));
+                review.setComment(rs.getString("Comment"));
+                review.setRating(rs.getInt("Rating"));
+                review.setReviewAt(rs.getTimestamp("ReviewAt"));
+                review.setImgReview(rs.getString("ImgReview"));
+                result.add(review);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 }

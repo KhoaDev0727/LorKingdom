@@ -45,7 +45,7 @@ public class AccountDAO {
             stm.setString(1, email);
             rs = stm.executeQuery();
             if (rs.next()) {
-                return rs.getInt(1) > 0; // check email 
+                return rs.getInt(1) > 1; // check email 
             }
         } catch (SQLException e) {
             e.printStackTrace();
