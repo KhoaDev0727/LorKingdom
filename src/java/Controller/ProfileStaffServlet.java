@@ -3,8 +3,10 @@ package Controller;
 import DAO.AccountDAO;
 import Model.Account;
 import java.io.IOException;
+import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
+import org.json.JSONObject;
 
 public class ProfileStaffServlet extends HttpServlet {
 
@@ -25,8 +27,7 @@ public class ProfileStaffServlet extends HttpServlet {
             return;
         }
 
-        // Đặt mật khẩu hiển thị là "****" thay vì hash thật
-        account.setPassword("****");
+        account.setPassword("****"); // Placeholder thay cho hash
         session.setAttribute("account", account);
         request.setAttribute("account", account);
         request.getRequestDispatcher("profileStaff.jsp").forward(request, response);
@@ -47,16 +48,13 @@ public class ProfileStaffServlet extends HttpServlet {
         String newPassword = request.getParameter("password");
 
         AccountDAO accountDAO = new AccountDAO();
-        // Lấy thông tin tài khoản từ DB để giữ nguyên các giá trị không thay đổi
         Account dbAccount = accountDAO.getAccountByEmail(account.getEmail());
 
-        // Nếu người dùng nhập mật khẩu mới, hash và cập nhật
         if (newPassword != null && !newPassword.trim().isEmpty()) {
             String hashedPassword = MyUtils.hashPassword(newPassword);
             account.setPassword(hashedPassword);
         } else {
-            // Giữ nguyên mật khẩu hash cũ từ DB nếu không thay đổi
-            account.setPassword(dbAccount.getPassword());
+            account.setPassword(dbAccount.getPassword()); // Giữ nguyên hash cũ
         }
 
         account.setPhoneNumber(newPhoneNumber);
@@ -64,14 +62,24 @@ public class ProfileStaffServlet extends HttpServlet {
 
         boolean isUpdated = accountDAO.updateProfileStaffs(account.getEmail(), newAddress, newPhoneNumber, account.getPassword());
 
+        // Trả về JSON
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        JSONObject json = new JSONObject();
+
         if (isUpdated) {
-            // Cập nhật lại tài khoản từ DB
             account = accountDAO.getAccountByEmail(account.getEmail());
-            // Đặt lại mật khẩu hiển thị là "****"
-            account.setPassword("****");
+            account.setPassword("****"); // Placeholder cho client
             session.setAttribute("account", account);
+            json.put("success", true);
+            json.put("message", "Cập nhật thông tin nhân viên thành công!");
+        } else {
+            json.put("success", false);
+            json.put("message", "Cập nhật thất bại, vui lòng thử lại.");
         }
 
-        request.getRequestDispatcher("profileStaff.jsp").forward(request, response);
+        out.print(json.toString());
+        out.flush();
     }
 }

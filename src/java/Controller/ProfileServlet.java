@@ -3,8 +3,10 @@ package Controller;
 import DAO.AccountDAO;
 import Model.Account;
 import java.io.IOException;
+import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
+import org.json.JSONObject;
 
 public class ProfileServlet extends HttpServlet {
 
@@ -43,13 +45,14 @@ public class ProfileServlet extends HttpServlet {
             return;
         }
 
+        // Lấy dữ liệu từ form
         String newUserName = request.getParameter("username");
         String newPhoneNumber = request.getParameter("phoneNumber");
         String newAddress = request.getParameter("address");
         String newPassword = request.getParameter("password");
 
         AccountDAO accountDAO = new AccountDAO();
-        // Nếu người dùng nhập mật khẩu mới, hash nó trước khi lưu vào database
+        // Nếu người dùng nhập mật khẩu mới, hash nó trước khi lưu
         if (newPassword != null && !newPassword.isEmpty()) {
             String hashedPassword = MyUtils.hashPassword(newPassword);
             account.setPassword(hashedPassword); // Lưu hash để cập nhật vào database
@@ -63,15 +66,26 @@ public class ProfileServlet extends HttpServlet {
 
         boolean isUpdated = accountDAO.updateProfileCustomer(account.getEmail(), newAddress, newPhoneNumber, account.getPassword());
 
+        // Thiết lập response trả về JSON
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        JSONObject json = new JSONObject();
+
         if (isUpdated) {
-            // Lấy lại thông tin tài khoản từ database
+            // Cập nhật lại thông tin tài khoản trong session
             account = accountDAO.getAccountByEmail(account.getEmail());
-            // Gán mật khẩu hiển thị là "****" thay vì chuỗi hash
-            account.setPassword("****");
-            session.setAttribute("account", account); // Cập nhật session với account mới
+            account.setPassword("****"); // Placeholder cho client
+            session.setAttribute("account", account);
+
+            json.put("success", true);
+            json.put("message", "Cập nhật thông tin thành công!");
+        } else {
+            json.put("success", false);
+            json.put("message", "Cập nhật thất bại, vui lòng thử lại.");
         }
 
-        // Forward thay vì redirect để giữ trạng thái ngay lập tức
-        request.getRequestDispatcher("profile.jsp").forward(request, response);
+        out.print(json.toString());
+        out.flush();
     }
 }

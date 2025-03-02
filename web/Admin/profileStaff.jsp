@@ -1,9 +1,3 @@
-<%-- 
-    Document   : profileStaff
-    Created on : Feb 28, 2025, 8:43:41 AM
-    Author     : le minh khoa
---%>
-
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page pageEncoding="UTF-8" %>
 <%@ page import="Model.Account" %>
@@ -25,6 +19,8 @@
         <!-- Material Design Icons -->
         <link href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/3.6.95/css/materialdesignicons.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <!-- SweetAlert2 -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <link rel="stylesheet" href="./CSS/styleProfileStaff.css">
         <title>Hồ sơ nhân viên</title>
     </head>
@@ -56,7 +52,7 @@
 
                             <!-- Card block -->
                             <div class="user-info">
-                                <form action="ProfileStaffServlet" method="post">
+                                <form action="ProfileStaffServlet" method="post" id="profileStaffForm">
                                     <div class="right">
                                         <div class="card-block">
                                             <h3 class="">Thông tin hồ sơ nhân viên</h3>
@@ -91,12 +87,11 @@
                                                 <div class="">
                                                     <p class="">Mật khẩu</p>
                                                     <div class="d-flex">
-                                                        <h6 id="displayPassword">****</h6> <!-- Luôn hiển thị **** -->
+                                                        <h6 id="displayPassword">****</h6>
                                                         <input type="hidden" name="password" id="passwordInput" value="">
                                                         <a href="#" class="text-primary text-decoration-none change-btn" data-bs-toggle="modal" data-bs-target="#editPasswordModal">Thay đổi</a>
                                                     </div>
                                                 </div>
-                                                        
                                             </div>
                                             <button type="submit" class="btn-update">Cập nhật</button>
                                         </div>
@@ -169,6 +164,50 @@
         </div>
 
         <script>
+            $(document).ready(function() {
+                $('#profileStaffForm').on('submit', function(e) {
+                    e.preventDefault(); // Ngăn submit mặc định
+
+                    $.ajax({
+                        url: 'ProfileStaffServlet',
+                        type: 'POST',
+                        data: $(this).serialize(),
+                        dataType: 'json',
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Thành công!',
+                                    text: response.message,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                }).then(() => {
+                                    // Cập nhật giao diện
+                                    document.getElementById('displayPhone').innerText = document.getElementById('phoneNumberInput').value;
+                                    document.getElementById('displayAddress').innerText = document.getElementById('addressInput').value || "Địa chỉ không có sẵn";
+                                    if (document.getElementById('passwordInput').value) {
+                                        document.getElementById('displayPassword').innerText = "****";
+                                    }
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Lỗi!',
+                                    text: response.message
+                                });
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Lỗi!',
+                                text: 'Có lỗi xảy ra: ' + error
+                            });
+                        }
+                    });
+                });
+            });
+
             function updatePhoneNumber() {
                 let newPhone = document.getElementById("newPhoneNumber").value;
                 if (newPhone.trim() !== "") {
