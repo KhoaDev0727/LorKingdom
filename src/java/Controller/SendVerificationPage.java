@@ -5,6 +5,7 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.security.SecureRandom;
 import jakarta.servlet.http.HttpSession;
+import org.json.JSONObject;
 
 public class SendVerificationPage extends HttpServlet {
 
@@ -61,16 +62,21 @@ public class SendVerificationPage extends HttpServlet {
                 + "</body>"
                 + "</html>";
 
-
         try {
             EmailUtility.sendEmail(email, subject, body);
+            // Trả về JSON để tương thích với Ajax
+            response.setContentType("application/json");
+            response.getWriter().write("{\"success\": true}");
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("errorMessage", "Không thể gửi email xác minh. Vui lòng thử lại sau.");
-            request.getRequestDispatcher("registerPage.jsp").forward(request, response);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"success\": false, \"error\": \"Không thể gửi email xác minh\"}");
+            // Nếu không dùng Ajax, giữ nguyên forward
+            // request.setAttribute("errorMessage", "Không thể gửi email xác minh. Vui lòng thử lại sau.");
+            // request.getRequestDispatcher("registerPage.jsp").forward(request, response);
             return;
         }
-
-        response.sendRedirect("verifyCodePage.jsp");
+        // Nếu không dùng Ajax, giữ nguyên redirect
+        // response.sendRedirect("verifyCodePage.jsp");
     }
 }
