@@ -76,37 +76,7 @@ public class ProductDetailServlet extends HttpServlet {
         try {
             String productIdStr = request.getParameter("productID");
 
-                SexDAO sexDAO = new SexDAO();
-                CategoryDAO categoryDAO = new CategoryDAO();
-                OriginDAO originDAO = new OriginDAO();
-                AgeDAO ageDAO = new AgeDAO();
-                BrandDAO brandDAO = new BrandDAO();
-                MaterialDAO materialDAO = new MaterialDAO();
-               
-
-                request.setAttribute("category", categoryDAO.getCategoryNameByProductId(productId));
-                List<ProductImage> listImages = ProductImageDAO.getSecondaryProductImagesByProductId(productId);
-                request.setAttribute("listImages", listImages);
-                request.setAttribute("origin", originDAO.getOriginNameByProductId(productId));
-                request.setAttribute("age", ageDAO.getAgeRangeByProductId(productId));
-                request.setAttribute("brand", brandDAO.getBrandNameByProductId(productId));
-                request.setAttribute("materail", materialDAO.getMaterialNameByProductId(productId));
-                request.setAttribute("sex", sexDAO.getSexNameByProductId(productId));
-                request.setAttribute("mainImages", ProductImageDAO.getMainProductImages());
-                request.setAttribute("product", product);
-
-                System.out.println("Category: " + request.getAttribute("category"));
-                System.out.println("ListImages: " + request.getAttribute("listImages"));
-                System.out.println("Origin: " + request.getAttribute("origin"));
-                System.out.println("Age: " + request.getAttribute("age"));
-                System.out.println("Brand: " + request.getAttribute("brand"));
-                System.out.println("Materail: " + request.getAttribute("materail"));
-                System.out.println("Sex: " + request.getAttribute("sex"));
-                System.out.println("MainImages: " + request.getAttribute("mainImages"));
-                System.out.println("Product: " + request.getAttribute("product"));
-
-                request.getRequestDispatcher("ProductDetailPage.jsp").forward(request, response);
-            } else {
+            if (productIdStr == null || productIdStr.isEmpty()) {
                 response.sendRedirect("home.jsp");
                 return;
             }
@@ -218,3 +188,6 @@ public class ProductDetailServlet extends HttpServlet {
     }// </editor-fold>
 
 }
+
+
+
