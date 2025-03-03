@@ -198,7 +198,7 @@
 
                                             <tr>
                                                 <td class="border-r border-gray-200 px-4 py-2 font-semibold">Giới tính</td>
-                                                <td class="px-4 py-2">${brand}</td>
+                                                <td class="px-4 py-2">${sex}</td>
                                             </tr>
                                         </tbody>
                                     </table>
