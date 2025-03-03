@@ -99,7 +99,7 @@
                                                            data-bs-toggle="modal" data-bs-target="#editPasswordModal">Thay đổi</a>
                                                     </div>
                                                 </div>
-                                                
+
                                             </div>
                                             <button type="submit" class="btn-update">Cập nhật</button>
                                         </div>
@@ -164,7 +164,7 @@
                                     </div>
                                 </div>
                             </div>
-                          
+
                             <!-- Modal box -->
                         </div>
                     </div>
@@ -173,8 +173,8 @@
         </div>
 
         <script>
-            $(document).ready(function() {
-                $('#profileForm').on('submit', function(e) {
+            $(document).ready(function () {
+                $('#profileForm').on('submit', function (e) {
                     e.preventDefault(); // Ngăn submit mặc định
 
                     $.ajax({
@@ -182,7 +182,7 @@
                         type: 'POST',
                         data: $(this).serialize(),
                         dataType: 'json',
-                        success: function(response) {
+                        success: function (response) {
                             if (response.success) {
                                 Swal.fire({
                                     icon: 'success',
@@ -207,7 +207,7 @@
                                 });
                             }
                         },
-                        error: function(xhr, status, error) {
+                        error: function (xhr, status, error) {
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Lỗi!',
@@ -241,12 +241,27 @@
             function updatePassword() {
                 let newPassword = document.getElementById("newPassword").value;
                 if (newPassword.trim() !== "") {
+                    if (newPassword.length < 6) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi!',
+                            text: 'Mật khẩu phải có ít nhất 6 ký tự!'
+                        });
+                        return; // Dừng hàm nếu mật khẩu không đủ dài
+                    }
                     document.getElementById("displayPassword").innerText = "****";
                     document.getElementById("passwordInput").value = newPassword;
                     var passwordModal = bootstrap.Modal.getInstance(document.getElementById("editPasswordModal"));
                     passwordModal.hide();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: 'Mật khẩu đã được cập nhật!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 }
-            }       
+            }
         </script>
     </body>
 </html>

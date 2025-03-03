@@ -50,7 +50,21 @@ public class ProfileStaffServlet extends HttpServlet {
         AccountDAO accountDAO = new AccountDAO();
         Account dbAccount = accountDAO.getAccountByEmail(account.getEmail());
 
+        // Thiết lập response trả về JSON
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        JSONObject json = new JSONObject();
+
+        // Kiểm tra độ dài mật khẩu nếu có mật khẩu mới
         if (newPassword != null && !newPassword.trim().isEmpty()) {
+            if (newPassword.length() < 6) {
+                json.put("success", false);
+                json.put("message", "Mật khẩu phải có ít nhất 6 ký tự!");
+                out.print(json.toString());
+                out.flush();
+                return;
+            }
             String hashedPassword = MyUtils.hashPassword(newPassword);
             account.setPassword(hashedPassword);
         } else {
@@ -61,12 +75,6 @@ public class ProfileStaffServlet extends HttpServlet {
         account.setAddress(newAddress);
 
         boolean isUpdated = accountDAO.updateProfileStaffs(account.getEmail(), newAddress, newPhoneNumber, account.getPassword());
-
-        // Trả về JSON
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        PrintWriter out = response.getWriter();
-        JSONObject json = new JSONObject();
 
         if (isUpdated) {
             account = accountDAO.getAccountByEmail(account.getEmail());

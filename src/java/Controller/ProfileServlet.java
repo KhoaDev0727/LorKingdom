@@ -52,8 +52,22 @@ public class ProfileServlet extends HttpServlet {
         String newPassword = request.getParameter("password");
 
         AccountDAO accountDAO = new AccountDAO();
-        // Nếu người dùng nhập mật khẩu mới, hash nó trước khi lưu
+
+        // Thiết lập response trả về JSON
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        JSONObject json = new JSONObject();
+
+        // Kiểm tra độ dài mật khẩu nếu có mật khẩu mới
         if (newPassword != null && !newPassword.isEmpty()) {
+            if (newPassword.length() < 6) {
+                json.put("success", false);
+                json.put("message", "Mật khẩu phải có ít nhất 6 ký tự!");
+                out.print(json.toString());
+                out.flush();
+                return;
+            }
             String hashedPassword = MyUtils.hashPassword(newPassword);
             account.setPassword(hashedPassword); // Lưu hash để cập nhật vào database
         } else {
@@ -65,12 +79,6 @@ public class ProfileServlet extends HttpServlet {
         account.setAddress(newAddress);
 
         boolean isUpdated = accountDAO.updateProfileCustomer(account.getEmail(), newAddress, newPhoneNumber, account.getPassword());
-
-        // Thiết lập response trả về JSON
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        PrintWriter out = response.getWriter();
-        JSONObject json = new JSONObject();
 
         if (isUpdated) {
             // Cập nhật lại thông tin tài khoản trong session
