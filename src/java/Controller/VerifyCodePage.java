@@ -38,16 +38,18 @@ public class VerifyCodePage extends HttpServlet {
 
             String username = (String) session.getAttribute("tempUsername");
             String email = (String) session.getAttribute("tempEmail");
-            String hashedPassword = (String) session.getAttribute("tempPassword"); // Lấy hashed password trực tiếp
+            String hashedPassword = (String) session.getAttribute("tempPassword");
             String phoneNumber = (String) session.getAttribute("tempPhoneNumber");
+            String role = (String) session.getAttribute("tempRole"); // Lấy role từ session
 
-            if (username != null && email != null && hashedPassword != null && phoneNumber != null) {
-                saveUserToDatabase(username, email, hashedPassword, phoneNumber, session); // Sử dụng hashed password
+            if (username != null && email != null && hashedPassword != null && phoneNumber != null && role != null) {
+                saveUserToDatabase(username, email, hashedPassword, phoneNumber, Integer.parseInt(role), session); // Truyền role
 
                 session.removeAttribute("tempUsername");
                 session.removeAttribute("tempEmail");
                 session.removeAttribute("tempPassword");
                 session.removeAttribute("tempPhoneNumber");
+                session.removeAttribute("tempRole"); 
             }
 
             response.sendRedirect("verifyCodePage.jsp?status=success");
@@ -57,9 +59,9 @@ public class VerifyCodePage extends HttpServlet {
         }
     }
 
-    private void saveUserToDatabase(String username, String email, String password, String phoneNumber, HttpSession session) {
+    private void saveUserToDatabase(String username, String email, String password, String phoneNumber, int roleID, HttpSession session) {
         AccountDAO accountDAO = new AccountDAO();
-        boolean success = accountDAO.insertNewStaff(username, email, password, phoneNumber);
+        boolean success = accountDAO.insertNewStaff(username, email, password, phoneNumber, roleID); // Truyền roleID
         if (!success) {
             System.out.println("Insert staff thất bại!");
         }

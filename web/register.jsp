@@ -101,8 +101,8 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Custom Script -->
         <script>
-            $(document).ready(function() {
-                $('#registerForm').on('submit', function(e) {
+            $(document).ready(function () {
+                $('#registerForm').on('submit', function (e) {
                     e.preventDefault(); // Ngăn submit mặc định
 
                     // Hiển thị loading popup
@@ -120,25 +120,54 @@
                         url: 'RegisterServlet',
                         type: 'POST',
                         data: $(this).serialize(),
-                        success: function(response) {
-                            // Sau khi RegisterServlet xử lý xong, gọi SendVerificationServlet
-                            $.ajax({
-                                url: 'SendVerificationServlet',
-                                type: 'GET',
-                                success: function() {
-                                    Swal.close(); // Đóng loading popup
-                                    window.location.href = 'verifyCode.jsp'; // Chuyển hướng
-                                },
-                                error: function(xhr, status, error) {
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Lỗi!',
-                                        text: 'Không thể gửi mã xác minh: ' + error
-                                    });
-                                }
-                            });
+                        dataType: 'json', // Đảm bảo nhận response dạng JSON
+                        success: function (response) {
+                            if (response.success) {
+                                // Gọi SendVerificationServlet mà không đóng Swal ngay
+                                $.ajax({
+                                    url: 'SendVerificationServlet',
+                                    type: 'GET',
+                                    success: function (sendResponse) {
+                                        // Đóng popup loading và chuyển hướng
+                                        Swal.close();
+                                        window.location.href = 'verifyCode.jsp';
+                                    },
+                                    error: function (xhr, status, error) {
+                                        Swal.close(); // Đóng popup nếu lỗi
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Lỗi!',
+                                            text: 'Không thể gửi mã xác minh: ' + error
+                                        });
+                                    }
+                                });
+                            } else {
+                                // Đóng popup và hiển thị lỗi
+                                Swal.close();
+                                let errorMessage = '';
+                                if (response.usernameError)
+                                    errorMessage += response.usernameError + '<br>';
+                                if (response.emailError)
+                                    errorMessage += response.emailError + '<br>';
+                                if (response.passwordError)
+                                    errorMessage += response.passwordError + '<br>';
+                                if (response.phoneNumberError)
+                                    errorMessage += response.phoneNumberError + '<br>';
+
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Lỗi!',
+                                    html: errorMessage // Sử dụng html để xuống dòng
+                                });
+
+                                // Cập nhật lại giá trị các trường nếu có lỗi
+                                $('#username').val(response.usernameValue || '');
+                                $('#email').val(response.emailValue || '');
+                                $('#phone').val(response.phoneValue || '');
+                            }
                         },
-                        error: function(xhr, status, error) {
+                        error: function (xhr, status, error) {
+                            Swal.close(); // Đóng popup nếu lỗi
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Lỗi!',

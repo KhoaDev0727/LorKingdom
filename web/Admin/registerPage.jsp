@@ -46,7 +46,7 @@
                                 } 
                             %>
                         </div>
-                
+
                         <!-- Phone Number Input -->
                         <div class="mb-3">
                             <div class="input-group">
@@ -63,7 +63,7 @@
                                 }
                             %>
                         </div>
-                
+
                         <!-- Email Input -->
                         <div class="mb-3">
                             <div class="input-group">
@@ -80,7 +80,7 @@
                                 } 
                             %>
                         </div>
-                
+
                         <!-- Password Input -->
                         <div class="mb-3">
                             <div class="input-group">
@@ -97,10 +97,32 @@
                                 } 
                             %>
                         </div>                   
-                
+
+                        <!-- chọn role -->
+                        <div class="mb-3">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+
+                                <select class="form-control" id="role" name="role">
+                                    <option value="" disabled ${roleValue == null ? 'selected' : ''}>Chọn vai trò</option>
+                                    <option value="2" ${roleValue != null && roleValue.equals("2") ? 'selected' : ''}>Staff</option>
+                                    <option value="4" ${roleValue != null && roleValue.equals("4") ? 'selected' : ''}>Warehouse Staff</option>
+                                </select>
+                                <!-- error mess -->
+                                <% 
+                                    String roleError = (String) request.getAttribute("roleError");
+                                    if (roleError != null && !roleError.isEmpty()) { 
+                                %>
+                                <span class="text-danger"><%= roleError %></span>
+                                <% 
+                                    } 
+                                %>
+                            </div>
+                        </div>                       
+
                         <!-- Register Button -->
                         <button type="submit" class="btn btn-primary register-btn">Đăng ký</button>
-                
+
                         <!-- Login Link -->
                         <div class="login-link mt-3">
                             <span>Bạn đã có tài khoản? <a href="loginPage.jsp">Đăng nhập</a></span>
@@ -114,8 +136,8 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Custom Script -->
         <script>
-            $(document).ready(function() {
-                $('#registerForm').on('submit', function(e) {
+            $(document).ready(function () {
+                $('#registerForm').on('submit', function (e) {
                     e.preventDefault(); // Ngăn submit mặc định
 
                     // Hiển thị loading popup
@@ -133,25 +155,57 @@
                         url: 'RegisterPageServlet',
                         type: 'POST',
                         data: $(this).serialize(),
-                        success: function(response) {
-                            // Sau khi RegisterPageServlet xử lý xong, gọi SendVerificationPage
-                            $.ajax({
-                                url: 'SendVerificationPage',
-                                type: 'GET',
-                                success: function() {
-                                    Swal.close(); // Đóng loading popup
-                                    window.location.href = 'verifyCodePage.jsp'; // Chuyển hướng
-                                },
-                                error: function(xhr, status, error) {
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Lỗi!',
-                                        text: 'Không thể gửi mã xác minh: ' + error
-                                    });
-                                }
-                            });
+                        dataType: 'json', // Đảm bảo nhận response dạng JSON
+                        success: function (response) {
+                            if (response.success) {
+                                // Gọi SendVerificationPage mà không đóng Swal ngay
+                                $.ajax({
+                                    url: 'SendVerificationPage',
+                                    type: 'GET',
+                                    success: function () {
+                                        // Đóng popup loading và chuyển hướng
+                                        Swal.close();
+                                        window.location.href = 'verifyCodePage.jsp';
+                                    },
+                                    error: function (xhr, status, error) {
+                                        Swal.close(); // Đóng popup nếu lỗi
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Lỗi!',
+                                            text: 'Không thể gửi mã xác minh: ' + error
+                                        });
+                                    }
+                                });
+                            } else {
+                                // Đóng popup và hiển thị lỗi
+                                Swal.close();
+                                let errorMessage = '';
+                                if (response.usernameError)
+                                    errorMessage += response.usernameError + '<br>';
+                                if (response.emailError)
+                                    errorMessage += response.emailError + '<br>';
+                                if (response.passwordError)
+                                    errorMessage += response.passwordError + '<br>';
+                                if (response.phoneNumberError)
+                                    errorMessage += response.phoneNumberError + '<br>';
+                                if (response.roleError)
+                                    errorMessage += response.roleError + '<br>';
+
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Lỗi!',
+                                    html: errorMessage // Sử dụng html để xuống dòng
+                                });
+
+                                // Cập nhật lại giá trị các trường nếu có lỗi
+                                $('#username').val(response.usernameValue || '');
+                                $('#email').val(response.emailValue || '');
+                                $('#phone').val(response.phoneValue || '');
+                                $('#role').val(response.roleValue || '');
+                            }
                         },
-                        error: function(xhr, status, error) {
+                        error: function (xhr, status, error) {
+                            Swal.close(); // Đóng popup nếu lỗi
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Lỗi!',

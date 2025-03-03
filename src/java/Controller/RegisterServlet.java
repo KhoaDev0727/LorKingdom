@@ -4,11 +4,15 @@ import DAO.AccountDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
+import org.json.JSONObject;
 
 public class RegisterServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json"); // Thiết lập response là JSON
+        JSONObject jsonResponse = new JSONObject();
+
         String username = request.getParameter("username") != null ? request.getParameter("username").trim() : "";
         String email = request.getParameter("email") != null ? request.getParameter("email").trim() : "";
         String password = request.getParameter("password") != null ? request.getParameter("password").trim() : "";
@@ -62,28 +66,32 @@ public class RegisterServlet extends HttpServlet {
         }
 
         if (hasError) {
-            request.setAttribute("usernameError", usernameError);
-            request.setAttribute("emailError", emailError);
-            request.setAttribute("passwordError", passwordError);
-            request.setAttribute("phoneNumberError", phoneNumberError);
-            request.setAttribute("usernameValue", username);
-            request.setAttribute("emailValue", email);
-            request.setAttribute("phoneValue", phoneNumber);
-            request.getRequestDispatcher("register.jsp").forward(request, response);
-            return;
+            // Trả về JSON chứa thông tin lỗi
+            jsonResponse.put("success", false);
+            jsonResponse.put("usernameError", usernameError);
+            jsonResponse.put("emailError", emailError);
+            jsonResponse.put("passwordError", passwordError);
+            jsonResponse.put("phoneNumberError", phoneNumberError);
+            jsonResponse.put("usernameValue", username);
+            jsonResponse.put("emailValue", email);
+            jsonResponse.put("phoneValue", phoneNumber);
+        } else {
+            // Hash mật khẩu trước khi lưu vào session
+            String hashedPassword = MyUtils.hashPassword(password);
+
+            // Lưu thông tin tạm thời vào session
+            HttpSession session = request.getSession();
+            session.setAttribute("tempUsername", username);
+            session.setAttribute("tempEmail", email);
+            session.setAttribute("tempPassword", hashedPassword);
+            session.setAttribute("tempPhoneNumber", phoneNumber);
+
+            // Trả về JSON thành công
+            jsonResponse.put("success", true);
         }
 
-        // Hash mật khẩu trước khi lưu vào session
-        String hashedPassword = MyUtils.hashPassword(password);
-
-        // Lưu thông tin tạm thời vào session
-        HttpSession session = request.getSession();
-        session.setAttribute("tempUsername", username);
-        session.setAttribute("tempEmail", email);
-        session.setAttribute("tempPassword", hashedPassword); // Lưu mật khẩu đã hash
-        session.setAttribute("tempPhoneNumber", phoneNumber);
-        
-        response.sendRedirect("SendVerificationServlet");
+        // Gửi JSON response
+        response.getWriter().write(jsonResponse.toString());
     }
 
     private boolean isValidEmail(String email) {

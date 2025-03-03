@@ -162,7 +162,8 @@ public class AccountDAO {
         }
         return list;
     }
-      public static List<Account> getAllAccountStaff(int roleStaff, int roleAdmin, int roleWareHouse, int page, int pageSize) {
+
+    public static List<Account> getAllAccountStaff(int roleStaff, int roleAdmin, int roleWareHouse, int page, int pageSize) {
         List<Account> list = new ArrayList<>();
         try {
             if (page <= 0) {
@@ -412,13 +413,12 @@ public class AccountDAO {
         return false;
     }
 
-    public boolean insertNewStaff(String username, String email, String password, String phoneNumber) {
+    public boolean insertNewStaff(String username, String email, String password, String phoneNumber, int roleID) {
         String sql = "INSERT INTO Account (RoleID, AccountName, Email, Password, PhoneNumber, Image) VALUES (?, ?, ?, ?, ?, ?)";
         String defaultImageUrl = "./assets/img/default-img-profile.png";
-        int defaultRoleID = 2;
 
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, defaultRoleID);
+            stmt.setInt(1, roleID); // Sử dụng roleID từ tham số
             stmt.setString(2, username);
             stmt.setString(3, email);
             stmt.setString(4, password);
@@ -468,7 +468,6 @@ public class AccountDAO {
 //            e.printStackTrace();
 //        }
 //    }
-
     public Account authenticateUser(String email, String password) {
         String hashedPassword = MyUtils.hashPassword(password); // Hash mật khẩu người dùng nhập
         String query = "SELECT * FROM Account WHERE Email = ? AND Password = ? AND IsDeleted = 0";
