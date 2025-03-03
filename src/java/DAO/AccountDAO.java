@@ -39,19 +39,24 @@ public class AccountDAO {
     private static String IS_EMAIL_EXIST = "SELECT COUNT(*) FROM Account WHERE Email = ?";
 
     public static boolean isEmailExists(String email) throws SQLException, ClassNotFoundException {
-        conn = DBConnection.getConnection();
-        try {
-            stm = conn.prepareStatement(IS_EMAIL_EXIST);
-            stm.setString(1, email);
-            rs = stm.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1) > 1; // check email 
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+    conn = DBConnection.getConnection();
+    try {
+        stm = conn.prepareStatement(IS_EMAIL_EXIST);
+        stm.setString(1, email);
+        rs = stm.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1) > 0; // Sửa từ > 1 thành > 0
         }
-        return false;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        // Đóng tài nguyên
+        if (rs != null) rs.close();
+        if (stm != null) stm.close();
+        if (conn != null) conn.close();
     }
+    return false;
+}
 
     public Account getAccountByEmail(String email) {
         String query = "SELECT * FROM Account WHERE Email = ?";
