@@ -64,7 +64,7 @@ public class ForgotPasswordPage extends HttpServlet {
     private void sendResetEmail(String email, String token, String userName) throws MessagingException, UnsupportedEncodingException {
         final String fromEmail = "lorkingdom99@gmail.com";
         final String password = "lhvqnjnvthlsitqg";
-        String resetLink = "http://localhost:9090/LorKingdom/Admin/resetPasswordPage.jsp?token=" + token;
+        String resetLink = "http://localhost:8080/LorKingdom/Admin/resetPasswordPage.jsp?token=" + token;
 
         // Cấu hình SMTP
         Properties props = new Properties();
