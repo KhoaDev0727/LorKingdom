@@ -227,9 +227,9 @@ public class BrandServlet extends HttpServlet {
 
             Brand brand = new Brand(brandID, name.trim(), 0, null);
             brandDAO.updateBrand(brand);
-            request.getSession().setAttribute("successMessage", "Brand updated successfully.");
+            request.getSession().setAttribute("successMessage", "Đã cập nhật thành công!");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "Invalid Brand ID.");
+            request.getSession().setAttribute("errorMessage", "ID không hợp lệ.");
         }
         response.sendRedirect("BrandServlet?action=list");
     }
@@ -239,7 +239,7 @@ public class BrandServlet extends HttpServlet {
         try {
             int id = Integer.parseInt(request.getParameter("brandID"));
             brandDAO.softDeleteBrand(id);
-            request.getSession().setAttribute("successMessage", "Brand soft-deleted successfully.");
+            request.getSession().setAttribute("successMessage", "Thương hiệu này đã được chuyển vào thùng rác!");
             response.sendRedirect("BrandServlet?action=list");
         } catch (NumberFormatException e) {
             request.getSession().setAttribute("errorMessage", "Invalid brand ID.");
@@ -253,10 +253,10 @@ public class BrandServlet extends HttpServlet {
         try {
             int id = Integer.parseInt(request.getParameter("brandID"));
             brandDAO.hardDeleteBrand(id);
-            request.getSession().setAttribute("successMessage", "Brand permanently deleted.");
+            request.getSession().setAttribute("successMessage", "Đã xóa vĩnh viễn!");
             response.sendRedirect("BrandServlet?action=listDeleted");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "Invalid brand ID.");
+            request.getSession().setAttribute("errorMessage", "ID không hợp lệ.");
             response.sendRedirect("BrandServlet?action=listDeleted");
         }
     }
@@ -278,9 +278,9 @@ public class BrandServlet extends HttpServlet {
         try {
             int brandID = Integer.parseInt(request.getParameter("brandID"));
             brandDAO.restoreBrand(brandID);
-            request.getSession().setAttribute("successMessage", "Brand restored successfully.");
+            request.getSession().setAttribute("successMessage", "Khôi phục thành công.");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "Invalid Brand ID.");
+            request.getSession().setAttribute("errorMessage", "ID không hợp lệ.");
         }
         response.sendRedirect("BrandServlet?action=list&showSuccessModal=true");
     }

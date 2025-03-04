@@ -78,7 +78,7 @@
                                             </a>
                                             <c:if test="${sessionScope.roleID == 1}">
                                                 <a href="BrandServlet?action=listDeleted" class="btn btn-outline-danger">
-                                                    <i class="fas fa-trash"></i> Deleted
+                                                    <i class="fas fa-trash"></i> 
                                                 </a>
                                             </c:if>
                                         </div>
@@ -233,7 +233,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        Bạn có chắc chắn muốn đưa thương hiệu này vào thùng rác không?
+                        Thương hiệu này sẽ được chuyển vào thùng rác!
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
@@ -256,7 +256,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        Bạn có chắc chắn muốn xóa vĩnh viễn thương hiệu này không?
+                        Thương hiệu này sẽ được xóa vĩnh viễn!
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>

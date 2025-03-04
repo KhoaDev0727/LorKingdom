@@ -92,21 +92,6 @@ public class PaymentDAO {
         }
     }
     
-    public boolean deletePaymentMethod(int id) throws SQLException, ClassNotFoundException {
-    String sql = "DELETE FROM PaymentMethods WHERE PaymentMethodID = ?";
-    try (Connection conn = DBConnection.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
-        stmt.setInt(1, id);
-        int rowsAffected = stmt.executeUpdate();
-        if (rowsAffected == 0) {
-            System.out.println("No Payment method deleted - ID " + id + " not found or error!");
-            return false;
-        }
-        System.out.println("Successfully deleted payment method with ID: " + id);
-        return true;
-    }
-}
-    
     public List<Payment> searchPaymentMethods(String keyword) throws SQLException, ClassNotFoundException {
         List<Payment> paymentMethods = new ArrayList<>();
         String sql = "SELECT * FROM PaymentMethods WHERE LOWER(MethodName) LIKE LOWER(?) OR LOWER(Description) LIKE LOWER(?)";

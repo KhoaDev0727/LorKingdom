@@ -188,26 +188,30 @@ public class MaterialServlet extends HttpServlet {
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         try {
             int materialID = Integer.parseInt(request.getParameter("materialID"));
-            String name = request.getParameter("name");
+            String name = request.getParameter("materialName");
             String description = request.getParameter("description");
 
+            System.out.println(materialID);
+            System.out.println(name);
+            System.out.println(description);
+
             if (name == null || name.trim().isEmpty()) {
-                request.getSession().setAttribute("errorMessage", "Tên chất vật liệu không được để trống.");
+                request.getSession().setAttribute("errorMessage", "Tên chất liệu không được để trống.");
                 response.sendRedirect("MaterialServlet?action=list&showErrorModal=true");
                 return;
             }
             if (!name.matches("^[\\p{L} _-]+$")) {
-                request.getSession().setAttribute("errorMessage", "Tên chất vật liệu chỉ được chứa chữ cái và khoảng trắng.");
+                request.getSession().setAttribute("errorMessage", "Tên chất liệu chỉ được chứa chữ cái và khoảng trắng.");
                 response.sendRedirect("MaterialServlet?action=list&showErrorModal=true");
                 return;
             }
-//            if (materialDAO.isMaterial(name.trim())) {
-//                request.getSession().setAttribute("errorMessage", "Tên chất vật liệu đã tồn tại. Vui lòng nhập tên khác.");
-//                response.sendRedirect("MaterialServlet?action=list&showErrorModal=true");
-//                return;
-//            }
+            if (materialDAO.isMaterial(name.trim())) {
+                request.getSession().setAttribute("errorMessage", "Tên chất vật liệu đã tồn tại. Vui lòng nhập tên khác.");
+                response.sendRedirect("MaterialServlet?action=list&showErrorModal=true");
+                return;
+            }
 
-            Material material = new Material(0, name, description, 0);
+            Material material = new Material(materialID, name, description, 0);
             materialDAO.updateMaterial(material);
             request.getSession().setAttribute("successMessage", "Chất liệu đã được cập nhật thành công");
         } catch (NumberFormatException e) {
@@ -244,7 +248,6 @@ public class MaterialServlet extends HttpServlet {
         }
     }
 
-   
     private void restoreMaterial(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, IOException {
         try {

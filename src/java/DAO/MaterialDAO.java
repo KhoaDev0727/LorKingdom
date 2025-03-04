@@ -69,7 +69,7 @@ public class MaterialDAO {
             ps.setString(1, name);
             try ( ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt(1) > 0;
+                    return rs.getInt(1) > 1;
                 }
             }
         }
@@ -78,13 +78,13 @@ public class MaterialDAO {
 
     // Cập nhật thông tin vật liệu
     public void updateMaterial(Material material) throws SQLException, ClassNotFoundException {
-        String query = "UPDATE Material SET Name = ?, Description = ? WHERE MaterialID = ?";
+        String query = "UPDATE Material SET Name = ?, Description = ?, IsDeleted = ? WHERE MaterialID = ?";
 
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
-
             ps.setString(1, material.getName());
             ps.setString(2, material.getDescription());
-            ps.setInt(3, material.getMaterialID());
+            ps.setBoolean(3, material.getIsDeleted() == 1);
+            ps.setInt(4, material.getMaterialID());
             ps.executeUpdate();
         }
     }

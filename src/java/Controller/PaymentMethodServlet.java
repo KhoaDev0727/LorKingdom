@@ -15,7 +15,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-@WebServlet("/Admin/PaymentMethodServlet")
 public class PaymentMethodServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private PaymentDAO paymentDAO = new PaymentDAO();
