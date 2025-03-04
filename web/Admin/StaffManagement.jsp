@@ -15,45 +15,8 @@
         <link rel="stylesheet" href="CSS/style.css" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-
         <script src="JS/SideBarToggle.js"></script>
     </head>
-    <style>
-        /* Thiết lập ảnh */
-        img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(5, 0, 0, 0.1);
-            object-fit: cover;
-            transition: transform 0.3s ease, background-color 0.3s ease;
-            cursor: pointer;
-        }
-
-        img:hover {
-            transform: scale(1.02);
-        }
-        img:hover::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: black;
-            z-index: -1;
-        }
-        .error-message {
-            color: red;
-            font-size: 14px;
-            margin-top: 5px;
-            display: block;
-        }
-        .input-error {
-            border: 2px solid red !important;
-            background-color: #ffe6e6; /* Nhẹ nhàng báo hiệu lỗi */
-        }
-    </style>
 </style>
 <body class="sb-nav-fixed">
     <c:if test="${empty sessionScope.roleID}">
@@ -143,9 +106,11 @@
                                                                          alt="Profile Image"
                                                                          class="mt-2 rounded" 
                                                                          style="width: 100%; height: 100%; object-fit: cover;"
-                                                                         data-bs-toggle="tooltip" 
-                                                                         data-bs-html="true"
-                                                                         data-bs-title="<img src='${pageContext.request.contextPath}/${s.image}' style='max-width: 200px; max-height: 200px;'/>">
+                                                                         onclick="setModalImage(this.src);
+                                                                                 var myModal = new bootstrap.Modal(document.getElementById('imageModal'));
+                                                                                 myModal.show();"
+                                                                      >
+
                                                                 </c:if>
                                                             </td>
                                                             <td>${s.userName}</td>
@@ -448,8 +413,20 @@
     </div>
 </div>
 
-
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body p-0 text-center">
+                <img id="largeImage" src="" alt="Large Image" style="width: 100%; height: auto;" />
+            </div>
+        </div>
+    </div>
+</div>
 <script>
+    function setModalImage(imageUrl) {
+        document.getElementById("largeImage").src = imageUrl;
+    }
+
     window.onload = function () {
         const successMessage = "${sessionScope.successMessage}";
         const errorMessage = "${sessionScope.errorMessage}";

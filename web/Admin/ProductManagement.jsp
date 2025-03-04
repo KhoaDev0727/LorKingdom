@@ -42,9 +42,11 @@
                     <main>
                         <div class="container-fluid px-5">
                             <h1 class="mt-4">Product Management</h1>
-
+                            <button class="btn btn-success mt-3" onclick="location.href = 'ProductManagementServlet'">
+                                <i class="fas fa-plus"></i> Add Product
+                            </button>
                             <!-- Form Search -->
-                            <form action="ProductServlet" method="GET" class="mb-4">
+                            <form action="ProductServlet" method="GET" class="mb-4 mt-3">
                                 <div class="input-group">
                                     <input type="hidden" name="action" value="search">
                                     <input type="text" name="search" class="form-control" placeholder="Search Product Name..." aria-label="Search">
@@ -122,7 +124,7 @@
 
 
                                                                 <td>${prod.name}</td>
-                                                                <td><fmt:formatNumber value="${prod.price}" type="currency" /></td>
+                                                                <td><fmt:formatNumber value="${prod.price}" pattern="#,###" /></td>
                                                                 <td>${prod.quantity}</td>
                                                                 <td>
                                                                     <c:choose>
@@ -159,9 +161,8 @@
                                                                                 data-bs-target="#confirmHardDeleteModal"
                                                                                 onclick="setHardDeleteProductID(${prod.productID})">
                                                                             <i class="fas fa-trash"></i>
-                                                                        </button>
+                                                                        </button><!-- Nút View chi tiết (hiển thị modal) -->
                                                                     </c:if>
-
                                                                 </td>
                                                             </tr>
 
@@ -178,6 +179,7 @@
                 </div>
             </div>
         </div>
+
 
         <!-- Modal Error -->
         <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">

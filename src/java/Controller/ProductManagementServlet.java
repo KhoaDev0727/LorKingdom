@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.List;
 import Model.*;
 import DAO.*;
+import jakarta.servlet.http.HttpSession;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -67,26 +68,110 @@ public class ProductManagementServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Tạo session để lưu thông báo (nếu muốn hiển thị qua session)
+        HttpSession session = request.getSession();
+
+        // Nạp lại dữ liệu cho trang AddNewProduct.jsp
         try {
-            // Lấy thông tin sản phẩm từ form
-            // Lấy thông tin sản phẩm từ form
+            List<Category> listCategorys = c.getAllCategories();
+            List<Sex> listGenders = s.getActiveSex();
+            List<PriceRange> listPriceRanges = p.getAllActivePriceRanges();
+            List<Brand> listBrands = b.getActiveBrand();
+            List<Age> listAges = a.getAllAges();
+            List<Material> listMaterials = m.getAllActiveMaterials();
+            List<Origin> listOrigins = originDAO.getAllActiveOrigins();
+            request.setAttribute("ages", listAges);
+            request.setAttribute("sexes", listGenders);
+            request.setAttribute("Categories", listCategorys);
+            request.setAttribute("priceRanges", listPriceRanges);
+            request.setAttribute("materials", listMaterials);
+            request.setAttribute("brands", listBrands);
+            request.setAttribute("listOrigin", listOrigins);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            // Lấy các tham số đầu vào
             String productName = request.getParameter("productName");
+            String priceStartStr = request.getParameter("price");
+            String quantityStr = request.getParameter("stockQuantity");
+            String description = request.getParameter("description");
+
+            // Kiểm tra các trường bắt buộc không được rỗng
+            if (productName == null || productName.trim().isEmpty()
+                    || priceStartStr == null || priceStartStr.trim().isEmpty()
+                    || quantityStr == null || quantityStr.trim().isEmpty()
+                    || description == null || description.trim().isEmpty()) {
+                session.setAttribute("errorMessage", "Vui lòng nhập đầy đủ thông tin bắt buộc!");
+                request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
+                return;
+            }
+
+            // Các giá trị int
             Integer category = Integer.parseInt(request.getParameter("category"));
             Integer gender = Integer.parseInt(request.getParameter("gender"));
             Integer priceRange = Integer.parseInt(request.getParameter("priceRange"));
             Integer brand = Integer.parseInt(request.getParameter("brand"));
             Integer ageGroup = Integer.parseInt(request.getParameter("ageGroup"));
-            Integer origin = Integer.parseInt(request.getParameter("origin")); // Lấy từ request
+            Integer origin = Integer.parseInt(request.getParameter("origin"));
             Integer material = Integer.parseInt(request.getParameter("material"));
-            String description = request.getParameter("description");
-            double price = Double.parseDouble(request.getParameter("price"));
-            int stockQuantity = Integer.parseInt(request.getParameter("stockQuantity"));
+
+            // Kiểm tra price: chỉ chấp nhận số (có thể có phần thập phân)
+            // Chuyển từ định dạng 1.000,50 -> 1000.50 (nếu có)
+            priceStartStr = priceStartStr.replace(".", "").replace(",", ".");
+            if (!priceStartStr.matches("^\\d+(\\.\\d+)?$")) {
+                session.setAttribute("errorMessage", "Giá sản phẩm phải là số.");
+                request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
+                return;
+            }
+
+            // Kiểm tra stockQuantity: chỉ chấp nhận số nguyên
+            if (!quantityStr.matches("^\\d+$")) {
+                session.setAttribute("errorMessage", "Số lượng sản phẩm phải là số nguyên.");
+                request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
+                return;
+            }
+
+            // Chuyển đổi kiểu
+            double priceStart = Double.parseDouble(priceStartStr);
+            int stockQuantity = Integer.parseInt(quantityStr);
+
+            // Kiểm tra tên sản phẩm chỉ chứa chữ cái (có dấu) và khoảng trắng
+            String namePattern = "^[\\p{L}\\s]+$";
+            if (!productName.matches(namePattern)) {
+                session.setAttribute("errorMessage", "Tên sản phẩm chỉ được chứa chữ cái (có dấu) và khoảng trắng.");
+                request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
+                return;
+            }
+
+            // Kiểm tra tên sản phẩm có tồn tại chưa
+            if (ProductDAO.isProductNameExists(productName, 0)) {
+                session.setAttribute("errorMessage", "Tên sản phẩm đã tồn tại trong hệ thống!");
+                request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
+                return;
+            }
+
+            // Sinh mã SKU
             String SKU = MyUtils.generateProductID();
 
-            // Tạo đối tượng sản phẩm
-            Product p = new Product(SKU, category, material, ageGroup, gender, priceRange, brand, origin, productName, price, stockQuantity, description);
+            // Tạo đối tượng Product
+            Product p = new Product(
+                    SKU,
+                    category,
+                    material,
+                    ageGroup,
+                    gender,
+                    priceRange,
+                    brand,
+                    origin,
+                    productName,
+                    priceStart,
+                    stockQuantity,
+                    description
+            );
 
-            // Tạo danh sách lưu đường dẫn ảnh
+            // Lưu ảnh
             List<String> imagePaths = new ArrayList<>();
             String uploadPath = getServletContext().getRealPath("/uploads");
             File uploadDir = new File(uploadPath);
@@ -94,39 +179,36 @@ public class ProductManagementServlet extends HttpServlet {
                 uploadDir.mkdirs();
             }
 
-            // Lưu ảnh chính
+            // Ảnh chính
             Part mainImagePart = request.getPart("mainImageUpload");
-            System.out.println(mainImagePart.getName());
             if (mainImagePart != null && mainImagePart.getSize() > 0) {
                 String mainImageFileName = handleImageProduct.generateUniqueFileName(mainImagePart);
                 String mainImageFilePath = handleImageProduct.saveFile(mainImagePart, uploadPath, mainImageFileName);
                 imagePaths.add(mainImageFilePath);
             }
 
-            // Lưu ảnh chi tiết
+            // Ảnh chi tiết
             for (Part part : request.getParts()) {
-                System.out.println(part.getName());
                 if (part.getName().equals("detailImages") && part.getSize() > 0) {
                     String detailImageFileName = handleImageProduct.generateUniqueFileName(part);
                     String detailImageFilePath = handleImageProduct.saveFile(part, uploadPath, detailImageFileName);
-                    System.out.println(detailImageFilePath);
                     imagePaths.add(detailImageFilePath);
-                    System.out.println(detailImageFilePath);
                 }
             }
-            // Thêm sản phẩm và ảnh vào DB
+
+            // Thêm vào DB
             boolean addRow = ProductDAO.addProduct(p, imagePaths, 1);
             if (addRow) {
-                response.sendRedirect("AddNewProduct.jsp?updateSuccess=true");
+                session.setAttribute("successMessage", "Thêm sản phẩm thành công!");
+                response.sendRedirect("ProductServlet?&action=list");
             } else {
                 request.setAttribute("errorMessage", "Failed to add product to database.");
                 request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
             }
 
         } catch (Exception e) {
-            request.setAttribute("errorMessage", "Failed to add product can not empty.");
+            request.setAttribute("errorMessage", "Failed to add product: " + e.getMessage());
             request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
         }
     }
-
 }
