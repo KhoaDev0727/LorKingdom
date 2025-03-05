@@ -35,6 +35,9 @@ import jakarta.servlet.http.Part;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import DAO.UpdateProductDataLoader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -135,23 +138,14 @@ public class updateProductServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             HttpSession session = request.getSession();
-            // Kiểm tra các trường bắt buộc không được rỗng
+
+            // Lấy các tham số
+            int productID = Integer.parseInt(request.getParameter("productID"));
             String productName = request.getParameter("productName");
             String priceStr = request.getParameter("price");
             String stockQuantityStr = request.getParameter("stockQuantity");
             String description = request.getParameter("description");
 
-            if (productName == null || productName.trim().isEmpty()
-                    || priceStr == null || priceStr.trim().isEmpty()
-                    || stockQuantityStr == null || stockQuantityStr.trim().isEmpty()
-                    || description == null || description.trim().isEmpty()) {
-                request.getSession().setAttribute("errorMessage", "Vui lòng nhập đầy đủ thông tin bắt buộc!");
-                request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
-                return;
-            }
-
-            // Lấy các tham số còn lại
-            int productID = Integer.parseInt(request.getParameter("productID"));
             int category = Integer.parseInt(request.getParameter("category"));
             int gender = Integer.parseInt(request.getParameter("gender"));
             int priceRange = Integer.parseInt(request.getParameter("priceRange"));
@@ -161,53 +155,55 @@ public class updateProductServlet extends HttpServlet {
             int material = Integer.parseInt(request.getParameter("material"));
             String SKU = request.getParameter("SKU");
 
-            // Nếu cần: kiểm tra định dạng số cho price và stockQuantity
-            // Chuyển đổi price (có thể định dạng 1.000,50 => 1000.50)
-            String namePattern = "^[\\p{L}\\s]+$";
-            if (!productName.matches(namePattern)) {
-                session.setAttribute("errorMessage", "Tên sản phẩm chỉ được chứa chữ cái (có dấu) và khoảng trắng.");
-                request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
+            // ============= KIỂM TRA LỖI =============
+            // 1. Kiểm tra rỗng
+            if (productName == null || productName.trim().isEmpty()
+                    || priceStr == null || priceStr.trim().isEmpty()
+                    || stockQuantityStr == null || stockQuantityStr.trim().isEmpty()
+                    || description == null || description.trim().isEmpty()) {
+
+                session.setAttribute("errorMessage", "Vui lòng nhập đầy đủ thông tin bắt buộc!");
+                UpdateProductDataLoader.loadDataForUpdate(request, productID);
+                request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
 
-            // Kiểm tra tên sản phẩm có tồn tại chưa
-            if (ProductDAO.isProductNameExists(productName, 0)) {
-                session.setAttribute("errorMessage", "Tên sản phẩm đã tồn tại trong hệ thống!");
-                request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
+            // 2. Kiểm tra định dạng tên
+            String namePattern = "^[\\p{L}\\s]+$";
+            if (!productName.matches(namePattern)) {
+                session.setAttribute("errorMessage", "Tên sản phẩm chỉ được chứa chữ cái (có dấu) và khoảng trắng!");
+                UpdateProductDataLoader.loadDataForUpdate(request, productID);
+                request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
+
+            // 3. Kiểm tra tên sản phẩm đã tồn tại chưa (nếu cần)
+            if (ProductDAO.isProductNameExists(productName, 0)) {
+                session.setAttribute("errorMessage", "Tên sản phẩm đã tồn tại trong hệ thống!");
+                UpdateProductDataLoader.loadDataForUpdate(request, productID);
+                request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
+                return;
+            }
+
+            // 4. Kiểm tra price, quantity
             priceStr = priceStr.replace(".", "").replace(",", ".");
             if (!priceStr.matches("^\\d+(\\.\\d+)?$")) {
-                request.getSession().setAttribute("errorMessage", "Giá sản phẩm phải là số.");
+                session.setAttribute("errorMessage", "Giá sản phẩm phải là số.");
+                UpdateProductDataLoader.loadDataForUpdate(request, productID);
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
             if (!stockQuantityStr.matches("^\\d+$")) {
-                request.getSession().setAttribute("errorMessage", "Số lượng sản phẩm phải là số nguyên.");
+                session.setAttribute("errorMessage", "Số lượng sản phẩm phải là số nguyên.");
+                UpdateProductDataLoader.loadDataForUpdate(request, productID);
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
+
             double price = Double.parseDouble(priceStr);
             int stockQuantity = Integer.parseInt(stockQuantityStr);
 
-            // Debug thông tin
-            System.out.println("----- [DEBUG] updateProductServlet.doPost() -----");
-            System.out.println("productID = " + productID);
-            System.out.println("productName = " + productName);
-            System.out.println("category = " + category);
-            System.out.println("gender = " + gender);
-            System.out.println("priceRange = " + priceRange);
-            System.out.println("brand = " + brand);
-            System.out.println("ageGroup = " + ageGroup);
-            System.out.println("origin = " + origin);
-            System.out.println("material = " + material);
-            System.out.println("description = " + description);
-            System.out.println("price = " + price);
-            System.out.println("stockQuantity = " + stockQuantity);
-            System.out.println("SKU = " + SKU);
-            System.out.println("--------------------------------");
-
-            // Tạo đối tượng sản phẩm với các thông tin cập nhật
+            // ============ TẠO ĐỐI TƯỢNG PRODUCT =============
             Product p = new Product();
             p.setProductID(productID);
             p.setSKU(SKU);
@@ -223,7 +219,7 @@ public class updateProductServlet extends HttpServlet {
             p.setPrice(price);
             p.setQuantity(stockQuantity);
 
-            // Xử lý upload ảnh
+            // ============= XỬ LÝ UPLOAD ẢNH =============
             UploadImageProduct handleImageProduct = new UploadImageProduct();
             String uploadPath = getServletContext().getRealPath("/uploads");
             File uploadDir = new File(uploadPath);
@@ -231,22 +227,28 @@ public class updateProductServlet extends HttpServlet {
                 uploadDir.mkdirs();
             }
 
-            // Xử lý ảnh chính
+            // Ảnh chính
             Part mainImagePart = request.getPart("mainImageUpload");
-            if (mainImagePart != null && mainImagePart.getSize() > 0) {
+
+            // Ảnh chi tiết
+            List<Part> detailImageParts = new ArrayList<>();
+            for (Part part : request.getParts()) {
+                if ("detailImages".equals(part.getName()) && part.getSize() > 0) {
+                    detailImageParts.add(part);
+                }
+            }
+
+            if (mainImagePart.getSize() > 0) {
                 String mainImageFileName = handleImageProduct.generateUniqueFileName(mainImagePart);
                 String mainImageFilePath = handleImageProduct.saveFile(mainImagePart, uploadPath, mainImageFileName);
 
-                // Lấy ảnh chính hiện tại của sản phẩm từ CSDL
                 ProductImage currentMainImage = ProductImageDAO.getMainImage(productID);
                 if (currentMainImage != null) {
-                    // Nếu có ảnh chính, cập nhật lại
                     boolean imgUpdated = ProductImageDAO.updateProductImage(currentMainImage.getImageID(), mainImageFilePath, 1);
                     if (!imgUpdated) {
                         System.out.println("Lỗi cập nhật ảnh chính.");
                     }
                 } else {
-                    // Nếu chưa có ảnh chính, thêm mới
                     boolean imgAdded = ProductImageDAO.addProductImage(productID, mainImageFilePath, 1);
                     if (!imgAdded) {
                         System.out.println("Lỗi thêm ảnh chính.");
@@ -254,32 +256,42 @@ public class updateProductServlet extends HttpServlet {
                 }
             }
 
-            // Xử lý ảnh chi tiết (nếu có)
-            for (Part part : request.getParts()) {
-                if (part.getName().equals("detailImages") && part.getSize() > 0) {
-                    String detailImageFileName = handleImageProduct.generateUniqueFileName(part);
-                    String detailImageFilePath = handleImageProduct.saveFile(part, uploadPath, detailImageFileName);
-                    // Thêm ảnh chi tiết với IsMain = 0
-                    boolean detailAdded = ProductImageDAO.addProductImage(productID, detailImageFilePath, 0);
-                    if (!detailAdded) {
-                        System.out.println("Lỗi thêm ảnh chi tiết: " + detailImageFileName);
-                    }
+            for (Part part : detailImageParts) {
+                String detailImageFileName = handleImageProduct.generateUniqueFileName(part);
+                String detailImageFilePath = handleImageProduct.saveFile(part, uploadPath, detailImageFileName);
+                boolean detailAdded = ProductImageDAO.addProductImage(productID, detailImageFilePath, 0);
+                if (!detailAdded) {
+                    System.out.println("Lỗi thêm ảnh chi tiết: " + detailImageFileName);
                 }
             }
 
-            // Cập nhật thông tin sản phẩm (các thuộc tính khác)
             boolean updated = ProductDAO.updateProduct(p);
 
             if (updated) {
-                request.getSession().setAttribute("successMessage", "Cập nhật sản phẩm thành công!");
-                response.sendRedirect("ProductServlet?&action=list");
+                session.setAttribute("successMessage", "Cập nhật sản phẩm thành công!");
+                response.sendRedirect("ProductServlet?action=list");
             } else {
-                request.getSession().setAttribute("errorMessage", "Cập nhật sản phẩm thất bại!");
+                session.setAttribute("errorMessage", "Có lỗi xảy ra khi cập nhật sản phẩm (DB update fail).");
+                UpdateProductDataLoader.loadDataForUpdate(request, productID);
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
-            request.getSession().setAttribute("errorMessage", "Có lỗi xảy ra khi cập nhật sản phẩm.");
+            // Nếu có Exception => nạp lại dữ liệu + báo lỗi
+            HttpSession session = request.getSession();
+            session.setAttribute("errorMessage", "Có lỗi xảy ra khi cập nhật sản phẩm (Exception).");
+
+            // Lấy productID từ request, nạp lại data
+            String productIDStr = request.getParameter("productID");
+            if (productIDStr != null) {
+                int productID = Integer.parseInt(productIDStr);
+                try {
+                    UpdateProductDataLoader.loadDataForUpdate(request, productID);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(updateProductServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
             request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
         }
     }

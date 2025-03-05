@@ -542,7 +542,7 @@ public class ProductDAO {
             ps.setInt(2, excludeProductID);
             rs = ps.executeQuery();
             if (rs.next()) {
-                exists = rs.getInt(1) > 0; // true nếu đếm được > 0 dòng
+                exists = rs.getInt(1) > 1; // true nếu đếm được > 0 dòng
             }
         } finally {
             if (rs != null) {

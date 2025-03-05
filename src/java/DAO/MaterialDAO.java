@@ -63,13 +63,15 @@ public class MaterialDAO {
         }
     }
 
-    public boolean isMaterial(String name) throws SQLException, ClassNotFoundException {
-        String query = "SELECT COUNT(*) FROM Material WHERE Name = ?";
+    public boolean isMaterialExists(String name, int ignoreID) throws SQLException, ClassNotFoundException {
+        String query = "SELECT COUNT(*) FROM Material WHERE Name = ? AND MaterialID <> ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, name);
+            ps.setInt(2, ignoreID);
             try ( ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt(1) > 1;
+                    // Nếu có >= 1 record khác trùng tên thì trả về true
+                    return rs.getInt(1) >= 1;
                 }
             }
         }

@@ -91,7 +91,7 @@ public class PaymentMethodServlet extends HttpServlet {
         String description = request.getParameter("description");
 
         if (methodName == null || methodName.trim().isEmpty()) {
-        request.getSession().setAttribute("errorMessage", "Method name cannot be empty.");
+        request.getSession().setAttribute("errorMessage", "Tên phương thức không được để trống.");
         response.sendRedirect("PaymentMethodServlet?action=list&showErrorModal=true");
         return;
     }
@@ -99,19 +99,19 @@ public class PaymentMethodServlet extends HttpServlet {
     // Kiểm tra methodName chỉ chứa số, chữ, dấu - và _
     if (!methodName.matches("^[\\p{L} _-]+$")) {
         request.getSession().setAttribute("errorMessage", 
-            "Method name can only contain letters, numbers, -, and _.");
+            "Tên phương thức chỉ có thể chứa chữ cái, số, - và _.");
         response.sendRedirect("PaymentMethodServlet?action=list&showErrorModal=true");
         return;
     }
 
     if (paymentDAO.isPaymentMethodExists(methodName)) {
-        request.getSession().setAttribute("errorMessage", "Payment method already exists.");
+        request.getSession().setAttribute("errorMessage", "Phương thức thanh toán đã tồn tại.");
         response.sendRedirect("PaymentMethodServlet?action=list&showErrorModal=true");
         return;
     }
         
         paymentDAO.addPaymentMethod(methodName, description);
-        request.getSession().setAttribute("successMessage", "Payment method added successfully.");
+        request.getSession().setAttribute("successMessage", "Đã thêm phương thức thanh toán thành công.");
         response.sendRedirect("PaymentMethodServlet?action=list&showSuccessModal=true");
     }
 
@@ -122,7 +122,7 @@ public class PaymentMethodServlet extends HttpServlet {
         String description = request.getParameter("description");
 
             if (methodName == null || methodName.trim().isEmpty()) {
-        request.getSession().setAttribute("errorMessage", "Method name cannot be empty.");
+        request.getSession().setAttribute("errorMessage", "Tên phương thức không được để trống.");
         response.sendRedirect("PaymentMethodServlet?action=list&showErrorModal=true");
         return;
     }
@@ -130,13 +130,13 @@ public class PaymentMethodServlet extends HttpServlet {
     // Kiểm tra methodName chỉ chứa số, chữ, dấu - và _
     if (!methodName.matches("^[\\p{L} _-]+$")) {
         request.getSession().setAttribute("errorMessage", 
-            "Method name can only contain letters, numbers, -, and _.");
+            "Tên phương thức chỉ có thể chứa chữ cái, số, - và _.");
         response.sendRedirect("PaymentMethodServlet?action=list&showErrorModal=true");
         return;
     }
         
         paymentDAO.updatePaymentMethod(id, methodName, description);
-        request.getSession().setAttribute("successMessage", "Payment method updated successfully.");
+        request.getSession().setAttribute("successMessage", "Phương thức thanh toán đã được cập nhật thành công.");
         response.sendRedirect("PaymentMethodServlet?action=list&showSuccessModal=true");
     }
 
@@ -149,7 +149,7 @@ public class PaymentMethodServlet extends HttpServlet {
             request.getSession().setAttribute("successMessage", "Phương thức này đã được đưa vào thùng rác.");
             response.sendRedirect("PaymentMethodServlet?action=list");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "Invalid Payment method ID.");
+            request.getSession().setAttribute("errorMessage", "ID phương thức thanh toán không hợp lệ.");
             response.sendRedirect("PaymentMethodServlet?action=list");
         }
     }
@@ -183,7 +183,7 @@ public class PaymentMethodServlet extends HttpServlet {
     private void searchPaymentMethods(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException, ClassNotFoundException {
         String keyword = request.getParameter("search");
-        List<Payment> paymentMethods = paymentDAO.searchPaymentMethods(keyword);
+        List<Payment> paymentMethods = paymentDAO.searchPaymentMethods(keyword.trim().toLowerCase());
         request.setAttribute("paymentMethods", paymentMethods);
         request.getRequestDispatcher("PaymentMethodManagement.jsp").forward(request, response);
     }

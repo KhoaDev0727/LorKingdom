@@ -213,7 +213,6 @@
             </div>
         </div>
 
-        <!-- Success Message Modal -->
         <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -231,7 +230,6 @@
             </div>
         </div>
 
-        <!-- Soft Delete Confirmation Modal -->
         <div class="modal fade" id="confirmSoftDeleteModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -256,7 +254,6 @@
             </div>
         </div>
 
-        <!-- Hard Delete Confirmation Modal -->
         <div class="modal fade" id="confirmHardDeleteModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">

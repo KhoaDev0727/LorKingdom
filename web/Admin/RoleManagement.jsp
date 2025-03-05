@@ -30,7 +30,7 @@
                 <%@ include file="Component/SideBar.jsp" %>
                 <div class="dashboard-container">
                     <main>
-                        <div class="container-fluid px-5">
+                        <div class="container-fluid px-5 mb-3">
                             <h1 class="mt-4">Role Management</h1>
                             <!-- Add Role Form -->
 <!--                            <form action="RoleServlet" method="POST" class="d-flex align-items-end">
@@ -54,7 +54,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card-body">
+                                <div class="card-body mt-4">
                                     <!-- Search Form -->
 <!--                                    <form action="RoleServlet" method="GET" class="mb-4">
                                         <div class="input-group">

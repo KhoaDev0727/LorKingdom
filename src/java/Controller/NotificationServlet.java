@@ -94,12 +94,12 @@ public class NotificationServlet extends HttpServlet {
 
         // Validation
         if (title == null || title.trim().isEmpty()) {
-            request.getSession().setAttribute("errorMessage", "Title cannot be empty.");
+            request.getSession().setAttribute("errorMessage", "Tiêu đề không được để trống.");
             response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
             return;
         }
         if (title.length() > 255) {
-            request.getSession().setAttribute("errorMessage", "Title is too long. Maximum 255 characters allowed.");
+            request.getSession().setAttribute("errorMessage", "Tiêu đề quá dài. Chỉ được phép có tối đa 255 ký tự.");
             response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
             return;
         }
@@ -109,14 +109,14 @@ public class NotificationServlet extends HttpServlet {
             return;
         }
         if (accountID != null && accountID <= 0) {
-            request.getSession().setAttribute("errorMessage", "Account ID must be a positive number if provided.");
+            request.getSession().setAttribute("errorMessage", "ID tài khoản phải là số dương nếu được cung cấp.");
             response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
             return;
         }
         System.out.println(content);
         
         notificationDAO.addNotification(title, content, type, accountID);
-        request.getSession().setAttribute("successMessage", "Notification added successfully.");
+        request.getSession().setAttribute("successMessage", "Thông báo đã được thêm thành công.");
         response.sendRedirect("NotificationServlet?action=list&showSuccessModal=true");
     }
 
@@ -133,12 +133,12 @@ public class NotificationServlet extends HttpServlet {
 
             // Validation
             if (title == null || title.trim().isEmpty()) {
-                request.getSession().setAttribute("errorMessage", "Title cannot be empty.");
+                request.getSession().setAttribute("errorMessage", "Tiêu đề không được để trống.");
                 response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
                 return;
             }
             if (title.length() > 255) {
-                request.getSession().setAttribute("errorMessage", "Title is too long. Maximum 255 characters allowed.");
+                request.getSession().setAttribute("errorMessage", "Tiêu đề quá dài. Chỉ được phép có tối đa 255 ký tự.");
                 response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
                 return;
             }
@@ -148,21 +148,21 @@ public class NotificationServlet extends HttpServlet {
                 return;
             }
             if (status == null || (!status.equals("Read") && !status.equals("Unread"))) {
-                request.getSession().setAttribute("errorMessage", "Invalid status. Must be 'Read' or 'Unread'.");
+                request.getSession().setAttribute("errorMessage", "Trạng thái không hợp lệ. Phải là 'Đã đọc' hoặc 'Chưa đọc'.");
                 response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
                 return;
             }
             if (accountID != null && accountID <= 0) {
-                request.getSession().setAttribute("errorMessage", "Account ID must be a positive number if provided.");
+                request.getSession().setAttribute("errorMessage", "ID tài khoản phải là số dương nếu được cung cấp.");
                 response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
                 return;
             }
 
             notificationDAO.updateNotification(notificationID, title, content, type, status, accountID);
-            request.getSession().setAttribute("successMessage", "Notification updated successfully.");
+            request.getSession().setAttribute("successMessage", "Thông báo đã được cập nhật thành công.");
             response.sendRedirect("NotificationServlet?action=list&showSuccessModal=true");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "Invalid Notification ID or Account ID.");
+            request.getSession().setAttribute("errorMessage", "ID thông báo hoặc ID tài khoản không hợp lệ.");
             response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
         }
     }
@@ -172,10 +172,10 @@ public class NotificationServlet extends HttpServlet {
         try {
             int notificationID = Integer.parseInt(request.getParameter("notificationID"));
             notificationDAO.softDeleteNotification(notificationID);
-            request.getSession().setAttribute("successMessage", "Notification moved to trash.");
+            request.getSession().setAttribute("successMessage", "Thông báo đã được chuyển vào thùng rác.");
             response.sendRedirect("NotificationServlet?action=list");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "Invalid notification ID.");
+            request.getSession().setAttribute("errorMessage", "ID thông báo không hợp lệ.");
             response.sendRedirect("NotificationServlet?action=list");
         }
     }
@@ -185,10 +185,10 @@ public class NotificationServlet extends HttpServlet {
         try {
             int notificationID = Integer.parseInt(request.getParameter("notificationID"));
             notificationDAO.hardDeleteNotification(notificationID);
-            request.getSession().setAttribute("successMessage", "Notification permanently deleted.");
+            request.getSession().setAttribute("successMessage", "Thông báo đã bị xóa vĩnh viễn.");
             response.sendRedirect("NotificationServlet?action=listDeleted");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "Invalid notification ID.");
+            request.getSession().setAttribute("errorMessage", "ID thông báo không hợp lệ.");
             response.sendRedirect("NotificationServlet?action=listDeleted");
         }
     }
@@ -198,10 +198,10 @@ public class NotificationServlet extends HttpServlet {
         try {
             int notificationID = Integer.parseInt(request.getParameter("notificationID"));
             notificationDAO.restoreNotification(notificationID);
-            request.getSession().setAttribute("successMessage", "Notification restored successfully.");
+            request.getSession().setAttribute("successMessage", "Thông báo đã được khôi phục thành công.");
             response.sendRedirect("NotificationServlet?action=list");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "Invalid notification ID.");
+            request.getSession().setAttribute("errorMessage", "ID thông báo không hợp lệ.");
             response.sendRedirect("NotificationServlet?action=listDeleted");
         }
     }

@@ -42,38 +42,40 @@
                     <main>
                         <div class="container-fluid px-5">
                             <h1 class="mt-4">Product Management</h1>
-                            <button class="btn btn-success mt-3" onclick="location.href = 'ProductManagementServlet'">
-                                <i class="fas fa-plus"></i> Add Product
-                            </button>
-                            <!-- Form Search -->
-                            <form action="ProductServlet" method="GET" class="mb-4 mt-3">
-                                <div class="input-group">
-                                    <input type="hidden" name="action" value="search">
-                                    <input type="text" name="search" class="form-control" placeholder="Search Product Name..." aria-label="Search">
-                                    <button type="submit" class="btn btn-outline-secondary">
-                                        <i class="fas fa-search"></i>
-                                    </button>
-                                    <a href="ProductServlet" class="btn btn-outline-danger">
-                                        <i class="fas fa-sync"></i>
-                                    </a>
-                                    <c:if test="${sessionScope.roleID == 1}">
-                                        <a href="ProductServlet?action=listDeleted" class="btn btn-outline-danger">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                    </c:if>
-                                </div>
-                            </form>
 
-                            <!-- Bảng danh sách sản phẩm -->
-                            <div class="card mb-4 mt-4">
+                            <div class="card mb-4 mt-3">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <i class="fas fa-table me-1"></i> Product List
                                         </div>
+                                        <div>
+                                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" onclick="location.href = 'ProductManagementServlet'">
+                                                <i class="fas fa-plus"></i> Add Product
+                                            </button>
+                                        </div>
                                     </div>
+
                                 </div>
-                                <div class="card-body">
+
+                                <div class="card-body mb-3">
+                                    <form action="ProductServlet" method="GET" class="mb-4 mt-3">
+                                        <div class="input-group">
+                                            <input type="hidden" name="action" value="search">
+                                            <input type="text" name="search" class="form-control" placeholder="Search Product Name..." aria-label="Search">
+                                            <button type="submit" class="btn btn-outline-secondary">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                            <a href="ProductServlet" class="btn btn-outline-danger">
+                                                <i class="fas fa-sync"></i>
+                                            </a>
+                                            <c:if test="${sessionScope.roleID == 1}">
+                                                <a href="ProductServlet?action=listDeleted" class="btn btn-outline-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </c:if>
+                                        </div>
+                                    </form>
                                     <div class="table-responsive">
                                         <table class="table table-bordered table-striped table-hover">
                                             <thead class="table-dark">
@@ -176,6 +178,53 @@
                             </div>
                         </div>
                     </main>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="updateNotificationModal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <form action="NotificationServlet" method="POST">
+                        <input type="hidden" name="action" value="update">
+                        <!-- Hidden input chứa ID của notification cần cập nhật -->
+                        <input type="hidden" id="notificationID" name="notificationID" value="${notification.notificationID}">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Update Notification</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="updateTitle" class="form-label">Title</label>
+                                <input type="text" class="form-control" id="updateTitle" name="title" required maxlength="255" value="${notification.title}">
+                            </div>
+
+                            <!-- Phần content dùng Quill -->
+                            <div class="mb-3">
+                                <label class="form-label">Content</label>
+
+                                <!-- Quill container với nội dung hiện có -->
+                                <div id="editor-container-update" style="height: 200px; background-color: #fff;">
+                                    ${notification.content}
+                                </div>
+
+                                <!-- Input ẩn để lưu nội dung cập nhật từ Quill -->
+                                <input type="hidden" id="updateContent" name="content" value="${notification.content}">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="updateType" class="form-label">Type</label>
+                                <select class="form-control" id="updateType" name="type" required>
+                                    <option value="System" ${notification.type == 'System' ? 'selected' : ''}>System</option>
+                                    <option value="Promotional" ${notification.type == 'Promotional' ? 'selected' : ''}>Promotional</option>
+                                    <option value="User" ${notification.type == 'User' ? 'selected' : ''}>User</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Update Notification</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

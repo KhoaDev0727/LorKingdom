@@ -43,17 +43,16 @@
                     <main>
                         <div class="container-fluid px-5">
                             <h1 class="mt-4">Category Management</h1>
-                            <!-- Form Add category -->
-                            <!-- Form Add category -->
-                            <form action="CategoryServlet" method="POST">
+                           
+                            <form action="CategoryServlet" method="POST" class="mt-4">
                                 <input type="hidden" name="action" value="add">
 
                                 <label>Category Name</label>
                                 <input type="text" name="categoryName" required />
 
-                                <label>SuperCategory</label>
+                                <label>Category</label>
                                 <select name="superCategoryID" required>
-                                    <option value="">-- Select SuperCategory --</option>
+                                    <option value="">-- Select Category --</option>
                                     <c:forEach var="superCategory" items="${superCategories}">
                                         <option value="${superCategory.superCategoryID}">${superCategory.name}</option>
                                     </c:forEach>
@@ -98,8 +97,8 @@
                                             <thead class="table-dark">
                                                 <tr>
                                                     <th>Category ID</th>
-                                                    <th>SuperCategory ID</th>
-                                                    <th>category Name</th>
+                                                    <th>Category ID</th>
+                                                    <th>Category Name</th>
                                                     <th>Status</th>
                                                     <th>Date Created</th>
                                                     <th>Actions</th>
@@ -178,7 +177,7 @@
                                                                                 <input type="text" class="form-control" name="categoryName" value="${category.name}" required>
                                                                             </div>
                                                                             <div class="mb-3">
-                                                                                <label class="form-label">Super Category</label>
+                                                                                <label class="form-label">Category</label>
                                                                                 <select class="form-control" name="superCategoryID">
                                                                                     <c:forEach var="sc" items="${superCategories}">
                                                                                         <option value="${sc.superCategoryID}" <c:if test="${sc.superCategoryID == category.superCategoryID}">selected</c:if>>
@@ -196,27 +195,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="modal fade" id="confirmDeleteModal" tabindex="-1">
-                                                            <div class="modal-dialog">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title">Confirm Deletion</h5>
-                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        Are you sure you want to delete this category: ${category.name} ? 
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                                        <form id="deletecategoryForm" method="POST" action="CategoryServlet">
-                                                                            <input type="hidden" name="action" value="delete">
-                                                                            <input type="hidden" name="categoryID" id="deletecategoryID">
-                                                                            <button type="submit" class="btn btn-danger">Delete</button>
-                                                                        </form>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                      
                                                     </c:forEach>
                                                 </c:otherwise>
                                             </c:choose>
@@ -279,9 +258,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                         <form id="deletecategoryForm" method="POST" action="CategoryServlet">
-                            <!-- Gửi action = delete để gọi hàm deleteCategory -->
                             <input type="hidden" name="action" value="delete">
-                            <!-- ID ẩn DÙNG RIÊNG cho xóa mềm -->
                             <input type="hidden" name="categoryID" id="softDeleteCategoryID">
                             <button type="submit" class="btn btn-danger">Xóa</button>
                         </form>
@@ -289,7 +266,7 @@
                 </div>
             </div>
         </div>
-        <!-- Modal XÓA CỨNG -->
+
         <div class="modal fade" id="confirmHardDeleteModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -303,11 +280,9 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                         <form id="hardDeleteForm" method="POST" action="CategoryServlet">
-                            <!-- Gửi action = hardDelete để gọi hàm hardDeleteCategory -->
                             <input type="hidden" name="action" value="hardDelete">
-                            <!-- ID ẩn DÙNG RIÊNG cho xóa cứng -->
                             <input type="hidden" name="categoryID" id="hardDeleteCategoryID">
-                            <button type="submit" class="btn btn-danger">Xóa </button>
+                            <button type="submit" class="btn btn-danger">Xóa</button>
                         </form>
                     </div>
                 </div>

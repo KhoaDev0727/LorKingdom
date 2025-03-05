@@ -98,7 +98,6 @@ public class ProductManagementServlet extends HttpServlet {
             String quantityStr = request.getParameter("stockQuantity");
             String description = request.getParameter("description");
 
-            // Kiểm tra các trường bắt buộc không được rỗng
             if (productName == null || productName.trim().isEmpty()
                     || priceStartStr == null || priceStartStr.trim().isEmpty()
                     || quantityStr == null || quantityStr.trim().isEmpty()
@@ -108,7 +107,6 @@ public class ProductManagementServlet extends HttpServlet {
                 return;
             }
 
-            // Các giá trị int
             Integer category = Integer.parseInt(request.getParameter("category"));
             Integer gender = Integer.parseInt(request.getParameter("gender"));
             Integer priceRange = Integer.parseInt(request.getParameter("priceRange"));
@@ -117,8 +115,6 @@ public class ProductManagementServlet extends HttpServlet {
             Integer origin = Integer.parseInt(request.getParameter("origin"));
             Integer material = Integer.parseInt(request.getParameter("material"));
 
-            // Kiểm tra price: chỉ chấp nhận số (có thể có phần thập phân)
-            // Chuyển từ định dạng 1.000,50 -> 1000.50 (nếu có)
             priceStartStr = priceStartStr.replace(".", "").replace(",", ".");
             if (!priceStartStr.matches("^\\d+(\\.\\d+)?$")) {
                 session.setAttribute("errorMessage", "Giá sản phẩm phải là số.");
@@ -126,18 +122,15 @@ public class ProductManagementServlet extends HttpServlet {
                 return;
             }
 
-            // Kiểm tra stockQuantity: chỉ chấp nhận số nguyên
             if (!quantityStr.matches("^\\d+$")) {
                 session.setAttribute("errorMessage", "Số lượng sản phẩm phải là số nguyên.");
                 request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
                 return;
             }
 
-            // Chuyển đổi kiểu
             double priceStart = Double.parseDouble(priceStartStr);
             int stockQuantity = Integer.parseInt(quantityStr);
 
-            // Kiểm tra tên sản phẩm chỉ chứa chữ cái (có dấu) và khoảng trắng
             String namePattern = "^[\\p{L}\\s]+$";
             if (!productName.matches(namePattern)) {
                 session.setAttribute("errorMessage", "Tên sản phẩm chỉ được chứa chữ cái (có dấu) và khoảng trắng.");
@@ -145,17 +138,14 @@ public class ProductManagementServlet extends HttpServlet {
                 return;
             }
 
-            // Kiểm tra tên sản phẩm có tồn tại chưa
             if (ProductDAO.isProductNameExists(productName, 0)) {
                 session.setAttribute("errorMessage", "Tên sản phẩm đã tồn tại trong hệ thống!");
                 request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
                 return;
             }
 
-            // Sinh mã SKU
             String SKU = MyUtils.generateProductID();
 
-            // Tạo đối tượng Product
             Product p = new Product(
                     SKU,
                     category,
@@ -171,23 +161,39 @@ public class ProductManagementServlet extends HttpServlet {
                     description
             );
 
-            // Lưu ảnh
             List<String> imagePaths = new ArrayList<>();
+
             String uploadPath = getServletContext().getRealPath("/uploads");
             File uploadDir = new File(uploadPath);
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
             }
 
-            // Ảnh chính
             Part mainImagePart = request.getPart("mainImageUpload");
+            if (mainImagePart == null || mainImagePart.getSize() <= 0) {
+                // Chưa chọn ảnh chính
+                session.setAttribute("errorMessage", "Vui lòng chọn ảnh chính (Main Image).");
+                request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
+                return;
+            }
+
+            List<Part> detailImageParts = new ArrayList<>();
+            for (Part part : request.getParts()) {
+                if ("detailImages".equals(part.getName()) && part.getSize() > 0) {
+                    detailImageParts.add(part);
+                }
+            }
+            if (detailImageParts.isEmpty()) {
+                session.setAttribute("errorMessage", "Vui lòng chọn ít nhất 1 ảnh chi tiết (Detail Images).");
+                request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
+                return;
+            }
             if (mainImagePart != null && mainImagePart.getSize() > 0) {
                 String mainImageFileName = handleImageProduct.generateUniqueFileName(mainImagePart);
                 String mainImageFilePath = handleImageProduct.saveFile(mainImagePart, uploadPath, mainImageFileName);
                 imagePaths.add(mainImageFilePath);
             }
 
-            // Ảnh chi tiết
             for (Part part : request.getParts()) {
                 if (part.getName().equals("detailImages") && part.getSize() > 0) {
                     String detailImageFileName = handleImageProduct.generateUniqueFileName(part);
@@ -196,7 +202,6 @@ public class ProductManagementServlet extends HttpServlet {
                 }
             }
 
-            // Thêm vào DB
             boolean addRow = ProductDAO.addProduct(p, imagePaths, 1);
             if (addRow) {
                 session.setAttribute("successMessage", "Thêm sản phẩm thành công!");

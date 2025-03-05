@@ -116,10 +116,10 @@ public class SuperCategoryServlet extends HttpServlet {
                 case "update":
                     updateSuperCategory(request, response);
                     break;
-                case "delete": // Xóa mềm
+                case "delete": 
                     softDelete(request, response);
                     break;
-                case "hardDelete": // Xóa cứng
+                case "hardDelete": 
                     hardDelete(request, response);
                     break;
                 case "restore":
@@ -275,7 +275,7 @@ public class SuperCategoryServlet extends HttpServlet {
             listActive(request, response);
             return;
         }
-        List<SuperCategory> results = superCategoryDAO.searchSuperCategory(keyword.trim());
+        List<SuperCategory> results = superCategoryDAO.searchSuperCategory(keyword.trim().toLowerCase());
         request.setAttribute("superCategories", results);
         request.getRequestDispatcher("SupperCategoryManagement.jsp").forward(request, response);
     }
