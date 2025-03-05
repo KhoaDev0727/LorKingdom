@@ -23,6 +23,7 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <link rel="stylesheet" href="./CSS/styleProfileStaff.css">
         <title>Hồ sơ nhân viên</title>
+   
     </head>
     <body>
         <div class="page-content" id="page-content">
@@ -34,9 +35,6 @@
                             <div class="bg-c-lite-green user-profile">
                                 <div class="text-center text-white">
                                     <div class="avatar-container">
-                                        <c:if test="${not empty account.image}">
-                                            <img src="${account.image}" alt="Avatar" class="avatar">
-                                        </c:if>
                                         <div class="avatar-container">
                                             <c:if test="${not empty account.image}">
                                                 <img src="${pageContext.request.contextPath}/${account.image}" alt="Avatar" class="avatar">

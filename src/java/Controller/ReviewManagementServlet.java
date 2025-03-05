@@ -166,7 +166,9 @@ public class ReviewManagementServlet extends HttpServlet {
             int totalPages = myUntilsDAO.getTotalPagesSearchReview(filterRating, filterStatus, filterByIdUserProductID, PAGE_SIZE); // Chỉ ném SQLException
             int offset = (PAGE - 1) * PAGE_SIZE;
             List<Review> listReview = ReviewDAO.searchReview(filterRating, filterStatus, filterByIdUserProductID, offset, PAGE_SIZE);
-
+            for (Review review : listReview) {
+                System.out.println(review.getComment());
+            }
             request.setAttribute("reviews", listReview);
             request.setAttribute("filterByIdUserProductID", filterByIdUserProductID);
             request.setAttribute("filterRating", filterRating);

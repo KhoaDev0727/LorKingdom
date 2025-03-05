@@ -297,7 +297,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
-                            bạn có chắc chắn muốn xóa vĩnh viễn đánh giá này !
+                            Bạn có chắc chắn muốn xóa vĩnh viễn đánh giá này !
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

@@ -97,7 +97,7 @@
                                         <table class="table table-bordered table-striped table-hover">
                                             <thead class="table-dark">
                                                 <tr>
-                                                    <th>category ID</th>
+                                                    <th>Category ID</th>
                                                     <th>SuperCategory ID</th>
                                                     <th>category Name</th>
                                                     <th>Status</th>

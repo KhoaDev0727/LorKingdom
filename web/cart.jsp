@@ -104,7 +104,7 @@
             <div class="order-summary">
                 <h3>THÔNG TIN CHUNG</h3>
                 <div class="summary-details">
-                    <p>Tổng sản phẩm: <span>${not empty size ? size : 0}</span></p>
+                    <p>Tổng sản phẩm: <span class="total-product">${not empty size ? size : 0}</span></p>
                     <p>Tổng tạm tính: 
                         <span class="total-amount">
                             <fmt:formatNumber value="${not empty totalMoney ? totalMoney : 0}" pattern="#,###" /> VND
@@ -143,8 +143,24 @@
                                         success: function (response) {
                                             if (response && response.newQuantity !== undefined && response.itemTotal !== undefined) {
                                                 var row = $('button[onclick*="' + productId + '"]').closest('tr');
-                                                row.find('.quantity-input').val(response.newQuantity);
-                                                row.find('.total-price').text(formatNumber(response.itemTotal) + ' VND');
+
+                                                // If quantity is 0, remove the row from the table
+                                                if (response.newQuantity === 0) {
+                                                    row.remove();
+                                                    // Check if cart is empty after removal
+                                                    if (response.cartSize === 0) {
+                                                        $('.cart-table tbody').html('<tr><td colspan="7" class="empty-cart">Giỏ hàng của bạn đang trống</td></tr>');
+                                                        $('.delete-all').remove(); // Remove "Delete All" button
+                                                        $('.pay').remove(); // Remove "Thanh Toán" button
+                                                        $('.total-product').text('0');
+                                                    }
+                                                } else {
+                                                    // Update quantity and total price for the item
+                                                    row.find('.quantity-input').val(response.newQuantity);
+                                                    row.find('.total-price').text(formatNumber(response.itemTotal) + ' VND');
+                                                }
+
+                                                // Update total money and cart size
                                                 if (response.totalMoney !== undefined) {
                                                     $('.total-amount').text(formatNumber(response.totalMoney) + ' VND');
                                                 }
@@ -161,6 +177,10 @@
                                     });
                                 }
 
+                                // Utility function to format numbers
+                                function formatNumber(num) {
+                                    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                }
         </script>
     </body>
 </html>

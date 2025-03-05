@@ -113,13 +113,13 @@
 
                                                                 </c:if>
                                                             </td>
-                                                            <td>${s.userName}</td>
+                                                            <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.userName}</td>
                                                             <td>${s.phoneNumber}</td>
-                                                            <td>${s.email}</td>
+                                                            <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.email}</td>
                                                             <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                                                 ${s.password}
                                                             </td>
-                                                            <td>${s.address}</td> 
+                                                            <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.address}</td> 
                                                             <td>  <c:forEach var="r" items="${roles}">
                                                                     <c:if test="${s.roleID == r.roleID}">${r.name}</c:if>
                                                                 </c:forEach> 

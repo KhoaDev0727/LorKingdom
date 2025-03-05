@@ -204,7 +204,7 @@ public class CartManagementServlet extends HttpServlet {
             if (rowUpdate) {
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
-                response.getWriter().write("{\"totalMoney\": 0, \"cartSize\": 0}");
+                response.getWriter().write("{\"size\": 0,\"totalMoney\": 0, \"cartSize\": 0}");
             } else {
                 sendErrorResponse(response, "Lỗi khi xóa tất cả các sản phẩm trong giỏ hàng.");
             }
