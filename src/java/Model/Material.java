@@ -10,17 +10,20 @@ package Model;
  */
 public class Material {
 
-    private int materialID;
+   private int materialID;
     private String name;
     private String description;
+    private int isDeleted;
 
     public Material() {
+        this.isDeleted = 0;
     }
 
-    public Material(int materialID, String name, String description) {
+    public Material(int materialID, String name, String description, int isDeleted) {
         this.materialID = materialID;
         this.name = name;
         this.description = description;
+        this.isDeleted = isDeleted;
     }
 
     public int getMaterialID() {
@@ -45,5 +48,13 @@ public class Material {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(int isDeleted) {
+        this.isDeleted = isDeleted;
     }
 }

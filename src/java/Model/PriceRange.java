@@ -4,6 +4,7 @@
  */
 package Model;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 
 /**
@@ -12,22 +13,25 @@ import java.sql.Timestamp;
  */
 public class PriceRange {
 
-    private int priceRangeID;     // ID của PriceRange
-    private String priceRange;    // Khoảng giá
-    private Timestamp createdAt;  // Ngày tạo
+    private int priceRangeID;
+    private String priceRange;
+    private Date createdAt;
+    private int isDeleted;
 
     public PriceRange() {
+        this.isDeleted = 0;
     }
 
-    public PriceRange(int priceRangeID, String priceRange, Timestamp createdAt) {
+    public PriceRange(int priceRangeID, String priceRange, Date createdAt, int isDeleted) {
         this.priceRangeID = priceRangeID;
         this.priceRange = priceRange;
         this.createdAt = createdAt;
+        this.isDeleted = isDeleted;
     }
 
     public int getPriceRangeID() {
         return priceRangeID;
-    }   
+    }
 
     public void setPriceRangeID(int priceRangeID) {
         this.priceRangeID = priceRangeID;
@@ -41,20 +45,19 @@ public class PriceRange {
         this.priceRange = priceRange;
     }
 
-    public Timestamp getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
-    @Override
-    public String toString() {
-        return "PriceRange{"
-                + "priceRangeID=" + priceRangeID
-                + ", priceRange='" + priceRange + '\''
-                + ", createdAt=" + createdAt
-                + '}';
+    public int getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(int isDeleted) {
+        this.isDeleted = isDeleted;
     }
 }

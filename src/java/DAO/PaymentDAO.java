@@ -20,8 +20,9 @@ public class PaymentDAO {
     
     public List<Payment> getAllPaymentMethods() throws SQLException, ClassNotFoundException {
         List<Payment> paymentMethods = new ArrayList<>();
-        String sql = "SELECT * FROM PaymentMethods";
-        
+        String sql = "SELECT * "
+        + "FROM PaymentMethods "
+        + "WHERE IsDeleted = 0";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
@@ -29,13 +30,32 @@ public class PaymentDAO {
                 paymentMethods.add(new Payment(
                     rs.getInt("PaymentMethodID"),
                     rs.getString("MethodName"),
-                    rs.getString("Description")
+                    rs.getString("Description"),
+                    rs.getInt("IsDeleted")
                 ));
             }
         }
         return paymentMethods;
     }
     
+    public List<Payment> getDeletedPaymentMethod() throws SQLException, ClassNotFoundException {
+         List<Payment> paymentMethods = new ArrayList<>();
+        String query = "SELECT PaymentMethodID, MethodName, Description, IsDeleted "
+                + "FROM PaymentMethods "
+                + "WHERE IsDeleted = 1";
+        try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                Payment method = new Payment(
+                        rs.getInt("PaymentMethodID"),
+                        rs.getString("MethodName"),
+                        rs.getString("Description"),
+                        rs.getInt("IsDeleted")
+                );
+                paymentMethods.add(method);
+            }
+        }
+        return paymentMethods;
+    }
     public void updatePaymentMethod(int id, String methodName, String description) throws SQLException, ClassNotFoundException {
         String sql = "UPDATE PaymentMethods SET MethodName = ?, Description = ? WHERE PaymentMethodID = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -47,13 +67,28 @@ public class PaymentDAO {
         }
     }
     
-    public void deletePaymentMethod(int id) throws SQLException, ClassNotFoundException {
-        String sql = "DELETE FROM PaymentMethods WHERE PaymentMethodID = ?";
-        
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            stmt.executeUpdate();
+    public void softDeletePaymentMethod(int PaymentMethodID) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE PaymentMethods SET IsDeleted = 1 WHERE PaymentMethodID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, PaymentMethodID);
+            ps.executeUpdate();
+        }
+    }
+
+    // 5) Xóa cứng (DELETE)
+    public void hardDeletePaymentMethod(int PaymentMethodID) throws SQLException, ClassNotFoundException {
+        String query = "DELETE FROM PaymentMethods WHERE PaymentMethodID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, PaymentMethodID);
+            ps.executeUpdate();
+        }
+    }
+    
+    public void restorePaymentMethod(int PaymentMethodID) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE PaymentMethods SET IsDeleted = 0 WHERE PaymentMethodID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, PaymentMethodID);
+            ps.executeUpdate();
         }
     }
     
@@ -72,7 +107,8 @@ public class PaymentDAO {
                     paymentMethods.add(new Payment(
                         rs.getInt("PaymentMethodID"),
                         rs.getString("MethodName"),
-                        rs.getString("Description")
+                        rs.getString("Description"),
+                        rs.getInt("IsDeleted")
                     ));
                 }
             }

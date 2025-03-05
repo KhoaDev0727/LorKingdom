@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -33,20 +34,20 @@
     </head>
     <body class="sb-nav-fixed">
         <div id="layoutSidenav">
+            <c:if test="${empty sessionScope.roleID}">
+                <c:redirect url="/Admin/loginPage.jsp"/>
+            </c:if>
+
             <div id="layoutSidenav_content">
                 <%@ include file="Component/SideBar.jsp" %>
                 <div class="dashboard-container">
                     <main>
                         <div class="container-fluid px-5">
                             <h1 class="mt-4">Age Management</h1>
-                            <!-- Form Add category -->
-                            <form action="AgeServlet" method="POST">
-                                <input type="hidden" name="action" value="add">
-                                <label for="ageRange">Age Range</label>
-                                <input type="text" id="ageRange" name="ageRange" placeholder="e.g., 0-3 months" required />
-                                <!-- Submit Button -->
-                                <button class="btn btn-primary ms-2" type="submit">Add Age</button>
-                            </form>
+                            <button class="btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#addAgeModal">
+                                Add Age
+                            </button>
+
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
@@ -68,6 +69,11 @@
                                             <a href="AgeServlet" class="btn btn-outline-danger">
                                                 <i class="fas fa-sync"></i>
                                             </a>
+                                            <c:if test="${sessionScope.roleID == 1}">
+                                                <a href="AgeServlet?action=listDeleted" class="btn btn-outline-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </c:if>
                                         </div>
                                     </form>
                                     <!-- Customer Table -->
@@ -78,6 +84,7 @@
                                                     <th>Age ID</th>
                                                     <th>Age Range</th>
                                                     <th>Date Created</th>
+                                                    <th>Status</th>
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
@@ -90,52 +97,98 @@
                                                         </tr>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <c:forEach var="age" items="${ages}">
-                                                            <tr>
-                                                                <td>${age.ageID}</td>
-                                                                <td>${age.ageRange}</td>
-                                                                <td>${age.createdAt}</td>
+                                                        <c:forEach var="ag" items="${ages}">
+                                                            <tr class="${ag.isDeleted == 1 ? 'deleted-row' : ''}">
+                                                                <td>${ag.ageID}</td>
+                                                                <td>${ag.ageRange}</td>
                                                                 <td>
-                                                                    <!-- Edit Button -->
-                                                                    <button class="btn btn-sm btn-warning" 
-                                                                            data-bs-toggle="modal" 
-                                                                            data-bs-target="#editAgeModal-${age.ageID}">
-                                                                        <i class="fas fa-edit"></i> 
-                                                                    </button>
-                                                                    <!-- Delete Button -->
-                                                                    <button class="btn btn-sm btn-danger"
-                                                                            data-bs-toggle="modal"
-                                                                            data-bs-target="#confirmDeleteModal"
-                                                                            onclick="setDeleteAgeID(${age.ageID})">
-                                                                        <i class="fas fa-trash"></i>
-                                                                    </button>
+                                                                    <!-- Nếu muốn format date -->
+                                                                    <fmt:formatDate value="${ag.createdAt}" pattern="yyyy-MM-dd"/>
+                                                                </td>
+                                                                <td>
+                                                                    <c:choose>
+                                                                        <c:when test="${ag.isDeleted == 1}">
+                                                                            <span class="badge bg-secondary">Deleted</span>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <span class="badge bg-success">Active</span>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
+                                                                </td>
+                                                                <td>
+                                                                    <!-- Nếu isDeleted=0 => Edit & Xóa mềm -->
+                                                                    <c:if test="${ag.isDeleted == 0}">
+                                                                        <button class="btn btn-sm btn-warning"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#editAgeModal-${ag.ageID}">
+                                                                            <i class="fas fa-edit"></i>
+                                                                        </button>
+
+                                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#confirmSoftDeleteModal"
+                                                                                onclick="setSoftDeleteAgeID(${ag.ageID})">
+                                                                            <i class="fas fa-trash"></i>
+                                                                        </button>
+                                                                    </c:if>
+
+                                                                    <!-- Nếu isDeleted=1 => Restore & Xóa cứng -->
+                                                                    <c:if test="${ag.isDeleted == 1}">
+                                                                        <button class="btn btn-sm btn-success"
+                                                                                onclick="location.href = 'AgeServlet?action=restore&ageID=${ag.ageID}'">
+                                                                            Restore
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#confirmHardDeleteModal"
+                                                                                onclick="setHardDeleteAgeID(${ag.ageID})">
+                                                                            <i class="fas fa-trash"></i>
+                                                                        </button>
+                                                                    </c:if>
                                                                 </td>
                                                             </tr>
-                                                            <!-- Edit Modal -->
-                                                        <div class="modal fade" id="editAgeModal-${age.ageID}" tabindex="-1">
+                                                            <!-- Modal Edit Age -->
+                                                            <c:set var="rangeParts" value="${fn:split(ag.ageRange, ' ')}" />
+                                                            <c:set var="bounds" value="${fn:split(rangeParts[0], '-')}" />
+                                                        <div class="modal fade" id="editAgeModal-${ag.ageID}" tabindex="-1" aria-labelledby="editAgeModalLabel-${ag.ageID}" aria-hidden="true">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
-                                                                    <form method="post" action="AgeServlet">
-                                                                        <div class="modal-header">
-                                                                            <h5 class="modal-title">Edit Age</h5>
-                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                                        </div>
-                                                                        <div class="modal-body">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="editAgeModalLabel-${ag.ageID}">Edit Age Range</h5>
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <form id="editAgeForm-${ag.ageID}" action="AgeServlet" method="POST">
+                                                                            <!-- Đặt action update và truyền kèm ageID -->
                                                                             <input type="hidden" name="action" value="update">
-                                                                            <input type="hidden" name="ageID" value="${age.ageID}">
+                                                                            <input type="hidden" name="ageID" value="${ag.ageID}">
+
                                                                             <div class="mb-3">
-                                                                                <label class="form-label">Age Range</label>
-                                                                                <input type="text" class="form-control" name="ageRange" value="${age.ageRange}" required>
+                                                                                <label for="ageStart-${ag.ageID}" class="form-label">Start Age</label>
+                                                                                <input type="number" class="form-control" id="ageStart-${ag.ageID}" name="ageStart" min="0" required
+                                                                                       value="${bounds[0]}">
                                                                             </div>
+
+                                                                            <div class="mb-3">
+                                                                                <label for="ageEnd-${ag.ageID}" class="form-label">End Age</label>
+                                                                                <input type="number" class="form-control" id="ageEnd-${ag.ageID}" name="ageEnd" min="0" required
+                                                                                       value="${bounds[1]}">
+                                                                            </div>
+
+                                                                            <div class="mb-3">
+                                                                                <label for="unit-${ag.ageID}" class="form-label">Unit</label>
+                                                                                <select class="form-select" id="unit-${ag.ageID}" name="unit">
+                                                                                    <option value="tháng" <c:if test="${rangeParts[1] eq 'tháng'}">selected</c:if>>Tháng</option>
+                                                                                    <option value="tuổi" <c:if test="${rangeParts[1] eq 'tuổi'}">selected</c:if>>Tuổi</option>
+                                                                                    </select>
+                                                                                </div>
+
+                                                                                <button type="submit" class="btn btn-primary">Save changes</button>
+                                                                            </form>
                                                                         </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                            <button type="submit" class="btn btn-primary">Save changes</button>
-                                                                        </div>
-                                                                    </form>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
                                                     </c:forEach>
                                                 </c:otherwise>
                                             </c:choose>
@@ -169,36 +222,133 @@
         </div>
 
         <!-- Delete Confirmation Modal -->
-        <div class="modal fade" id="confirmDeleteModal" tabindex="-1">
+        <div class="modal fade" id="successModalLabel" tabindex="-1" aria-labelledby="successModalTitle" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title" id="successModalTitle">Success</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-dark">
+                        <p id="successMessageContent">${sessionScope.successMessage}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal XÓA MỀM -->
+        <div class="modal fade" id="confirmSoftDeleteModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Confirm Deletion</h5>
+                        <h5 class="modal-title">Xác nhận xóa </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        Are you sure you want to delete this age?
+                        Bạn có chắc chắn muốn đưa khoảng tuổi này vào thùng rác không?
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <form id="deleteAgeForm" method="POST" action="AgeServlet">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <form method="POST" action="AgeServlet">
                             <input type="hidden" name="action" value="delete">
-                            <input type="hidden" name="ageID" id="deleteAgeID">
-                            <button type="submit" class="btn btn-danger">Delete</button>
+                            <input type="hidden" name="ageID" id="softDeleteAgeID">
+                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Xóa </button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
-        <script>
-            function setDeleteAgeID(ageID) {
-                document.getElementById("deleteAgeID").value = ageID;
-            }
 
-            <c:if test="${not empty sessionScope.errorMessage}">
-            var errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
+        <!-- Modal XÓA CỨNG -->
+        <div class="modal fade" id="confirmHardDeleteModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Xác nhận xóa </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        Bạn có chắc chắn muốn xóa khoảng tuổi vĩnh viễn  này không?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <form method="POST" action="AgeServlet">
+                            <input type="hidden" name="action" value="hardDelete">
+                            <input type="hidden" name="ageID" id="hardDeleteAgeID">
+                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Xóa </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Modal thêm độ tuổi -->
+<div class="modal fade" id="addAgeModal" tabindex="-1" aria-labelledby="addAgeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAgeModalLabel">Add Age Range</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addAgeForm" action="AgeServlet" method="POST">
+                    <input type="hidden" name="action" value="add">
+
+                    <div class="mb-3">
+                        <label for="ageStart" class="form-label">Start Age</label>
+                        <input type="number" class="form-control" id="ageStart" name="ageStart" min="0" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="ageEnd" class="form-label">End Age</label>
+                        <input type="number" class="form-control" id="ageEnd" name="ageEnd" min="0" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="unit" class="form-label">Unit</label>
+                        <select class="form-select" id="unit" name="unit">
+                            <option value="tháng">Tháng</option>
+                            <option value="tuổi">Tuổi</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Cập Nhật Tuổi -->
+
+
+<script>
+    function setSoftDeleteAgeID(id) {
+        document.getElementById("softDeleteAgeID").value = id;
+    }
+    function setHardDeleteAgeID(id) {
+        document.getElementById("hardDeleteAgeID").value = id;
+    }
+    window.onload = function () {
+        const errorMessage = "${sessionScope.errorMessage}";
+        if (errorMessage && errorMessage.trim() !== "") {
+            const errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
             errorModal.show();
-            </c:if>
-        </script>
-    </body>
+    <% request.getSession().removeAttribute("errorMessage"); %>
+        }
+
+        let successMessage = '<%= session.getAttribute("successMessage") %>';
+        if (successMessage && successMessage.trim() !== "null" && successMessage.trim() !== "") {
+            let successModal = new bootstrap.Modal(document.getElementById("successModalLabel"));
+            successModal.show();
+    <% session.removeAttribute("successMessage"); %>
+        }
+    };
+</script>
+</body>
 </html>

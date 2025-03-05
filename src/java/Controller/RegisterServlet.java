@@ -1,13 +1,18 @@
 package Controller;
 
+import DAO.AccountDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
+import org.json.JSONObject;
 
 public class RegisterServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json"); // Thiết lập response là JSON
+        JSONObject jsonResponse = new JSONObject();
+
         String username = request.getParameter("username") != null ? request.getParameter("username").trim() : "";
         String email = request.getParameter("email") != null ? request.getParameter("email").trim() : "";
         String password = request.getParameter("password") != null ? request.getParameter("password").trim() : "";
@@ -18,52 +23,75 @@ public class RegisterServlet extends HttpServlet {
 
         // Kiểm tra dữ liệu đầu vào
         if (username.isEmpty()) {
-            usernameError = "Username is required.";
+            usernameError = "Tên người dùng là bắt buộc.";
             hasError = true;
         }
         if (email.isEmpty()) {
-            emailError = "Email is required.";
+            emailError = "Cần phải có email.";
             hasError = true;
         } else if (!isValidEmail(email)) {
-            emailError = "Invalid email format.";
+            emailError = "Định dạng email không hợp lệ.";
             hasError = true;
         }
         if (password.isEmpty()) {
-            passwordError = "Password is required.";
+            passwordError = "Cần phải nhập mật khẩu.";
             hasError = true;
         } else if (password.length() < 6) {
-            passwordError = "Password must be at least 6 characters long.";
+            passwordError = "Mật khẩu phải dài ít nhất 6 ký tự.";
             hasError = true;
         }
         if (phoneNumber.isEmpty()) {
-            phoneNumberError = "Phone number is required.";
+            phoneNumberError = "Bắt buộc phải nhập số điện thoại.";
             hasError = true;
         } else if (!phoneNumber.matches("\\d{10}")) {
-            phoneNumberError = "Phone number must be 10 digits.";
+            phoneNumberError = "Số điện thoại phải có 10 chữ số.";
+            hasError = true;
+        }
+
+        // Kiểm tra email và số điện thoại đã tồn tại chưa
+        AccountDAO accountDAO = new AccountDAO();
+        try {
+            if (!hasError && accountDAO.isEmailExists(email)) {
+                emailError = "Email này đã được sử dụng.";
+                hasError = true;
+            }
+            if (!hasError && accountDAO.isPhoneNumberExists(phoneNumber)) {
+                phoneNumberError = "Số điện thoại này đã được sử dụng.";
+                hasError = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            emailError = "Lỗi khi kiểm tra email hoặc số điện thoại. Vui lòng thử lại.";
             hasError = true;
         }
 
         if (hasError) {
-            // Gửi lỗi về lại trang đăng ký
-            request.setAttribute("usernameError", usernameError);
-            request.setAttribute("emailError", emailError);
-            request.setAttribute("passwordError", passwordError);
-            request.setAttribute("phoneNumberError", phoneNumberError);
-            request.setAttribute("usernameValue", username);
-            request.setAttribute("emailValue", email);
-            request.setAttribute("phoneValue", phoneNumber);
-            request.getRequestDispatcher("register.jsp").forward(request, response);
-            return;
+            // Trả về JSON chứa thông tin lỗi
+            jsonResponse.put("success", false);
+            jsonResponse.put("usernameError", usernameError);
+            jsonResponse.put("emailError", emailError);
+            jsonResponse.put("passwordError", passwordError);
+            jsonResponse.put("phoneNumberError", phoneNumberError);
+            jsonResponse.put("usernameValue", username);
+            jsonResponse.put("emailValue", email);
+            jsonResponse.put("phoneValue", phoneNumber);
+        } else {
+            // Hash mật khẩu trước khi lưu vào session
+            String hashedPassword = MyUtils.hashPassword(password);
+
+            // Lưu thông tin tạm thời vào session
+            HttpSession session = request.getSession();
+            session.setAttribute("tempUsername", username);
+            session.setAttribute("tempEmail", email);
+            session.setAttribute("tempPassword", hashedPassword);
+            session.setAttribute("tempPhoneNumber", phoneNumber);
+
+            // Trả về JSON thành công
+            jsonResponse.put("success", true);
         }
 
-        // Lưu thông tin tạm thời vào session
-        HttpSession session = request.getSession();
-        session.setAttribute("tempUsername", username);
-        session.setAttribute("tempEmail", email);
-        session.setAttribute("tempPassword", password);
-        session.setAttribute("tempPhoneNumber", phoneNumber);
-        
-        response.sendRedirect("SendVerificationServlet");
+        // Gửi JSON response
+        response.getWriter().write(jsonResponse.toString());
     }
 
     private boolean isValidEmail(String email) {

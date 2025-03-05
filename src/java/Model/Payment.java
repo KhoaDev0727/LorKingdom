@@ -5,14 +5,17 @@ public class Payment {
     private int paymentMethodID;
     private String methodName;
     private String description;
+    private int isDeleted;
 
     public Payment() {
+        this.isDeleted = 0;
     }
 
-    public Payment(int paymentMethodID, String methodName, String description) {
+    public Payment(int paymentMethodID, String methodName, String description, int isDeleted) {
         this.paymentMethodID = paymentMethodID;
         this.methodName = methodName;
         this.description = description;
+        this.isDeleted = isDeleted;
     }
 
     public int getPaymentMethodID() {
@@ -38,4 +41,14 @@ public class Payment {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public int getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(int isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    
 }

@@ -10,8 +10,9 @@ public class ShippingDAO {
 
     public List<Shipping> getAllShippingMethods() throws SQLException, ClassNotFoundException {
         List<Shipping> shippingMethods = new ArrayList<>();
-        String sql = "SELECT * FROM ShippingMethods";
-
+        String sql = "SELECT * "
+        + "FROM ShippingMethods "
+        + "WHERE IsDeleted = 0";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
@@ -20,13 +21,33 @@ public class ShippingDAO {
                 shippingMethods.add(new Shipping(
                         rs.getInt("ShippingMethodID"),
                         rs.getString("MethodName"),
-                        rs.getString("Description")
+                        rs.getString("Description"),
+                        rs.getInt("IsDeleted")
                 ));
             }
         }
         return shippingMethods;
     }
 
+    public List<Shipping> getDeletedShippingMethod() throws SQLException, ClassNotFoundException {
+         List<Shipping> shippingMethods = new ArrayList<>();
+        String query = "SELECT ShippingMethodID, MethodName, Description, IsDeleted "
+                + "FROM ShippingMethods "
+                + "WHERE IsDeleted = 1";
+        try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                Shipping method = new Shipping(
+                        rs.getInt("ShippingMethodID"),
+                        rs.getString("MethodName"),
+                        rs.getString("Description"),
+                        rs.getInt("IsDeleted")
+                );
+                shippingMethods.add(method);
+            }
+        }
+        return shippingMethods;
+    }
+    
     public void addShippingMethod(String methodName, String description) throws SQLException, ClassNotFoundException {
         String sql = "INSERT INTO ShippingMethods (MethodName, Description) VALUES (?, ?)";
 
@@ -52,6 +73,32 @@ public class ShippingDAO {
         }
     }
 
+    public void softDeleteShippingMethod(int ShippingMethodID) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE ShippingMethods SET IsDeleted = 1 WHERE ShippingMethodID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, ShippingMethodID);
+            ps.executeUpdate();
+        }
+    }
+
+    // 5) Xóa cứng (DELETE)
+    public void hardDeleteShippingMethod(int ShippingMethodID) throws SQLException, ClassNotFoundException {
+        String query = "DELETE FROM ShippingMethods WHERE ShippingMethodID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, ShippingMethodID);
+            ps.executeUpdate();
+        }
+    }
+
+    // 6) Khôi phục (IsDeleted=0)
+    public void restoreShippingMethod(int ShippingMethodID) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE ShippingMethods SET IsDeleted = 0 WHERE ShippingMethodID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, ShippingMethodID);
+            ps.executeUpdate();
+        }
+    }
+    
     public boolean deleteShippingMethod(int id) throws SQLException, ClassNotFoundException {
     String sql = "DELETE FROM ShippingMethods WHERE ShippingMethodID = ?";
     try (Connection conn = DBConnection.getConnection();
@@ -83,7 +130,8 @@ public class ShippingDAO {
                     shippingMethods.add(new Shipping(
                             rs.getInt("ShippingMethodID"),
                             rs.getString("MethodName"),
-                            rs.getString("Description")
+                            rs.getString("Description"),
+                            rs.getInt("IsDeleted")
                     ));
                 }
             }

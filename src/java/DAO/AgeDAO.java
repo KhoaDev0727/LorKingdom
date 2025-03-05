@@ -22,15 +22,38 @@ public class AgeDAO {
 
     public List<Age> getAllAges() throws SQLException, ClassNotFoundException {
         List<Age> ages = new ArrayList<>();
-        String query = "SELECT AgeID, AgeRange, CreatedAt FROM Age";
-
+        String query = "SELECT AgeID, AgeRange, CreatedAt, IsDeleted "
+                + "FROM Age "
+                + "WHERE IsDeleted = 0";
         try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
-                ages.add(new Age(
+                Age age = new Age(
                         rs.getInt("AgeID"),
                         rs.getString("AgeRange"),
-                        rs.getDate("CreatedAt")
-                ));
+                        rs.getDate("CreatedAt"),
+                        rs.getInt("IsDeleted")
+                );
+                ages.add(age);
+            }
+        }
+        return ages;
+    }
+
+    // 2) Lấy tất cả Age đã xóa mềm (isDeleted=1)
+    public List<Age> getDeletedAges() throws SQLException, ClassNotFoundException {
+        List<Age> ages = new ArrayList<>();
+        String query = "SELECT AgeID, AgeRange, CreatedAt, IsDeleted "
+                + "FROM Age "
+                + "WHERE IsDeleted = 1";
+        try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                Age age = new Age(
+                        rs.getInt("AgeID"),
+                        rs.getString("AgeRange"),
+                        rs.getDate("CreatedAt"),
+                        rs.getInt("IsDeleted")
+                );
+                ages.add(age);
             }
         }
         return ages;
@@ -46,8 +69,25 @@ public class AgeDAO {
     }
 
     // Delete age by ID
-    public void deleteAge(int ageID) throws SQLException, ClassNotFoundException {
+    public void softDeleteAge(int ageID) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE Age SET IsDeleted = 1 WHERE AgeID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, ageID);
+            ps.executeUpdate();
+        }
+    }
+
+    // 5) Xóa cứng (DELETE hẳn)
+    public void hardDeleteAge(int ageID) throws SQLException, ClassNotFoundException {
         String query = "DELETE FROM Age WHERE AgeID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, ageID);
+            ps.executeUpdate();
+        }
+    }
+
+    public void restoreAge(int ageID) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE Age SET IsDeleted = 0 WHERE AgeID = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, ageID);
             ps.executeUpdate();
@@ -57,7 +97,7 @@ public class AgeDAO {
     // Search age by keyword
     public List<Age> searchAge(String keyword) throws SQLException, ClassNotFoundException {
         List<Age> ages = new ArrayList<>();
-        String query = "SELECT AgeID, AgeRange, CreatedAt FROM Age WHERE AgeRange LIKE ?";
+        String query = "SELECT AgeID, AgeRange, CreatedAt, IsDeleted FROM Age WHERE AgeRange LIKE ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, "%" + keyword + "%");
             try ( ResultSet rs = ps.executeQuery()) {
@@ -65,7 +105,8 @@ public class AgeDAO {
                     ages.add(new Age(
                             rs.getInt("AgeID"),
                             rs.getString("AgeRange"),
-                            rs.getDate("CreatedAt")
+                            rs.getDate("CreatedAt"),
+                            rs.getInt("IsDeleted")
                     ));
                 }
             }
@@ -109,5 +150,6 @@ public class AgeDAO {
         }
         return ageRange;
     }
+
 
 }

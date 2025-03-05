@@ -39,6 +39,9 @@
     <body class="sb-nav-fixed">
         <div id="layoutSidenav">
             <div id="layoutSidenav_content">
+                <c:if test="${empty sessionScope.roleID}">
+                    <c:redirect url="/Admin/loginPage.jsp"/>
+                </c:if>
                 <%@ include file="Component/SideBar.jsp" %>
                 <div class="dashboard-container">
                     <main>
@@ -73,6 +76,11 @@
                                             <a href="BrandServlet" class="btn btn-outline-danger">
                                                 <i class="fas fa-sync"></i>
                                             </a>
+                                            <c:if test="${sessionScope.roleID == 1}">
+                                                <a href="BrandServlet?action=listDeleted" class="btn btn-outline-danger">
+                                                    <i class="fas fa-trash"></i> 
+                                                </a>
+                                            </c:if>
                                         </div>
                                     </form>
                                     <!-- Customer Table -->
@@ -83,6 +91,7 @@
                                                     <th>Brand ID</th>
                                                     <th>Brand Name</th>
                                                     <th>Date Created</th>
+                                                    <th>Status</th>
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
@@ -95,30 +104,54 @@
                                                         </tr>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <c:forEach var="brand" items="${brands}">
-                                                            <tr>
-                                                                <td>${brand.brandID}</td>
-                                                                <td>${brand.name}</td>
-                                                                <td>${brand.createdAt}</td>
+                                                        <c:forEach var="br" items="${brands}">
+                                                            <tr class="${br.isDeleted == 1 ? 'deleted-row' : ''}">
+                                                                <td>${br.brandID}</td>
+                                                                <td>${br.name}</td>
+                                                                <td>${br.createdAt}</td>
                                                                 <td>
-                                                                    <!-- Edit Button -->
-                                                                    <button class="btn btn-sm btn-warning" 
-                                                                            data-bs-toggle="modal" 
-                                                                            data-bs-target="#editBrandModal-${brand.brandID}">
-                                                                        <i class="fas fa-edit"></i> 
-                                                                    </button>
+                                                                    <c:choose>
+                                                                        <c:when test="${br.isDeleted == 1}">
+                                                                            <span class="badge bg-secondary">Deleted</span>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <span class="badge bg-success">Active</span>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
+                                                                </td>
+                                                                <td>
+                                                                    <!-- Nếu isDeleted=0 => Hiển thị Edit & Xóa mềm -->
+                                                                    <c:if test="${br.isDeleted == 0}">
+                                                                        <button class="btn btn-sm btn-warning"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#editBrandModal-${br.brandID}">
+                                                                            <i class="fas fa-edit"></i>
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#confirmSoftDeleteModal"
+                                                                                onclick="setSoftDeleteBrandID(${br.brandID})">
+                                                                            <i class="fas fa-trash"></i>
+                                                                        </button>
+                                                                    </c:if>
 
-                                                                    <!-- Delete Button -->
-                                                                    <button class="btn btn-sm btn-danger"
-                                                                            data-bs-toggle="modal"
-                                                                            data-bs-target="#confirmDeleteModal"
-                                                                            onclick="setDeleteBrandID(${brand.brandID})">
-                                                                        <i class="fas fa-trash"></i>
-                                                                    </button>
+                                                                    <!-- Nếu isDeleted=1 => Hiển thị Restore & Xóa cứng -->
+                                                                    <c:if test="${br.isDeleted == 1}">
+                                                                        <button class="btn btn-sm btn-success"
+                                                                                onclick="location.href = 'BrandServlet?action=restore&brandID=${br.brandID}'">
+                                                                            Restore
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#confirmHardDeleteModal"
+                                                                                onclick="setHardDeleteBrandID(${br.brandID})">
+                                                                            <i class="fas fa-trash"></i>
+                                                                        </button>
+                                                                    </c:if>
                                                                 </td>
                                                             </tr>
-                                                            <!-- Edit Modal -->
-                                                        <div class="modal fade" id="editBrandModal-${brand.brandID}" tabindex="-1">
+                                                            <!-- Modal Edit Brand -->
+                                                        <div class="modal fade" id="editBrandModal-${br.brandID}" tabindex="-1">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
                                                                     <form method="post" action="BrandServlet">
@@ -128,10 +161,10 @@
                                                                         </div>
                                                                         <div class="modal-body">
                                                                             <input type="hidden" name="action" value="update">
-                                                                            <input type="hidden" name="brandID" value="${brand.brandID}">
+                                                                            <input type="hidden" name="brandID" value="${br.brandID}">
                                                                             <div class="mb-3">
                                                                                 <label class="form-label">Brand Name</label>
-                                                                                <input type="text" class="form-control" name="name" value="${brand.name}" required>
+                                                                                <input type="text" class="form-control" name="name" value="${br.name}" required>
                                                                             </div>
                                                                         </div>
                                                                         <div class="modal-footer">
@@ -165,7 +198,24 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p>${sessionScope.errorMessage}</p>
+                        <p id="errorMessage">${sessionScope.errorMessage}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Success Message Modal -->
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title" id="successModalLabel">Success</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-dark">
+                        <p id="successMessage">${sessionScope.successMessage}</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -174,38 +224,73 @@
             </div>
         </div>
 
-        <!-- Confirm Delete Modal -->
-        <div class="modal fade" id="confirmDeleteModal" tabindex="-1">
+        <!-- Modal XÓA MỀM -->
+        <div class="modal fade" id="confirmSoftDeleteModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Confirm Deletion</h5>
+                        <h5 class="modal-title">Xác nhận xóa</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        Are you sure you want to delete this Brand entry?
+                        Thương hiệu này sẽ được chuyển vào thùng rác!
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <form id="deleteBrandForm" method="POST" action="BrandServlet">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <form method="POST" action="BrandServlet">
                             <input type="hidden" name="action" value="delete">
-                            <input type="hidden" name="brandID" id="deleteBrandID">
-                            <button type="submit" class="btn btn-danger">Delete</button>
+                            <input type="hidden" name="brandID" id="softDeleteBrandID">
+                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
                         </form>
                     </div>
                 </div>
             </div>
-        </div>S
+        </div>
+
+        <!-- Modal XÓA CỨNG -->
+        <div class="modal fade" id="confirmHardDeleteModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Xác nhận xóa </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        Thương hiệu này sẽ được xóa vĩnh viễn!
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <form method="POST" action="BrandServlet">
+                            <input type="hidden" name="action" value="hardDelete">
+                            <input type="hidden" name="brandID" id="hardDeleteBrandID">
+                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script>
-            function setDeleteBrandID(brandID) {
-                document.getElementById("deleteBrandID").value = brandID;
+            function setSoftDeleteBrandID(id) {
+                document.getElementById("softDeleteBrandID").value = id;
+            }
+            function setHardDeleteBrandID(id) {
+                document.getElementById("hardDeleteBrandID").value = id;
             }
 
             window.onload = function () {
-                const errorMessage = "${sessionScope.errorMessage}";
+                let errorMessage = "${sessionScope.errorMessage}";
                 if (errorMessage && errorMessage.trim() !== "") {
-                    const errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
+                    let errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
                     errorModal.show();
+            <% request.getSession().removeAttribute("errorMessage"); %>
+                }
+
+                let successMessage = "${sessionScope.successMessage}";
+                if (successMessage && successMessage.trim() !== "") {
+                    let successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                    successModal.show();
+            <% request.getSession().removeAttribute("successMessage"); %>
                 }
             };
         </script>

@@ -26,7 +26,7 @@
                 <div class="cart-items">
                     <div class="cart-header">
                         <span>Sản phẩm trong giỏ hàng:</span> 
-                        <span>${not empty sessionScope.size ? sessionScope.size : 0}</span>
+                        <span>${not empty size ? size : 0}</span>
                     </div>
 
                     <div class="cart-table">
@@ -53,8 +53,8 @@
                                         <c:forEach items="${listCart}" var="item" varStatus="loop">
                                             <tr>
                                                 <td>${loop.index + 1}</td>
-                                                <td>
-                                                    <img src="${item.product.mainImageUrl}" 
+                                                <td >
+                                                    <img src="${pageContext.request.contextPath}/${item.product.mainImageUrl}" 
                                                          alt="${item.product.name}" 
                                                          class="product-img">
                                                 </td>
@@ -95,7 +95,7 @@
                     </div>
                     <c:if test="${not empty listCart}">
                         <div class="delete-all">
-                               <button onclick="deleteAllItems()">Xóa tất cả</button>
+                            <button onclick="deleteAllItems()">Xóa tất cả</button>
                         </div>
                     </c:if>
                 </div>
@@ -112,7 +112,7 @@
                     </p>
                 </div>
                 <div class="total">
-                    <p>Tổng đơn hàng: 
+                    <p>Tổng tiền: 
                         <span class="total-amount">
                             <fmt:formatNumber value="${not empty totalMoney ? totalMoney : 0}" pattern="#,###" /> VND
                         </span>
@@ -125,9 +125,42 @@
                 </c:if>
             </div>
         </div>
-
-
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="assets/js/cartJs.js"></script>
+        <script>
+                                function updateQuantity(productId, action, operation) {
+                                    console.log(operation);
+                                    console.log(productId);
+                                    $.ajax({
+                                        url: 'Cart',
+                                        type: 'POST',
+                                        data: {
+                                            productID: productId,
+                                            action: action,
+                                            operation: operation
+                                        },
+                                        dataType: "json",
+                                        success: function (response) {
+                                            if (response && response.newQuantity !== undefined && response.itemTotal !== undefined) {
+                                                var row = $('button[onclick*="' + productId + '"]').closest('tr');
+                                                row.find('.quantity-input').val(response.newQuantity);
+                                                row.find('.total-price').text(formatNumber(response.itemTotal) + ' VND');
+                                                if (response.totalMoney !== undefined) {
+                                                    $('.total-amount').text(formatNumber(response.totalMoney) + ' VND');
+                                                }
+                                                $('.cart-header span:last').text(response.cartSize !== undefined ? response.cartSize : 0);
+                                            } else {
+                                                console.error("Lỗi dữ liệu từ server:", response);
+                                            }
+                                        },
+                                        error: function (xhr, status, error) {
+                                            console.error("AJAX Error:", status, error);
+                                            console.error("Server Response:", xhr.responseText);
+                                            alert("Lỗi: " + xhr.status + " - " + xhr.statusText + "\nChi tiết: " + xhr.responseText);
+                                        }
+                                    });
+                                }
+
+        </script>
     </body>
 </html>

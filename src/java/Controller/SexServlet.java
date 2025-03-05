@@ -12,6 +12,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,9 +95,14 @@ public class SexServlet extends HttpServlet {
      */
     private void handleRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
         String action = request.getParameter("action");
-
         try {
+            Integer roleID = (Integer) session.getAttribute("roleID");
+            if (roleID == null) {
+                response.sendRedirect(request.getContextPath() + "/Admin/loginPage.jsp"); // Chưa đăng nhập, chuyển hướng đến trang login
+                return;
+            }
             if (action == null || action.equals("list")) {
                 listSexes(request, response);
             } else {
@@ -125,9 +131,6 @@ public class SexServlet extends HttpServlet {
         }
     }
 
-    /**
-     * Liệt kê tất cả các giới tính
-     */
     private void listSexes(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         List<Sex> sexes = sexDAO.getAllSexes();
@@ -135,41 +138,37 @@ public class SexServlet extends HttpServlet {
         request.getRequestDispatcher("SexManagement.jsp").forward(request, response);
     }
 
-    /**
-     * Thêm một giới tính mới
-     */
     private void addSex(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         String name = request.getParameter("name");
 
-        // Kiểm tra dữ liệu: tên không được để trống và độ dài tối đa 50 ký tự
         if (name == null || name.trim().isEmpty()) {
-            request.getSession().setAttribute("errorMessage", "Tên giới tính không được để trống.");
+            request.getSession().setAttribute("errorMessage", "Gender cannot be left blank.");
             response.sendRedirect("SexServlet?action=list&showErrorModal=true");
             return;
         }
         if (name.length() > 50) {
-            request.getSession().setAttribute("errorMessage", "Tên quá dài. Tối đa 50 ký tự cho phép.");
+            request.getSession().setAttribute("errorMessage", "Maximum 50 characters allowed.");
             response.sendRedirect("SexServlet?action=list&showErrorModal=true");
             return;
         }
-        // Kiểm tra xem giới tính đã tồn tại chưa (nếu cần)
-        if (sexDAO.isSexExists(name)) {
-            request.getSession().setAttribute("errorMessage", "Giới tính đã tồn tại.");
+        if (!name.matches("^[\\p{L} _-]+$")) {
+            request.getSession().setAttribute("errorMessage", "Gender must contain only letters and spaces.");
             response.sendRedirect("SexServlet?action=list&showErrorModal=true");
             return;
         }
-        // Tạo đối tượng Sex (ID=0 và CreatedAt=null, DB sẽ tự set giá trị mặc định nếu có)
-        Sex sex = new Sex(0, name.trim(), null);
-        sexDAO.addSex(sex);
+//        if (sexDAO(name)) {
+//            request.getSession().setAttribute("errorMessage", "Gender already exists.");
+//            response.sendRedirect("SexServlet?action=list&showErrorModal=true");
+//            return;
+//        }
+//        Sex sex = new Sex(0, name.trim(), null);
+//        sexDAO.addSex(sex);
 
-        request.getSession().setAttribute("successMessage", "Giới tính được thêm thành công.");
+        request.getSession().setAttribute("successMessage", "Gender added successfully.");
         response.sendRedirect("SexServlet?action=list&showSuccessModal=true");
     }
 
-    /**
-     * Cập nhật thông tin giới tính
-     */
     private void updateSex(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         try {
@@ -177,43 +176,50 @@ public class SexServlet extends HttpServlet {
             String name = request.getParameter("name");
 
             if (name == null || name.trim().isEmpty()) {
-                request.getSession().setAttribute("errorMessage", "Tên giới tính không được để trống.");
+                request.getSession().setAttribute("errorMessage", "Gender cannot be left blank.");
                 response.sendRedirect("SexServlet?action=list&showErrorModal=true");
                 return;
             }
             if (name.length() > 50) {
-                request.getSession().setAttribute("errorMessage", "Tên quá dài. Tối đa 50 ký tự cho phép.");
+                request.getSession().setAttribute("errorMessage", "Maximum 50 characters allowed.");
+                response.sendRedirect("SexServlet?action=list&showErrorModal=true");
+                return;
+            }
+            if (!name.matches("^[\\p{L} _-]+$")) {
+                request.getSession().setAttribute("errorMessage", "Gender must contain only letters and spaces.");
+                response.sendRedirect("SexServlet?action=list&showErrorModal=true");
+                return;
+            }
+            if (sexDAO.isSexExists(name)) {
+                request.getSession().setAttribute("errorMessage", "Gender already exists.");
                 response.sendRedirect("SexServlet?action=list&showErrorModal=true");
                 return;
             }
 
-            Sex sex = new Sex(sexID, name.trim(), null);
-            sexDAO.updateSex(sex);
-            request.getSession().setAttribute("successMessage", "Giới tính được cập nhật thành công.");
+//            Sex sex = new Sex(sexID, name.trim(), null);
+//            sexDAO.updateSex(sex);
+            request.getSession().setAttribute("showSuccessModal", "Gender updated successfully.");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "ID không hợp lệ.");
+            request.getSession().setAttribute("errorMessage", "Invalid ID.");
         }
         response.sendRedirect("SexServlet?action=list");
     }
 
-    /**
-     * Xóa giới tính theo ID
-     */
     private void deleteSex(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         try {
             int sexID = Integer.parseInt(request.getParameter("sexID"));
             sexDAO.deleteSex(sexID);
-            request.getSession().setAttribute("successMessage", "Giới tính được xóa thành công.");
+
+            request.getSession().setAttribute("successMessage", "Gender removed successfully.");
+
+            response.sendRedirect("SexServlet?action=list");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "ID không hợp lệ.");
+            request.getSession().setAttribute("errorMessage", "Invalid ID.");
+            response.sendRedirect("SexServlet?action=list");
         }
-        response.sendRedirect("SexServlet?action=list");
     }
 
-    /**
-     * Tìm kiếm giới tính theo tên (search theo keyword)
-     */
     private void searchSex(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         String keyword = request.getParameter("search");
@@ -221,14 +227,9 @@ public class SexServlet extends HttpServlet {
             listSexes(request, response);
             return;
         }
-        List<Sex> allSexes = sexDAO.getAllSexes();
-        List<Sex> filteredSexes = new ArrayList<>();
-        for (Sex s : allSexes) {
-            if (s.getName() != null && s.getName().toLowerCase().contains(keyword.trim().toLowerCase())) {
-                filteredSexes.add(s);
-            }
-        }
-        request.setAttribute("sexes", filteredSexes);
+        List<Sex> sexes = sexDAO.searchSex(keyword.trim().toLowerCase());
+        request.setAttribute("sexes", sexes);
         request.getRequestDispatcher("SexManagement.jsp").forward(request, response);
     }
+
 }

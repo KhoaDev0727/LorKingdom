@@ -35,7 +35,7 @@ body {
     border-radius: 5px;
     padding: 10px;
     padding-top: 20px;
-    width: 1000px;
+    width: 1200px;
     table-layout: fixed;
 }
 
@@ -72,8 +72,8 @@ body {
 }
 
 .order-summary {
-    margin: 80px 0 70px 0;
-    width: 300px;
+    margin: 80px 0 80% 0;
+    width: 310px;
     padding: 20px;
     background-color: #fff;
     border: 1px solid #ddd;
@@ -215,6 +215,7 @@ input[type="number"] {
 .unit-price, .total-price {
     font-weight: bold;
     color: #333;
+    width: 200px;
 }
 
 /* Adjusting hover effects for a more interactive feel */

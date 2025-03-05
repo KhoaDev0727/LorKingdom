@@ -23,7 +23,7 @@ public class CategoryDAO {
 
     public List<Category> getAllCategories() throws SQLException, ClassNotFoundException {
         List<Category> categories = new ArrayList<>();
-        String query = "SELECT CategoryID, SuperCategoryID, Name, CreatedAt FROM Category";
+        String query = "SELECT CategoryID, SuperCategoryID, Name, CreatedAt, IsDeleted FROM Category Where IsDeleted = 0 ";
 
         try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
@@ -31,7 +31,26 @@ public class CategoryDAO {
                         rs.getInt("CategoryID"),
                         rs.getInt("SuperCategoryID"),
                         rs.getString("Name"),
-                        rs.getDate("CreatedAt")
+                        rs.getDate("CreatedAt"),
+                        rs.getInt("IsDeleted")
+                ));
+            }
+        }
+        return categories;
+    }
+
+    public List<Category> getAcctiveCategories() throws SQLException, ClassNotFoundException {
+        List<Category> categories = new ArrayList<>();
+        String query = "SELECT CategoryID, SuperCategoryID, Name, CreatedAt, IsDeleted FROM Category Where IsDeleted = 1 ";
+
+        try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                categories.add(new Category(
+                        rs.getInt("CategoryID"),
+                        rs.getInt("SuperCategoryID"),
+                        rs.getString("Name"),
+                        rs.getDate("CreatedAt"),
+                        rs.getInt("IsDeleted")
                 ));
             }
         }
@@ -47,8 +66,15 @@ public class CategoryDAO {
         }
     }
 
-    public void deleteCategory(int categoryID) throws SQLException, ClassNotFoundException {
+    public void hardDeleteCategory(int categoryID) throws SQLException, ClassNotFoundException {
         String query = "Delete FROM Category WHERE CategoryID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, categoryID);
+            ps.executeUpdate();
+        }
+    }
+    public void deleteCategory(int categoryID) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE Category SET IsDeleted = 1 WHERE CategoryID = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, categoryID);
             ps.executeUpdate();
@@ -57,8 +83,7 @@ public class CategoryDAO {
 
     public List<Category> searchCategory(String keyword) throws SQLException, ClassNotFoundException {
         List<Category> categories = new ArrayList<>();
-        String query = "SELECT CategoryID, SuperCategoryID, Name, CreatedAt FROM Category WHERE Name LIKE ?";
-
+        String query = "SELECT CategoryID, SuperCategoryID, Name, CreatedAt, IsDeleted FROM Category WHERE Name LIKE ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, "%" + keyword + "%");
             try ( ResultSet rs = ps.executeQuery()) {
@@ -67,7 +92,8 @@ public class CategoryDAO {
                             rs.getInt("CategoryID"),
                             rs.getInt("SuperCategoryID"),
                             rs.getString("Name"),
-                            new Date(rs.getTimestamp("CreatedAt").getTime())
+                            rs.getDate("CreatedAt"),
+                            rs.getInt("IsDeleted")
                     ));
                 }
             }
@@ -76,12 +102,16 @@ public class CategoryDAO {
     }
 
     public boolean isCategoryExists(String name) throws SQLException, ClassNotFoundException {
-        String query = "Select COUNT(*) FROM Category where Name = ? ";
+        String query = "SELECT COUNT(*) FROM Category WHERE Name = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, name);
             try ( ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt(1) > 0;
+                    int count = rs.getInt(1);
+                    if (count > 1) {
+                        throw new SQLException("Multiple categories found with the name: " + name);
+                    }
+                    return count == 1;
                 }
             }
         }
@@ -100,6 +130,24 @@ public class CategoryDAO {
             }
         }
         return categoryName;
+    }
+
+    public void updateCategory(Category category) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE Category SET SuperCategoryID = ?, Name = ? WHERE CategoryID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, category.getSuperCategoryID());
+            ps.setString(2, category.getName());
+            ps.setInt(3, category.getCategoryID());
+            ps.executeUpdate();
+        }
+    }
+
+    public void restoreCategory(int categoryID) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE Category SET IsDeleted = 0 WHERE CategoryID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, categoryID);
+            ps.executeUpdate();
+        }
     }
 
 }

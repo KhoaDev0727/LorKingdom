@@ -16,24 +16,45 @@ import java.util.List;
 
 public class OriginDAO {
 
-    // Lấy danh sách tất cả Origin
-    public List<Origin> getAllOrigins() throws SQLException, ClassNotFoundException {
-        List<Origin> origins = new ArrayList<>();
-        String query = "SELECT OriginID, Name, CreatedAt FROM Origin";
+    public List<Origin> getAllActiveOrigins() throws SQLException, ClassNotFoundException {
+        List<Origin> list = new ArrayList<>();
+        String query = "SELECT OriginID, Name, CreatedAt, IsDeleted "
+                + "FROM Origin "
+                + "WHERE IsDeleted = 0";
         try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
                 Origin origin = new Origin(
                         rs.getInt("OriginID"),
                         rs.getString("Name"),
-                        rs.getDate("CreatedAt")
+                        rs.getDate("CreatedAt"),
+                        rs.getInt("IsDeleted")
                 );
-                origins.add(origin);
+                list.add(origin);
             }
         }
-        return origins;
+        return list;
     }
 
-    // Thêm mới Origin
+    // 2) Lấy danh sách Origin đã xóa mềm (isDeleted=1)
+    public List<Origin> getDeletedOrigins() throws SQLException, ClassNotFoundException {
+        List<Origin> list = new ArrayList<>();
+        String query = "SELECT OriginID, Name, CreatedAt, IsDeleted "
+                + "FROM Origin "
+                + "WHERE IsDeleted = 1";
+        try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                Origin origin = new Origin(
+                        rs.getInt("OriginID"),
+                        rs.getString("Name"),
+                        rs.getDate("CreatedAt"),
+                        rs.getInt("IsDeleted")
+                );
+                list.add(origin);
+            }
+        }
+        return list;
+    }
+
     public void addOrigin(Origin origin) throws SQLException, ClassNotFoundException {
         String query = "INSERT INTO Origin (Name) VALUES (?)";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
@@ -42,7 +63,6 @@ public class OriginDAO {
         }
     }
 
-    // Cập nhật Origin
     public void updateOrigin(Origin origin) throws SQLException, ClassNotFoundException {
         String query = "UPDATE Origin SET Name = ? WHERE OriginID = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
@@ -52,8 +72,17 @@ public class OriginDAO {
         }
     }
 
-    // Xóa Origin theo OriginID
-    public void deleteOrigin(int originID) throws SQLException, ClassNotFoundException {
+    // 4) Xóa mềm (IsDeleted=1)
+    public void softDeleteOrigin(int originID) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE Origin SET IsDeleted = 1 WHERE OriginID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, originID);
+            ps.executeUpdate();
+        }
+    }
+
+    // 5) Xóa cứng (DELETE FROM DB)
+    public void hardDeleteOrigin(int originID) throws SQLException, ClassNotFoundException {
         String query = "DELETE FROM Origin WHERE OriginID = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, originID);
@@ -61,27 +90,33 @@ public class OriginDAO {
         }
     }
 
-    // Tìm kiếm Origin theo từ khóa (dựa trên tên)
+    public void restoreOrigin(int originID) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE Origin SET IsDeleted = 0 WHERE OriginID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, originID);
+            ps.executeUpdate();
+        }
+    }
+
     public List<Origin> searchOrigin(String keyword) throws SQLException, ClassNotFoundException {
         List<Origin> origins = new ArrayList<>();
-        String query = "SELECT OriginID, Name, CreatedAt FROM Origin WHERE Name LIKE ?";
+        String query = "SELECT OriginID, Name, CreatedAt, IsDeleted FROM Origin WHERE Name LIKE ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, "%" + keyword + "%");
             try ( ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    Origin origin = new Origin(
+                    origins.add(new Origin(
                             rs.getInt("OriginID"),
                             rs.getString("Name"),
-                            rs.getDate("CreatedAt")
-                    );
-                    origins.add(origin);
+                            rs.getDate("CreatedAt"),
+                            rs.getInt("IsDeleted")
+                    ));
                 }
             }
         }
         return origins;
     }
 
-    // Kiểm tra xem Origin đã tồn tại hay chưa (theo tên)
     public boolean isOriginExists(String name) throws SQLException, ClassNotFoundException {
         String query = "SELECT COUNT(*) FROM Origin WHERE Name = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {

@@ -199,7 +199,7 @@ public class ProductImageDAO {
         }catch(Exception e){
             e.printStackTrace();
         }
-        return null; // Trả về null nếu không tìm thấy ảnh chính
+        return null; 
     }
 
 }

@@ -4,25 +4,30 @@
  */
 package Controller;
 
+import DAO.AccountDAO;
 import DAO.OriginDAO;
 import DAO.MaterialDAO;
 import DAO.BrandDAO;
-import DAO.PriceRangeDAO;
 import DAO.SexDAO;
 import DAO.AgeDAO;
-import DAO.SuperCategoryDAO;
 import DAO.CategoryDAO;
 import DAO.ProductDAO;
 import DAO.ProductImageDAO;
+import DAO.ReviewDAO;
+import Model.Account;
 import Model.Product;
 import Model.ProductImage;
+import Model.Review;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -70,32 +75,88 @@ public class ProductDetailServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             String productIdStr = request.getParameter("productID");
-            if (productIdStr != null && !productIdStr.isEmpty()) {
-                int productId = Integer.parseInt(productIdStr);
-                Product product = ProductDAO.getProductById(productId);
-                ProductImageDAO productImageDAO = new ProductImageDAO();
 
-                SexDAO sexDAO = new SexDAO();
-                CategoryDAO categoryDAO = new CategoryDAO();
-                OriginDAO originDAO = new OriginDAO();
-                AgeDAO ageDAO = new AgeDAO();
-                BrandDAO brandDAO = new BrandDAO();
-                MaterialDAO materialDAO = new MaterialDAO();
-
-                request.setAttribute("category", categoryDAO.getCategoryNameByProductId(productId));
-                List<ProductImage> listImages = ProductImageDAO.getSecondaryProductImagesByProductId(productId);
-                request.setAttribute("listImages", listImages);
-                request.setAttribute("origin", originDAO.getOriginNameByProductId(productId));
-                request.setAttribute("age", ageDAO.getAgeRangeByProductId(productId));
-                request.setAttribute("brand", brandDAO.getBrandNameByProductId(productId));
-                request.setAttribute("materail", materialDAO.getMaterialNameByProductId(productId));
-                request.setAttribute("sex", sexDAO.getSexNameByProductId(productId));
-                request.setAttribute("mainImages", ProductImageDAO.getMainProductImages());
-                request.setAttribute("product", product);
-                request.getRequestDispatcher("ProductDetailPage.jsp").forward(request, response);
-            } else {
+            if (productIdStr == null || productIdStr.isEmpty()) {
                 response.sendRedirect("home.jsp");
+                return;
             }
+            int productId = Integer.parseInt(productIdStr);
+            // Lấy thông tin sản phẩm
+            Product product = ProductDAO.getProductById(productId);
+            // Lấy các thông tin liên quan
+            CategoryDAO categoryDAO = new CategoryDAO();
+            OriginDAO originDAO = new OriginDAO();
+            AgeDAO ageDAO = new AgeDAO();
+            BrandDAO brandDAO = new BrandDAO();
+            MaterialDAO materialDAO = new MaterialDAO();
+            SexDAO sexDAO = new SexDAO();
+            ProductImageDAO productImageDAO = new ProductImageDAO();
+            // Xử lý đánh giá
+            int rating5 = 0, rating4 = 0, rating3 = 0, rating2 = 0, rating1 = 0;
+            int totalRating = 0, totalComment = 0, totalImage = 0;
+            List<Review> listReviews = ReviewDAO.showReviewForCustomer(productId); // Sử dụng productId thực tế
+            List<Account> inforCustomers = new ArrayList<>();
+            for (Review review : listReviews) {
+                Account account = AccountDAO.getInforAccountByID(review.getAccountID());
+                if (account != null && !inforCustomers.contains(account)) {
+                    inforCustomers.add(account);
+                }
+                if (!review.getComment().isEmpty()) {
+                    totalComment++;
+                }
+                if (review.getImgReview() != null && !review.getImgReview().isEmpty()) {
+                    totalImage++;
+                }
+
+                switch (review.getRating()) {
+                    case 5:
+                        rating5++;
+                        break;
+                    case 4:
+                        rating4++;
+                        break;
+                    case 3:
+                        rating3++;
+                        break;
+                    case 2:
+                        rating2++;
+                        break;
+                    default:
+                        rating1++;
+                        break;
+                }
+            }
+
+            int totalReview = listReviews.size();
+            double mediumRating = totalReview > 0
+                    ? (double) (rating5 * 5 + rating4 * 4 + rating3 * 3 + rating2 * 2 + rating1 * 1) / totalReview : 0;
+
+            // Set attributes
+            request.setAttribute("product", product);
+            request.setAttribute("category", categoryDAO.getCategoryNameByProductId(productId));
+            request.setAttribute("origin", originDAO.getOriginNameByProductId(productId));
+            request.setAttribute("age", ageDAO.getAgeRangeByProductId(productId));
+            request.setAttribute("brand", brandDAO.getBrandNameByProductId(productId));
+            request.setAttribute("materail", materialDAO.getMaterialNameByProductId(productId));
+            request.setAttribute("sex", sexDAO.getSexNameByProductId(productId));
+            request.setAttribute("mainImages", ProductImageDAO.getMainProductImages());
+            request.setAttribute("listImages", ProductImageDAO.getSecondaryProductImagesByProductId(productId));
+            // Review attributes
+            request.setAttribute("mediumRatings", mediumRating);
+            request.setAttribute("rating5", rating5);
+            request.setAttribute("rating4", rating4);
+            request.setAttribute("rating3", rating3);
+            request.setAttribute("rating2", rating2);
+            request.setAttribute("rating1", rating1);
+            request.setAttribute("listReviews", listReviews);
+            request.setAttribute("totalComment", totalComment);
+            request.setAttribute("totalImage", totalImage);
+            request.setAttribute("inforCustomers", inforCustomers);
+  
+            request.getRequestDispatcher("ProductDetailPage.jsp").forward(request, response);
+
+        } catch (NumberFormatException | ClassNotFoundException e) {
+            response.sendRedirect("home.jsp");
         } catch (Exception e) {
             e.printStackTrace();
             request.getRequestDispatcher("error.jsp").forward(request, response);
@@ -127,3 +188,6 @@ public class ProductDetailServlet extends HttpServlet {
     }// </editor-fold>
 
 }
+
+
+

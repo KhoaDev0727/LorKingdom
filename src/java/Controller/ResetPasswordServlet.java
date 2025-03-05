@@ -16,11 +16,11 @@ public class ResetPasswordServlet extends HttpServlet {
 
         // Kiểm tra mật khẩu
         if (newPassword.isEmpty()) {
-            request.setAttribute("message", "Password cannot be empty.");
+            request.setAttribute("message", "Mật khẩu không được để trống.");
         } else if (newPassword.length() < 6) {
-            request.setAttribute("message", "Password must be at least 6 characters.");
+            request.setAttribute("message", "Mật khẩu phải có ít nhất 6 ký tự.");
         } else if (!newPassword.matches("[a-zA-Z0-9]*")) {  // Chỉ chấp nhận chữ và số
-            request.setAttribute("message", "Password cannot contain special characters.");
+            request.setAttribute("message", "Mật khẩu không được chứa ký tự đặc biệt.");
         } else {
             AccountDAO accountDAO = new AccountDAO();
 
@@ -28,13 +28,13 @@ public class ResetPasswordServlet extends HttpServlet {
             String email = accountDAO.validateResetToken(token);
 
             if (email == null) {
-                request.setAttribute("message", "Invalid or expired token.");
+                request.setAttribute("message", "Mã không hợp lệ hoặc đã hết hạn.");
             } else {
                 // Cập nhật mật khẩu vào database
                 if (accountDAO.updatePassword(email, newPassword)) {
-                    request.setAttribute("message", "Password has been reset successfully.");
+                    request.setAttribute("message", "Mật khẩu đã được đặt lại thành công.");
                 } else {
-                    request.setAttribute("message", "Failed to reset password.");
+                    request.setAttribute("message", "Không thể đặt lại mật khẩu.");
                 }
             }
         }

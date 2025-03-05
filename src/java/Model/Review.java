@@ -15,11 +15,56 @@ public class Review {
     private int reviewID;
     private int accountID;
     private int productID;
+    private int IsDeleted;
     private String imgReview;
     private int Rating;
     private String Comment;
     private Timestamp reviewAt;
     private int Status;
+    private Account account;
+    
+
+//    Show Review
+    public Review(int reviewID, int accountID, int productID, String imgReview, int IsDeleted, int Rating, String Comment, int Status, Timestamp reviewAt) {
+        this.reviewID = reviewID;
+        this.accountID = accountID;
+        this.productID = productID;
+        this.IsDeleted = IsDeleted;
+        this.imgReview = imgReview;
+        this.Rating = Rating;
+        this.Comment = Comment;
+        this.reviewAt = reviewAt;
+        this.Status = Status;
+    }
+
+    public Review(int accountID, int productID, String imgReview, int IsDeleted, int Rating, String Comment, Timestamp reviewAt, int Status) {
+        this.accountID = accountID;
+        this.productID = productID;
+        this.imgReview = imgReview;
+        this.IsDeleted = IsDeleted;
+        this.Rating = Rating;
+        this.Comment = Comment;
+        this.reviewAt = reviewAt;
+        this.Status = Status;
+
+    }
+  public Review(int accountID, int productID, String imgReview, int IsDeleted, int Rating, String Comment, Timestamp reviewAt) {
+        this.accountID = accountID;
+        this.productID = productID;
+        this.imgReview = imgReview;
+        this.IsDeleted = IsDeleted;
+        this.Rating = Rating;
+        this.Comment = Comment;
+        this.reviewAt = reviewAt;   
+    }
+
+    public int getIsDeleted() {
+        return IsDeleted;
+    }
+
+    public void setIsDeleted(int IsDeleted) {
+        this.IsDeleted = IsDeleted;
+    }
 
     public Review(int reviewID, int accountID, int productID, String imgReview, int Rating, String comment, int Status, Timestamp reviewAt) {
         this.reviewID = reviewID;
@@ -32,7 +77,7 @@ public class Review {
         this.Status = Status;
     }
 
-    public Review(int accountID, int productID, String imgReview, int Rating, String Comment ) {
+    public Review(int accountID, int productID, String imgReview, int Rating, String Comment) {
         this.accountID = accountID;
         this.productID = productID;
         this.imgReview = imgReview;
@@ -49,8 +94,24 @@ public class Review {
         this.Comment = Comment;
         this.reviewAt = reviewAt;
     }
-    
-    
+
+    public Review(int accountID, int productID, int IsDeleted, String imgReview, int Rating, String Comment, Timestamp reviewAt) {
+        this.accountID = accountID;
+        this.productID = productID;
+        this.IsDeleted = IsDeleted;
+        this.imgReview = imgReview;
+        this.Rating = Rating;
+        this.Comment = Comment;
+        this.reviewAt = reviewAt;
+    }
+   // Getter & Setter mới
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
     public int getReviewID() {
         return reviewID;
     }

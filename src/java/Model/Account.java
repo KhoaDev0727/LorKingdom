@@ -14,7 +14,7 @@ public class Account {
     private String address;
     private String status;
     private double balance;
-        private int isDeleted;
+    private int isDeleted;
     private Timestamp createdAt;
     private Timestamp updateAt;
 
@@ -31,6 +31,13 @@ public class Account {
         this.status = status;
         this.balance = balance;
         this.image = image;
+    }
+
+    public Account(int accountId, String userName, String image, String password) {
+        this.accountId = accountId;
+        this.userName = userName;
+        this.image = image;
+        this.password = password;
     }
 
     public Account(int accountId, int RoleID, String userName, String phoneNumber, String email, String image, String password, String address, int isDeleted, String status, double balance, Timestamp createdAt, Timestamp updateAt) {
@@ -68,7 +75,6 @@ public class Account {
         this.userName = userName;
         this.image = image;
     }
-    
 
     public Account(int accountId, int RoleID, String userName, String phoneNumber, String email, String image, String password, String address, String status, Timestamp updateAt) {
         this.accountId = accountId;
@@ -83,7 +89,7 @@ public class Account {
         this.updateAt = updateAt;
     }
 
-    public Account(int accountId, int RoleID, String userName, String phoneNumber,String image, String email,  String password, String address, String status) {
+    public Account(int accountId, int RoleID, String userName, String phoneNumber, String image, String email, String password, String address, String status) {
         this.accountId = accountId;
         this.RoleID = RoleID;
         this.userName = userName;
@@ -105,8 +111,6 @@ public class Account {
         this.address = address;
         this.status = status;
     }
-
-
 
     public int getAccountId() {
         return accountId;

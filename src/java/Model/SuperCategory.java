@@ -15,19 +15,20 @@ public class SuperCategory {
     private int superCategoryID;
     private String name;
     private Date createdAt;
+    private int isDeleted;
 
-    // Constructor không tham số
     public SuperCategory() {
+        this.isDeleted = 0;
     }
 
-    // Constructor có tham số
-    public SuperCategory(int superCategoryID, String name, Date createdAt) {
+    public SuperCategory(int superCategoryID, String name, Date createdAt, int isDeleted) {
         this.superCategoryID = superCategoryID;
         this.name = name;
         this.createdAt = createdAt;
+        this.isDeleted = isDeleted;
     }
 
-    // Getter và Setter
+ 
     public int getSuperCategoryID() {
         return superCategoryID;
     }
@@ -50,5 +51,13 @@ public class SuperCategory {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public int getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(int isDeleted) {
+        this.isDeleted = isDeleted;
     }
 }

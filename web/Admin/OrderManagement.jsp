@@ -42,10 +42,10 @@
                                     <input type="hidden" name="action" value="search">
                                     <input type="text" name="customerName" class="form-control" placeholder="Enter Customer Name" required>
                                     <button class="btn btn-outline-secondary" type="submit">
-                                        <i class="fas fa-search"></i> Search
+                                        <i class="fas fa-search"></i>
                                     </button>
-                                    <a href="${pageContext.request.contextPath}/Admin/OrderServlet" class="btn btn-outline-danger ms-2">
-                                        <i class="fas fa-sync"></i> Reset
+                                    <a href="${pageContext.request.contextPath}/Admin/OrderServlet" class="btn btn-outline-danger">
+                                        <i class="fas fa-sync"></i>
                                     </a>
                                 </form>
                             </div>
@@ -56,10 +56,10 @@
                                     <input type="hidden" name="action" value="money">
                                     <input type="text" name="minAmount" class="form-control" placeholder="Enter Minimum Amount" required>
                                     <button class="btn btn-outline-secondary" type="submit">
-                                        <i class="fas fa-search"></i> Search by Money
+                                        <i class="fas fa-search"></i> 
                                     </button>
-                                    <a href="${pageContext.request.contextPath}/Admin/OrderServlet" class="btn btn-outline-danger ms-2">
-                                        <i class="fas fa-sync"></i> Reset
+                                    <a href="${pageContext.request.contextPath}/Admin/OrderServlet" class="btn btn-outline-danger">
+                                        <i class="fas fa-sync"></i>
                                     </a>
                                 </form>
                             </div>
@@ -68,15 +68,15 @@
                             <div class="col-md-4">
                                 <form action="${pageContext.request.contextPath}/Admin/OrderServlet" method="POST" class="d-flex">
                                     <input type="hidden" name="action" value="sort">
-                                    <select name="sortOrder" class="form-control me-2">
+                                    <select name="sortOrder" class="form-control">
                                         <option value="ASC">Sort by Amount (Ascending)</option>
                                         <option value="DESC">Sort by Amount (Descending)</option>
                                     </select>
                                     <button class="btn btn-outline-secondary" type="submit">
-                                        <i class="fas fa-sort"></i> Sort Orders
+                                        <i class="fas fa-sort"></i> 
                                     </button>
-                                    <a href="${pageContext.request.contextPath}/Admin/OrderServlet" class="btn btn-outline-danger ms-2">
-                                        <i class="fas fa-sync"></i> Reset
+                                    <a href="${pageContext.request.contextPath}/Admin/OrderServlet" class="btn btn-outline-danger">
+                                        <i class="fas fa-sync"></i> 
                                     </a>
                                 </form>
                             </div>
@@ -124,6 +124,9 @@
                                                             <td>${o.totalAmount}</td>
                                                             <td>${o.updatedAt}</td>
                                                             <td>
+                                                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" onclick="setDeleteOrderID(${o.orderId})">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
                                                                 <a href="${pageContext.request.contextPath}/Admin/OrderView?action=view&orderId=${o.orderId}" class="btn btn-sm btn-info">
                                                                     <i class="fas fa-eye"></i>
                                                                 </a>
@@ -188,3 +191,5 @@
         </script>
     </body>
 </html>
+
+

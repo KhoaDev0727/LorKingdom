@@ -16,22 +16,11 @@
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="JS/SideBarToggle.js"></script>
-        <style>
-            .rating-filter button {
-                margin: 5px;
-                padding: 8px 15px;
-            }
-            .rating-filter button.active {
-                background-color: #0d6efd;
-                color: white;
-            }
-            .star {
-                color: red;
-                font-size: 1.2em;
-            }
-        </style>
     </head>
     <body class="sb-nav-fixed">
+        <c:if test="${empty sessionScope.roleID}">
+            <c:redirect url="/Admin/loginPage.jsp"/>
+        </c:if>
         <div id="layoutSidenav">
             <div id="layoutSidenav_content">
                 <%@ include file="Component/SideBar.jsp" %>
@@ -74,6 +63,11 @@
                                             <a href="MaterialServlet" class="btn btn-outline-danger">
                                                 <i class="fas fa-sync"></i>
                                             </a>
+                                            <c:if test="${sessionScope.roleID == 1}">
+                                                <a href="MaterialServlet?action=listDeleted" class="btn btn-outline-danger">
+                                                    <i class="fas fa-trash"></i> 
+                                                </a>
+                                            </c:if>
                                         </div>
                                     </form>
                                     <!-- Customer Table -->
@@ -84,6 +78,7 @@
                                                     <th>Material ID</th>
                                                     <th>Material Name</th>
                                                     <th>Description</th>
+                                                    <th>Status</th>
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
@@ -96,46 +91,70 @@
                                                         </tr>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <c:forEach var="material" items="${materials}">
-                                                            <tr>
-                                                                <td>${material.materialID}</td>
-                                                                <td>${material.name}</td>
-                                                                <td>${material.description}</td>
+                                                        <c:forEach var="mat" items="${materials}">
+                                                            <tr class="${mat.isDeleted == 1 ? 'deleted-row' : ''}">
+                                                                <td>${mat.materialID}</td>
+                                                                <td>${mat.name}</td>
+                                                                <td>${mat.description}</td>
                                                                 <td>
-                                                                    <!-- Edit Button -->
-                                                                    <button class="btn btn-sm btn-warning" 
-                                                                            data-bs-toggle="modal" 
-                                                                            data-bs-target="#editMaterialModal-${material.materialID}">
-                                                                        <i class="fas fa-edit"></i>
-                                                                    </button>
-                                                                    <!-- Delete Button -->
-                                                                    <button class="btn btn-sm btn-danger"
-                                                                            data-bs-toggle="modal"
-                                                                            data-bs-target="#confirmDeleteModal"
-                                                                            onclick="setDeleteMaterialID(${material.materialID})">
-                                                                        <i class="fas fa-trash"></i> 
-                                                                    </button>
+                                                                    <c:choose>
+                                                                        <c:when test="${mat.isDeleted == 1}">
+                                                                            <span class="badge bg-secondary">Deleted</span>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <span class="badge bg-success">Active</span>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
+                                                                </td>
+                                                                <td>
+                                                                    <!-- Nếu isDeleted=0 => Edit & Xóa mềm -->
+                                                                    <c:if test="${mat.isDeleted == 0}">
+                                                                        <button class="btn btn-sm btn-warning"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#editMaterialModal-${mat.materialID}">
+                                                                            <i class="fas fa-edit"></i>
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#confirmSoftDeleteModal"
+                                                                                onclick="setSoftDeleteMaterialID(${mat.materialID})">
+                                                                            <i class="fas fa-trash"></i>
+                                                                        </button>
+                                                                    </c:if>
+                                                                    <!-- Nếu isDeleted=1 => Restore & Xóa cứng -->
+                                                                    <c:if test="${mat.isDeleted == 1}">
+                                                                        <button class="btn btn-sm btn-success"
+                                                                                onclick="location.href = 'MaterialServlet?action=restore&materialID=${mat.materialID}'">
+                                                                            Restore
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#confirmHardDeleteModal"
+                                                                                onclick="setHardDeleteMaterialID(${mat.materialID})">
+                                                                            <i class="fas fa-trash"></i>
+                                                                        </button>
+                                                                    </c:if>
                                                                 </td>
                                                             </tr>
-                                                            <!-- Edit Material Modal -->
-                                                        <div class="modal fade" id="editMaterialModal-${material.materialID}" tabindex="-1">
+                                                            <!-- Modal Edit -->
+                                                        <div class="modal fade" id="editMaterialModal-${mat.materialID}" tabindex="-1">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
-                                                                    <form method="post" action="MaterialServlet">
+                                                                    <form method="POST" action="MaterialServlet">
                                                                         <div class="modal-header">
                                                                             <h5 class="modal-title">Edit Material</h5>
                                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                                         </div>
                                                                         <div class="modal-body">
                                                                             <input type="hidden" name="action" value="update">
-                                                                            <input type="hidden" name="materialID" value="${material.materialID}">
+                                                                            <input type="hidden" name="materialID" value="${mat.materialID}">
                                                                             <div class="mb-3">
                                                                                 <label class="form-label">Material Name</label>
-                                                                                <input type="text" class="form-control" name="name" value="${material.name}" required>
+                                                                                <input type="text" class="form-control" name="materialName" value="${mat.name}" required>
                                                                             </div>
                                                                             <div class="mb-3">
                                                                                 <label class="form-label">Description</label>
-                                                                                <input type="text" class="form-control" name="description" value="${material.description}">
+                                                                                <input type="text" class="form-control" name="description" value="${mat.description}">
                                                                             </div>
                                                                         </div>
                                                                         <div class="modal-footer">
@@ -177,42 +196,95 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="successModalLabel" tabindex="-1" aria-labelledby="successModalTitle" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title" id="successModalTitle">Success</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-dark">
+                        <p id="successMessageContent">${sessionScope.successMessage}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <!-- Confirm Delete Modal -->
-        <div class="modal fade" id="confirmDeleteModal" tabindex="-1">
+        <!-- Modal XÓA MỀM -->
+        <div class="modal fade" id="confirmSoftDeleteModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Confirm Deletion</h5>
+                        <h5 class="modal-title">Xác nhận xóa</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        Are you sure you want to delete this Material entry?
+                        Bạn có chắc chắn muốn đưa chất liệu này vào thùng rác không?
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <form id="deleteMaterialForm" method="POST" action="MaterialServlet">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <form method="POST" action="MaterialServlet">
                             <input type="hidden" name="action" value="delete">
-                            <input type="hidden" name="materialID" id="deleteMaterialID">
-                            <button type="submit" class="btn btn-danger">Delete</button>
+                            <input type="hidden" name="materialID" id="softDeleteMaterialID">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Modal XÓA CỨNG -->
+        <div class="modal fade" id="confirmHardDeleteModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Xác nhận xóa</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        Bạn có chắc chắn muốn xóa chất liệu vĩnh viễn ch này không?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <form method="POST" action="MaterialServlet">
+                            <input type="hidden" name="action" value="hardDelete">
+                            <input type="hidden" name="materialID" id="hardDeleteMaterialID">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> 
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
         <script>
-            function setDeleteMaterialID(materialID) {
-                document.getElementById("deleteMaterialID").value = materialID;
+            function setSoftDeleteMaterialID(id) {
+                document.getElementById("softDeleteMaterialID").value = id;
             }
-
+            function setHardDeleteMaterialID(id) {
+                document.getElementById("hardDeleteMaterialID").value = id;
+            }
             window.onload = function () {
                 const errorMessage = "${sessionScope.errorMessage}";
                 if (errorMessage && errorMessage.trim() !== "") {
                     const errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
                     errorModal.show();
+            <% request.getSession().removeAttribute("errorMessage"); %>
+                }
+
+                let successMessage = '<%= session.getAttribute("successMessage") %>';
+                if (successMessage && successMessage.trim() !== "null" && successMessage.trim() !== "") {
+                    let successModal = new bootstrap.Modal(document.getElementById("successModalLabel"));
+                    successModal.show();
+            <% session.removeAttribute("successMessage"); %>
                 }
             };
         </script>
+
     </body>
 </html>

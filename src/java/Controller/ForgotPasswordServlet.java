@@ -12,6 +12,7 @@ import java.util.Properties;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeUtility;
 import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 
@@ -48,13 +49,13 @@ public class ForgotPasswordServlet extends HttpServlet {
                 ps.executeUpdate();
 
                 sendResetEmail(email, resetToken, userName); // Gửi email với tên người dùng
-                request.setAttribute("message", "A reset link has been sent to your email.");
+                request.setAttribute("message", "Một liên kết đặt lại đã được gửi đến email của bạn.");
             } else {
-                request.setAttribute("message", "Email not found.");
+                request.setAttribute("message", "Không tìm thấy email.");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("message", "An error occurred. Please try again.");
+            request.setAttribute("message", "Đã xảy ra lỗi. Vui lòng thử lại.");
         }
 
         request.getRequestDispatcher("forgotPassword.jsp").forward(request, response);
@@ -63,7 +64,7 @@ public class ForgotPasswordServlet extends HttpServlet {
     private void sendResetEmail(String email, String token, String userName) throws MessagingException, UnsupportedEncodingException {
         final String fromEmail = "lorkingdom99@gmail.com";
         final String password = "lhvqnjnvthlsitqg";
-        String resetLink = "http://localhost:9090/LorKingdom/resetPassword.jsp?token=" + token;
+        String resetLink = "http://localhost:8080/LorKingdom/resetPassword.jsp?token=" + token;
 
         // Cấu hình SMTP
         Properties props = new Properties();
@@ -83,7 +84,7 @@ public class ForgotPasswordServlet extends HttpServlet {
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress(fromEmail, "Lor-Kingdom"));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
-        message.setSubject("Password Reset Request");
+        message.setSubject(MimeUtility.encodeText("Yêu cầu đặt lại mật khẩu", "UTF-8", "B"));
 
         // Tạo nội dung email 
         String htmlContent = "<html>"
@@ -100,22 +101,22 @@ public class ForgotPasswordServlet extends HttpServlet {
                 + "</head>"
                 + "<body>"
                 + "<div class='email-container'>"
-                + "<div class='email-header'>Password Reset Request</div>"
+                + "<div class='email-header'>Yêu cầu đặt lại mật khẩu</div>"
                 + "<div class='email-content'>"
-                + "<p>Dear " + userName + ",</p>" // Chèn tên người dùng vào email
-                + "<p>We have received a request to reset your password for your account. If you requested this reset, please click the button below to proceed.</p>"
-                + "<a href='" + resetLink + "' class='button'>Reset Your Password</a>"
-                + "<p>If you did not request a password reset, please ignore this email.</p>"
+                + "<p>Kính gửi " + userName + ",</p>" // Chèn tên người dùng vào email
+                + "<p>Chúng tôi đã nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn. Nếu bạn yêu cầu đặt lại này, vui lòng nhấp vào nút bên dưới để tiếp tục.</p>"
+                + "<a href='" + resetLink + "' class='button'>Đặt lại mật khẩu của bạn</a>"
+                + "<p>Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.</p>"
                 + "</div>"
                 + "<div class='footer'>"
-                + "<p>If you have any questions, feel free to contact our support team.</p>"
-                + "<p>&copy; 2025 Lor-Kingdom. All rights reserved.</p>"
+                + "<p>Nếu bạn có bất kỳ thắc mắc nào, vui lòng liên hệ với nhóm hỗ trợ của chúng tôi.</p>"
+                + "<p>&copy; 2025 Lor-Kingdom. Đã đăng ký bản quyền.</p>"
                 + "</div>"
                 + "</div>"
                 + "</body>"
                 + "</html>";
 
-        message.setContent(htmlContent, "text/html");
+        message.setContent(htmlContent, "text/html; charset=UTF-8");
         Transport.send(message);
     }
 

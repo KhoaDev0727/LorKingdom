@@ -5,7 +5,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Login Page</title>
+        <title>Trang đăng nhập</title>
         <!-- Bootstrap 5 CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
         <!-- Custom CSS -->
@@ -21,7 +21,7 @@
         <div class="container-fluid2">  
             <div class="form-container">
                 <div class="container form">
-                    <h3 class="mb-4">Login to LorKingdom</h3>
+                    <h3 class="mb-4">Đăng nhập vào LorKingdom</h3>
                     <form method="POST" action="LoginServlet">
                         <!-- Email Input -->
                         <div class="mb-4">
@@ -35,7 +35,7 @@
 
                         <!-- Password Input -->
                         <div class="mb-4    ">
-                            <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Mật khẩu">
 
                             <!-- Display password error if any -->
                             <c:if test="${not empty requestScope.passwordError}">
@@ -51,17 +51,17 @@
                         </c:if>
 
                         <!-- Login Button -->
-                        <button type="submit" class="btn btn-primary login-btn">Login</button>
+                        <button type="submit" class="btn btn-primary login-btn">Đăng nhập</button>
 
                         <!-- Forgot Password Link -->
                         <div class="FP mt-4"> 
                             
                             <div class="register-link">
-                                <span>Don't have an account? <a href="register.jsp">Register</a></span>
+                                <span>Bạn chưa có tài khoản? <a href="register.jsp">Đăng ký</a></span>
                             </div>
                             
                             <div class="forgot-password">
-                                <a href="forgotPassword.jsp">Forgot password?</a>
+                                <a href="forgotPassword.jsp">Quên mật khẩu?</a>
                             </div>
 
                             <!-- Register Link -->

@@ -12,19 +12,40 @@ import java.util.List;
 
 public class MaterialDAO {
 
-    // Lấy danh sách tất cả vật liệu
-    public List<Material> getAllMaterials() throws SQLException, ClassNotFoundException {
+    public List<Material> getAllActiveMaterials() throws SQLException, ClassNotFoundException {
         List<Material> materials = new ArrayList<>();
-        String query = "SELECT MaterialID, Name, Description FROM Material";
-
+        String query = "SELECT MaterialID, Name, Description, IsDeleted "
+                + "FROM Material "
+                + "WHERE IsDeleted = 0";
         try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
-
             while (rs.next()) {
-                materials.add(new Material(
+                Material mat = new Material(
                         rs.getInt("MaterialID"),
                         rs.getString("Name"),
-                        rs.getString("Description")
-                ));
+                        rs.getString("Description"),
+                        rs.getInt("IsDeleted")
+                );
+                materials.add(mat);
+            }
+        }
+        return materials;
+    }
+
+    // 2) Lấy danh sách Material đã xóa mềm (isDeleted=1)
+    public List<Material> getDeletedMaterials() throws SQLException, ClassNotFoundException {
+        List<Material> materials = new ArrayList<>();
+        String query = "SELECT MaterialID, Name, Description, IsDeleted "
+                + "FROM Material "
+                + "WHERE IsDeleted = 1";
+        try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                Material mat = new Material(
+                        rs.getInt("MaterialID"),
+                        rs.getString("Name"),
+                        rs.getString("Description"),
+                        rs.getInt("IsDeleted")
+                );
+                materials.add(mat);
             }
         }
         return materials;
@@ -42,14 +63,13 @@ public class MaterialDAO {
         }
     }
 
-    // Kiểm tra xem vật liệu đã tồn tại chưa
-    public boolean isMaterialExists(String name) throws SQLException, ClassNotFoundException {
+    public boolean isMaterial(String name) throws SQLException, ClassNotFoundException {
         String query = "SELECT COUNT(*) FROM Material WHERE Name = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, name);
             try ( ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt(1) > 0;
+                    return rs.getInt(1) > 1;
                 }
             }
         }
@@ -58,30 +78,40 @@ public class MaterialDAO {
 
     // Cập nhật thông tin vật liệu
     public void updateMaterial(Material material) throws SQLException, ClassNotFoundException {
-        String query = "UPDATE Material SET Name = ?, Description = ? WHERE MaterialID = ?";
+        String query = "UPDATE Material SET Name = ?, Description = ?, IsDeleted = ? WHERE MaterialID = ?";
 
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
-
             ps.setString(1, material.getName());
             ps.setString(2, material.getDescription());
-            ps.setInt(3, material.getMaterialID());
+            ps.setBoolean(3, material.getIsDeleted() == 1);
+            ps.setInt(4, material.getMaterialID());
             ps.executeUpdate();
         }
     }
 
-    // Xóa vật liệu theo ID
-    public void deleteMaterial(int materialID) throws SQLException, ClassNotFoundException {
-        String query = "DELETE FROM Material WHERE MaterialID = ?";
-
+    public void softDeleteMaterial(int materialID) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE Material SET IsDeleted = 1 WHERE MaterialID = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
-
-            System.out.println("Deleting Material ID: " + materialID); // Debug
             ps.setInt(1, materialID);
-            int rowsAffected = ps.executeUpdate();
+            ps.executeUpdate();
+        }
+    }
 
-            if (rowsAffected == 0) {
-                System.out.println("No rows deleted. Material ID may not exist.");
-            }
+    // 5) Xóa cứng (DELETE)
+    public void hardDeleteMaterial(int materialID) throws SQLException, ClassNotFoundException {
+        String query = "DELETE FROM Material WHERE MaterialID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, materialID);
+            ps.executeUpdate();
+        }
+    }
+
+    // 6) Khôi phục (IsDeleted=0)
+    public void restoreMaterial(int materialID) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE Material SET IsDeleted = 0 WHERE MaterialID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, materialID);
+            ps.executeUpdate();
         }
     }
 
@@ -97,6 +127,25 @@ public class MaterialDAO {
             }
         }
         return materialName;
+    }
+
+    public List<Material> searchMaterial(String keyword) throws SQLException, ClassNotFoundException {
+        List<Material> materials = new ArrayList<>();
+        String query = "SELECT MaterialID, Name, Description, IsDeleted FROM Material WHERE Name LIKE ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, "%" + keyword + "%");
+            try ( ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    materials.add(new Material(
+                            rs.getInt("MaterialID"),
+                            rs.getString("Name"),
+                            rs.getString("Description"),
+                            rs.getInt("IsDeleted")
+                    ));
+                }
+            }
+        }
+        return materials;
     }
 
 }

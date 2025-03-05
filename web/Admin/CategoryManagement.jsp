@@ -32,6 +32,10 @@
         </style>
     </head>
     <body class="sb-nav-fixed">
+        <c:if test="${empty sessionScope.roleID}">
+            <c:redirect url="/Admin/loginPage.jsp"/>
+        </c:if>
+
         <div id="layoutSidenav">
             <div id="layoutSidenav_content">
                 <%@ include file="Component/SideBar.jsp" %>
@@ -40,12 +44,24 @@
                         <div class="container-fluid px-5">
                             <h1 class="mt-4">Category Management</h1>
                             <!-- Form Add category -->
+                            <!-- Form Add category -->
                             <form action="CategoryServlet" method="POST">
                                 <input type="hidden" name="action" value="add">
-                                <label>category Name</label>
+
+                                <label>Category Name</label>
                                 <input type="text" name="categoryName" required />
+
+                                <label>SuperCategory</label>
+                                <select name="superCategoryID" required>
+                                    <option value="">-- Select SuperCategory --</option>
+                                    <c:forEach var="superCategory" items="${superCategories}">
+                                        <option value="${superCategory.superCategoryID}">${superCategory.name}</option>
+                                    </c:forEach>
+                                </select>
+
                                 <button class="btn btn-primary ms-2" type="submit">Add Category</button>
                             </form>
+
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
@@ -64,9 +80,16 @@
                                             <button class="btn btn-outline-secondary" type="submit">
                                                 <i class="fas fa-search"></i>
                                             </button>
+
                                             <a href="CategoryServlet" class="btn btn-outline-danger">
                                                 <i class="fas fa-sync"></i>
                                             </a>
+                                            <c:if test="${sessionScope.roleID == 1}">
+                                                <a href="CategoryServlet?action=listDeleted" class="btn btn-outline-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </c:if>
+
                                         </div>
                                     </form>
                                     <!-- Customer Table -->
@@ -75,7 +98,9 @@
                                             <thead class="table-dark">
                                                 <tr>
                                                     <th>category ID</th>
+                                                    <th>SuperCategory ID</th>
                                                     <th>category Name</th>
+                                                    <th>Status</th>
                                                     <th>Date Created</th>
                                                     <th>Actions</th>
                                                 </tr>
@@ -90,32 +115,53 @@
                                                     </c:when>
                                                     <c:otherwise>
                                                         <c:forEach var="category" items="${categories}">
-                                                            <tr>
+                                                            <tr class="${category.isDeleted == 1 ? 'deleted-row' : ''}">
                                                                 <td>${category.categoryID}</td>
+                                                                <td>${category.superCategoryID}</td>
                                                                 <td>${category.name}</td>
+                                                                <td>
+                                                                    <c:choose>
+                                                                        <c:when test="${category.isDeleted == 1}">
+                                                                            <span class="badge bg-secondary">Deleted</span>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <span class="badge bg-success">Active</span>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
+                                                                </td>
                                                                 <td>${category.createdAt}</td>
                                                                 <td>
-                                                                    <!-- Edit Button -->
-                                                                    <button class="btn btn-sm btn-warning" 
-                                                                            data-bs-toggle="modal" 
-                                                                            data-bs-target="#editCategoryModal-${category.categoryID}">
-                                                                        <i class="fas fa-edit"></i> 
-                                                                    </button>
-                                                                    <!-- Delete Button -->
-                                                                    <form method="post" action="CategoryServlet" class="d-inline">
-                                                                        <input type="hidden" name="action" value="delete">
-                                                                        <input type="hidden" name="categoryID" value="${category.categoryID}">
-                                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                                    <c:if test="${category.isDeleted == 0}">
+                                                                        <!-- Chỉ hiển thị nút sửa và xóa khi danh mục đang active -->
+                                                                        <button class="btn btn-sm btn-warning" 
+                                                                                data-bs-toggle="modal" 
+                                                                                data-bs-target="#editCategoryModal-${category.categoryID}">
+                                                                            <i class="fas fa-edit"></i> 
+                                                                        </button>
+                                                                        <button type="button"
+                                                                                class="btn btn-sm btn-danger"
                                                                                 data-bs-toggle="modal"
-                                                                                data-bs-target="#confirmDeleteModal"
-                                                                                onclick="setDeletecategoryID(${category.categoryID})">
+                                                                                data-bs-target="#confirmSoftDeleteModal"
+                                                                                onclick="setSoftDeleteCategoryID(${category.categoryID})">
                                                                             <i class="fas fa-trash"></i>
                                                                         </button>
-                                                                    </form>
+                                                                    </c:if>
+                                                                    <c:if test="${category.isDeleted == 1}">
+                                                                        <button class="btn btn-sm btn-success" 
+                                                                                onclick="location.href = 'CategoryServlet?action=restore&categoryID=${category.categoryID}'">
+                                                                            Restore
+                                                                        </button>
+                                                                        <button type="button"
+                                                                                class="btn btn-sm btn-danger"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#confirmHardDeleteModal"
+                                                                                onclick="setHardDeleteCategoryID(${category.categoryID})">
+                                                                            <i class="fas fa-trash"></i> 
+                                                                        </button>
+                                                                    </c:if>
+
                                                                 </td>
                                                             </tr>
-
-                                                            <!-- Edit Modal -->
                                                         <div class="modal fade" id="editCategoryModal-${category.categoryID}" tabindex="-1">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
@@ -131,6 +177,16 @@
                                                                                 <label class="form-label">Category Name</label>
                                                                                 <input type="text" class="form-control" name="categoryName" value="${category.name}" required>
                                                                             </div>
+                                                                            <div class="mb-3">
+                                                                                <label class="form-label">Super Category</label>
+                                                                                <select class="form-control" name="superCategoryID">
+                                                                                    <c:forEach var="sc" items="${superCategories}">
+                                                                                        <option value="${sc.superCategoryID}" <c:if test="${sc.superCategoryID == category.superCategoryID}">selected</c:if>>
+                                                                                            ${sc.name}
+                                                                                        </option>
+                                                                                    </c:forEach>
+                                                                                </select>
+                                                                            </div>
                                                                         </div>
                                                                         <div class="modal-footer">
                                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -140,8 +196,6 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-
-                                                        <!-- Delete Confirmation Modal -->
                                                         <div class="modal fade" id="confirmDeleteModal" tabindex="-1">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
@@ -193,6 +247,96 @@
                     </div>
                 </div>
             </div>
-        </div>s
+        </div>
+        <!-- Success Message Modal -->
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title" id="successModalLabel">Success</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-dark">
+                        <p id="successMessage">${sessionScope.successMessage}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal XÓA MỀM -->
+        <div class="modal fade" id="confirmSoftDeleteModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Xác nhận xóa</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        Bạn có chắc chắn muốn đưa danh mục này vào thùng rác không?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <form id="deletecategoryForm" method="POST" action="CategoryServlet">
+                            <!-- Gửi action = delete để gọi hàm deleteCategory -->
+                            <input type="hidden" name="action" value="delete">
+                            <!-- ID ẩn DÙNG RIÊNG cho xóa mềm -->
+                            <input type="hidden" name="categoryID" id="softDeleteCategoryID">
+                            <button type="submit" class="btn btn-danger">Xóa</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal XÓA CỨNG -->
+        <div class="modal fade" id="confirmHardDeleteModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Xác nhận xóa</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        Bạn có chắc chắn muốn xóa vĩnh viễn danh mục này không?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <form id="hardDeleteForm" method="POST" action="CategoryServlet">
+                            <!-- Gửi action = hardDelete để gọi hàm hardDeleteCategory -->
+                            <input type="hidden" name="action" value="hardDelete">
+                            <!-- ID ẩn DÙNG RIÊNG cho xóa cứng -->
+                            <input type="hidden" name="categoryID" id="hardDeleteCategoryID">
+                            <button type="submit" class="btn btn-danger">Xóa </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
     </body>
+    <script>
+        function setSoftDeleteCategoryID(categoryID) {
+            document.getElementById("softDeleteCategoryID").value = categoryID;
+        }
+        function setHardDeleteCategoryID(categoryID) {
+            document.getElementById("hardDeleteCategoryID").value = categoryID;
+        }
+        window.onload = function () {
+            let errorMessage = "${sessionScope.errorMessage}";
+            if (errorMessage && errorMessage.trim() !== "") {
+                let errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+                errorModal.show();
+        <% request.getSession().removeAttribute("errorMessage"); %>
+            }
+
+            let successMessage = "${sessionScope.successMessage}";
+            if (successMessage && successMessage.trim() !== "") {
+                let successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                successModal.show();
+        <% request.getSession().removeAttribute("successMessage"); %>
+            }
+        };
+    </script>
 </html>

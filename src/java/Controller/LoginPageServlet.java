@@ -7,6 +7,7 @@ import Model.Account;
 import DAO.AccountDAO;
 
 public class LoginPageServlet extends HttpServlet {
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = request.getParameter("email");
@@ -14,14 +15,14 @@ public class LoginPageServlet extends HttpServlet {
 
         // Validation logic
         if (email == null || email.trim().isEmpty()) {
-            request.setAttribute("emailError", "Email cannot be empty!");
+            request.setAttribute("emailError", "Email không được để trống!");
         } else if (!email.matches("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$")) {
-            request.setAttribute("emailError", "Invalid email format!");
+            request.setAttribute("emailError", "Định dạng email không hợp lệ!");
         }
         if (password == null || password.trim().isEmpty()) {
-            request.setAttribute("passwordError", "Password cannot be empty!");
+            request.setAttribute("passwordError", "Mật khẩu không được để trống!");
         } else if (password.length() < 6) {
-            request.setAttribute("passwordError", "Password must be at least 6 characters long!");
+            request.setAttribute("passwordError", "Mật khẩu phải dài ít nhất 6 ký tự!");
         }
 
         if (request.getAttribute("emailError") != null || request.getAttribute("passwordError") != null) {
@@ -39,19 +40,20 @@ public class LoginPageServlet extends HttpServlet {
             session.setAttribute("userID", account.getAccountId());
             session.setAttribute("roleID", account.getRoleID());
             session.setAttribute("account", account);
-
+            session.setMaxInactiveInterval(1000000000); // 10 giây
             // Redirect based on role
             if (account.getRoleID() == 1) {
                 response.sendRedirect("DashBoard.jsp"); // Admin dashboard
-            } else if (account.getRoleID() == 2) {
-                response.sendRedirect("staffDashboard.jsp"); // Staff dashboard
+            } else if (account.getRoleID() == 2 || account.getRoleID() == 4 ) {
+                response.sendRedirect("profileStaff.jsp"); // Staff dashboard
             } else {
-                // Handle other roles or default case
-                response.sendRedirect("home.jsp"); // Or wherever you want non-admin/staff to go
+                request.setAttribute("error", "Bạn không có quyền đăng nhập!");
+                request.getRequestDispatcher("loginPage.jsp").forward(request, response);
             }
         } else {
-            request.setAttribute("error", "Invalid email or password!");
+            request.setAttribute("error", "Email hoặc mật khẩu không hợp lệ!");
             request.getRequestDispatcher("loginPage.jsp").forward(request, response);
         }
+        
     }
 }
