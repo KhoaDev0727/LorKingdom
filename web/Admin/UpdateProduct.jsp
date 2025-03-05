@@ -18,13 +18,12 @@
 
             <form action="updateProductServlet" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
                 <!-- Ẩn action và productID -->
-                <input name="action" value="update" />
+                <input name="action" value="update" type="hidden" />
                 <input type="hidden" name="productID" value="${product.productID}" />
                 <input type="hidden" name="SKU" value="${product.SKU}" />
 
                 <div class="row">
                     <h2 class="text-center mb-4 fw-bold text-primary">Update Product</h2>
-
                     <!-- Cột trái -->
                     <div class="col-md-6">
 
@@ -201,7 +200,6 @@
                                     <div class="col-md-8">
                                         <h6 class="fw-bold mb-3">Preview Image</h6>
                                         <div id="previewContainer" class="d-flex flex-wrap gap-2">
-                                            <!-- Preview existing main image nếu cần -->
                                         </div>
                                     </div>
                                 </div>
@@ -247,9 +245,7 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 
-        <!-- File JS xử lý upload, preview... (bạn có thể đổi tên nếu muốn) -->
         <script src="JS/AddNewProduct.js"></script>
-        <!-- Modal Error -->
         <!-- Modal Error -->
         <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -270,7 +266,6 @@
         </div>
 
         <!-- Success Message Modal -->
-        <!-- Success Message Modal -->
         <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -283,7 +278,23 @@
                     </div>
                     <div class="modal-footer">
                         <!-- Nút quay lại trang ProductManagement -->
-                        <button type="button" class="btn btn-primary" onclick="window.location.href = 'ProductManagement.jsp'">Quay lại</button>
+                        <button type="button" class="btn btn-primary" onclick="window.location.href = 'ProductServlet?&action=list'">Quay lại</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="errorMessage">${sessionScope.errorMessage}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -297,25 +308,17 @@
                     errorModal.show();
             <% request.getSession().removeAttribute("errorMessage"); %>
                 }
-
-                let successMessage = "${sessionScope.successMessage}";
-                if (successMessage && successMessage.trim() !== "") {
-                    let successModal = new bootstrap.Modal(document.getElementById('successModal'));
-                    successModal.show();
-            <% request.getSession().removeAttribute("successMessage"); %>
-                }
             };
-            // Khởi tạo Quill editor
+        </script>
+        <script>
+
             var quill = new Quill('#editor-container', {
                 theme: 'snow'
             });
 
-            // Lấy mô tả cũ từ input hidden
             var oldDesc = document.querySelector('input[name="description"]').value;
-            // Đưa vào Quill
             quill.root.innerHTML = oldDesc;
 
-            // Khi submit form, copy nội dung quill về input hidden
             document.querySelector('form').addEventListener('submit', function () {
                 document.querySelector('input[name="description"]').value = quill.root.innerHTML;
             });

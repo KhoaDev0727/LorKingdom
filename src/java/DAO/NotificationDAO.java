@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package DAO;
 
 import DBConnect.DBConnection;
@@ -11,6 +15,30 @@ public class NotificationDAO {
     public List<Notification> getAllNotifications() throws SQLException, ClassNotFoundException {
         List<Notification> notifications = new ArrayList<>();
         String sql = "SELECT * FROM Notifications WHERE IsDeleted = 0 ORDER BY CreatedAt DESC";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                notifications.add(new Notification(
+                        rs.getInt("NotificationID"),
+                        rs.getString("Title"),
+                        rs.getString("Content"),
+                        rs.getString("Type"),
+                        rs.getString("Status"),
+                        rs.getObject("AccountID") != null ? rs.getInt("AccountID") : null,
+                        rs.getBoolean("IsDeleted"),
+                        rs.getTimestamp("CreatedAt")
+                ));
+            }
+        }
+        return notifications;
+    }
+
+    public List<Notification> getDeletedNotifications() throws SQLException, ClassNotFoundException {
+        List<Notification> notifications = new ArrayList<>();
+        String sql = "SELECT * FROM Notifications WHERE IsDeleted = 1 ORDER BY CreatedAt DESC";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -46,7 +74,7 @@ public class NotificationDAO {
         }
     }
 
-    public void updateNotification(int id, String title, String content, String type, String status, Integer accountID) throws SQLException, ClassNotFoundException {
+    public void updateNotification(int notificationID, String title, String content, String type, String status, Integer accountID) throws SQLException, ClassNotFoundException {
         String sql = "UPDATE Notifications SET Title = ?, Content = ?, Type = ?, Status = ?, AccountID = ? WHERE NotificationID = ? AND IsDeleted = 0";
 
         try (Connection conn = DBConnection.getConnection();
@@ -56,18 +84,35 @@ public class NotificationDAO {
             stmt.setString(3, type);
             stmt.setString(4, status);
             stmt.setObject(5, accountID, Types.INTEGER); // Nullable
-            stmt.setInt(6, id);
+            stmt.setInt(6, notificationID);
             stmt.executeUpdate();
         }
     }
 
-    public boolean deleteNotification(int id) throws SQLException, ClassNotFoundException {
-        String sql = "UPDATE Notifications SET IsDeleted = 1 WHERE NotificationID = ? AND IsDeleted = 0"; // Soft delete
+    public void softDeleteNotification(int notificationID) throws SQLException, ClassNotFoundException {
+        String sql = "UPDATE Notifications SET IsDeleted = 1 WHERE NotificationID = ? AND IsDeleted = 0";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
+            stmt.setInt(1, notificationID);
+            stmt.executeUpdate();
+        }
+    }
+
+    public void hardDeleteNotification(int notificationID) throws SQLException, ClassNotFoundException {
+        String sql = "DELETE FROM Notifications WHERE NotificationID = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, notificationID);
+            stmt.executeUpdate();
+        }
+    }
+
+    public void restoreNotification(int notificationID) throws SQLException, ClassNotFoundException {
+        String sql = "UPDATE Notifications SET IsDeleted = 0 WHERE NotificationID = ? AND IsDeleted = 1";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, notificationID);
+            stmt.executeUpdate();
         }
     }
 

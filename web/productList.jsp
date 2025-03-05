@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <div class="grid grid-cols-3 gap-4">
-    <c:forEach var="product" items="${listP}" begin="0" end="8">
+    <c:forEach var="product" items="${listP}" begin="0" end="11">
         <a href="ProductDetailServlet?productID=${product.productID}"
            class="border border-gray-400 rounded-4 p-4 transform transition duration-200 hover:scale-105 no-underline"
            style="width: 350px; height: 450px; display: block;"> 

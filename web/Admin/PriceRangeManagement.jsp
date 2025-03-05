@@ -1,7 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -39,22 +39,20 @@
                     <main>
                         <div class="container-fluid px-5">
                             <h1 class="mt-4">Price Range Management</h1>
-                            <!-- Form thêm Price Range -->
-                            <form action="PriceRangeServlet" method="POST">
-                                <input type="hidden" name="action" value="add">
-                                <label for="priceRange">Price Range</label>
-                                <input type="text" id="priceRange" name="priceRange" placeholder="Enter price range" required />
-                                <button class="btn btn-primary ms-2" type="submit">Add Price Range</button>
-                            </form>
+
+                            <!-- Nút mở modal thêm Price Range -->
+                            <button class="btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#addPriceRangeModal">
+                                Add Price Range
+                            </button>
+
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <i class="fas fa-table me-1"></i> Origin List
+                                            <i class="fas fa-table me-1"></i> Price Range List
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="card-body">
                                     <!-- Search Form -->
                                     <form action="PriceRangeServlet" method="GET" class="mb-4">
@@ -74,7 +72,7 @@
                                             </c:if>
                                         </div>
                                     </form>
-                                    <!-- Customer Table -->
+                                    <!-- Price Range Table -->
                                     <div class="table-responsive">
                                         <table class="table table-bordered table-striped table-hover">
                                             <thead class="table-dark">
@@ -86,12 +84,11 @@
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            
                                                 <c:choose>
                                                     <c:when test="${empty priceRanges}">
-                                                        <!-- Display message if the list is empty -->
                                                         <tr>
-                                                            <td colspan="4" class="text-center text-muted">No Origin available.</td>
+                                                            <td colspan="5" class="text-center text-muted">No Price Range available.</td>
                                                         </tr>
                                                     </c:when>
                                                     <c:otherwise>
@@ -113,7 +110,7 @@
                                                                     </c:choose>
                                                                 </td>
                                                                 <td>
-                                                                    <!-- Nếu isDeleted=0 => Edit & Xóa mềm -->
+                                                                    <!-- Nếu isDeleted=0: cho sửa & xóa mềm -->
                                                                     <c:if test="${pr.isDeleted == 0}">
                                                                         <button class="btn btn-sm btn-warning"
                                                                                 data-bs-toggle="modal"
@@ -127,8 +124,7 @@
                                                                             <i class="fas fa-trash"></i>
                                                                         </button>
                                                                     </c:if>
-
-                                                                    <!-- Nếu isDeleted=1 => Restore & Xóa cứng -->
+                                                                    <!-- Nếu isDeleted=1: cho restore & xóa cứng -->
                                                                     <c:if test="${pr.isDeleted == 1}">
                                                                         <button class="btn btn-sm btn-success"
                                                                                 onclick="location.href = 'PriceRangeServlet?action=restore&priceRangeID=${pr.priceRangeID}'">
@@ -143,35 +139,62 @@
                                                                     </c:if>
                                                                 </td>
                                                             </tr>
-                                                            <!-- Modal Edit PriceRange -->
-                                                        <div class="modal fade" id="editPriceRangeModal-${pr.priceRangeID}" tabindex="-1">
+
+                                                            <c:set var="rangeParts" value="${fn:contains(pr.priceRange, ' ') ? fn:split(pr.priceRange, ' ') : ['0', 'trăm']}" />
+                                                            <c:set var="bounds" value="${fn:contains(rangeParts[0], '-') ? fn:split(rangeParts[0], '-') : ['0', '0']}" />
+
+                                                        <div class="modal fade" id="editPriceRangeModal-${pr.priceRangeID}" tabindex="-1" aria-labelledby="editPriceRangeModalLabel-${pr.priceRangeID}" aria-hidden="true">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
                                                                     <form method="POST" action="PriceRangeServlet">
                                                                         <div class="modal-header">
-                                                                            <h5 class="modal-title">Edit Price Range</h5>
+                                                                            <h5 class="modal-title" id="editPriceRangeModalLabel-${pr.priceRangeID}">Edit Price Range</h5>
                                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                                         </div>
                                                                         <div class="modal-body">
                                                                             <input type="hidden" name="action" value="update">
                                                                             <input type="hidden" name="priceRangeID" value="${pr.priceRangeID}">
+
                                                                             <div class="mb-3">
-                                                                                <label class="form-label">Price Range</label>
-                                                                                <input type="text" class="form-control" name="priceRange" value="${pr.priceRange}" required>
+                                                                                <label class="form-label">Start Price</label>
+                                                                                <input type="number" 
+                                                                                       class="form-control" 
+                                                                                       name="priceStart" 
+                                                                                       min="0" 
+                                                                                       required
+                                                                                       value="${fn:replace(bounds[0], ',', '')}" />
                                                                             </div>
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                            <button type="submit" class="btn btn-primary">Save changes</button>
-                                                                        </div>
-                                                                    </form>
+
+                                                                            <div class="mb-3">
+                                                                                <label class="form-label">End Price</label>
+                                                                                <input type="number" 
+                                                                                       class="form-control" 
+                                                                                       name="priceEnd" 
+                                                                                       min="0" 
+                                                                                       required
+                                                                                       value="${fn:replace(bounds[1], ',', '')}" />
+                                                                            </div>
+
+                                                                            <div class="mb-3">
+                                                                                <label class="form-label">Unit</label>
+                                                                                <select class="form-select" name="unit">
+                                                                                    <option value="trăm" <c:if test="${rangeParts[1] eq 'trăm'}">selected</c:if>>Trăm</option>
+                                                                                    <option value="triệu" <c:if test="${rangeParts[1] eq 'triệu'}">selected</c:if>>Triệu</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                                <button type="submit" class="btn btn-primary">Save changes</button>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
                                                     </c:forEach>
                                                 </c:otherwise>
                                             </c:choose>
-                                            </tbody>
+                                            
                                         </table>
                                     </div>
                                 </div>
@@ -181,7 +204,44 @@
                 </div>
             </div>
         </div>
-        <!-- Modal Error -->
+
+        <!-- Modal Add Price Range -->
+        <div class="modal fade" id="addPriceRangeModal" tabindex="-1" aria-labelledby="addPriceRangeModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form method="POST" action="PriceRangeServlet">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addPriceRangeModalLabel">Add Price Range</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="action" value="add">
+                            <div class="mb-3">
+                                <label class="form-label">Start Price</label>
+                                <input type="text" class="form-control" name="priceStart" id="priceStart" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">End Price</label>
+                                <input type="text" class="form-control" name="priceEnd" id="priceStart" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Unit</label>
+                                <select class="form-select" name="unit">
+                                    <option value="trăm">Trăm</option>
+                                    <option value="triệu">Triệu</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Add Price Range</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Các modal Error, Success, Delete (giữ nguyên hoặc chỉnh sửa theo nhu cầu) -->
         <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -198,7 +258,7 @@
                 </div>
             </div>
         </div>
-        <!-- Success Message Modal -->
+
         <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -215,12 +275,13 @@
                 </div>
             </div>
         </div>
+
         <!-- Modal XÓA MỀM -->
         <div class="modal fade" id="confirmSoftDeleteModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Xác nhận xóa </h5>
+                        <h5 class="modal-title">Xác nhận xóa</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
@@ -254,7 +315,7 @@
                         <form method="POST" action="PriceRangeServlet">
                             <input type="hidden" name="action" value="hardDelete">
                             <input type="hidden" name="priceRangeID" id="hardDeletePriceRangeID">
-                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Xóa</button>
+                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
                         </form>
                     </div>
                 </div>
@@ -277,7 +338,6 @@
                     errorModal.show();
             <% request.getSession().removeAttribute("errorMessage"); %>
                 }
-
                 let successMessage = "${sessionScope.successMessage}";
                 if (successMessage && successMessage.trim() !== "") {
                     let successModal = new bootstrap.Modal(document.getElementById('successModal'));

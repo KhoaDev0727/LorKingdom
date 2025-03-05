@@ -143,6 +143,28 @@ public class ShippingMethodServlet extends HttpServlet {
         String methodName = request.getParameter("methodName");
         String description = request.getParameter("description");
 
+        if (methodName == null || methodName.trim().isEmpty()) {
+            request.getSession().setAttribute("errorMessage", "Method name cannot be empty.");
+            response.sendRedirect("ShippingMethodServlet?action=list&showErrorModal=true");
+            return;
+        }
+
+        // Kiểm tra methodName chỉ chứa số, chữ, dấu - và _
+        if (!methodName.matches("^[\\p{L} _-]+$")) {
+            request.getSession().setAttribute("errorMessage",
+                    "Method name can only contain letters, numbers, -, and _.");
+            response.sendRedirect("ShippingMethodServlet?action=list&showErrorModal=true");
+            return;
+        }
+
+
+        // Kiểm tra nếu shipping method đã tồn tại
+        if (shippingDAO.isShippingMethodExists(methodName)) {
+            request.getSession().setAttribute("errorMessage", "Shipping method already exists.");
+            response.sendRedirect("ShippingMethodServlet?action=list&showErrorModal=true");
+            return;
+        }
+        
         shippingDAO.updateShippingMethod(id, methodName, description);
         request.getSession().setAttribute("successMessage", "Shipping method updated successfully.");
         response.sendRedirect("ShippingMethodServlet?action=list&showSuccessModal=true");

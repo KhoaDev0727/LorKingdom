@@ -142,6 +142,10 @@
         <servlet-class>Controller.VerifyCodePage</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>PaymentMethodServlet</servlet-name>
+        <servlet-class>Controller.PaymentMethodServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>LogoutPage</servlet-name>
         <servlet-class>Controller.LogoutPage</servlet-class>
     </servlet>
@@ -185,6 +189,10 @@
     <servlet>
         <servlet-name>updateProductServlet</servlet-name>
         <servlet-class>Controller.updateProductServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>NotificationServlet</servlet-name>
+        <servlet-class>Controller.NotificationServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>VerifyCodeServlet</servlet-name>
@@ -310,6 +318,10 @@
         <url-pattern>/Admin/RegisterPageServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>PaymentMethodServlet</servlet-name>
+        <url-pattern>/Admin/PaymentMethodServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>SendVerificationPage</servlet-name>
         <url-pattern>/Admin/SendVerificationPage</url-pattern>
     </servlet-mapping>
@@ -365,6 +377,10 @@
     <servlet-mapping>
         <servlet-name>updateProductServlet</servlet-name>
         <url-pattern>/Admin/updateProductServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>NotificationServlet</servlet-name>
+        <url-pattern>/Admin/NotificationServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

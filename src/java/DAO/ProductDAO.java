@@ -230,72 +230,135 @@ public class ProductDAO {
         return products;
     }
 
-    public List<Product> getFilteredProducts(Integer categoryID, Integer ageID, Integer sexID, Integer priceRangeID, Integer brandID, Integer materialID, Integer originID) throws ClassNotFoundException {
+    public List<Product> getFilteredProducts(Integer categoryID, Integer ageID, Integer sexID,
+            Integer priceRangeID, Integer brandID, Integer materialID, Integer originID) throws ClassNotFoundException {
         List<Product> products = new ArrayList<>();
-        try {
-            conn = DBConnection.getConnection();
+        // Xây dựng truy vấn ban đầu với tất cả các điều kiện
+        StringBuilder query = new StringBuilder("SELECT * FROM Product WHERE 1=1");
+        List<Object> params = new ArrayList<>();
 
-            // Câu lệnh SQL động
-            StringBuilder query = new StringBuilder("SELECT * FROM Product WHERE 1=1");
+        if (categoryID != null) {
+            query.append(" AND CategoryID = ?");
+            params.add(categoryID);
+        }
+        if (ageID != null) {
+            query.append(" AND AgeID = ?");
+            params.add(ageID);
+        }
+        if (sexID != null) {
+            query.append(" AND SexID = ?");
+            params.add(sexID);
+        }
+        if (priceRangeID != null) {
+            query.append(" AND PriceRangeID = ?");
+            params.add(priceRangeID);
+        }
+        if (brandID != null) {
+            query.append(" AND BrandID = ?");
+            params.add(brandID);
+        }
+        if (materialID != null) {
+            query.append(" AND MaterialID = ?");
+            params.add(materialID);
+        }
+        if (originID != null) {
+            query.append(" AND OriginID = ?");
+            params.add(originID);
+        }
 
-            // Danh sách tham số
-            List<Object> params = new ArrayList<>();
+        products = executeQuery(query.toString(), params);
+
+        if (products.isEmpty()) {
+            StringBuilder fallbackQuery = new StringBuilder("SELECT * FROM Product WHERE IsDeleted = 0 AND (");
+            List<Object> fallbackParams = new ArrayList<>();
+            boolean firstCondition = true;
 
             if (categoryID != null) {
-                query.append(" AND CategoryID = ?");
-                params.add(categoryID);
+                fallbackQuery.append(" CategoryID = ? ");
+                fallbackParams.add(categoryID);
+                firstCondition = false;
             }
             if (ageID != null) {
-                query.append(" AND AgeID = ?");
-                params.add(ageID);
+                if (!firstCondition) {
+                    fallbackQuery.append(" OR ");
+                }
+                fallbackQuery.append(" AgeID = ? ");
+                fallbackParams.add(ageID);
+                firstCondition = false;
             }
             if (sexID != null) {
-                query.append(" AND SexID = ?");
-                params.add(sexID);
+                if (!firstCondition) {
+                    fallbackQuery.append(" OR ");
+                }
+                fallbackQuery.append(" SexID = ? ");
+                fallbackParams.add(sexID);
+                firstCondition = false;
             }
             if (priceRangeID != null) {
-                query.append(" AND PriceRangeID = ?");
-                params.add(priceRangeID);
+                if (!firstCondition) {
+                    fallbackQuery.append(" OR ");
+                }
+                fallbackQuery.append(" PriceRangeID = ? ");
+                fallbackParams.add(priceRangeID);
+                firstCondition = false;
             }
             if (brandID != null) {
-                query.append(" AND BrandID = ?");
-                params.add(brandID);
+                if (!firstCondition) {
+                    fallbackQuery.append(" OR ");
+                }
+                fallbackQuery.append(" BrandID = ? ");
+                fallbackParams.add(brandID);
+                firstCondition = false;
             }
             if (materialID != null) {
-                query.append(" AND MaterialID = ?");
-                params.add(materialID);
+                if (!firstCondition) {
+                    fallbackQuery.append(" OR ");
+                }
+                fallbackQuery.append(" MaterialID = ? ");
+                fallbackParams.add(materialID);
+                firstCondition = false;
             }
             if (originID != null) {
-                query.append(" AND OriginID = ?");
-                params.add(originID);
+                if (!firstCondition) {
+                    fallbackQuery.append(" OR ");
+                }
+                fallbackQuery.append(" OriginID = ? ");
+                fallbackParams.add(originID);
             }
+            fallbackQuery.append(")");
 
-            // Chuẩn bị truy vấn
-            stm = conn.prepareStatement(query.toString());
+            products = executeQuery(fallbackQuery.toString(), fallbackParams);
+        }
 
-            // Gán giá trị cho tham số
+        return products;
+    }
+
+    private List<Product> executeQuery(String query, List<Object> params) throws ClassNotFoundException {
+        List<Product> products = new ArrayList<>();
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement stm = conn.prepareStatement(query)) {
+
             for (int i = 0; i < params.size(); i++) {
                 stm.setObject(i + 1, params.get(i));
             }
-
-            rs = stm.executeQuery();
-            while (rs.next()) {
-                Product p = new Product(
-                        rs.getString("SKU"),
-                        rs.getInt("CategoryID"),
-                        rs.getInt("MaterialID"),
-                        rs.getInt("AgeID"),
-                        rs.getInt("SexID"),
-                        rs.getInt("PriceRangeID"),
-                        rs.getInt("BrandID"),
-                        rs.getInt("OriginID"),
-                        rs.getString("Name"),
-                        rs.getDouble("Price"),
-                        rs.getInt("Quantity"),
-                        rs.getString("Description")
-                );
-                p.setProductID(rs.getInt("ProductID"));
-                products.add(p);
+            try ( ResultSet rs = stm.executeQuery()) {
+                while (rs.next()) {
+                    Product p = new Product(
+                            rs.getString("SKU"),
+                            rs.getInt("CategoryID"),
+                            rs.getInt("MaterialID"),
+                            rs.getInt("AgeID"),
+                            rs.getInt("SexID"),
+                            rs.getInt("PriceRangeID"),
+                            rs.getInt("BrandID"),
+                            rs.getInt("OriginID"),
+                            rs.getString("Name"),
+                            rs.getDouble("Price"),
+                            rs.getInt("Quantity"),
+                            rs.getString("Description")
+                    );
+                    p.setProductID(rs.getInt("ProductID"));
+                    products.add(p);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -303,6 +366,78 @@ public class ProductDAO {
         return products;
     }
 
+////    public List<Product> getFilteredProducts(Integer categoryID, Integer ageID, Integer sexID, Integer priceRangeID, Integer brandID, Integer materialID, Integer originID) throws ClassNotFoundException {
+////        List<Product> products = new ArrayList<>();
+////        try {
+////            conn = DBConnection.getConnection();
+////
+////            // Câu lệnh SQL động
+////            StringBuilder query = new StringBuilder("SELECT * FROM Product WHERE 1=1");
+////
+////            // Danh sách tham số
+////            List<Object> params = new ArrayList<>();
+////
+////            if (categoryID != null) {
+////                query.append(" AND CategoryID = ?");
+////                params.add(categoryID);
+////            }
+////            if (ageID != null) {
+////                query.append(" AND AgeID = ?");
+////                params.add(ageID);
+////            }
+////            if (sexID != null) {
+////                query.append(" AND SexID = ?");
+////                params.add(sexID);
+////            }
+////            if (priceRangeID != null) {
+////                query.append(" AND PriceRangeID = ?");
+////                params.add(priceRangeID);
+////            }
+////            if (brandID != null) {
+////                query.append(" AND BrandID = ?");
+////                params.add(brandID);
+////            }
+////            if (materialID != null) {
+////                query.append(" AND MaterialID = ?");
+////                params.add(materialID);
+////            }
+////            if (originID != null) {
+////                query.append(" AND OriginID = ?");
+////                params.add(originID);
+////            }
+////
+////            // Chuẩn bị truy vấn
+////            stm = conn.prepareStatement(query.toString());
+////
+////            // Gán giá trị cho tham số
+////            for (int i = 0; i < params.size(); i++) {
+////                stm.setObject(i + 1, params.get(i));
+////            }
+////
+////            rs = stm.executeQuery();
+////            while (rs.next()) {
+////                Product p = new Product(
+////                        rs.getString("SKU"),
+////                        rs.getInt("CategoryID"),
+////                        rs.getInt("MaterialID"),
+////                        rs.getInt("AgeID"),
+////                        rs.getInt("SexID"),
+////                        rs.getInt("PriceRangeID"),
+////                        rs.getInt("BrandID"),
+////                        rs.getInt("OriginID"),
+////                        rs.getString("Name"),
+////                        rs.getDouble("Price"),
+////                        rs.getInt("Quantity"),
+////                        rs.getString("Description")
+////                );
+////                p.setProductID(rs.getInt("ProductID"));
+////                products.add(p);
+////            }
+////        } catch (SQLException e) {
+////            e.printStackTrace();
+////        }
+////        return products;
+////    }
     public static Product getProductById(int productId) throws ClassNotFoundException {
         Product product = null;
         try {

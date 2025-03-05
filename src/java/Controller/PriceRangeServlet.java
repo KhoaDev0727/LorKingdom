@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -158,131 +159,140 @@ public class PriceRangeServlet extends HttpServlet {
 
     private void addPriceRange(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
-        String name = request.getParameter("priceRange");
+        HttpSession session = request.getSession();
+        try {
+            // Lấy giá trị người dùng nhập
+            String priceStartStr = request.getParameter("priceStart");
+            String priceEndStr = request.getParameter("priceEnd");
+            String unit = request.getParameter("unit"); // lấy giá trị đơn vị từ form
 
-        // Kiểm tra nếu giá trị name null hoặc rỗng
-        if (name == null || name.trim().isEmpty()) {
-            request.getSession().setAttribute("errorMessage", "Khoảng giá không được để trống.");
-            response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
-            return;
-        }
-        if (name.length() > 100) {
-            request.getSession().setAttribute("errorMessage", "Tên quá dài. Tối đa 100 ký tự.");
-            response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
-            return;
-        }
-
-// Regex để kiểm tra định dạng "số - số"
-// Cho phép số nguyên hoặc số thập phân với tối đa 2 chữ số sau dấu phẩy hoặc dấu chấm
-        String pattern = "^(\\d+(?:[,.]\\d{1,2})?)\\s*-\\s*(\\d+(?:[,.]\\d{1,2})?)$";
-        if (!name.matches(pattern)) {
-            request.getSession().setAttribute("errorMessage", "Khoảng giá phải có định dạng 'số - số' (ví dụ: 0-100,00).");
-            response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
-            return;
-        }
-
-// Sử dụng regex để tách hai số
-        java.util.regex.Pattern regex = java.util.regex.Pattern.compile(pattern);
-        java.util.regex.Matcher matcher = regex.matcher(name);
-        if (matcher.matches()) {
-            // Chuyển đổi dấu phẩy thành dấu chấm nếu có, để có thể parse thành số thực
-            String firstNumStr = matcher.group(1).replace(",", ".");
-            String secondNumStr = matcher.group(2).replace(",", ".");
-
-            double firstNum = Double.parseDouble(firstNumStr);
-            double secondNum = Double.parseDouble(secondNumStr);
-
-            // Kiểm tra số đầu không được bé hơn 0
-            if (firstNum < 0) {
-                request.getSession().setAttribute("errorMessage", "Số đầu không được bé hơn 0.");
+            // Kiểm tra rỗng
+            if (priceStartStr == null || priceEndStr == null
+                    || priceStartStr.trim().isEmpty() || priceEndStr.trim().isEmpty()) {
+                session.setAttribute("errorMessage", "Vui lòng nhập đầy đủ các trường.");
                 response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
                 return;
             }
 
-            // Kiểm tra số sau không được bé hơn số đầu
-            if (secondNum < firstNum) {
-                request.getSession().setAttribute("errorMessage", "Số sau không được bé hơn số đầu.");
+            // Xử lý chuỗi có dấu . và , (theo AutoNumeric)
+            priceStartStr = priceStartStr.replace(".", "").replace(",", ".");
+            priceEndStr = priceEndStr.replace(".", "").replace(",", ".");
+
+            double priceStart = Double.parseDouble(priceStartStr);
+            double priceEnd = Double.parseDouble(priceEndStr);
+
+            if (priceStart < 0) {
+                session.setAttribute("errorMessage", "Giá bắt đầu không được nhỏ hơn 0.");
                 response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
                 return;
             }
-        } else {
-            // Nếu không khớp định dạng, báo lỗi
-            request.getSession().setAttribute("errorMessage", "Khoảng giá không đúng định dạng.");
+            if (priceEnd < priceStart) {
+                session.setAttribute("errorMessage", "Giá kết thúc không được nhỏ hơn giá bắt đầu.");
+                response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
+                return;
+            }
+
+            // Nếu không có đơn vị được chọn, tự động xác định đơn vị
+            if (unit == null || unit.trim().isEmpty()) {
+                unit = (priceStart >= 1000000 || priceEnd >= 1000000) ? "triệu" : "trăm";
+            } else {
+                // Nếu có chọn đơn vị, ta có thể kiểm tra tính hợp lý
+                if (unit.equals("trăm") && (priceStart >= 1000000 || priceEnd >= 1000000)) {
+                    session.setAttribute("errorMessage", "Giá trị nhập không phù hợp với đơn vị 'trăm'. Vui lòng chọn 'triệu' cho giá >= 1,000,000.");
+                    response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
+                    return;
+                }
+                if (unit.equals("triệu") && (priceStart < 1000000 && priceEnd < 1000000)) {
+                    // Tùy chọn: có thể cảnh báo người dùng hoặc tự động chuyển đổi đơn vị nếu cần
+                    // Ở đây ta cho phép người dùng tự chọn dù giá nhỏ, nhưng có thể thêm cảnh báo nếu muốn.
+                }
+            }
+
+            // Định dạng số với dấu phẩy
+            DecimalFormat formatter = new DecimalFormat("#,###");
+            String formattedPriceStart = formatter.format(priceStart);
+            String formattedPriceEnd = formatter.format(priceEnd);
+
+            String priceRangeStr = formattedPriceStart + "-" + formattedPriceEnd + " " + unit;
+            if (priceRangeDAO.isPriceRangeExists(priceRangeStr)) {
+                session.setAttribute("errorMessage", "Khoảng giá đã tồn tại.");
+                response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
+                return;
+            }
+
+            PriceRange priceRange = new PriceRange(0, priceRangeStr.trim(), null, 0);
+            priceRangeDAO.addPriceRange(priceRange);
+
+            session.setAttribute("successMessage", "Khoảng giá được thêm thành công.");
+            response.sendRedirect("PriceRangeServlet?action=list&showSuccessModal=true");
+        } catch (NumberFormatException e) {
+            session.setAttribute("errorMessage", "Giá trị nhập không hợp lệ.");
             response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
-            return;
         }
-
-        if (priceRangeDAO.isPriceRangeExists(name)) {
-            request.getSession().setAttribute("errorMessage", "Khoảng giá đã tồn tại.");
-            response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
-            return;
-        }
-
-        PriceRange priceRange = new PriceRange(0, name.trim(), null, 0);
-        priceRangeDAO.addPriceRange(priceRange);
-
-        request.getSession().setAttribute("successMessage", "Khoảng giá được thêm thành công.");
-        response.sendRedirect("PriceRangeServlet?action=list&showSuccessModal=true");
     }
 
     private void updatePriceRange(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
-        int id = Integer.parseInt(request.getParameter("priceRangeID"));
-        String name = request.getParameter("priceRange");
+        HttpSession session = request.getSession();
+        try {
+            int id = Integer.parseInt(request.getParameter("priceRangeID"));
+            String priceStartStr = request.getParameter("priceStart");
+            String priceEndStr = request.getParameter("priceEnd");
+            String unit = request.getParameter("unit"); // lấy đơn vị từ form
 
-        if (name == null || name.trim().isEmpty()) {
-            request.getSession().setAttribute("errorMessage", "Khoảng giá không được để trống.");
-            response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
-            return;
-        }
-        if (name.length() > 100) {
-            request.getSession().setAttribute("errorMessage", "Tên quá dài. Tối đa 100 ký tự.");
-            response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
-            return;
-        }
-
-        String pattern = "^(\\d+(?:[,.]\\d{1,2})?)\\s*-\\s*(\\d+(?:[,.]\\d{1,2})?)$";
-        if (!name.matches(pattern)) {
-            request.getSession().setAttribute("errorMessage", "Khoảng giá phải có định dạng 'số - số' (ví dụ: 0-100,00).");
-            response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
-            return;
-        }
-
-        java.util.regex.Pattern regex = java.util.regex.Pattern.compile(pattern);
-        java.util.regex.Matcher matcher = regex.matcher(name);
-        if (matcher.matches()) {
-            String firstNumStr = matcher.group(1).replace(",", ".");
-            String secondNumStr = matcher.group(2).replace(",", ".");
-
-            double firstNum = Double.parseDouble(firstNumStr);
-            double secondNum = Double.parseDouble(secondNumStr);
-
-            if (firstNum < 0) {
-                request.getSession().setAttribute("errorMessage", "Số đầu không được bé hơn 0.");
+            // Kiểm tra nhập đầy đủ các trường
+            if (priceStartStr == null || priceEndStr == null
+                    || priceStartStr.trim().isEmpty() || priceEndStr.trim().isEmpty()) {
+                session.setAttribute("errorMessage", "Vui lòng nhập đầy đủ các trường.");
                 response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
                 return;
             }
 
-            if (secondNum < firstNum) {
-                request.getSession().setAttribute("errorMessage", "Số sau không được bé hơn số đầu.");
+            double priceStart = Double.parseDouble(priceStartStr);
+            double priceEnd = Double.parseDouble(priceEndStr);
+
+            if (priceStart < 0) {
+                session.setAttribute("errorMessage", "Giá bắt đầu không được nhỏ hơn 0.");
                 response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
                 return;
             }
-        } else {
-            request.getSession().setAttribute("errorMessage", "Khoảng giá không đúng định dạng.");
-            response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
-            return;
-        }
+            if (priceEnd < priceStart) {
+                session.setAttribute("errorMessage", "Giá kết thúc không được nhỏ hơn giá bắt đầu.");
+                response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
+                return;
+            }
 
-        if (priceRangeDAO.isPriceRangeExists(name)) {
-            request.getSession().setAttribute("errorMessage", "Khoảng giá đã tồn tại.");
-            response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
-            return;
-        }
+            // Nếu đơn vị không được chọn thì tự động xác định
+            if (unit == null || unit.trim().isEmpty()) {
+                unit = (priceStart >= 1000000 || priceEnd >= 1000000) ? "triệu" : "trăm";
+            } else {
+                // Kiểm tra tính hợp lý của đơn vị đã chọn
+                if (unit.equals("trăm") && (priceStart >= 1000000 || priceEnd >= 1000000)) {
+                    session.setAttribute("errorMessage", "Giá trị nhập không phù hợp với đơn vị 'trăm'. Vui lòng chọn 'triệu' cho giá >= 1,000,000.");
+                    response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
+                    return;
+                }
+            }
 
-        PriceRange priceRange = new PriceRange(0, name.trim(), null, 0);
-        priceRangeDAO.updatePriceRange(priceRange);
-        response.sendRedirect("PriceRangeServlet?action=list");
+            // Định dạng số với dấu phẩy
+            DecimalFormat formatter = new DecimalFormat("#,###");
+            String formattedPriceStart = formatter.format(priceStart);
+            String formattedPriceEnd = formatter.format(priceEnd);
+
+            String priceRangeStr = formattedPriceStart + "-" + formattedPriceEnd + " " + unit;
+            if (priceRangeDAO.isPriceRangeExists(priceRangeStr)) {
+                session.setAttribute("errorMessage", "Khoảng giá đã tồn tại.");
+                response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
+                return;
+            }
+
+            PriceRange priceRange = new PriceRange(id, priceRangeStr.trim(), null, 0);
+            priceRangeDAO.updatePriceRange(priceRange);
+            response.sendRedirect("PriceRangeServlet?action=list");
+        } catch (NumberFormatException e) {
+            session.setAttribute("errorMessage", "Giá trị nhập không hợp lệ.");
+            response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
+        }
     }
 
     // 5) Xóa mềm
@@ -338,6 +348,5 @@ public class PriceRangeServlet extends HttpServlet {
         request.setAttribute("priceRanges", priceRanges);
         request.getRequestDispatcher("PriceRangeManagement.jsp").forward(request, response);
     }
-
 
 }

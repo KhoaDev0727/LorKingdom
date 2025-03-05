@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package Model;
 
 import java.sql.Timestamp;
@@ -13,6 +17,8 @@ public class Notification {
     private Timestamp createdAt;
 
     public Notification() {
+        this.isDeleted = false;
+        this.status = "Unread"; // Default per schema
     }
 
     public Notification(int notificationID, String title, String content, String type, String status, Integer accountID, boolean isDeleted, Timestamp createdAt) {

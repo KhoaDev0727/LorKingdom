@@ -4,6 +4,8 @@
     Author     : Truong Van Khang _ CE181852
 --%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -21,6 +23,7 @@
             <form action="ProductManagementServlet" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
                 <div class="row">
                     <h2 class="text-center mb-4 fw-bold text-primary">Add New Product</h2>
+                   
                     <div class="col-md-6">
                         <!-- Basic Information Section -->
                         <div class="form-section">
@@ -120,10 +123,15 @@
                             </h5>
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">Price ($)</label>
+                                    <label class="form-label">Price (VND)</label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="fas fa-tag"></i></span>
-                                        <input type="number" class="form-control" min="0" step="0.01" name="price" required>
+                                        <input type="number" 
+                                               class="form-control" 
+                                               name="price" 
+                                               min="0" 
+                                               required
+                                               value="${fn:replace(bounds[1], ',', '')}" />
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -198,6 +206,34 @@
                 </div>
             </form>
         </div>
+        <!-- Modal Error -->
+        <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="errorMessage">${sessionScope.errorMessage}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            window.onload = function () {
+                let errorMessage = "${sessionScope.errorMessage}";
+                if (errorMessage && errorMessage.trim() !== "") {
+                    let errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+                    errorModal.show();
+            <% request.getSession().removeAttribute("errorMessage"); %>
+                }
+            };
+        </script>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>

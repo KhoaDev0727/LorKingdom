@@ -91,7 +91,7 @@ public class AgeServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession();
-      
+
         Integer roleID = (Integer) session.getAttribute("roleID");
         if (roleID == null) {
             response.sendRedirect(request.getContextPath() + "/Admin/loginPage.jsp");
@@ -138,7 +138,8 @@ public class AgeServlet extends HttpServlet {
             response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
         }
     }
-  // 1) Hiển thị danh sách active
+    // 1) Hiển thị danh sách active
+
     private void listAges(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         List<Age> ages = ageDAO.getAllAges();
@@ -156,38 +157,77 @@ public class AgeServlet extends HttpServlet {
 
     private void addAge(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException, ClassNotFoundException {
-        // Lấy giá trị từ form
-        String ageRange = request.getParameter("ageRange");
+        try {
+            // Lấy giá trị từ request
+            int ageStart = Integer.parseInt(request.getParameter("ageStart"));
+            int ageEnd = Integer.parseInt(request.getParameter("ageEnd"));
+            String unit = request.getParameter("unit");
 
-        // Kiểm tra nếu trống hoặc không hợp lệ (chỉ cho phép số và dấu '-')
-        if (ageRange == null || ageRange.trim().isEmpty() || !ageRange.matches("^[\\p{L}\\p{N} _-]+$")) {
-            request.getSession().setAttribute("errorMessage", "Độ tuổi chỉ được chứa số và dấu gạch ngang (ví dụ: '0-3', '4-6').");
+            // Kiểm tra nếu giá trị nhập vào không hợp lệ
+            if (ageStart < 0 || ageEnd < 0) {
+                request.getSession().setAttribute("errorMessage", "Giá trị không hợp lệ! Tuổi không thể là số âm.");
+                response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
+                return;
+            }
+
+            if (ageStart >= ageEnd) {
+                request.getSession().setAttribute("errorMessage", "Giá trị bắt đầu phải nhỏ hơn giá trị kết thúc.");
+                response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
+                return;
+            }
+
+            if (!unit.equals("tháng") && !unit.equals("tuổi")) {
+                request.getSession().setAttribute("errorMessage", "Đơn vị không hợp lệ. Chỉ chấp nhận 'tháng' hoặc 'tuổi'.");
+                response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
+                return;
+            }
+
+            // Nếu chọn đơn vị là "tháng", kiểm tra giới hạn tối đa là 24 tháng
+            if (unit.equals("tháng")) {
+                if (ageEnd > 24) {
+                    request.getSession().setAttribute("errorMessage", "Khoảng tuổi theo tháng không thể lớn hơn 24 tháng.");
+                    response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
+                    return;
+                }
+            }
+
+            // Nếu chọn đơn vị là "tuổi", kiểm tra khoảng cách không quá 5 năm và tối đa 100 tuổi
+            if (unit.equals("tuổi")) {
+                if ((ageEnd - ageStart) > 5) {
+                    request.getSession().setAttribute("errorMessage", "Khoảng cách giữa tuổi bắt đầu và kết thúc không thể lớn hơn 5 năm.");
+                    response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
+                    return;
+                }
+                if (ageEnd > 28) {
+                    request.getSession().setAttribute("errorMessage", "Số tuổi không thể vượt quá 28.");
+                    response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
+                    return;
+                }
+            }
+
+            String ageRange = ageStart + "-" + ageEnd + " " + unit;
+
+            if (ageDAO.isAgeExists(ageRange)) {
+                request.getSession().setAttribute("errorMessage", "Khoảng tuổi đã tồn tại.");
+                response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
+                return;
+            }
+
+            // Nếu hợp lệ, thêm vào cơ sở dữ liệu
+            Age age = new Age(0, ageRange, null, 0);
+            ageDAO.addAge(age);
+
+            // Đặt thông báo thành công
+            request.getSession().setAttribute("successMessage", "Đã thêm độ tuổi thành công.");
+            response.sendRedirect("AgeServlet?action=list&showSuccessModal=true");
+
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "Giá trị nhập vào không hợp lệ. Vui lòng nhập số nguyên.");
             response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
-            return;
         }
-
-        // Kiểm tra độ dài tối đa
-        if (ageRange.length() > 50) {
-            request.getSession().setAttribute("errorMessage", "Độ tuổi quá dài. Chỉ được phép nhập tối đa 50 ký tự.");
-            response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
-            return;
-        }
-
-        if (ageDAO.isAgeExists(ageRange)) {
-            request.getSession().setAttribute("errorMessage", "Khoản tuổi đã tồn tại.");
-            response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
-            return;
-        }
-
-        // Nếu hợp lệ, thêm vào cơ sở dữ liệu
-        Age age = new Age(0, ageRange, null, 0);
-        ageDAO.addAge(age);
-
-        // Đặt thông báo thành công
-        request.getSession().setAttribute("successMessage", "Đã thêm độ tuổi thành công.");
-        response.sendRedirect("AgeServlet?action=list&showSuccessModal=true");
     }
-  private void softDeleteAge(HttpServletRequest request, HttpServletResponse response)
+
+    private void softDeleteAge(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, IOException {
         try {
             int ageID = Integer.parseInt(request.getParameter("ageID"));
@@ -199,6 +239,7 @@ public class AgeServlet extends HttpServlet {
             response.sendRedirect("AgeServlet?action=list");
         }
     }
+
     private void restoreAge(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, IOException {
         try {
@@ -210,7 +251,7 @@ public class AgeServlet extends HttpServlet {
         }
         response.sendRedirect("AgeServlet?action=list");
     }
-    
+
     // 6) Xóa cứng
     private void hardDeleteAge(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, IOException {
@@ -224,6 +265,7 @@ public class AgeServlet extends HttpServlet {
             response.sendRedirect("AgeServlet?action=listDeleted");
         }
     }
+
     private void searchAge(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException, ClassNotFoundException {
         String keyword = request.getParameter("search");
@@ -240,33 +282,74 @@ public class AgeServlet extends HttpServlet {
             throws SQLException, IOException, ServletException, ClassNotFoundException {
         try {
             int ageID = Integer.parseInt(request.getParameter("ageID"));
-            String ageRange = request.getParameter("ageRange");
+            int ageStart = Integer.parseInt(request.getParameter("ageStart"));
+            int ageEnd = Integer.parseInt(request.getParameter("ageEnd"));
+            String unit = request.getParameter("unit");
 
-            if (ageRange == null || ageRange.trim().isEmpty() || !ageRange.matches("^[\\p{L}\\p{N} _-]+$")) {
-                request.getSession().setAttribute("errorMessage", "Độ tuổi chỉ được chứa số và dấu gạch ngang (ví dụ: '0-3', '4-6').");
+            // Kiểm tra nếu giá trị nhập vào không hợp lệ
+            if (ageStart < 0 || ageEnd < 0) {
+                request.getSession().setAttribute("errorMessage", "Giá trị không hợp lệ! Tuổi không thể là số âm.");
                 response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
                 return;
             }
 
-            // Kiểm tra độ dài tối đa
-            if (ageRange.length() > 50) {
-                request.getSession().setAttribute("errorMessage", "Độ tuổi quá dài. Chỉ được phép nhập tối đa 50 ký tự.");
+            if (ageStart >= ageEnd) {
+                request.getSession().setAttribute("errorMessage", "Giá trị bắt đầu phải nhỏ hơn giá trị kết thúc.");
                 response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
                 return;
             }
+
+            if (!unit.equals("tháng") && !unit.equals("tuổi")) {
+                request.getSession().setAttribute("errorMessage", "Đơn vị không hợp lệ. Chỉ chấp nhận 'tháng' hoặc 'tuổi'.");
+                response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
+                return;
+            }
+
+            // Nếu chọn đơn vị là "tháng", kiểm tra giới hạn tối đa là 24 tháng
+            if (unit.equals("tháng")) {
+                if (ageEnd > 24) {
+                    request.getSession().setAttribute("errorMessage", "Khoảng tuổi theo tháng không thể lớn hơn 24 tháng.");
+                    response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
+                    return;
+                }
+            }
+
+            // Nếu chọn đơn vị là "tuổi", kiểm tra khoảng cách không quá 5 năm và tối đa 100 tuổi
+            if (unit.equals("tuổi")) {
+                if ((ageEnd - ageStart) > 5) {
+                    request.getSession().setAttribute("errorMessage", "Khoảng cách giữa tuổi bắt đầu và kết thúc không thể lớn hơn 5 năm.");
+                    response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
+                    return;
+                }
+                if (ageEnd > 28) {
+                    request.getSession().setAttribute("errorMessage", "Số tuổi không thể vượt quá 28.");
+                    response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
+                    return;
+                }
+            }
+
+            // Gộp lại thành chuỗi: "0-12 tháng" hoặc "1-5 tuổi"
+            String ageRange = ageStart + "-" + ageEnd + " " + unit;
+
+            // Kiểm tra xem khoảng tuổi đã tồn tại chưa (ngoại trừ chính nó)
             if (ageDAO.isAgeExists(ageRange)) {
-                request.getSession().setAttribute("errorMessage", "Khoản tuổi đã tồn tại.");
+                request.getSession().setAttribute("errorMessage", "Khoảng tuổi đã tồn tại.");
                 response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
                 return;
             }
-            Age age = new Age(0, ageRange, null, 0);
+
+            // Nếu hợp lệ, cập nhật vào cơ sở dữ liệu
+            Age age = new Age(ageID, ageRange, null, 0);
             ageDAO.updateAge(age);
-            request.getSession().setAttribute("successMessage", "Đã cập nhật tuổi thành công.");
+
+            // Đặt thông báo thành công
+            request.getSession().setAttribute("successMessage", "Đã cập nhật độ tuổi thành công.");
+            response.sendRedirect("AgeServlet?action=list&showSuccessModal=true");
+
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "Invalid Age ID.");
+            request.getSession().setAttribute("errorMessage", "Giá trị nhập vào không hợp lệ. Vui lòng nhập số nguyên.");
+            response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
         }
-        response.sendRedirect("AgeServlet?action=list");
     }
 
-  
 }

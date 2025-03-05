@@ -89,21 +89,13 @@
 
                         </div>
                     </li>
-                    <li class="menu-item">
-                        <a href="#" data-key="brands">Thương Hiệu</a>
-                    </li>
+                   
 
                     <li class="menu-item">
                         <a href="#" data-key="promotions">Khuyến Mãi</a>
                     </li>
 
-                    <li class="menu-item">
-                        <a href="#" data-key="memberProgram">Chương Trình Thành Viên</a>
-                    </li>
-
-                    <li class="menu-item">
-                        <a href="PointPage.jsp" data-key="memberProgram">Lor Xu</a>
-                    </li>
+                   
 
                 </ul>
             </nav>

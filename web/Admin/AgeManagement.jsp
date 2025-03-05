@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -43,14 +44,10 @@
                     <main>
                         <div class="container-fluid px-5">
                             <h1 class="mt-4">Age Management</h1>
-                            <!-- Form Add category -->
-                            <form action="AgeServlet" method="POST">
-                                <input type="hidden" name="action" value="add">
-                                <label for="ageRange">Age Range</label>
-                                <input type="text" id="ageRange" name="ageRange" placeholder="e.g., 0-3 months" required />
-                                <!-- Submit Button -->
-                                <button class="btn btn-primary ms-2" type="submit">Add Age</button>
-                            </form>
+                            <button class="btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#addAgeModal">
+                                Add Age
+                            </button>
+
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
@@ -126,6 +123,7 @@
                                                                                 data-bs-target="#editAgeModal-${ag.ageID}">
                                                                             <i class="fas fa-edit"></i>
                                                                         </button>
+
                                                                         <button type="button" class="btn btn-sm btn-danger"
                                                                                 data-bs-toggle="modal"
                                                                                 data-bs-target="#confirmSoftDeleteModal"
@@ -150,30 +148,47 @@
                                                                 </td>
                                                             </tr>
                                                             <!-- Modal Edit Age -->
-                                                        <div class="modal fade" id="editAgeModal-${ag.ageID}" tabindex="-1">
+                                                            <c:set var="rangeParts" value="${fn:split(ag.ageRange, ' ')}" />
+                                                            <c:set var="bounds" value="${fn:split(rangeParts[0], '-')}" />
+                                                        <div class="modal fade" id="editAgeModal-${ag.ageID}" tabindex="-1" aria-labelledby="editAgeModalLabel-${ag.ageID}" aria-hidden="true">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
-                                                                    <form method="POST" action="AgeServlet">
-                                                                        <div class="modal-header">
-                                                                            <h5 class="modal-title">Edit Age</h5>
-                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                                        </div>
-                                                                        <div class="modal-body">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="editAgeModalLabel-${ag.ageID}">Edit Age Range</h5>
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <form id="editAgeForm-${ag.ageID}" action="AgeServlet" method="POST">
+                                                                            <!-- Đặt action update và truyền kèm ageID -->
                                                                             <input type="hidden" name="action" value="update">
                                                                             <input type="hidden" name="ageID" value="${ag.ageID}">
+
                                                                             <div class="mb-3">
-                                                                                <label class="form-label">Age Range</label>
-                                                                                <input type="text" class="form-control" name="ageRange" value="${ag.ageRange}" required>
+                                                                                <label for="ageStart-${ag.ageID}" class="form-label">Start Age</label>
+                                                                                <input type="number" class="form-control" id="ageStart-${ag.ageID}" name="ageStart" min="0" required
+                                                                                       value="${bounds[0]}">
                                                                             </div>
+
+                                                                            <div class="mb-3">
+                                                                                <label for="ageEnd-${ag.ageID}" class="form-label">End Age</label>
+                                                                                <input type="number" class="form-control" id="ageEnd-${ag.ageID}" name="ageEnd" min="0" required
+                                                                                       value="${bounds[1]}">
+                                                                            </div>
+
+                                                                            <div class="mb-3">
+                                                                                <label for="unit-${ag.ageID}" class="form-label">Unit</label>
+                                                                                <select class="form-select" id="unit-${ag.ageID}" name="unit">
+                                                                                    <option value="tháng" <c:if test="${rangeParts[1] eq 'tháng'}">selected</c:if>>Tháng</option>
+                                                                                    <option value="tuổi" <c:if test="${rangeParts[1] eq 'tuổi'}">selected</c:if>>Tuổi</option>
+                                                                                    </select>
+                                                                                </div>
+
+                                                                                <button type="submit" class="btn btn-primary">Save changes</button>
+                                                                            </form>
                                                                         </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                            <button type="submit" class="btn btn-primary">Save changes</button>
-                                                                        </div>
-                                                                    </form>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
                                                     </c:forEach>
                                                 </c:otherwise>
                                             </c:choose>
@@ -269,28 +284,71 @@
                 </div>
             </div>
         </div>
-        <script>
-            function setSoftDeleteAgeID(id) {
-                document.getElementById("softDeleteAgeID").value = id;
-            }
-            function setHardDeleteAgeID(id) {
-                document.getElementById("hardDeleteAgeID").value = id;
-            }
-            window.onload = function () {
-                const errorMessage = "${sessionScope.errorMessage}";
-                if (errorMessage && errorMessage.trim() !== "") {
-                    const errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
-                    errorModal.show();
-            <% request.getSession().removeAttribute("errorMessage"); %>
-                }
 
-                let successMessage = '<%= session.getAttribute("successMessage") %>';
-                if (successMessage && successMessage.trim() !== "null" && successMessage.trim() !== "") {
-                    let successModal = new bootstrap.Modal(document.getElementById("successModalLabel"));
-                    successModal.show();
-            <% session.removeAttribute("successMessage"); %>
-                }
-            };
-        </script>
-    </body>
+    </div>
+</div>
+<!-- Modal thêm độ tuổi -->
+<div class="modal fade" id="addAgeModal" tabindex="-1" aria-labelledby="addAgeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAgeModalLabel">Add Age Range</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addAgeForm" action="AgeServlet" method="POST">
+                    <input type="hidden" name="action" value="add">
+
+                    <div class="mb-3">
+                        <label for="ageStart" class="form-label">Start Age</label>
+                        <input type="number" class="form-control" id="ageStart" name="ageStart" min="0" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="ageEnd" class="form-label">End Age</label>
+                        <input type="number" class="form-control" id="ageEnd" name="ageEnd" min="0" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="unit" class="form-label">Unit</label>
+                        <select class="form-select" id="unit" name="unit">
+                            <option value="tháng">Tháng</option>
+                            <option value="tuổi">Tuổi</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Cập Nhật Tuổi -->
+
+
+<script>
+    function setSoftDeleteAgeID(id) {
+        document.getElementById("softDeleteAgeID").value = id;
+    }
+    function setHardDeleteAgeID(id) {
+        document.getElementById("hardDeleteAgeID").value = id;
+    }
+    window.onload = function () {
+        const errorMessage = "${sessionScope.errorMessage}";
+        if (errorMessage && errorMessage.trim() !== "") {
+            const errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
+            errorModal.show();
+    <% request.getSession().removeAttribute("errorMessage"); %>
+        }
+
+        let successMessage = '<%= session.getAttribute("successMessage") %>';
+        if (successMessage && successMessage.trim() !== "null" && successMessage.trim() !== "") {
+            let successModal = new bootstrap.Modal(document.getElementById("successModalLabel"));
+            successModal.show();
+    <% session.removeAttribute("successMessage"); %>
+        }
+    };
+</script>
+</body>
 </html>

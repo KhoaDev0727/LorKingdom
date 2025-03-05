@@ -213,101 +213,92 @@ public class ProductServlet extends HttpServlet {
     // Trong ProductServlet.java
     private UploadImageProduct handleImageProduct = new UploadImageProduct();
 
-    private void updateAll(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, SQLException, ClassNotFoundException {
-        try {
-            // Lấy các thông số từ form cập nhật
-           
-            int productID = Integer.parseInt(request.getParameter("productID"));
-            String productName = request.getParameter("productName");
-            int category = Integer.parseInt(request.getParameter("category"));
-            int gender = Integer.parseInt(request.getParameter("gender"));
-            int priceRange = Integer.parseInt(request.getParameter("priceRange"));
-            int brand = Integer.parseInt(request.getParameter("brand"));
-            int ageGroup = Integer.parseInt(request.getParameter("ageGroup"));
-            int origin = Integer.parseInt(request.getParameter("origin"));
-            int material = Integer.parseInt(request.getParameter("material"));
-            String description = request.getParameter("description");
-            double price = Double.parseDouble(request.getParameter("price"));
-            int stockQuantity = Integer.parseInt(request.getParameter("stockQuantity"));
-
-            String SKU = request.getParameter("SKU");
-        
-            // Có thể lưu SKU dưới dạng hidden trong form hoặc lấy từ dữ liệu cũ
-            // In ra để kiểm tra (debug)
-            System.out.println("----- [DEBUG] updateAll() -----");
-            System.out.println("productID = " + productID);
-            System.out.println("productName = " + productName);
-            System.out.println("category = " + category);
-            System.out.println("gender = " + gender);
-            System.out.println("priceRange = " + priceRange);
-            System.out.println("brand = " + brand);
-            System.out.println("ageGroup = " + ageGroup);
-            System.out.println("origin = " + origin);
-            System.out.println("material = " + material);
-            System.out.println("description = " + description);
-            System.out.println("price = " + price);
-            System.out.println("stockQuantity = " + stockQuantity);
-            System.out.println("SKU = " + SKU);
-            System.out.println("--------------------------------");
-
-            // Tạo đối tượng sản phẩm với các thông tin cập nhật
-            Product p = new Product();
-            p.setProductID(productID);
-            p.setSKU(SKU);
-            p.setName(productName);
-            p.setCategoryID(category);
-            p.setSexID(gender);
-            p.setPriceRangeID(priceRange);
-            p.setBrandID(brand);
-            p.setAgeID(ageGroup);
-            p.setOriginID(origin);
-            p.setMaterialID(material);
-            p.setDescription(description);
-            p.setPrice(price);
-            p.setQuantity(stockQuantity);
-
-            // Xử lý upload ảnh nếu có
-            List<String> imagePaths = new ArrayList<>();
-            String uploadPath = getServletContext().getRealPath("/uploads");
-            File uploadDir = new File(uploadPath);
-            if (!uploadDir.exists()) {
-                uploadDir.mkdirs();
-            }
-
-            // Ảnh chính
-            Part mainImagePart = request.getPart("mainImageUpload");
-            if (mainImagePart != null && mainImagePart.getSize() > 0) {
-                String mainImageFileName = handleImageProduct.generateUniqueFileName(mainImagePart);
-                String mainImageFilePath = handleImageProduct.saveFile(mainImagePart, uploadPath, mainImageFileName);
-                imagePaths.add(mainImageFilePath);
-            }
-
-            // Ảnh chi tiết
-            for (Part part : request.getParts()) {
-                if (part.getName().equals("detailImages") && part.getSize() > 0) {
-                    String detailImageFileName = handleImageProduct.generateUniqueFileName(part);
-                    String detailImageFilePath = handleImageProduct.saveFile(part, uploadPath, detailImageFileName);
-                    imagePaths.add(detailImageFilePath);
-                }
-            }
-
-            // Gọi phương thức cập nhật sản phẩm (và có thể ảnh) trong DAO
-            boolean updated = ProductDAO.updateProduct(p);
-            // Nếu bạn cần cập nhật ảnh, có thể gọi thêm các phương thức của ProductImageDAO tại đây
-
-            if (updated) {
-                request.getSession().setAttribute("successMessage", "Cập nhật sản phẩm thành công!");
-                response.sendRedirect("AgeManagement?action=list");
-            } else {
-                request.getSession().setAttribute("errorMessage", "Cập nhật sản phẩm thất bại!");
-                request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            request.getSession().setAttribute("errorMessage", "Có lỗi xảy ra khi cập nhật sản phẩm.");
-            request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
-        }
-    }
+//    private void updateAll(HttpServletRequest request, HttpServletResponse response)
+//            throws ServletException, IOException, SQLException, ClassNotFoundException {
+//        try {
+//           
+//            int productID = Integer.parseInt(request.getParameter("productID"));
+//            String productName = request.getParameter("productName");
+//            int category = Integer.parseInt(request.getParameter("category"));
+//            int gender = Integer.parseInt(request.getParameter("gender"));
+//            int priceRange = Integer.parseInt(request.getParameter("priceRange"));
+//            int brand = Integer.parseInt(request.getParameter("brand"));
+//            int ageGroup = Integer.parseInt(request.getParameter("ageGroup"));
+//            int origin = Integer.parseInt(request.getParameter("origin"));
+//            int material = Integer.parseInt(request.getParameter("material"));
+//            String description = request.getParameter("description");
+//            double price = Double.parseDouble(request.getParameter("price"));
+//            int stockQuantity = Integer.parseInt(request.getParameter("stockQuantity"));
+//
+//            String SKU = request.getParameter("SKU");
+//        
+//            System.out.println("----- [DEBUG] updateAll() -----");
+//            System.out.println("productID = " + productID);
+//            System.out.println("productName = " + productName);
+//            System.out.println("category = " + category);
+//            System.out.println("gender = " + gender);
+//            System.out.println("priceRange = " + priceRange);
+//            System.out.println("brand = " + brand);
+//            System.out.println("ageGroup = " + ageGroup);
+//            System.out.println("origin = " + origin);
+//            System.out.println("material = " + material);
+//            System.out.println("description = " + description);
+//            System.out.println("price = " + price);
+//            System.out.println("stockQuantity = " + stockQuantity);
+//            System.out.println("SKU = " + SKU);
+//            System.out.println("--------------------------------");
+//
+//            Product p = new Product();
+//            p.setProductID(productID);
+//            p.setSKU(SKU);
+//            p.setName(productName);
+//            p.setCategoryID(category);
+//            p.setSexID(gender);
+//            p.setPriceRangeID(priceRange);
+//            p.setBrandID(brand);
+//            p.setAgeID(ageGroup);
+//            p.setOriginID(origin);
+//            p.setMaterialID(material);
+//            p.setDescription(description);
+//            p.setPrice(price);
+//            p.setQuantity(stockQuantity);
+//
+//            List<String> imagePaths = new ArrayList<>();
+//            String uploadPath = getServletContext().getRealPath("/uploads");
+//            File uploadDir = new File(uploadPath);
+//            if (!uploadDir.exists()) {
+//                uploadDir.mkdirs();
+//            }
+//
+//            Part mainImagePart = request.getPart("mainImageUpload");
+//            if (mainImagePart != null && mainImagePart.getSize() > 0) {
+//                String mainImageFileName = handleImageProduct.generateUniqueFileName(mainImagePart);
+//                String mainImageFilePath = handleImageProduct.saveFile(mainImagePart, uploadPath, mainImageFileName);
+//                imagePaths.add(mainImageFilePath);
+//            }
+//
+//            for (Part part : request.getParts()) {
+//                if (part.getName().equals("detailImages") && part.getSize() > 0) {
+//                    String detailImageFileName = handleImageProduct.generateUniqueFileName(part);
+//                    String detailImageFilePath = handleImageProduct.saveFile(part, uploadPath, detailImageFileName);
+//                    imagePaths.add(detailImageFilePath);
+//                }
+//            }
+//
+//            boolean updated = ProductDAO.updateProduct(p);
+//
+//            if (updated) {
+//                request.getSession().setAttribute("successMessage", "Cập nhật sản phẩm thành công!");
+//                response.sendRedirect("AgeManagement?action=list");
+//            } else {
+//                request.getSession().setAttribute("errorMessage", "Cập nhật sản phẩm thất bại!");
+//                request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            request.getSession().setAttribute("errorMessage", "Có lỗi xảy ra khi cập nhật sản phẩm.");
+//            request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
+//        }
+//    }
 
 }
