@@ -1,17 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package DAO;
 
-import static DAO.AccountDAO.conn;
-import static DAO.AccountDAO.stm;
-import static DAO.ReviewDAO.conn;
-import static DAO.ReviewDAO.rs;
-import static DAO.ReviewDAO.stm;
 import DBConnect.DBConnection;
-import Model.Review;
-import Model.Role;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,177 +9,170 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author Truong Van Khang - CE181852
  */
 public class MyUntilsDAO {
 
-    protected static String TOTAL_PAGE_STAFF = "SELECT COUNT(*) FROM Account Where RoleID = ? OR RoleID = ? OR RoleID = ? ";
-    protected static String TOTAL_PAGE_CUSTOMER = "SELECT COUNT(*) FROM Account Where RoleID = ?";
-    protected static String TOTAL_PAGE_REVIEW = "SELECT COUNT(*) FROM Reviews";
-    protected static String TOTAL_PAGE_STAFF_SEARCH_STAFF = "SELECT COUNT(*) FROM Account WHERE ( AccountID = ? OR AccountName LIKE ? OR PhoneNumber LIKE ? OR email LIKE ? ) AND ( RoleID = ? OR RoleID = ? OR RoleID = ?)";
-    protected static String TOTAL_PAGE_CUSTOMER_SEARCH_CUSTOMER = "SELECT COUNT(*) FROM Account WHERE ( AccountID = ? OR AccountName LIKE ? OR PhoneNumber LIKE ? OR email LIKE ? ) AND RoleID = ? ";
-    protected static PreparedStatement stm = null;
-    protected static ResultSet rs = null;
-    protected static Connection conn = null;
+    // SQL Queries
+    private static final String TOTAL_PAGE_STAFF = "SELECT COUNT(*) FROM Account WHERE RoleID IN (?, ?, ?)";
+    private static final String TOTAL_PAGE_CUSTOMER = "SELECT COUNT(*) FROM Account WHERE RoleID = ?";
+    private static final String TOTAL_PAGE_REVIEW = "SELECT COUNT(*) FROM Reviews WHERE IsDeleted = ?";
+    private static final String TOTAL_PAGE_STAFF_SEARCH = 
+        "SELECT COUNT(*) FROM Account WHERE (AccountID = ? OR AccountName LIKE ? OR PhoneNumber LIKE ? OR email LIKE ?) AND RoleID IN (?, ?, ?)";
+    private static final String TOTAL_PAGE_CUSTOMER_SEARCH = 
+        "SELECT COUNT(*) FROM Account WHERE (AccountID = ? OR AccountName LIKE ? OR PhoneNumber LIKE ? OR email LIKE ?) AND RoleID = ?";
 
-    public int getTotalPagesAccountStaff(int pageSize, int roleStaff, int roleAdmin, int roleWareHouse) throws ClassNotFoundException {
-        int totalRecords = 0;
-        try {
-            conn = DBConnection.getConnection();
-            stm = conn.prepareStatement(TOTAL_PAGE_STAFF);
-            stm.setInt(1, roleStaff);
-            stm.setInt(2, roleWareHouse);
-            stm.setInt(3, roleAdmin);
-            rs = stm.executeQuery();
-            if (rs.next()) {
-                totalRecords = rs.getInt(1);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return (int) Math.ceil((double) totalRecords / pageSize);
-    }
-    
-    
-    public int getTotalPagesAccountCustomer(int pageSize, int roleCustomer) throws ClassNotFoundException {
-        int totalRecords = 0;
-        try {
-            conn = DBConnection.getConnection();
-            stm = conn.prepareStatement(TOTAL_PAGE_CUSTOMER);
-            stm.setInt(1, roleCustomer);
-            rs = stm.executeQuery();
-            if (rs.next()) {
-                totalRecords = rs.getInt(1);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return (int) Math.ceil((double) totalRecords / pageSize);
-    }
-
-    
-    public int getTotalPagesAccountSearchsTAFF(int pageSize, int roleStaff, int roleAdmin, int roleWareHouse, String keyword) throws ClassNotFoundException {
-        int totalRecords = 0;
-        try {
-            conn = DBConnection.getConnection();
-            stm = conn.prepareStatement(TOTAL_PAGE_STAFF_SEARCH_STAFF);
-            // Check if keyword is a number (AccountID search)
-            if (keyword.matches("\\d+")) {
-                stm.setInt(1, Integer.parseInt(keyword)); // Search by AccountID
-            } else {
-                stm.setNull(1, java.sql.Types.INTEGER); // Ignore AccountID filter
-            }
-            // Wildcard search for other fields
-            String searchPattern = "%" + keyword + "%";
-            stm.setString(2, searchPattern);
-            stm.setString(3, searchPattern);
-            stm.setString(4, searchPattern);
-            stm.setInt(5, roleStaff);
-            stm.setInt(6, roleWareHouse);
-            stm.setInt(7, roleAdmin);
-
-            try ( ResultSet rs = stm.executeQuery()) {
-                if (rs.next()) {
-                    totalRecords = rs.getInt(1);
-                }
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();  // Consider proper logging instead
-        }
-
-        return (int) Math.ceil((double) totalRecords / pageSize);
-    }
-
-    public int getTotalPagesAccountSearchCustomer(int pageSize, int roleCustomer, String keyword) throws ClassNotFoundException {
-        int totalRecords = 0;
-        try {
-            conn = DBConnection.getConnection();
-            stm = conn.prepareStatement(TOTAL_PAGE_CUSTOMER_SEARCH_CUSTOMER);
-            // Check if keyword is a number (AccountID search)
-            if (keyword.matches("\\d+")) {
-                stm.setInt(1, Integer.parseInt(keyword)); // Search by AccountID
-            } else {
-                stm.setNull(1, java.sql.Types.INTEGER); // Ignore AccountID filter
-            }
-            // Wildcard search for other fields
-            String searchPattern = "%" + keyword + "%";
-            stm.setString(2, searchPattern);
-            stm.setString(3, searchPattern);
-            stm.setString(4, searchPattern);
-            stm.setInt(5, roleCustomer);
-
-            try ( ResultSet rs = stm.executeQuery()) {
-                if (rs.next()) {
-                    totalRecords = rs.getInt(1);
-                }
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();  // Consider proper logging instead
-        }
-
-        return (int) Math.ceil((double) totalRecords / pageSize);
-    }
-
-    public int getTotalPagesReview(int pageSize) throws ClassNotFoundException {
-        int totalRecords = 0;
-        try {
-            conn = DBConnection.getConnection();
-            stm = conn.prepareStatement(TOTAL_PAGE_REVIEW);
-            rs = stm.executeQuery();
-            if (rs.next()) {
-                totalRecords = rs.getInt(1);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return (int) Math.ceil((double) totalRecords / pageSize);
-    }
-
-    /* 
-        TOTAL SEARCH REVIEW 
+    /**
+     * Helper method to calculate total pages based on total records and page size
      */
-    public int getTotalPagesSearchReview(int filterRating, int filterStatus, int filterUserIDOrProductID, int pageSize) throws ClassNotFoundException {
-        int totalRecords = 0;
+    private int calculateTotalPages(int totalRecords, int pageSize) {
+        return (int) Math.ceil((double) totalRecords / pageSize);
+    }
 
-        String sql = "SELECT COUNT(*) FROM Reviews WHERE 1=1";
+    // Các hàm không liên quan đến review giữ nguyên
+    public int getTotalPagesAccountStaff(int pageSize, int roleStaff, int roleAdmin, int roleWareHouse) throws SQLException, ClassNotFoundException {
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stm = conn.prepareStatement(TOTAL_PAGE_STAFF)) {
+            stm.setInt(1, roleStaff);
+            stm.setInt(2, roleAdmin);
+            stm.setInt(3, roleWareHouse);
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    return calculateTotalPages(rs.getInt(1), pageSize);
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error fetching total pages for staff accounts: " + e.getMessage(), e);
+        }
+        return 0;
+    }
+
+    public int getTotalPagesAccountCustomer(int pageSize, int roleCustomer) throws SQLException, ClassNotFoundException {
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stm = conn.prepareStatement(TOTAL_PAGE_CUSTOMER)) {
+            stm.setInt(1, roleCustomer);
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    return calculateTotalPages(rs.getInt(1), pageSize);
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error fetching total pages for customer accounts: " + e.getMessage(), e);
+        }
+        return 0;
+    }
+
+    public int getTotalPagesAccountSearchStaff(int pageSize, int roleStaff, int roleAdmin, int roleWareHouse, String keyword) throws SQLException, ClassNotFoundException {
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stm = conn.prepareStatement(TOTAL_PAGE_STAFF_SEARCH)) {
+            setSearchParameters(stm, keyword, roleStaff, roleAdmin, roleWareHouse);
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    return calculateTotalPages(rs.getInt(1), pageSize);
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error fetching total pages for staff search: " + e.getMessage(), e);
+        }
+        return 0;
+    }
+
+    public int getTotalPagesAccountSearchCustomer(int pageSize, int roleCustomer, String keyword) throws SQLException, ClassNotFoundException {
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stm = conn.prepareStatement(TOTAL_PAGE_CUSTOMER_SEARCH)) {
+            setSearchParameters(stm, keyword, roleCustomer);
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    return calculateTotalPages(rs.getInt(1), pageSize);
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error fetching total pages for customer search: " + e.getMessage(), e);
+        }
+        return 0;
+    }
+
+    /**
+     * Get total pages for reviews based on IsDeleted status
+     */
+    public int getTotalPagesReview(int pageSize, int isDeleted) throws SQLException, ClassNotFoundException {
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stm = conn.prepareStatement(TOTAL_PAGE_REVIEW)) {
+            stm.setInt(1, isDeleted);
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    return calculateTotalPages(rs.getInt(1), pageSize);
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error fetching total pages for reviews: " + e.getMessage(), e);
+        }
+        return 0; // Trả về 0 nếu không có bản ghi
+    }
+
+    /**
+     * Get total pages for reviews with search filters
+     */
+    public int getTotalPagesSearchReview(int filterRating, int filterStatus, int filterUserIDOrProductID, int pageSize) throws SQLException, ClassNotFoundException {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM Reviews WHERE 1=1");
         List<Object> params = new ArrayList<>();
 
         if (filterUserIDOrProductID != 0) {
-            sql += " AND (AccountID = ? OR ProductID = ?)";
+            sql.append(" AND (AccountID = ? OR ProductID = ?)");
             params.add(filterUserIDOrProductID);
             params.add(filterUserIDOrProductID);
         }
         if (filterRating != 0) {
-            sql += " AND Rating = ?";
+            sql.append(" AND Rating = ?");
             params.add(filterRating);
         }
         if (filterStatus != -1) {
-            sql += " AND Status = ?";
+            sql.append(" AND Status = ?");
             params.add(filterStatus);
         }
 
-        // Dùng try-with-resources để tự động đóng tài nguyên
-        try {
-            conn = DBConnection.getConnection();
-            stm = conn.prepareStatement(sql);
-            // Gán tham số
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stm = conn.prepareStatement(sql.toString())) {
             for (int i = 0; i < params.size(); i++) {
                 stm.setObject(i + 1, params.get(i));
             }
-
-            try ( ResultSet rs = stm.executeQuery()) {
+            try (ResultSet rs = stm.executeQuery()) {
                 if (rs.next()) {
-                    totalRecords = rs.getInt(1);
+                    return calculateTotalPages(rs.getInt(1), pageSize);
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new SQLException("Error fetching total pages for review search: " + e.getMessage(), e);
         }
-
-        return (int) Math.ceil((double) totalRecords / pageSize);
+        return 0; // Trả về 0 nếu không có bản ghi
     }
 
+    // Helper methods giữ nguyên
+    private void setSearchParameters(PreparedStatement stm, String keyword, int roleStaff, int roleAdmin, int roleWareHouse) throws SQLException {
+        if (keyword != null && keyword.matches("\\d+")) {
+            stm.setInt(1, Integer.parseInt(keyword));
+        } else {
+            stm.setNull(1, java.sql.Types.INTEGER);
+        }
+        String searchPattern = "%" + (keyword != null ? keyword : "") + "%";
+        stm.setString(2, searchPattern);
+        stm.setString(3, searchPattern);
+        stm.setString(4, searchPattern);
+        stm.setInt(5, roleStaff);
+        stm.setInt(6, roleAdmin);
+        stm.setInt(7, roleWareHouse);
+    }
+
+    private void setSearchParameters(PreparedStatement stm, String keyword, int roleCustomer) throws SQLException {
+        if (keyword != null && keyword.matches("\\d+")) {
+            stm.setInt(1, Integer.parseInt(keyword));
+        } else {
+            stm.setNull(1, java.sql.Types.INTEGER);
+        }
+        String searchPattern = "%" + (keyword != null ? keyword : "") + "%";
+        stm.setString(2, searchPattern);
+        stm.setString(3, searchPattern);
+        stm.setString(4, searchPattern);
+        stm.setInt(5, roleCustomer);
+    }
 }

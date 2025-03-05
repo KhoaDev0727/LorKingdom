@@ -37,13 +37,19 @@
                                         <c:if test="${not empty account.image}">
                                             <img src="${account.image}" alt="Avatar" class="avatar">
                                         </c:if>
-                                        <form action="UpdateAvatarPage" method="post" enctype="multipart/form-data">
-                                            <label for="file-upload" class="custom-file-upload">
-                                                <i class="fas fa-camera"></i>
-                                            </label>
-                                            <input id="file-upload" type="file" name="avatar" accept="image/*" required hidden>
-                                            <button type="submit">Tải lên Avatar</button>
-                                        </form>
+                                        <div class="avatar-container">
+                                            <c:if test="${not empty account.image}">
+                                                <img src="${pageContext.request.contextPath}/${account.image}" alt="Avatar" class="avatar">
+                                            </c:if>
+                                            <form action="UpdateAvatarPage" method="post" enctype="multipart/form-data">
+                                                <input type="hidden" name="currentImage" value="${account.image}">
+                                                <label for="file-upload" class="custom-file-upload">
+                                                    <i class="fas fa-camera"></i>
+                                                </label>
+                                                <input id="file-upload" type="file" name="avatar" accept="image/*" required hidden>
+                                                <button type="submit">Tải lên Avatar</button>
+                                            </form>
+                                        </div>
                                     </div>
                                     <h6 class="f-w-600 title" style="font-size: 20px;">Xin chào, ${account.userName}</h6>
                                     <p>Vai trò: Staff (ID: ${account.roleID})</p>

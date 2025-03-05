@@ -33,8 +33,8 @@ public class StaffManagementServlet extends HttpServlet {
 
     private static final String UPLOAD_DIR = "images";
     private static final int ROLE_STAFF = 2;
-        private static final int ROLE_ADMIN = 1;
-            private static final int ROLE_WAREHOUSE = 4;
+    private static final int ROLE_ADMIN = 1;
+    private static final int ROLE_WAREHOUSE = 4;
     private static final String FOLDER = "images";
     private static final MyUntilsDAO myUntilsDAO = new MyUntilsDAO();
     private static int PAGE = 1;
@@ -293,11 +293,10 @@ public class StaffManagementServlet extends HttpServlet {
             }
             // Handle password
             String passwordHashed;
-            if (!password.isEmpty()) {
+            Account existingAccount = AccountDAO.getInforAccountByID(accountID);
+            if (!password.equals(existingAccount.getPassword())) {
                 passwordHashed = MyUtils.hashPassword(password);
             } else {
-                // Retrieve existing password if not changed
-                Account existingAccount = AccountDAO.getInforAccountByID(accountID);
                 passwordHashed = existingAccount.getPassword();
             }
             // Nếu có file mới, upload ảnh mới, ngược lại giữ ảnh cũ
@@ -367,7 +366,7 @@ public class StaffManagementServlet extends HttpServlet {
                 }
             }
 
-            int totalPages = myUntilsDAO.getTotalPagesAccountSearchsTAFF(PAGE_SIZE,ROLE_ADMIN ,ROLE_STAFF, ROLE_WAREHOUSE, keyword);
+            int totalPages = myUntilsDAO.getTotalPagesAccountSearchStaff(PAGE_SIZE, ROLE_ADMIN, ROLE_STAFF, ROLE_WAREHOUSE, keyword);
             List<Account> list = AccountDAO.findUser(keyword, ROLE_STAFF, page, PAGE_SIZE);
             List<Role> roleList = AccountDAO.showListRoleTest();
             request.setAttribute("staffs", list);

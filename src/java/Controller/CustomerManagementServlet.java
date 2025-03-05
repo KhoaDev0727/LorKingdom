@@ -184,11 +184,10 @@ public class CustomerManagementServlet extends HttpServlet {
             }
             // Handle password
             String passwordHashed;
-            if (!password.isEmpty()) {
+            Account existingAccount = AccountDAO.getInforAccountByID(accountID);
+            if (!password.equals(existingAccount.getPassword())) {
                 passwordHashed = MyUtils.hashPassword(password);
             } else {
-                // Retrieve existing password if not changed
-                Account existingAccount = AccountDAO.getInforAccountByID(accountID);
                 passwordHashed = existingAccount.getPassword();
             }
             Part filePart = request.getPart("image");

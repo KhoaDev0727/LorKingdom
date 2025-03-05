@@ -29,7 +29,7 @@ public class AccountDAO {
     protected static Connection conn = null;
     private static String SELECT_BY_ROLE_CUSTOMER = "SELECT * FROM Account WHERE RoleID = ? ORDER BY AccountID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
     private static String SELECT_BY_ROLE_STAFF = "SELECT * FROM Account WHERE RoleID = ? OR RoleID =? OR RoleID = ? ORDER BY AccountID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
-    private static String SELECT_NAME_ACCOUNT_BY_ID = "SELECT AccountID, AccountName, Image  FROM Account WHERE AccountID = ?";
+    private static String SELECT_NAME_ACCOUNT_BY_ID = "SELECT AccountID, AccountName, Image, Password  FROM Account WHERE AccountID = ?";
     private static String UPDATE_PROFILE = "UPDATE Account SET AccountName = ?, PhoneNumber = ?, Email ail = ?,Image = ?, Password = ?, Address = ?, Status = ?, Balance = ?, UpdatedAt = ? WHERE AccountID = ?";
     private static String UPDATE_PROFILE_STAFF = "UPDATE Account SET AccountName = ?, PhoneNumber = ?, Email = ?, Password = ?, Address = ?, Status = ?,Image = ?, UpdatedAt = ? WHERE AccountID = ?";
     private static String DELETE_ACCOUNT_SOFT = "UPDATE Account SET isDeleted = ?, Status= ? WHERE AccountID = ?";
@@ -111,7 +111,8 @@ public class AccountDAO {
                 account = new Account(
                         rs.getInt(1),
                         rs.getString(2),
-                        rs.getString(3));
+                        rs.getString(3),
+                        rs.getString(4));
             } else {
                 System.out.println("Không tìm thấy tài khoản với ID: " + AccountID);
             }

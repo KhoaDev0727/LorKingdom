@@ -197,7 +197,7 @@
                                                             </td>
                                                         </tr>
 
-                                                        <!-- Edit Customer Modal -->
+                                                        <!-- Edit Staff Modal -->
                                                     <div class="modal fade" id="editCustomerModal${s.accountId}">
                                                         <div class="modal-dialog modal-lg">
                                                             <div class="modal-content">
@@ -309,7 +309,7 @@
                                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                                 </div>
                                                                 <div class="modal-body">
-                                                                    Are you sure you want to delete customer: 
+                                                                Bạn có chắc chắn muốn xóa nhân vien này ?
                                                                     <strong>${s.userName}</strong>?
                                                                 </div>
                                                                 <div class="modal-footer">

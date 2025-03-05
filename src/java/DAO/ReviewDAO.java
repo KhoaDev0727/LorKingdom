@@ -5,6 +5,7 @@
 package DAO;
 
 import DBConnect.DBConnection;
+import Model.Account;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,11 +24,42 @@ public class ReviewDAO {
     protected static ResultSet rs = null;
     protected static Connection conn = null;
 
-    private static String SELECT_REVIEW = "SELECT * FROM Reviews ORDER BY ReviewID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+    private static String SELECT_TRASH = "SELECT * FROM Reviews WHERE IsDeleted = 1 ORDER BY ReviewID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+    private static String SELECT_REVIEW = "SELECT * FROM Reviews WHERE IsDeleted = 0 ORDER BY ReviewID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
     private static String SELECT_REVIEW_FOR_CUSTOMER = "SELECT AccountID, ProductID, ImgReview,Rating, Comment,ReviewedAt FROM Reviews WHERE ProductID = ? AND Status = 0";
     private static String UPDATE_STATUS = "UPDATE Reviews SET Status = ? WHERE ReviewID = ?;";
-    private static String DELETE_REVIEW_BY_ID = "DELETE FROM Reviews WHERE ReviewID = ?";
+    private static String UPDATE_ISDELETED = "UPDATE Reviews SET IsDeleted = ? WHERE ReviewID = ?;";
+    private static String DELETE_REVIEW_BY_ID = "DELETE FROM Reviews WHERE ReviewID = ?;";
+    private static String SELECT_FILLTER = "SELECT * FROM Reviews WHERE ";
     private static String ADD_PREVIEW = "INSERT INTO Reviews (AccountID, ProductID, ImgReview, Rating, Comment) VALUES (?, ?, ?, ?, ?);";
+
+    public static List<Review> showReviewTrash(int page, int pageSize) {
+        List<Review> list = new ArrayList<>();
+        try {
+            conn = DBConnection.getConnection();
+            stm = conn.prepareStatement(SELECT_TRASH);
+            int offset = (page - 1) * pageSize; // Tính OFFSET dựa trên trang hiện tại
+            stm.setInt(1, offset);
+            stm.setInt(2, pageSize);
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                Review r = new Review(
+                        rs.getInt("ReviewID"),
+                        rs.getInt("AccountID"),
+                        rs.getInt("ProductID"),
+                        rs.getString("ImgReview"),
+                        rs.getInt("IsDeleted"), // BIT có thể cần getBoolean
+                        rs.getInt("Rating"),
+                        rs.getString("Comment"),
+                        rs.getInt("Status"),
+                        rs.getTimestamp("ReviewedAt"));
+                list.add(r);
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
 
     public static List<Review> showReview(int page, int pageSize) {
         List<Review> list = new ArrayList<>();
@@ -39,15 +71,17 @@ public class ReviewDAO {
             stm.setInt(2, pageSize);
             rs = stm.executeQuery();
             while (rs.next()) {
+                System.out.println(rs.getInt(2));
                 Review r = new Review(
                         rs.getInt(1),
                         rs.getInt(2),
                         rs.getInt(3),
                         rs.getString(4),
                         rs.getInt(5),
-                        rs.getString(6),
-                        rs.getInt(7),
-                        rs.getTimestamp(8));
+                        rs.getInt(6),
+                        rs.getString(7),
+                        rs.getInt(8),
+                        rs.getTimestamp(9));
                 list.add(r);
             }
         } catch (ClassNotFoundException | SQLException e) {
@@ -85,6 +119,20 @@ public class ReviewDAO {
             conn = DBConnection.getConnection();
             stm = conn.prepareStatement(UPDATE_STATUS);
             stm.setInt(1, Status);
+            stm.setInt(2, ReviewID);
+            updateRow = stm.executeUpdate() > 0;
+        } catch (ClassNotFoundException | SQLException e) {
+            System.out.println(e);
+        }
+        return updateRow;
+    }
+
+    public static boolean UpdateStatusIsDeletedReview(int ReviewID, int IsDeleted) {
+        boolean updateRow = false;
+        try {
+            conn = DBConnection.getConnection();
+            stm = conn.prepareStatement(UPDATE_ISDELETED);
+            stm.setInt(1, IsDeleted);
             stm.setInt(2, ReviewID);
             updateRow = stm.executeUpdate() > 0;
         } catch (ClassNotFoundException | SQLException e) {
@@ -174,42 +222,54 @@ public class ReviewDAO {
         return list;
     }
 
-//    Search Review OF Custommer
-    public static List<Review> searchReviewsByRatingAndContent(int productId, Integer rating, Boolean hasComment, Boolean hasImage) throws SQLException, ClassNotFoundException {
-        List<Review> result = new ArrayList<>();
-        conn = DBConnection.getConnection();
-        StringBuilder sql = new StringBuilder("SELECT * FROM Reviews WHERE productID = ?");
 
-        if (rating != null) {
-            sql.append(" AND rating = ?");
-        }
-        if (hasComment != null && hasComment) {
-            sql.append(" AND comment IS NOT NULL AND comment != ''");
-        }
-        if (hasImage != null && hasImage) {
-            sql.append(" AND imgReview IS NOT NULL AND imgReview != ''");
-        }
+    public static List<Review> getReviewsFromDatabase(String keyword, int productId) {
+        List<Review> reviews = new ArrayList<>();
         try {
-            stm = conn.prepareStatement(sql.toString());
-            int paramIndex = 1;
-            stm.setInt(paramIndex++, productId);
-            if (rating != null) {
-                stm.setInt(paramIndex++, rating);
+            conn = DBConnection.getConnection();
+            StringBuilder sql = new StringBuilder(
+                    "SELECT r.*, a.AccountName "
+                    + "FROM Reviews r JOIN Account a ON r.AccountID = a.AccountID "
+                    + "WHERE r.ProductID = ?"
+            );
+
+            // Áp dụng bộ lọc
+            if ("0".equals(keyword)) {
+                sql.append(" AND r.Comment IS NOT NULL AND r.Comment <> ''");
+            } else if ("-1".equals(keyword)) {
+                sql.append(" AND r.ImgReview IS NOT NULL AND r.ImgReview <> ''");
+            } else if (!"6".equals(keyword)) {
+                sql.append(" AND r.Rating = ?");
             }
+
+            stm = conn.prepareStatement(sql.toString());
+            stm.setInt(1, productId); // Set productId cho tham số đầu tiên
+
+            if (!"6".equals(keyword) && !"0".equals(keyword) && !"-1".equals(keyword)) {
+                stm.setInt(2, Integer.parseInt(keyword)); // Set rating nếu có lọc
+            }
+
             rs = stm.executeQuery();
             while (rs.next()) {
-                Review review = new Review();
-                review.setAccountID(rs.getInt("AccountID"));
-                review.setComment(rs.getString("Comment"));
-                review.setRating(rs.getInt("Rating"));
-                review.setReviewAt(rs.getTimestamp("ReviewAt"));
-                review.setImgReview(rs.getString("ImgReview"));
-                result.add(review);
+                Review r = new Review(
+                        rs.getInt("AccountID"),
+                        rs.getInt("ProductID"),
+                        rs.getString("ImgReview"),
+                        rs.getInt("IsDeleted"),
+                        rs.getInt("Rating"),
+                        rs.getString("Comment"),
+                        rs.getTimestamp("ReviewedAt") // Đổi kiểu thành java.sql.Timestamp
+                );
+
+                // Thêm UserName vào Review
+                Account acc = new Account();
+                    acc.setUserName(rs.getString("AccountName"));
+                r.setAccount(acc);
+                reviews.add(r);
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return result;
+        return reviews;
     }
-
 }

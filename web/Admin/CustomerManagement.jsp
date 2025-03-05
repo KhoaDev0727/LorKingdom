@@ -42,14 +42,6 @@
                     <main>
                         <div class="container-fluid px-5">
                             <h1 class="mt-4">Customer Management</h1>
-                            <!-- Success/Error Messages -->
-                            <c:if test="${not empty message}">
-                                <div class="alert alert-${messageType} alert-dismissible fade show" role="alert">
-                                    ${message}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                            </c:if>
-
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">

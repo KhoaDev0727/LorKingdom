@@ -25,8 +25,6 @@
                     <main>
                         <div class="container-fluid px-5">
                             <h1 class="mt-4">Shipping Method Management</h1>
-                            <!-- Success/Error Messages -->
-
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">

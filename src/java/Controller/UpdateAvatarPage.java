@@ -16,13 +16,16 @@ import DBConnect.DBConnection;
 import Model.Account;
 
 @MultipartConfig(
-    fileSizeThreshold = 1024 * 1024 * 2, // 2MB
-    maxFileSize = 1024 * 1024 * 10,      // 10MB
-    maxRequestSize = 1024 * 1024 * 50    // 50MB
+        fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+        maxFileSize = 1024 * 1024 * 10, // 10MB
+        maxRequestSize = 1024 * 1024 * 50 // 50MB
 )
 public class UpdateAvatarPage extends HttpServlet {
-    private static final String UPLOAD_DIR = "avatars"; // Directory to store uploaded images
 
+    private static final String UPLOAD_DIR = "avatars"; // Directory to store uploaded images
+    private static final String FOLDER = "avatars";
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Get session to identify the user
         HttpSession session = request.getSession();
@@ -39,31 +42,21 @@ public class UpdateAvatarPage extends HttpServlet {
             request.getRequestDispatcher("profileStaff.jsp").forward(request, response);
             return;
         }
-
         // Save image to server directory
-        String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIR;
-        File uploadDir = new File(uploadPath);
-        if (!uploadDir.exists()) {
-            uploadDir.mkdir();
-        }
+        String uploadPath = getServletContext().getRealPath("/") + File.separator + UPLOAD_DIR;
+        String oldImage = request.getParameter("currentImage").trim();
+        String image = (filePart.getSize() > 0)
+                ? UploadImage.uploadFile(filePart, uploadPath, FOLDER)
+                : oldImage;
+        System.out.println(image);
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement("UPDATE Account SET Image = ? WHERE AccountID = ?")) {
 
-        // Generate a unique file name
-        String fileName = "user_" + account.getAccountId() + "_" + System.currentTimeMillis() + ".png";
-        String filePath = uploadPath + File.separator + fileName;
-        filePart.write(filePath);
-
-        // Save image path to database
-        String imagePath = UPLOAD_DIR + "/" + fileName;
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement("UPDATE Account SET Image = ? WHERE AccountID = ?")) {
-            
-            stmt.setString(1, imagePath);
+            stmt.setString(1, image);
             stmt.setInt(2, account.getAccountId());
             stmt.executeUpdate();
 
             // Update session with new avatar
-            account.setImage(imagePath);
+            account.setImage(image);
             session.setAttribute("account", account);
 
             request.setAttribute("message", "Avatar updated successfully!");
