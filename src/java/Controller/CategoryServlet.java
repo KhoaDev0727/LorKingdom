@@ -170,8 +170,8 @@ public class CategoryServlet extends HttpServlet {
             return;
         }
 
-        if (!name.matches("^[\\p{L} _-]+$")) {
-            request.getSession().setAttribute("errorMessage", "Tên danh mục chỉ được chứa chữ cái, khoảng trắng, dấu gạch dưới (_) và dấu gạch ngang (-).");
+        if (!name.matches("^[\\p{L} '_-]+$")) {
+            request.getSession().setAttribute("errorMessage", "Tên danh mục chỉ được chứa chữ cái, khoảng trắng, dấu gạch dưới (_), dấu gạch ngang (-) và dấu phẩy đơn (').");
             response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
             return;
         }
@@ -220,7 +220,7 @@ public class CategoryServlet extends HttpServlet {
     private void hardDeleteCategory(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException, ClassNotFoundException {
         try {
-           int categoryID = Integer.parseInt(request.getParameter("categoryID"));
+            int categoryID = Integer.parseInt(request.getParameter("categoryID"));
             categoryDAO.hardDeleteCategory(categoryID);
             request.getSession().setAttribute("successMessage", "Danh mục đã được xóa cứng.");
             response.sendRedirect("CategoryServlet?action=listDeleted");
@@ -272,17 +272,23 @@ public class CategoryServlet extends HttpServlet {
             return;
         }
 
-        if (!name.matches("^[\\p{L} _-]+$")) {
-            request.getSession().setAttribute("errorMessage", "Tên danh mục chỉ được chứa chữ cái, khoảng trắng, dấu gạch dưới (_) và dấu gạch ngang (-).");
+        if (!name.matches("^[\\p{L} '_-]+$")) {
+            request.getSession().setAttribute("errorMessage", "Tên danh mục chỉ được chứa chữ cái, khoảng trắng, dấu gạch dưới (_), dấu gạch ngang (-) và dấu phẩy đơn (').");
             response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
             return;
         }
 
-//        if (categoryDAO.isCategoryExists(name)) {
-//            request.getSession().setAttribute("errorMessage", "Tên danh mục đã tồn tại.");
-//            response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
-//            return;
-//        }
+        if (categoryDAO.isCategoryExists(name)) {
+            request.getSession().setAttribute("errorMessage", "Tên danh mục đã tồn tại.");
+            response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
+            return;
+        }
+
+        if (superCategoryIDStr == null || superCategoryIDStr.trim().isEmpty()) {
+            request.getSession().setAttribute("errorMessage", "Vui lòng chọn Category.");
+            response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
+            return;
+        }
         int superCategoryID;
         try {
             superCategoryID = Integer.parseInt(superCategoryIDStr);

@@ -85,7 +85,6 @@
                                     <li><a class="dropdown-item" href="CategoryServlet?&action=list">Category
                                             Management</a></li>
                                      <li><a class="dropdown-item" href="ProductServlet?&action=list">Product Management</a></li>
-                                    <li><a class="dropdown-item" href="ProductManagementServlet">Add Product Management</a></li>
                                     <li><a class="dropdown-item" href="AgeServlet?&action=list">Age
                                             Management</a></li>
                                     <li><a class="dropdown-item" href="SexServlet?&action=list">Sex

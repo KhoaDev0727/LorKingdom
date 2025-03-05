@@ -182,7 +182,6 @@ public class AgeServlet extends HttpServlet {
                 return;
             }
 
-            // Nếu chọn đơn vị là "tháng", kiểm tra giới hạn tối đa là 24 tháng
             if (unit.equals("tháng")) {
                 if (ageEnd > 24) {
                     request.getSession().setAttribute("errorMessage", "Khoảng tuổi theo tháng không thể lớn hơn 24 tháng.");
@@ -191,7 +190,6 @@ public class AgeServlet extends HttpServlet {
                 }
             }
 
-            // Nếu chọn đơn vị là "tuổi", kiểm tra khoảng cách không quá 5 năm và tối đa 100 tuổi
             if (unit.equals("tuổi")) {
                 if ((ageEnd - ageStart) > 5) {
                     request.getSession().setAttribute("errorMessage", "Khoảng cách giữa tuổi bắt đầu và kết thúc không thể lớn hơn 5 năm.");
@@ -213,11 +211,9 @@ public class AgeServlet extends HttpServlet {
                 return;
             }
 
-            // Nếu hợp lệ, thêm vào cơ sở dữ liệu
             Age age = new Age(0, ageRange, null, 0);
             ageDAO.addAge(age);
 
-            // Đặt thông báo thành công
             request.getSession().setAttribute("successMessage", "Đã thêm độ tuổi thành công.");
             response.sendRedirect("AgeServlet?action=list&showSuccessModal=true");
 
@@ -252,7 +248,6 @@ public class AgeServlet extends HttpServlet {
         response.sendRedirect("AgeServlet?action=list");
     }
 
-    // 6) Xóa cứng
     private void hardDeleteAge(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, IOException {
         try {
@@ -286,7 +281,6 @@ public class AgeServlet extends HttpServlet {
             int ageEnd = Integer.parseInt(request.getParameter("ageEnd"));
             String unit = request.getParameter("unit");
 
-            // Kiểm tra nếu giá trị nhập vào không hợp lệ
             if (ageStart < 0 || ageEnd < 0) {
                 request.getSession().setAttribute("errorMessage", "Giá trị không hợp lệ! Tuổi không thể là số âm.");
                 response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
@@ -305,7 +299,6 @@ public class AgeServlet extends HttpServlet {
                 return;
             }
 
-            // Nếu chọn đơn vị là "tháng", kiểm tra giới hạn tối đa là 24 tháng
             if (unit.equals("tháng")) {
                 if (ageEnd > 24) {
                     request.getSession().setAttribute("errorMessage", "Khoảng tuổi theo tháng không thể lớn hơn 24 tháng.");
@@ -314,7 +307,6 @@ public class AgeServlet extends HttpServlet {
                 }
             }
 
-            // Nếu chọn đơn vị là "tuổi", kiểm tra khoảng cách không quá 5 năm và tối đa 100 tuổi
             if (unit.equals("tuổi")) {
                 if ((ageEnd - ageStart) > 5) {
                     request.getSession().setAttribute("errorMessage", "Khoảng cách giữa tuổi bắt đầu và kết thúc không thể lớn hơn 5 năm.");
@@ -328,21 +320,17 @@ public class AgeServlet extends HttpServlet {
                 }
             }
 
-            // Gộp lại thành chuỗi: "0-12 tháng" hoặc "1-5 tuổi"
             String ageRange = ageStart + "-" + ageEnd + " " + unit;
 
-            // Kiểm tra xem khoảng tuổi đã tồn tại chưa (ngoại trừ chính nó)
             if (ageDAO.isAgeExists(ageRange)) {
                 request.getSession().setAttribute("errorMessage", "Khoảng tuổi đã tồn tại.");
                 response.sendRedirect("AgeServlet?action=list&showErrorModal=true");
                 return;
             }
 
-            // Nếu hợp lệ, cập nhật vào cơ sở dữ liệu
             Age age = new Age(ageID, ageRange, null, 0);
             ageDAO.updateAge(age);
 
-            // Đặt thông báo thành công
             request.getSession().setAttribute("successMessage", "Đã cập nhật độ tuổi thành công.");
             response.sendRedirect("AgeServlet?action=list&showSuccessModal=true");
 

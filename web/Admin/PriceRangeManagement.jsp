@@ -40,19 +40,25 @@
                         <div class="container-fluid px-5">
                             <h1 class="mt-4">Price Range Management</h1>
 
-                            <!-- Nút mở modal thêm Price Range -->
-                            <button class="btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#addPriceRangeModal">
-                                Add Price Range
-                            </button>
-
                             <div class="card mb-4">
                                 <div class="card-header">
-                                    <div class="d-flex justify-content-between align-items-center">
+<!--                                    <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <i class="fas fa-table me-1"></i> Price Range List
                                         </div>
+                                    </div>-->
+                                     <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <i class="fas fa-table me-1"></i> Price Range List
+                                        </div>
+                                        <div>
+                                            <button class="btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#addPriceRangeModal">
+                                                <i class="fas fa-plus"></i> Add Price Range 
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
+                                
                                 <div class="card-body">
                                     <!-- Search Form -->
                                     <form action="PriceRangeServlet" method="GET" class="mb-4">
