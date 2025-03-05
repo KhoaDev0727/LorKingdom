@@ -1,6 +1,6 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -103,8 +103,27 @@
                                                                 <td>${notification.notificationID}</td>
                                                                 <td>${notification.title}</td>
                                                                 <td>
-                                                                    <!-- Hiển thị content dạng HTML hoặc text -->
-                                                                    <c:out value="${notification.content}" escapeXml="false" />
+                                                                    <!-- 
+                                                                        RÚT GỌN NỘI DUNG: 
+                                                                        Nếu <= 100 ký tự, hiển thị tất cả
+                                                                        Nếu > 100 ký tự, hiển thị 100 ký tự + nút "View More" 
+                                                                    -->
+                                                                    <c:choose>
+                                                                        <c:when test="${fn:length(notification.content) <= 100}">
+                                                                            <button class="btn btn-link btn-sm"
+                                                                                    data-bs-toggle="modal"
+                                                                                    data-bs-target="#viewContentModal${notification.notificationID}">
+                                                                                View More
+                                                                            </button>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <button class="btn btn-link btn-sm"
+                                                                                    data-bs-toggle="modal"
+                                                                                    data-bs-target="#viewContentModal${notification.notificationID}">
+                                                                                View More
+                                                                            </button>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
                                                                 </td>
                                                                 <td>${notification.type}</td>
                                                                 <td>${notification.status}</td>
@@ -141,7 +160,23 @@
                                                                 </td>
                                                             </tr>
 
-                                                            <!-- Edit Notification Modal -->
+                                                            <!-- Modal: Xem toàn bộ nội dung (View More) -->
+                                                        <div class="modal fade" id="viewContentModal${notification.notificationID}" tabindex="-1" aria-hidden="true">
+                                                            <div class="modal-dialog modal-lg">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title">Notification Content</h5>
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <!-- Hiển thị toàn bộ nội dung -->
+                                                                        <c:out value="${notification.content}" escapeXml="false" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Edit Notification Modal -->
                                                         <div class="modal fade" id="editNotificationModal${notification.notificationID}">
                                                             <div class="modal-dialog modal-lg">
                                                                 <div class="modal-content">
@@ -162,11 +197,9 @@
                                                                             <!-- Phần content dùng Quill -->
                                                                             <div class="mb-3">
                                                                                 <label class="form-label">Content</label>
-
                                                                                 <!-- Quill container -->
                                                                                 <div id="editor-container-edit-${notification.notificationID}"
                                                                                      style="height: 200px; background-color: #fff;"></div>
-
                                                                                 <!-- Input ẩn để lưu nội dung -->
                                                                                 <input type="hidden" id="content-edit-${notification.notificationID}"
                                                                                        name="content">
@@ -187,7 +220,6 @@
                                                                                     <option value="Unread" ${notification.status == 'Unread' ? 'selected' : ''}>Unread</option>
                                                                                 </select>
                                                                             </div>
-
                                                                         </div>
                                                                         <div class="modal-footer">
                                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -230,10 +262,8 @@
                             <!-- Phần content dùng Quill -->
                             <div class="mb-3">
                                 <label class="form-label">Content</label>
-
                                 <!-- Quill container -->
                                 <div id="editor-container" style="height: 200px; background-color: #fff;"></div>
-
                                 <!-- Input ẩn để lưu nội dung -->
                                 <input type="hidden" id="content" name="content">
                             </div>
@@ -255,6 +285,8 @@
                 </div>
             </div>
         </div>
+
+        <!-- Update Notification Modal (nếu cần) -->
         <div class="modal fade" id="updateNotificationModal">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -275,12 +307,10 @@
                             <!-- Phần content dùng Quill -->
                             <div class="mb-3">
                                 <label class="form-label">Content</label>
-
                                 <!-- Quill container với nội dung hiện có -->
                                 <div id="editor-container-update" style="height: 200px; background-color: #fff;">
                                     ${notification.content}
                                 </div>
-
                                 <!-- Input ẩn để lưu nội dung cập nhật từ Quill -->
                                 <input type="hidden" id="updateContent" name="content" value="${notification.content}">
                             </div>
@@ -425,7 +455,7 @@
                                                                                     var formAdd = document.querySelector('#addNotificationModal form');
                                                                                     formAdd.onsubmit = function () {
                                                                                         // Gán nội dung Quill vào input ẩn
-                                                                                        var contentInput = document.querySelector('input[name="content"]');
+                                                                                        var contentInput = this.querySelector('input[name="content"]');
                                                                                         contentInput.value = quillAdd.root.innerHTML;
                                                                                     };
 
@@ -434,7 +464,6 @@
                                                                                     // =========================
             <c:forEach var="notification" items="${notifications}">
                 <c:if test="${!notification.isDeleted}">
-                                                                                    // Khởi tạo Quill cho từng notification ID
                                                                                     const quillEdit${notification.notificationID} = new Quill('#editor-container-edit-${notification.notificationID}', {
                                                                                         theme: 'snow',
                                                                                         modules: {
@@ -457,8 +486,7 @@
                                                                                         placeholder: 'Describe your notification in detail...'
                                                                                     });
 
-                                                                                    // Set nội dung ban đầu cho editor
-                                                                                    // Lưu ý: để tránh lỗi escape HTML, bạn có thể cẩn thận thay thế.
+                                                                                    // Set nội dung ban đầu cho editor (tránh lỗi escape HTML)
                                                                                     quillEdit${notification.notificationID}.root.innerHTML = '${notification.content}'
                                                                                             .replace(/&amp;/g, '&')
                                                                                             .replace(/&lt;/g, '<')
@@ -482,22 +510,26 @@
                                                                                         document.getElementById("hardDeleteNotificationID").value = notificationID;
                                                                                     }
 
-                                                                                    // Xử lý hiển thị modal Error / Success
-                                                                                    window.onload = function () {
-                                                                                        const errorMessage = "${sessionScope.errorMessage}";
-                                                                                        if (errorMessage && errorMessage.trim() !== "") {
-                                                                                            const errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
-                                                                                            errorModal.show();
-            <% request.getSession().removeAttribute("errorMessage"); %>
-                                                                                        }
 
-                                                                                        let successMessage = "${sessionScope.successMessage}";
-                                                                                        if (successMessage && successMessage.trim() !== "" && successMessage.trim() !== "null") {
-                                                                                            let successModal = new bootstrap.Modal(document.getElementById("successModal"));
-                                                                                            successModal.show();
-            <% request.getSession().removeAttribute("successMessage"); %>
-                                                                                        }
-                                                                                    };
         </script>
+        <script>
+            window.onload = function () {
+                const errorMessage = "${sessionScope.errorMessage}";
+                if (errorMessage && errorMessage.trim() !== "") {
+                    // Nếu có nội dung lỗi trong session => mở modal
+                    const errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
+                    errorModal.show();
+            <% request.getSession().removeAttribute("errorMessage"); %>
+                }
+
+                const successMessage = "${sessionScope.successMessage}";
+                if (successMessage && successMessage.trim() !== "") {
+                    const successModal = new bootstrap.Modal(document.getElementById("successModal"));
+                    successModal.show();
+            <% request.getSession().removeAttribute("successMessage"); %>
+                }
+            };
+        </script>
+
     </body>
 </html>

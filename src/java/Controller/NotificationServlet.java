@@ -1,5 +1,7 @@
 package Controller;
 
+import org.jsoup.Jsoup;
+
 import DAO.NotificationDAO;
 import Model.Notification;
 import java.io.IOException;
@@ -91,31 +93,55 @@ public class NotificationServlet extends HttpServlet {
         String type = request.getParameter("type");
         String accountIDStr = request.getParameter("accountID");
         Integer accountID = (accountIDStr != null && !accountIDStr.trim().isEmpty()) ? Integer.parseInt(accountIDStr) : null;
-
-        // Validation
+//        String plainTextContent = Jsoup.parse(content).text();
+//        if (plainTextContent == null || plainTextContent.trim().isEmpty()) {
+//            request.getSession().setAttribute("errorMessage", "Nội dung không được để trống.");
+//            response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
+//            return;
+//        }
+        String plainTextTitle = Jsoup.parse(title).text();
+        if (plainTextTitle == null || plainTextTitle.trim().isEmpty()) {
+            request.getSession().setAttribute("errorMessage", "Tiêu đề không được để trống.");
+            response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
+            return;
+        }   
+        // ======= Validation =======
+        // 1) Tiêu đề không được để trống
         if (title == null || title.trim().isEmpty()) {
             request.getSession().setAttribute("errorMessage", "Tiêu đề không được để trống.");
             response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
             return;
         }
+        // 2) Tiêu đề không quá 255 ký tự
         if (title.length() > 255) {
             request.getSession().setAttribute("errorMessage", "Tiêu đề quá dài. Chỉ được phép có tối đa 255 ký tự.");
             response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
             return;
         }
+        // 3) Content không được để trống
+        if (content == null || content.trim().isEmpty()) {
+            request.getSession().setAttribute("errorMessage", "Nội dung không được để trống.");
+            response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
+            return;
+        }
+        // 4) Type phải thuộc 1 trong 3 giá trị hợp lệ
         if (type == null || (!type.equals("System") && !type.equals("Promotional") && !type.equals("User"))) {
             request.getSession().setAttribute("errorMessage", "Invalid notification type.");
             response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
             return;
         }
+        // 5) accountID phải là số dương nếu có
         if (accountID != null && accountID <= 0) {
             request.getSession().setAttribute("errorMessage", "ID tài khoản phải là số dương nếu được cung cấp.");
             response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
             return;
         }
-        System.out.println(content);
-        
+        // ======= End Validation =======
+
+        // Thêm notification
         notificationDAO.addNotification(title, content, type, accountID);
+
+        // Thông báo thành công
         request.getSession().setAttribute("successMessage", "Thông báo đã được thêm thành công.");
         response.sendRedirect("NotificationServlet?action=list&showSuccessModal=true");
     }
@@ -130,18 +156,27 @@ public class NotificationServlet extends HttpServlet {
             String status = request.getParameter("status");
             String accountIDStr = request.getParameter("accountID");
             Integer accountID = (accountIDStr != null && !accountIDStr.trim().isEmpty()) ? Integer.parseInt(accountIDStr) : null;
-
-            // Validation
-            if (title == null || title.trim().isEmpty()) {
+            String plainTextTitle = Jsoup.parse(title).text();
+            if (plainTextTitle == null || plainTextTitle.trim().isEmpty()) {
                 request.getSession().setAttribute("errorMessage", "Tiêu đề không được để trống.");
                 response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
                 return;
             }
+            String plainTextContent = Jsoup.parse(content).text();
+            if (plainTextContent == null || plainTextContent.trim().isEmpty()) {
+                request.getSession().setAttribute("errorMessage", "Nội dung không được để trống.");
+                response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
+                return;
+            }
+
+            // 2) Tiêu đề không quá 255 ký tự
             if (title.length() > 255) {
                 request.getSession().setAttribute("errorMessage", "Tiêu đề quá dài. Chỉ được phép có tối đa 255 ký tự.");
                 response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
                 return;
             }
+
+            // 4) Type phải hợp lệ
             if (type == null || (!type.equals("System") && !type.equals("Promotional") && !type.equals("User"))) {
                 request.getSession().setAttribute("errorMessage", "Invalid notification type.");
                 response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
@@ -159,6 +194,8 @@ public class NotificationServlet extends HttpServlet {
             }
 
             notificationDAO.updateNotification(notificationID, title, content, type, status, accountID);
+
+            // Thông báo thành công
             request.getSession().setAttribute("successMessage", "Thông báo đã được cập nhật thành công.");
             response.sendRedirect("NotificationServlet?action=list&showSuccessModal=true");
         } catch (NumberFormatException e) {
