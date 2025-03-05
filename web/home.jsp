@@ -248,6 +248,27 @@
                 document.getElementById("filterForm").reset();
                 submitFilter();
             }
+
+
+            // Toggle thông báo khi click vào chuông
+            document.addEventListener("DOMContentLoaded", function () {
+                var bellIcon = document.querySelector(".notification-icon");
+                var notificationBox = document.getElementById("notificationBox");
+
+                // Toggle thông báo khi click vào chuông
+                bellIcon.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    event.stopPropagation(); // Ngăn sự kiện lan lên document
+                    notificationBox.classList.toggle("active");
+                });
+
+                // Đóng thông báo khi click ra ngoài
+                document.addEventListener("click", function (event) {
+                    if (!notificationBox.contains(event.target) && !bellIcon.contains(event.target)) {
+                        notificationBox.classList.remove("active");
+                    }
+                });
+            });
         </script>
 
     </body>

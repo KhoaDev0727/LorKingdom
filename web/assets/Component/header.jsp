@@ -1,4 +1,3 @@
-        
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -27,23 +26,39 @@
                 </div>
 
                 <div class="header-right">
-                    <div class="dropdown">
-                        <span class="dropdown-btn">VN <i class="fas fa-caret-down"></i></span>
-                        <ul class="dropdown-menu">
-                            <li><a href="#" onclick="changeLanguage('vn')">VN</a></li>
-                            <li><a href="#" onclick="changeLanguage('en')">EN</a></li>
-                        </ul>
-                    </div>
-                    <div class="dropdown" style="position: relative;">
-                        <span class="dropdown-btn">VND <i class="fas fa-caret-down"></i></span>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">VND</a></li>
-                            <li><a href="#">USD</a></li>
-                        </ul>
-                    </div>
+
                     <a href="aboutus.jsp" data-key="aboutUs">Giới Thiệu</a>
                     <a href="#" data-key="help">Trợ giúp</a>
-                    <a href="Cart" data-key="cart">Giỏ hàng</a>
+
+                    <!-- Icon notification here -->
+                    <div class="notification-container">
+                        <a href="#" class="notification-icon" style="color: gold; font-size: 28px; background: none;"
+                           onclick="toggleNotification(event)">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge">3</span>
+                        </a>
+
+                        <!-- Box thông báo -->
+                        <div class="notification-box" id="notificationBox">
+                            <h4>Thông Báo</h4>
+                            <div class="notification-item">
+                                <img src="" alt="icon">
+                                <p><strong>Bộ sưu tập dành cho bạn</strong></p>
+                                <p>Top sản phẩm hot nhất đang giảm giá!</p>
+                            </div>
+                            <div class="notification-item">
+                                <img src="" alt="icon">
+                                <p><strong>Mã Freeship</strong></p>
+                                <p>Sắp hết hạn, dùng ngay hôm nay!</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <a href="Cart" data-key="cart" class="cart-link position-relative">
+                        <i class="fas fa-shopping-cart fa-lg"></i>
+                        <span class="cart-badge">3</span>
+                    </a>
 
                     <div class="avatar-container">
                         <div class="avatar">
@@ -89,13 +104,13 @@
 
                         </div>
                     </li>
-                   
+
 
                     <li class="menu-item">
                         <a href="#" data-key="promotions">Khuyến Mãi</a>
                     </li>
 
-                   
+
 
                 </ul>
             </nav>

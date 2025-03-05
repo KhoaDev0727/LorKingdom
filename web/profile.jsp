@@ -25,6 +25,12 @@
         <title>Hồ sơ</title>
     </head>
     <body>
+        <div class="container mt-3">
+            <a href="${pageContext.request.contextPath}/home.jsp" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left"></i> Về trang chủ
+            </a>
+        </div>
+
         <div class="page-content" id="page-content">
             <div class="padding">
                 <div class="container d-flex justify-content-center">
