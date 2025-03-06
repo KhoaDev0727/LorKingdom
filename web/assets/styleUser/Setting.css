@@ -9,27 +9,36 @@ body {
 
 /* Container setup using Flexbox */
 .container-fluid {
-    width: 1300px !important; /* Đảm bảo ghi đè các kiểu dáng khác */
+    width: 1500px !important; /* Đảm bảo ghi đè các kiểu dáng khác */
     margin: 0 auto;
-    margin: 0 auto; /* Center the container */
-    margin-top: 160px;
+    margin-top: 220px;
+    margin-bottom: 100px;
+    width: 100%;
+    display: flex;
 }
 
 /* Sidebar Styling */
 .sidebar {
-    width: 330px; /* Smaller sidebar width */
+    width: 330px; 
     background-color: #fff;
     padding: 30px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.right-menu {
+    width: 1170px;
+    padding: 30px;
+    margin-left: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
 }
 
 /* User profile styling */
 .profile {
     text-align: center;
     margin-bottom: 30px;
-    background: linear-gradient(135deg, #0066cc, #33ccff);
-    height: 380px; /* Smaller profile box */
-    width: 275px; /* Smaller profile width */
+    background: linear-gradient(135deg, #FF6600, #fdd170);
+    height: 380px;
+    width: auto; 
     border-radius: 15px;
     padding: 30px 0;
 }
@@ -49,7 +58,8 @@ body {
 }
 
 .username {
-    font-weight: bold;
+    font-weight: 630;
+    font-size: 18px;
     color: white;
     padding: 10px 0;
 }
@@ -181,10 +191,9 @@ nav ul li a span:hover {
 
 /* Klook Rewards Styling */
 .klook-rewards {
-    background-color: #ffffff;
+    background: none;
     border-radius: 10px;
-    width: 220px; /* Smaller Klook rewards width */
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    width: 220px; 
     margin: auto;
     margin-top: 30px;
     padding: 8px;
@@ -206,18 +215,6 @@ nav ul li a span:hover {
     align-items: flex-start;
 }
 
-.level {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.level-text {
-    font-size: 12px; /* Smaller level text */
-    color: #333;
-    margin-right: 5px;
-}
-
 .level-badge {
     background-color: #B0E0E6;
     padding: 5px 10px;
@@ -231,13 +228,55 @@ nav ul li a span:hover {
     color: white;
     border: none;
     padding: 8px 16px;
-    font-size: 12px; /* Smaller button font size */
+    font-size: 14px; /* Smaller button font size */
     cursor: pointer;
     border-radius: 5px;
     text-align: center;
     width: 100%;
+    font-weight: 550;
 }
 
 .view-benefits:hover {
     background-color: #357ABD;
 }
+
+.hidden {
+    display: none;
+}
+
+.order-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.order-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eee;
+}
+
+.tab {
+    cursor: pointer;
+    padding: 5px 10px;
+    font-weight: bold;
+    color: #333;
+}
+
+.tab.active {
+    color: red;
+    border-bottom: 2px solid red;
+}
+
+.order-content {
+    margin-top: 30px;
+}
+
+.no-order-img {
+    width: 100px;
+    height: auto;
+    margin-top: 100px;
+}
+
+

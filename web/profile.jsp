@@ -1,5 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
-<%@ page pageEncoding="UTF-8" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="Model.Account" %>
 <%@ page import="jakarta.servlet.http.HttpSession" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>

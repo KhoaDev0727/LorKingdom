@@ -2,7 +2,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-    <head>s
+    <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> <!-- Bootstrap Import -->
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
@@ -15,7 +15,7 @@
             <div class="header_first">
                 <div class="header-left d-flex align-items-center gap-3">
                     <a href="home.jsp" class="logo">
-                        <img src="./assets/img/logo.png" alt="Lor Travel Logo">
+                        <img src="./assets/img/logo-login.png" alt="Lor Logo">
                     </a>
                     <div class="input-group search-container">
                         <span class="input-group-text bg-white border-end-0">
@@ -71,6 +71,9 @@
                                     <a href="ProfileServlet" class="menu-item-avatar text-dark p-3">
                                         <i class="fas fa-user-circle"></i> Profile
                                     </a>
+                                    <a href="Setting.jsp" class="menu-item-avatar text-dark p-3">
+                                        <i class="fas fa-gear"></i> Setting
+                                    </a>
                                     <a href="LogoutServlet" class="menu-item-avatar text-dark p-3">
                                         <i class="fas fa-sign-out-alt"></i> Logout
                                     </a>
@@ -116,5 +119,27 @@
             </nav>
         </header>
         <!-- end Header Section -->
+
+        <script>
+            // Toggle thông báo khi click vào chuông
+            document.addEventListener("DOMContentLoaded", function () {
+                var bellIcon = document.querySelector(".notification-icon");
+                var notificationBox = document.getElementById("notificationBox");
+
+                // Toggle thông báo khi click vào chuông
+                bellIcon.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    event.stopPropagation(); // Ngăn sự kiện lan lên document
+                    notificationBox.classList.toggle("active");
+                });
+
+                // Đóng thông báo khi click ra ngoài
+                document.addEventListener("click", function (event) {
+                    if (!notificationBox.contains(event.target) && !bellIcon.contains(event.target)) {
+                        notificationBox.classList.remove("active");
+                    }
+                });
+            });
+        </script>
     </body>
 </html>
