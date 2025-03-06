@@ -17,20 +17,7 @@
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="JS/SideBarToggle.js"></script>
-        <style>
-            .rating-filter button {
-                margin: 5px;
-                padding: 8px 15px;
-            }
-            .rating-filter button.active {
-                background-color: #0d6efd;
-                color: white;
-            }
-            .star {
-                color: red;
-                font-size: 1.2em;
-            }
-        </style>
+
     </head>
     <body class="sb-nav-fixed">
         <c:if test="${empty sessionScope.roleID}">
@@ -39,13 +26,11 @@
         <div id="layoutSidenav">
             <div id="layoutSidenav_content">
                 <%@ include file="Component/SideBar.jsp" %>
-                <div class="dashboard-container">
+                <div class="dashboard-container mt-10 ml-5">
                     <main>
                         <div class="container-fluid px-5">
-                            <h1 class="mt-4 text-xl" >Sex Management</h1>
-                            <!-- Form Add category -->
-                          
-                            <div class="card mb-4">
+                            <h1 style="font-size: calc(1.375rem + 1.5vw); font-weight: 600">Sex Management</h1>
+                            <div class="card mt-4">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
@@ -55,7 +40,7 @@
                                 </div>
 
                                 <div class="card-body">
-                                    <div class="table-responsive mt-10">
+                                    <div class="table-responsive mt-3">
                                         <table class="table table-bordered table-striped table-hover">
                                             <thead class="table-dark">
                                                 <tr>
@@ -66,7 +51,6 @@
                                             <tbody>
                                                 <c:choose>
                                                     <c:when test="${empty sexes}">
-                                                        <!-- Display message if the list is empty -->
                                                         <tr>
                                                             <td colspan="4" class="text-center text-muted">No Sex available.</td>
                                                         </tr>
@@ -90,6 +74,5 @@
                 </div>
             </div>
         </div>
-
     </body>
 </html>

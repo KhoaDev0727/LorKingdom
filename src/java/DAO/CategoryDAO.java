@@ -142,12 +142,12 @@ public class CategoryDAO {
         }
     }
 
-    public void restoreCategory(int categoryID) throws SQLException, ClassNotFoundException {
-        String query = "UPDATE Category SET IsDeleted = 0 WHERE CategoryID = ?";
-        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setInt(1, categoryID);
-            ps.executeUpdate();
+        public void restoreCategory(int categoryID) throws SQLException, ClassNotFoundException {
+            String query = "UPDATE Category SET IsDeleted = 0 WHERE CategoryID = ?";
+            try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+                ps.setInt(1, categoryID);
+                ps.executeUpdate();
+            }
         }
-    }
 
 }

@@ -66,7 +66,7 @@ public class Review {
         this.IsDeleted = IsDeleted;
     }
 
-    public Review(int reviewID, int accountID, int productID, String imgReview, int Rating, String comment, int Status, Timestamp reviewAt) {
+    public Review(int reviewID, int accountID, int productID, String comment,  int Rating, String imgReview, int Status, Timestamp reviewAt) {
         this.reviewID = reviewID;
         this.accountID = accountID;
         this.productID = productID;

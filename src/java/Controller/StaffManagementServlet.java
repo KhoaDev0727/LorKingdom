@@ -286,7 +286,7 @@ public class StaffManagementServlet extends HttpServlet {
                 return;
             }
             // Check for existing email or username
-            if (AccountDAO.isEmailExists(email)) {
+            if (AccountDAO.isEmailExistsUpdate(email)) {
                 session.setAttribute("errorMessage", "Email đã tồn tại.");
                 response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
                 return;

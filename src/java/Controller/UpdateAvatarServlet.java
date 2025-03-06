@@ -73,6 +73,6 @@ public class UpdateAvatarServlet extends HttpServlet {
         }
 
         // Redirect back to profile page
-        request.getRequestDispatcher("profile.jsp").forward(request, response);
+        request.getRequestDispatcher("Setting.jsp").forward(request, response);
     }
 }

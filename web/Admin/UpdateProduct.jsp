@@ -114,19 +114,22 @@
                                         </c:forEach>
                                     </select>
                                 </div>
-
                                 <div class="col-md-4">
                                     <label class="form-label">Origin</label>
                                     <select class="form-select" name="origin" required>
-                                        <option value="">Select Origin</option>
-                                        <c:forEach items="${listOrigin}" var="origin">
+                                        <!-- Placeholder, có thể disabled nếu muốn -->
+                                        <option value="" disabled>Select Origin</option>
+
+                                        <c:forEach items="${listOrigin}" var="origin" varStatus="st">
                                             <option value="${origin.originID}"
-                                                    <c:if test="${origin.originID == product.originID}">selected</c:if>>
+                                                    <c:if test="${st.first}">selected</c:if>>
                                                 ${origin.name}
                                             </option>
                                         </c:forEach>
                                     </select>
                                 </div>
+
+
 
                             </div>
                         </div>

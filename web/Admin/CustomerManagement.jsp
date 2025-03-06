@@ -46,7 +46,7 @@
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                           <i class="fa-solid fa-user"></i> Customer List
+                                            <i class="fa-solid fa-user"></i> Customer List
                                         </div>
                                     </div>
                                 </div>
@@ -100,13 +100,13 @@
                                                             <tr>
                                                                 <td>${customer.accountId}</td>
                                                                 <td style="max-width: 50px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${customer.image}</td>
-                                                                <td>${customer.userName}</td>
-                                                                <td>${customer.phoneNumber}</td>
-                                                                <td>${customer.email}</td>
+                                                                <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">${customer.userName}</td>
+                                                                <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">${customer.phoneNumber}</td>
+                                                                <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis" >${customer.email}</td>
                                                                 <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                                                     ${customer.password}
                                                                 </td>
-                                                                <td>${customer.address}</td>
+                                                                <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis" >${customer.address}</td>
                                                                 <td>
                                                                     <fmt:formatNumber value="${customer.balance}" type="currency" />
                                                                 </td>

@@ -1,6 +1,6 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
+<%@ page contentType="text/html" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -10,14 +10,28 @@
         <meta name="description" content="" />
         <meta name="author" content="" />
         <title>Dashboard - Notification Management</title>
+
+        <!-- Simple Datatables CSS (nếu dùng) -->
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-        <link rel="stylesheet" href="CSS/style.css" />
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" crossorigin="anonymous">
+
+        <!-- Font Awesome -->
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+        <!-- Quill CSS -->
+        <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
+        <!-- Custom CSS của bạn -->
+        <link rel="stylesheet" href="CSS/style.css" />
+
+        <!-- Tùy chọn: bạn có thể thêm script toggle sidebar, v.v. -->
         <script src="JS/SideBarToggle.js"></script>
     </head>
     <body class="sb-nav-fixed">
         <%@ include file="Component/SideBar.jsp" %>
+
         <div id="layoutSidenav">
             <div id="layoutSidenav_content">
                 <div class="dashboard-container">
@@ -32,6 +46,7 @@
                                             <i class="fas fa-bell me-1"></i> Notifications List
                                         </div>
                                         <div>
+                                            <!-- Nút mở modal Add Notification -->
                                             <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addNotificationModal">
                                                 <i class="fas fa-plus"></i> Add Notification
                                             </button>
@@ -87,13 +102,35 @@
                                                             <tr class="${notification.isDeleted ? 'deleted-row' : ''}">
                                                                 <td>${notification.notificationID}</td>
                                                                 <td>${notification.title}</td>
-                                                                <td>${notification.content}</td>
+                                                                <td>
+                                                                    <!-- 
+                                                                        RÚT GỌN NỘI DUNG: 
+                                                                        Nếu <= 100 ký tự, hiển thị tất cả
+                                                                        Nếu > 100 ký tự, hiển thị 100 ký tự + nút "View More" 
+                                                                    -->
+                                                                    <c:choose>
+                                                                        <c:when test="${fn:length(notification.content) <= 100}">
+                                                                            <button class="btn btn-link btn-sm"
+                                                                                    data-bs-toggle="modal"
+                                                                                    data-bs-target="#viewContentModal${notification.notificationID}">
+                                                                                View More
+                                                                            </button>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <button class="btn btn-link btn-sm"
+                                                                                    data-bs-toggle="modal"
+                                                                                    data-bs-target="#viewContentModal${notification.notificationID}">
+                                                                                View More
+                                                                            </button>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
+                                                                </td>
                                                                 <td>${notification.type}</td>
                                                                 <td>${notification.status}</td>
                                                                 <td>${notification.accountID != null ? notification.accountID : 'N/A'}</td>
                                                                 <td>${notification.createdAt}</td>
                                                                 <td>
-                                                                    <!-- If not deleted: Edit & Soft Delete -->
+                                                                    <!-- Nếu chưa bị xóa -->
                                                                     <c:if test="${!notification.isDeleted}">
                                                                         <button class="btn btn-sm btn-warning"
                                                                                 data-bs-toggle="modal"
@@ -107,7 +144,7 @@
                                                                             <i class="fas fa-trash"></i>
                                                                         </button>
                                                                     </c:if>
-                                                                    <!-- If deleted: Restore & Hard Delete -->
+                                                                    <!-- Nếu đã bị xóa -->
                                                                     <c:if test="${notification.isDeleted}">
                                                                         <button class="btn btn-sm btn-success"
                                                                                 onclick="location.href = 'NotificationServlet?action=restore&notificationID=${notification.notificationID}'">
@@ -123,57 +160,78 @@
                                                                 </td>
                                                             </tr>
 
-                                                            <!-- Edit Notification Modal -->
-                                                            <div class="modal fade" id="editNotificationModal${notification.notificationID}">
-                                                                <div class="modal-dialog">
-                                                                    <div class="modal-content">
-                                                                        <form action="NotificationServlet" method="POST">
-                                                                            <input type="hidden" name="action" value="update">
-                                                                            <input type="hidden" name="notificationID" value="${notification.notificationID}">
-                                                                            <div class="modal-header">
-                                                                                <h5 class="modal-title">Edit Notification</h5>
-                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                                            </div>
-                                                                            <div class="modal-body">
-                                                                                <div class="mb-3">
-                                                                                    <label class="form-label">Title</label>
-                                                                                    <input type="text" class="form-control" name="title" value="${notification.title}" required maxlength="255">
-                                                                                </div>
-                                                                                <div class="mb-3">
-                                                                                    <label class="form-label" >Content</label>
-                                                                                    <textarea class="form-control" name="content" rows="3">${notification.content}</textarea>
-                                                                                </div>
-                                                                                <div class="mb-3">
-                                                                                    <label class="form-label">Type</label>
-                                                                                    <select class="form-control" name="type" required>
-                                                                                        <option value="System" ${notification.type == 'System' ? 'selected' : ''}>System</option>
-                                                                                        <option value="Promotional" ${notification.type == 'Promotional' ? 'selected' : ''}>Promotional</option>
-                                                                                        <option value="User" ${notification.type == 'User' ? 'selected' : ''}>User</option>
-                                                                                    </select>
-                                                                                </div>
-                                                                                <div class="mb-3">
-                                                                                    <label class="form-label">Status</label>
-                                                                                    <select class="form-control" name="status" required>
-                                                                                        <option value="Read" ${notification.status == 'Read' ? 'selected' : ''}>Read</option>
-                                                                                        <option value="Unread" ${notification.status == 'Unread' ? 'selected' : ''}>Unread</option>
-                                                                                    </select>
-                                                                                </div>
-                                                                                <div class="mb-3">
-                                                                                    <label class="form-label">Account ID (Optional)</label>
-                                                                                    <input type="number" class="form-control" name="accountID" value="${notification.accountID}" min="1">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="modal-footer">
-                                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                                <button type="submit" class="btn btn-primary">Update</button>
-                                                                            </div>
-                                                                        </form>
+                                                            <!-- Modal: Xem toàn bộ nội dung (View More) -->
+                                                        <div class="modal fade" id="viewContentModal${notification.notificationID}" tabindex="-1" aria-hidden="true">
+                                                            <div class="modal-dialog modal-lg">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title">Notification Content</h5>
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <!-- Hiển thị toàn bộ nội dung -->
+                                                                        <c:out value="${notification.content}" escapeXml="false" />
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </c:forEach>
-                                                    </c:otherwise>
-                                                </c:choose>
+                                                        </div>
+
+                                                        <!-- Edit Notification Modal -->
+                                                        <div class="modal fade" id="editNotificationModal${notification.notificationID}">
+                                                            <div class="modal-dialog modal-lg">
+                                                                <div class="modal-content">
+                                                                    <form action="NotificationServlet" method="POST">
+                                                                        <input type="hidden" name="action" value="update">
+                                                                        <input type="hidden" name="notificationID" value="${notification.notificationID}">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title">Edit Notification</h5>
+                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <div class="mb-3">
+                                                                                <label class="form-label">Title</label>
+                                                                                <input type="text" class="form-control" name="title"
+                                                                                       value="${notification.title}" required maxlength="255">
+                                                                            </div>
+
+                                                                            <!-- Phần content dùng Quill -->
+                                                                            <div class="mb-3">
+                                                                                <label class="form-label">Content</label>
+                                                                                <!-- Quill container -->
+                                                                                <div id="editor-container-edit-${notification.notificationID}"
+                                                                                     style="height: 200px; background-color: #fff;"></div>
+                                                                                <!-- Input ẩn để lưu nội dung -->
+                                                                                <input type="hidden" id="content-edit-${notification.notificationID}"
+                                                                                       name="content">
+                                                                            </div>
+
+                                                                            <div class="mb-3">
+                                                                                <label class="form-label">Type</label>
+                                                                                <select class="form-control" name="type" required>
+                                                                                    <option value="System" ${notification.type == 'System' ? 'selected' : ''}>System</option>
+                                                                                    <option value="Promotional" ${notification.type == 'Promotional' ? 'selected' : ''}>Promotional</option>
+                                                                                    <option value="User" ${notification.type == 'User' ? 'selected' : ''}>User</option>
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="mb-3">
+                                                                                <label class="form-label">Status</label>
+                                                                                <select class="form-control" name="status" required>
+                                                                                    <option value="Read" ${notification.status == 'Read' ? 'selected' : ''}>Read</option>
+                                                                                    <option value="Unread" ${notification.status == 'Unread' ? 'selected' : ''}>Unread</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                            <button type="submit" class="btn btn-primary">Update</button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </c:forEach>
+                                                </c:otherwise>
+                                            </c:choose>
                                             </tbody>
                                         </table>
                                     </div>
@@ -187,7 +245,7 @@
 
         <!-- Add Notification Modal -->
         <div class="modal fade" id="addNotificationModal">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <form action="NotificationServlet" method="POST">
                         <input type="hidden" name="action" value="add">
@@ -200,10 +258,16 @@
                                 <label for="title" class="form-label">Title</label>
                                 <input type="text" class="form-control" id="title" name="title" required maxlength="255">
                             </div>
+
+                            <!-- Phần content dùng Quill -->
                             <div class="mb-3">
-                                <label for="content" class="form-label">Content</label>
-                                <textarea class="form-control" id="content" name="content" rows="3"></textarea>
+                                <label class="form-label">Content</label>
+                                <!-- Quill container -->
+                                <div id="editor-container" style="height: 200px; background-color: #fff;"></div>
+                                <!-- Input ẩn để lưu nội dung -->
+                                <input type="hidden" id="content" name="content">
                             </div>
+
                             <div class="mb-3">
                                 <label for="type" class="form-label">Type</label>
                                 <select class="form-control" id="type" name="type" required>
@@ -212,14 +276,57 @@
                                     <option value="User">User</option>
                                 </select>
                             </div>
-                            <div class="mb-3">
-                                <label for="accountID" class="form-label">Account ID (Optional)</label>
-                                <input type="number" class="form-control" id="accountID" name="accountID" min="1">
-                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Add Notification</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Update Notification Modal (nếu cần) -->
+        <div class="modal fade" id="updateNotificationModal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <form action="NotificationServlet" method="POST">
+                        <input type="hidden" name="action" value="update">
+                        <!-- Hidden input chứa ID của notification cần cập nhật -->
+                        <input type="hidden" id="notificationID" name="notificationID" value="${notification.notificationID}">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Update Notification</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="updateTitle" class="form-label">Title</label>
+                                <input type="text" class="form-control" id="updateTitle" name="title" required maxlength="255" value="${notification.title}">
+                            </div>
+
+                            <!-- Phần content dùng Quill -->
+                            <div class="mb-3">
+                                <label class="form-label">Content</label>
+                                <!-- Quill container với nội dung hiện có -->
+                                <div id="editor-container-update" style="height: 200px; background-color: #fff;">
+                                    ${notification.content}
+                                </div>
+                                <!-- Input ẩn để lưu nội dung cập nhật từ Quill -->
+                                <input type="hidden" id="updateContent" name="content" value="${notification.content}">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="updateType" class="form-label">Type</label>
+                                <select class="form-control" id="updateType" name="type" required>
+                                    <option value="System" ${notification.type == 'System' ? 'selected' : ''}>System</option>
+                                    <option value="Promotional" ${notification.type == 'Promotional' ? 'selected' : ''}>Promotional</option>
+                                    <option value="User" ${notification.type == 'User' ? 'selected' : ''}>User</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Update Notification</button>
                         </div>
                     </form>
                 </div>
@@ -312,95 +419,117 @@
             </div>
         </div>
 
-         <script>
-            // Initialize Quill for Add Modal
-           const quill = new Quill('#editor-container', {
-    theme: 'snow',
-    modules: {
-        toolbar: [
-            ['bold', 'italic', 'underline', 'strike'], // In đậm, nghiêng, gạch chân, gạch ngang
-            [{'header': [1, 2, 3, false]}], // Tiêu đề (Heading)
-            [{'list': 'ordered'}, {'list': 'bullet'}], // Danh sách có thứ tự và không thứ tự
-            [{'script': 'sub'}, {'script': 'super'}], // Chỉ số trên, chỉ số dưới
-            [{'indent': '-1'}, {'indent': '+1'}], // Thụt lề trái, phải
-            [{'direction': 'rtl'}], // Hướng văn bản (trái sang phải, phải sang trái)
-            [{'size': ['small', false, 'large', 'huge']}], // Kích thước chữ
-            [{'header': [1, 2, 3, 4, 5, 6, false]}], // Cỡ tiêu đề
-            [{'color': []}, {'background': []}], // Màu chữ, màu nền
-            [{'font': []}], // Font chữ
-            [{'align': []}], // Căn chỉnh văn bản
-            ['link'], // Chèn link
-            ['clean']                                         // Xóa định dạng
-        ]
-    },
-    placeholder: 'Describe your product in detail...'
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
-});
-var form = document.querySelector('form');
-form.onsubmit = function () {
-    var descriptionInput = document.querySelector('input[name="description"]');
-    descriptionInput.value = quill.root.innerHTML;
-};
-            // Initialize Quill for Edit Modals
+        <!-- Quill JS -->
+        <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+        <script>
+                                                                                    // =========================
+                                                                                    //  Quill cho Add Modal
+                                                                                    // =========================
+                                                                                    const quillAdd = new Quill('#editor-container', {
+                                                                                        theme: 'snow',
+                                                                                        modules: {
+                                                                                            toolbar: [
+                                                                                                ['bold', 'italic', 'underline', 'strike'],
+                                                                                                [{'header': [1, 2, 3, false]}],
+                                                                                                [{'list': 'ordered'}, {'list': 'bullet'}],
+                                                                                                [{'script': 'sub'}, {'script': 'super'}],
+                                                                                                [{'indent': '-1'}, {'indent': '+1'}],
+                                                                                                [{'direction': 'rtl'}],
+                                                                                                [{'size': ['small', false, 'large', 'huge']}],
+                                                                                                [{'header': [1, 2, 3, 4, 5, 6, false]}],
+                                                                                                [{'color': []}, {'background': []}],
+                                                                                                [{'font': []}],
+                                                                                                [{'align': []}],
+                                                                                                ['link'],
+                                                                                                ['clean']
+                                                                                            ]
+                                                                                        },
+                                                                                        placeholder: 'Describe your product in detail...'
+                                                                                    });
+
+                                                                                    // Lấy form Add Notification
+                                                                                    var formAdd = document.querySelector('#addNotificationModal form');
+                                                                                    formAdd.onsubmit = function () {
+                                                                                        // Gán nội dung Quill vào input ẩn
+                                                                                        var contentInput = this.querySelector('input[name="content"]');
+                                                                                        contentInput.value = quillAdd.root.innerHTML;
+                                                                                    };
+
+                                                                                    // =========================
+                                                                                    //  Quill cho Edit Modals
+                                                                                    // =========================
             <c:forEach var="notification" items="${notifications}">
-                <c:if test="${notification.isDeleted == 0}">
-                    
-                        const quillEdit${notification.notificationID} = new Quill('#editor-container-edit-${notification.notificationID}', {
-                            theme: 'snow',
-                            modules: {
-                                toolbar: [
-                                    ['bold', 'italic', 'underline', 'strike'],
-                                    [{'header': [1, 2, 3, false]}],
-                                    [{'list': 'ordered'}, {'list': 'bullet'}],
-                                    [{'script': 'sub'}, {'script': 'super'}],
-                                    [{'indent': '-1'}, {'indent': '+1'}],
-                                    [{'direction': 'rtl'}],
-                                    [{'size': ['small', false, 'large', 'huge']}],
-                                    [{'header': [1, 2, 3, 4, 5, 6, false]}],
-                                    [{'color': []}, {'background': []}],
-                                    [{'font': []}],
-                                    [{'align': []}],
-                                    ['link'],
-                                    ['clean']
-                                ]
-                            },
-                            placeholder: 'Describe your notification in detail...'
-                        });
+                <c:if test="${!notification.isDeleted}">
+                                                                                    const quillEdit${notification.notificationID} = new Quill('#editor-container-edit-${notification.notificationID}', {
+                                                                                        theme: 'snow',
+                                                                                        modules: {
+                                                                                            toolbar: [
+                                                                                                ['bold', 'italic', 'underline', 'strike'],
+                                                                                                [{'header': [1, 2, 3, false]}],
+                                                                                                [{'list': 'ordered'}, {'list': 'bullet'}],
+                                                                                                [{'script': 'sub'}, {'script': 'super'}],
+                                                                                                [{'indent': '-1'}, {'indent': '+1'}],
+                                                                                                [{'direction': 'rtl'}],
+                                                                                                [{'size': ['small', false, 'large', 'huge']}],
+                                                                                                [{'header': [1, 2, 3, 4, 5, 6, false]}],
+                                                                                                [{'color': []}, {'background': []}],
+                                                                                                [{'font': []}],
+                                                                                                [{'align': []}],
+                                                                                                ['link'],
+                                                                                                ['clean']
+                                                                                            ]
+                                                                                        },
+                                                                                        placeholder: 'Describe your notification in detail...'
+                                                                                    });
 
-                        // Set initial content for Edit
-                        quillEdit${notification.notificationID}.root.innerHTML = '${notification.content}'.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>');
+                                                                                    // Set nội dung ban đầu cho editor (tránh lỗi escape HTML)
+                                                                                    quillEdit${notification.notificationID}.root.innerHTML = '${notification.content}'
+                                                                                            .replace(/&amp;/g, '&')
+                                                                                            .replace(/&lt;/g, '<')
+                                                                                            .replace(/&gt;/g, '>');
 
-                        // Handle form submission for Edit
-                        document.querySelector('#editNotificationModal${notification.notificationID} form').onsubmit = function () {
-                            const contentInput = document.getElementById('content-edit-${notification.notificationID}');
-                            contentInput.value = quillEdit${notification.notificationID}.root.innerHTML;
-                        };
+                                                                                    // Xử lý submit form Edit
+                                                                                    document.querySelector('#editNotificationModal${notification.notificationID} form').onsubmit = function () {
+                                                                                        const contentInput = document.getElementById('content-edit-${notification.notificationID}');
+                                                                                        contentInput.value = quillEdit${notification.notificationID}.root.innerHTML;
+                                                                                    };
                 </c:if>
             </c:forEach>
 
-            function setSoftDeleteNotificationID(notificationID) {
-                document.getElementById("softDeleteNotificationID").value = notificationID;
-            }
+                                                                                    // Hàm set ID cho Soft Delete
+                                                                                    function setSoftDeleteNotificationID(notificationID) {
+                                                                                        document.getElementById("softDeleteNotificationID").value = notificationID;
+                                                                                    }
 
-            function setHardDeleteNotificationID(notificationID) {
-                document.getElementById("hardDeleteNotificationID").value = notificationID;
-            }
+                                                                                    // Hàm set ID cho Hard Delete
+                                                                                    function setHardDeleteNotificationID(notificationID) {
+                                                                                        document.getElementById("hardDeleteNotificationID").value = notificationID;
+                                                                                    }
 
+
+        </script>
+        <script>
             window.onload = function () {
                 const errorMessage = "${sessionScope.errorMessage}";
                 if (errorMessage && errorMessage.trim() !== "") {
+                    // Nếu có nội dung lỗi trong session => mở modal
                     const errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
                     errorModal.show();
-                    <% request.getSession().removeAttribute("errorMessage"); %>
+            <% request.getSession().removeAttribute("errorMessage"); %>
                 }
 
-                let successMessage = "${sessionScope.successMessage}";
-                if (successMessage && successMessage.trim() !== "" && successMessage.trim() !== "null") {
-                    let successModal = new bootstrap.Modal(document.getElementById("successModal"));
+                const successMessage = "${sessionScope.successMessage}";
+                if (successMessage && successMessage.trim() !== "") {
+                    const successModal = new bootstrap.Modal(document.getElementById("successModal"));
                     successModal.show();
-                    <% request.getSession().removeAttribute("successMessage"); %>
+            <% request.getSession().removeAttribute("successMessage"); %>
                 }
             };
         </script>
+
     </body>
 </html>

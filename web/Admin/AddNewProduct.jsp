@@ -20,10 +20,11 @@
     </head>
     <body>
         <div class="container">
+
             <form action="ProductManagementServlet" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
                 <div class="row">
                     <h2 class="text-center mb-4 fw-bold text-primary">Add New Product</h2>
-                   
+
                     <div class="col-md-6">
                         <!-- Basic Information Section -->
                         <div class="form-section">
@@ -93,12 +94,18 @@
                                 <div class="col-md-4">
                                     <label class="form-label">Origin</label>
                                     <select class="form-select" name="origin" required>
-                                        <option value="">Select Origin</option>
-                                        <c:forEach items="${listOrigin}" var="origin"> 
-                                            <option value="${origin.originID}">${origin.name}</option>
+                                        <!-- Placeholder, có thể disabled nếu muốn -->
+                                        <option value="" disabled>Select Origin</option>
+
+                                        <c:forEach items="${listOrigin}" var="origin" varStatus="st">
+                                            <option value="${origin.originID}"
+                                                    <c:if test="${st.first}">selected</c:if>>
+                                                ${origin.name}
+                                            </option>
                                         </c:forEach>
                                     </select>
                                 </div>
+
 
                             </div>
                         </div>
@@ -195,6 +202,10 @@
 
                         <!-- Submit Buttons -->
                         <div class="d-flex justify-content-end gap-3 mt-4">
+                            <a href="ProductServlet?&action=list" class="btn btn-primary btn-sm">
+                                Trở Về
+                            </a>
+
                             <button type="reset" class="btn btn-outline-secondary px-4">
                                 <i class="fas fa-undo me-2"></i>Reset
                             </button>

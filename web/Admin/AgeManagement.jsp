@@ -44,15 +44,19 @@
                     <main>
                         <div class="container-fluid px-5">
                             <h1 class="mt-4">Age Management</h1>
-                            <button class="btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#addAgeModal">
-                                Add Age
-                            </button>
+
 
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <i class="fas fa-table me-1"></i> Age List
+                                        </div>
+                                        <div>
+                                            <!-- Nút mở modal Add Notification -->
+                                            <button class="btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#addAgeModal">
+                                                <i class="fas fa-plus"></i> Add Age
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

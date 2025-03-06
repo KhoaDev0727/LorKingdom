@@ -63,10 +63,10 @@ public class ShippingMethodServlet extends HttpServlet {
                     case "update":
                         updateShippingMethod(request, response);
                         break;
-                    case "delete": // Xóa mềm
+                    case "delete": 
                         softDeleteShippingMethod(request, response);
                         break;
-                    case "hardDelete": // Xóa cứng
+                    case "hardDelete": 
                         hardDeleteShippingMethod(request, response);
                         break;
                     case "restore":
@@ -96,7 +96,7 @@ public class ShippingMethodServlet extends HttpServlet {
 
     private void listDeletedShippingMethods(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
-        ShippingDAO shippingDAO = new ShippingDAO(); // Khởi tạo đối tượng DAO
+        ShippingDAO shippingDAO = new ShippingDAO(); 
         List<Shipping> shippingMethods = shippingDAO.getDeletedShippingMethod();
         request.setAttribute("shippingMethods", shippingMethods);
         request.getRequestDispatcher("ShippingMethodManagement.jsp").forward(request, response);
@@ -107,33 +107,29 @@ public class ShippingMethodServlet extends HttpServlet {
         String methodName = request.getParameter("methodName");
         String description = request.getParameter("description");
 
-        // Kiểm tra nếu methodName rỗng hoặc null
         if (methodName == null || methodName.trim().isEmpty()) {
-            request.getSession().setAttribute("errorMessage", "Method name cannot be empty.");
+            request.getSession().setAttribute("errorMessage", "Tên phương thức không được để trống.");
             response.sendRedirect("ShippingMethodServlet?action=list&showErrorModal=true");
             return;
         }
 
-        // Kiểm tra methodName chỉ chứa số, chữ, dấu - và _
         if (!methodName.matches("^[\\p{L} _-]+$")) {
             request.getSession().setAttribute("errorMessage",
-                    "Method name can only contain letters, numbers, -, and _.");
+                    "Tên phương thức chỉ có thể chứa chữ cái, số, - và _.");
             response.sendRedirect("ShippingMethodServlet?action=list&showErrorModal=true");
             return;
         }
 
 
-        // Kiểm tra nếu shipping method đã tồn tại
         if (shippingDAO.isShippingMethodExists(methodName)) {
-            request.getSession().setAttribute("errorMessage", "Shipping method already exists.");
+            request.getSession().setAttribute("errorMessage", "Phương thức vận chuyển đã tồn tại.");
             response.sendRedirect("ShippingMethodServlet?action=list&showErrorModal=true");
             return;
         }
 
-        // Thêm shipping method mới
         Shipping newShippingMethod = new Shipping(0, methodName, description, 0);
         shippingDAO.addShippingMethod(methodName, description);
-        request.getSession().setAttribute("successMessage", "Shipping method added successfully.");
+        request.getSession().setAttribute("successMessage", "Đã thêm phương thức vận chuyển thành công.");
         response.sendRedirect("ShippingMethodServlet?action=list&showSuccessModal=true");
     }
 
@@ -144,29 +140,27 @@ public class ShippingMethodServlet extends HttpServlet {
         String description = request.getParameter("description");
 
         if (methodName == null || methodName.trim().isEmpty()) {
-            request.getSession().setAttribute("errorMessage", "Method name cannot be empty.");
+            request.getSession().setAttribute("errorMessage", "Tên phương thức không được để trống.");
             response.sendRedirect("ShippingMethodServlet?action=list&showErrorModal=true");
             return;
         }
 
-        // Kiểm tra methodName chỉ chứa số, chữ, dấu - và _
         if (!methodName.matches("^[\\p{L} _-]+$")) {
             request.getSession().setAttribute("errorMessage",
-                    "Method name can only contain letters, numbers, -, and _.");
+                    "Tên phương thức chỉ có thể chứa chữ cái, số, - và _.");
             response.sendRedirect("ShippingMethodServlet?action=list&showErrorModal=true");
             return;
         }
 
 
-        // Kiểm tra nếu shipping method đã tồn tại
         if (shippingDAO.isShippingMethodExists(methodName)) {
-            request.getSession().setAttribute("errorMessage", "Shipping method already exists.");
+            request.getSession().setAttribute("errorMessage", "Phương thức vận chuyển đã tồn tại.");
             response.sendRedirect("ShippingMethodServlet?action=list&showErrorModal=true");
             return;
         }
         
         shippingDAO.updateShippingMethod(id, methodName, description);
-        request.getSession().setAttribute("successMessage", "Shipping method updated successfully.");
+        request.getSession().setAttribute("successMessage", "Đã cập nhật phương thức vận chuyển thành công.");
         response.sendRedirect("ShippingMethodServlet?action=list&showSuccessModal=true");
     }
 
@@ -178,12 +172,11 @@ public class ShippingMethodServlet extends HttpServlet {
             request.getSession().setAttribute("successMessage", "Phương thức này đã được đưa vào thùng rác.");
             response.sendRedirect("ShippingMethodServlet?action=list");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "Invalid shipping method ID.");
+            request.getSession().setAttribute("errorMessage", "ID phương thức vận chuyển không hợp lệ.");
             response.sendRedirect("ShippingMethodServlet?action=list");
         }
     }
 
-    // 6) Xóa cứng
     private void hardDeleteShippingMethod(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, IOException {
         try {

@@ -23,8 +23,15 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <link rel="stylesheet" href="./CSS/styleProfileStaff.css">
         <title>Hồ sơ nhân viên</title>
+   
     </head>
     <body>
+        <div class="container mt-3">
+            <a href="${pageContext.request.contextPath}/Admin/DashBoard.jsp" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left"></i> Về trang chủ
+            </a>
+        </div>
+        
         <div class="page-content" id="page-content">
             <div class="padding">
                 <div class="container d-flex justify-content-center">
@@ -34,9 +41,6 @@
                             <div class="bg-c-lite-green user-profile">
                                 <div class="text-center text-white">
                                     <div class="avatar-container">
-                                        <c:if test="${not empty account.image}">
-                                            <img src="${account.image}" alt="Avatar" class="avatar">
-                                        </c:if>
                                         <div class="avatar-container">
                                             <c:if test="${not empty account.image}">
                                                 <img src="${pageContext.request.contextPath}/${account.image}" alt="Avatar" class="avatar">

@@ -46,7 +46,7 @@
                 <div class="dashboard-container">
                     <main>
                         <div class="container-fluid px-5">
-                            <h1 class="mt-4">Brand Management</h1>
+                            <h1 class="mt-4 mb-4">Brand Management</h1>
                             <!-- Form Add Brand-->
                             <form action="BrandServlet" method="POST">
                                 <input type="hidden" name="action" value="add">
@@ -55,7 +55,7 @@
                                 <!-- Submit Button -->
                                 <button class="btn btn-primary ms-2" type="submit">Add Brand</button>
                             </form>
-                            <div class="card mb-4">
+                            <div class="card mb-3">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>

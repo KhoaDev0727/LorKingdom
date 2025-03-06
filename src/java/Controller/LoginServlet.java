@@ -4,49 +4,57 @@ import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import DAO.AccountDAO;
+import DAO.CartDAO;
 import Model.Account;
+import Model.CartItems;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class LoginServlet extends HttpServlet {
+
+    private CartDAO cartDAO = new CartDAO();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-
+//        List<CartItems> ListCart = new ArrayList<>();
         validateInput(request, email, password);
 
         if (request.getAttribute("emailError") != null || request.getAttribute("passwordError") != null) {
             request.getRequestDispatcher("login.jsp").forward(request, response);
             return;
         }
-
         AccountDAO accountDAO = new AccountDAO();
         Account account = accountDAO.authenticateUser(email, password);
-
-        if (account != null) { 
+        if (account != null) {
             HttpSession session = request.getSession();
-            session.setAttribute("user", account.getUserName());
-            session.setAttribute("email", account.getEmail());
-            session.setAttribute("userID", account.getAccountId());
-            session.setAttribute("userStatus", account.getStatus());
-            session.setAttribute("roleID", account.getRoleID());
-            session.setAttribute("account", account);
-            
-            if (account.getRoleID() == 3) {
-                response.sendRedirect("home.jsp");
-            } else {
-                request.setAttribute("error", "Bạn không có quyền đăng nhập!");
-                request.getRequestDispatcher("login.jsp").forward(request, response);
-            }
-            
-            
-            
+//            try {
+//                ListCart = cartDAO.getCartItems(account.getAccountId());
+                session.setAttribute("user", account.getUserName());
+                session.setAttribute("email", account.getEmail());
+                session.setAttribute("userID", account.getAccountId());
+                session.setAttribute("userStatus", account.getStatus());
+                session.setAttribute("roleID", account.getRoleID());
+                session.setAttribute("account", account);
+                session.setAttribute("imgePath", account.getImage());
+//                session.setAttribute("totalCart", ListCart.size());
+                if (account.getRoleID() == 3) {
+                    response.sendRedirect("home.jsp");
+                } else {
+                    request.setAttribute("error", "Bạn không có quyền đăng nhập!");
+                    request.getRequestDispatcher("login.jsp").forward(request, response);
+                }
+//            } catch (SQLException | ClassNotFoundException ex) {
+//                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+//            }
         } else {
             request.setAttribute("error", "Email hoặc mật khẩu không hợp lệ hoặc bạn không có quyền đăng nhập!");
             request.getRequestDispatcher("login.jsp").forward(request, response);
         }
-        
-        
     }
 
     private void validateInput(HttpServletRequest request, String email, String password) {

@@ -29,17 +29,6 @@
                 color: red;
                 font-size: 1.2em;
             }
-
-            /*            .deleted-row {
-                            background-color: #cccccc;  Gray background for deleted rows 
-                            color: #666666;            Dim the text color 
-                        }
-
-                        .deleted-row button {
-                            pointer-events: none;     Disable all button interactions 
-                            opacity: 0.5;             Fade the button 
-                        }*/
-
         </style>
     </head>
     <body class="sb-nav-fixed">
@@ -53,12 +42,11 @@
                     <main>
                         <div class="container-fluid px-5">
                             <h1 class="mt-4">Super Category Management</h1>
-                            <!-- Form Add SuperCategory -->
-                            <form action="SuperCategoryServlet" method="POST">
+                            <form action="SuperCategoryServlet" method="POST" class="mt-4">
                                 <input type="hidden" name="action" value="add">
-                                <label>Category Name</label>
+                                <label>Super Category Name</label>
                                 <input type="text" name="superCategoryName" required />
-                                <button class="btn btn-primary ms-2" type="submit">Add Category</button>
+                                <button class="btn btn-primary ms-2" type="submit">Add Super Category</button>
                             </form>
                             <div class="card mb-4">
                                 <div class="card-header">
@@ -74,7 +62,7 @@
                                     <form action="SuperCategoryServlet" method="GET" class="mb-4">
                                         <div class="input-group">
                                             <input type="hidden" name="action" value="search">
-                                            <input type="text" name="search" class="form-control" placeholder="Find Category..." aria-label="Search">
+                                            <input type="text" name="search" class="form-control" placeholder="Find Super Category..." aria-label="Search">
                                             <button class="btn btn-outline-secondary" type="submit">
                                                 <i class="fas fa-search"></i>
                                             </button>
@@ -93,8 +81,8 @@
                                         <table class="table table-bordered table-striped table-hover">
                                             <thead class="table-dark">
                                                 <tr>
-                                                    <th>Category ID</th>
-                                                    <th>Category Name</th>
+                                                    <th>Super Category ID</th>
+                                                    <th>Super Category Name</th>
                                                     <th>Status</th>
                                                     <th>Date Created</th>
                                                     <th>Actions</th>

@@ -14,10 +14,6 @@
             <a class="navbar-brand ps-3" href="index.html">Management Admin</a>
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
             <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-                <!--                <div class="input-group">
-                                    <input class="form-control" type="text" name="search" placeholder="Tìm kiếm người dùng..." aria-label="Search">
-                                    <button class="btn btn-primary" id="btnNavbarSearch" type="submit">Tìm kiếm</button>
-                                </div>-->
             </form>
             <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
                 <li class="nav-item dropdown">
@@ -46,18 +42,14 @@
                             <div class="nav-item dropdown">
                                 <a class="nav-link" href="#" data-bs-toggle="dropdown" aria-expanded="false">
                                     <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                    Dashboard
+                                    User & Access Management 
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href="FinancialDashboardServlet">Financial Dashboard</a></li>
                                     <li><a class="dropdown-item" href="StaffPermissions.jsp">Staff Permissions</a></li>
                                     <li><a class="dropdown-item" href="CustomerManagementServlet">Customer Management</a></li>
                                     <li><a class="dropdown-item" href="StaffManagementServlet">Staff Management</a></li>
-                                    <li><a class="dropdown-item" href="AdminManagementServlet">Admin Management</a></li>
                                     <li><a class="dropdown-item" href="ProductManagement.jsp">Product Management</a></li>
                                     <li><a class="dropdown-item" href="RoleServlet">Role Management</a></li>
-                                    <li><a class="dropdown-item" href="NotificationServlet">Notification Management</a></li>
-
                                 </ul>
                             </div>
 
@@ -65,7 +57,7 @@
                             <div class="nav-item dropdown">
                                 <a class="nav-link" href="#" data-bs-toggle="dropdown" aria-expanded="false">
                                     <div class="sb-nav-link-icon"><i class="fas fa-cogs"></i></div>
-                                    Configuration
+                                    Orders & Transactions
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" href="OrderServlet">Order Management</a></li>
@@ -77,14 +69,14 @@
                             <div class="nav-item dropdown">
                                 <a class="nav-link" href="#" data-bs-toggle="dropdown" aria-expanded="false">
                                     <div class="sb-nav-link-icon"><i class="fas fa-cogs"></i></div>
-                                    Configuration
+                                    Product & Category Management
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" href="SuperCategoryServlet?&action=list">Super Category
                                             Management</a></li>
                                     <li><a class="dropdown-item" href="CategoryServlet?&action=list">Category
                                             Management</a></li>
-                                     <li><a class="dropdown-item" href="ProductServlet?&action=list">Product Management</a></li>
+                                    <li><a class="dropdown-item" href="ProductServlet?&action=list">Product Management</a></li>
                                     <li><a class="dropdown-item" href="ProductManagementServlet">Add Product Management</a></li>
                                     <li><a class="dropdown-item" href="AgeServlet?&action=list">Age
                                             Management</a></li>
@@ -104,11 +96,13 @@
                             <div class="nav-item dropdown">
                                 <a class="nav-link" href="#" data-bs-toggle="dropdown" aria-expanded="false">
                                     <div class="sb-nav-link-icon"><i class="fas fa-comments"></i></div>
-                                    Feedback
+                                    System & Feedback
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" href="ReviewManagementServlet">View Review</a></li>
+                                     <li><a class="dropdown-item" href="FinancialDashboardServlet">Financial Dashboard</a></li>
                                 </ul>
+                  
                             </div>
                         </div>
                     </div>

@@ -149,7 +149,6 @@ public class MaterialServlet extends HttpServlet {
         request.getRequestDispatcher("MaterialManagement.jsp").forward(request, response);
     }
 
-    // 2) Hiển thị danh sách đã xóa mềm
     private void listDeletedMaterials(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         List<Material> materials = materialDAO.getDeletedMaterials();
@@ -167,16 +166,17 @@ public class MaterialServlet extends HttpServlet {
             response.sendRedirect("MaterialServlet?action=list&showErrorModal=true");
             return;
         }
-        if (!name.matches("^[\\p{L} _-]+$")) {
+        if (!name.trim().matches("^[\\p{L} _-]+$")) {
             request.getSession().setAttribute("errorMessage", "Tên vật liệu chỉ được chứa chữ cái và khoảng trắng.");
             response.sendRedirect("MaterialServlet?action=list&showErrorModal=true");
             return;
         }
-        if (materialDAO.isMaterial(name.trim())) {
+        if (materialDAO.isMaterialExists(name.trim().toLowerCase(), 0)) {
             request.getSession().setAttribute("errorMessage", "Tên vật liệu đã tồn tại. Vui lòng nhập tên khác.");
             response.sendRedirect("MaterialServlet?action=list&showErrorModal=true");
             return;
         }
+
         Material material = new Material(0, name, description, 0);
         materialDAO.addMaterial(material);
 
@@ -200,13 +200,13 @@ public class MaterialServlet extends HttpServlet {
                 response.sendRedirect("MaterialServlet?action=list&showErrorModal=true");
                 return;
             }
-            if (!name.matches("^[\\p{L} _-]+$")) {
+            if (!name.trim().matches("^[\\p{L} _-]+$")) {
                 request.getSession().setAttribute("errorMessage", "Tên chất liệu chỉ được chứa chữ cái và khoảng trắng.");
                 response.sendRedirect("MaterialServlet?action=list&showErrorModal=true");
                 return;
             }
-            if (materialDAO.isMaterial(name.trim())) {
-                request.getSession().setAttribute("errorMessage", "Tên chất vật liệu đã tồn tại. Vui lòng nhập tên khác.");
+            if (materialDAO.isMaterialExists(name.trim().toLowerCase(), materialID)) {
+                request.getSession().setAttribute("errorMessage", "Tên vật liệu đã tồn tại. Vui lòng nhập tên khác.");
                 response.sendRedirect("MaterialServlet?action=list&showErrorModal=true");
                 return;
             }
@@ -220,7 +220,6 @@ public class MaterialServlet extends HttpServlet {
         response.sendRedirect("MaterialServlet?action=list");
     }
 
-    // 5) Xóa mềm
     private void softDeleteMaterial(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, IOException {
         try {
@@ -234,7 +233,6 @@ public class MaterialServlet extends HttpServlet {
         }
     }
 
-    // 6) Xóa cứng
     private void hardDeleteMaterial(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, IOException {
         try {
