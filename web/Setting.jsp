@@ -42,12 +42,12 @@
                 </nav>
             </div>
             <div class="right-menu">
-                
+
                 <div id="profile-section">
                     <!-- Nội dung quản lý hồ sơ -->
-                    <h2>Thông tin hồ sơ</h2>
+                    <%@include file="profile.jsp" %>
                 </div>
-                
+
                 <div id="orders-section" class="hidden">
                     <div class="order-container">
                         <div class="order-tabs">

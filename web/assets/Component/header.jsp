@@ -25,7 +25,7 @@
             <div class="header_first">
                 <div class="header-left d-flex align-items-center gap-3">
                     <a href="home.jsp" class="logo">
-                        <img src="assets\img\logo.png" alt="Lor Travel Logo">
+                        <img src="assets/img/logo-login.png" alt="Lor Logo">
                     </a>
                     <div class="input-group search-container">
                         <span class="input-group-text bg-white border-end-0">
@@ -84,10 +84,7 @@
 
                         <div class="menu-avatar">
                             <c:choose>
-                                <c:when test="${not empty sessionScope.imagePath}">
-                                    <a href="ProfileServlet" class="menu-item-avatar text-dark p-3">
-                                        <i class="fas fa-user-circle"></i> Profile
-                                    </a>
+                                <c:when test="${not empty sessionScope.imgePath}">                                 
                                     <a href="Setting.jsp" class="menu-item-avatar text-dark p-3">
                                         <i class="fas fa-gear"></i> Setting
                                     </a>
@@ -151,6 +148,26 @@
                                // Gọi ngay khi trang load
                                $(document).ready(function () {
                                    updateCart();
+                               });
+
+                               // Toggle thông báo khi click vào chuông
+                               document.addEventListener("DOMContentLoaded", function () {
+                                   var bellIcon = document.querySelector(".notification-icon");
+                                   var notificationBox = document.getElementById("notificationBox");
+
+                                   // Toggle thông báo khi click vào chuông
+                                   bellIcon.addEventListener("click", function (event) {
+                                       event.preventDefault();
+                                       event.stopPropagation(); // Ngăn sự kiện lan lên document
+                                       notificationBox.classList.toggle("active");
+                                   });
+
+                                   // Đóng thông báo khi click ra ngoài
+                                   document.addEventListener("click", function (event) {
+                                       if (!notificationBox.contains(event.target) && !bellIcon.contains(event.target)) {
+                                           notificationBox.classList.remove("active");
+                                       }
+                                   });
                                });
         </script>
 
