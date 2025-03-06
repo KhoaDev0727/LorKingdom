@@ -2,6 +2,7 @@ package Controller;
 
 import DAO.CartDAO;
 import DAO.ProductDAO;
+import Model.Account;
 import Model.CartItems;
 import Model.Product;
 import com.google.gson.Gson;
@@ -67,12 +68,40 @@ public class CartManagementServlet extends HttpServlet {
                 case "update":
                     updateItem(request, response);
                     break;
+                case "getTotalCart":
+                    getTotalCart(request, response);
+                    break;
                 default:
                     addItem(request, response);
             }
         } catch (Exception e) {
             e.printStackTrace();
             sendErrorResponse(response, "Lỗi máy chủ.");
+        }
+    }
+
+    private void getTotalCart(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            int userId = getSession(request, response);
+            if (userId == -1) {
+                response.sendRedirect("login.jsp");
+                return;
+            }
+            HttpSession session = request.getSession();
+            Account account = (Account) session.getAttribute("account"); // Lấy account từ session
+            int cartSize = 0;
+            if (account != null) {
+                List<CartItems> listCart = cartDAO.getCartItems(account.getAccountId());
+                cartSize = (listCart != null) ? listCart.size() : 0;
+                session.setAttribute("totalCart", cartSize);
+            }
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("{\"cartSize\": " + cartSize + "}");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error retrieving cart data.");
         }
     }
 
@@ -105,7 +134,7 @@ public class CartManagementServlet extends HttpServlet {
     private void updateItem(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-             int userId = getSession(request, response);
+            int userId = getSession(request, response);
             if (userId == -1) {
                 response.sendRedirect("login.jsp");
                 return;
@@ -222,14 +251,14 @@ public class CartManagementServlet extends HttpServlet {
                 response.sendRedirect("login.jsp");
                 return;
             }
-            
+
             int productId = Integer.parseInt(request.getParameter("productID"));
             double price = Double.parseDouble(request.getParameter("price"));
             int quantity = Integer.parseInt(request.getParameter("quantity"));
 
             List<CartItems> existingItems = cartDAO.getCartItems(userId);
             boolean itemExists = false;
-            
+
             for (CartItems item : existingItems) {
                 if (item.getProduct().getProductID() == productId) {
                     quantity += item.getQuantity();

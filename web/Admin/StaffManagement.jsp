@@ -110,7 +110,6 @@
                                                                                  var myModal = new bootstrap.Modal(document.getElementById('imageModal'));
                                                                                  myModal.show();"
                                                                       >
-
                                                                 </c:if>
                                                             </td>
                                                             <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.userName}</td>

@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -8,6 +9,15 @@
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
         <link rel="stylesheet" href="./assets/styleUser/styleHeader.css"/>
         <title>header page</title>
+        <style>
+            .avatar img {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%; /* Làm tròn ảnh */
+                border: 3px solid #ccc; /* Thêm viền màu xám */
+                object-fit: cover; /* Đảm bảo ảnh không bị méo */
+            }
+        </style>
     </head>
     <body>
         <!-- Header Section -->
@@ -15,7 +25,7 @@
             <div class="header_first">
                 <div class="header-left d-flex align-items-center gap-3">
                     <a href="home.jsp" class="logo">
-                        <img src="./assets/img/logo-login.png" alt="Lor Logo">
+                        <img src="assets\img\logo.png" alt="Lor Travel Logo">
                     </a>
                     <div class="input-group search-container">
                         <span class="input-group-text bg-white border-end-0">
@@ -35,9 +45,10 @@
                         <a href="#" class="notification-icon" style="color: gold; font-size: 28px; background: none;"
                            onclick="toggleNotification(event)">
                             <i class="fas fa-bell"></i>
-                            <span class="notification-badge">3</span>
+                            <span class="notification-badge">
+                                0
+                            </span>
                         </a>
-
                         <!-- Box thông báo -->
                         <div class="notification-box" id="notificationBox">
                             <h4>Thông Báo</h4>
@@ -57,17 +68,23 @@
 
                     <a href="Cart" data-key="cart" class="cart-link position-relative">
                         <i class="fas fa-shopping-cart fa-lg"></i>
-                        <span class="cart-badge">3</span>
+                        <span class="cart-badge">${not empty sessionScope.totalCart and sessionScope.totalCart ne 0 ? sessionScope.totalCart : '0'}</span>
                     </a>
-
                     <div class="avatar-container">
                         <div class="avatar">
-                            <img src="./assets/img/profile.png" alt="logo">
+                            <c:choose>
+                                <c:when test="${not empty sessionScope.imgePath}">
+                                    <img src="${pageContext.request.contextPath}/${sessionScope.imgePath}" alt="User Avatar">
+                                </c:when>
+                                <c:otherwise>
+                                    <img src="${pageContext.request.contextPath}/assets/img/profile.png" alt="Default Avatar">
+                                </c:otherwise>
+                            </c:choose>
                         </div>
 
                         <div class="menu-avatar">
                             <c:choose>
-                                <c:when test="${not empty sessionScope.user}">
+                                <c:when test="${not empty sessionScope.imagePath}">
                                     <a href="ProfileServlet" class="menu-item-avatar text-dark p-3">
                                         <i class="fas fa-user-circle"></i> Profile
                                     </a>
@@ -88,14 +105,9 @@
                                 </c:otherwise>
                             </c:choose>
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
-
-
             <nav class="navbar">
                 <ul class="menu">
                     <li class="menu-item">
@@ -108,7 +120,6 @@
                         </div>
                     </li>
 
-
                     <li class="menu-item">
                         <a href="#" data-key="promotions">Khuyến Mãi</a>
                     </li>
@@ -118,28 +129,30 @@
                 </ul>
             </nav>
         </header>
-        <!-- end Header Section -->
-
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
-            // Toggle thông báo khi click vào chuông
-            document.addEventListener("DOMContentLoaded", function () {
-                var bellIcon = document.querySelector(".notification-icon");
-                var notificationBox = document.getElementById("notificationBox");
+                               function updateCart() {
+                                   $.ajax({
+                                       url: 'CartManagementServlet',
+                                       type: 'POST',
+                                       data: {action: 'getTotalCart'},
+                                       dataType: 'json',
+                                       success: function (data) {
+                                           $('.cart-badge').text(data.cartSize);
+                                       },
+                                       error: function (xhr, status, error) {
+                                           console.error('Error:', error);
+                                       }
+                                   });
+                               }
+                               // Cập nhật mỗi 5 giây
+                               setInterval(updateCart, 5000);
 
-                // Toggle thông báo khi click vào chuông
-                bellIcon.addEventListener("click", function (event) {
-                    event.preventDefault();
-                    event.stopPropagation(); // Ngăn sự kiện lan lên document
-                    notificationBox.classList.toggle("active");
-                });
-
-                // Đóng thông báo khi click ra ngoài
-                document.addEventListener("click", function (event) {
-                    if (!notificationBox.contains(event.target) && !bellIcon.contains(event.target)) {
-                        notificationBox.classList.remove("active");
-                    }
-                });
-            });
+                               // Gọi ngay khi trang load
+                               $(document).ready(function () {
+                                   updateCart();
+                               });
         </script>
+
     </body>
 </html>

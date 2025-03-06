@@ -44,8 +44,8 @@ body {
 }
 
 .profile img {
-    width: 100px; /* Smaller image size */
-    height: 100px; /* Smaller image size */
+    width: 110px; /* Smaller image size */
+    height: 110px; /* Smaller image size */
     border-radius: 50%;
     margin-bottom: 10px;
 }

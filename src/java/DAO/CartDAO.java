@@ -114,7 +114,6 @@ public class CartDAO {
                         rs.getString("Name"),
                         rs.getDouble("Price")
                 );
-
                 ProductImage mainImage = ProductImageDAO.getMainImage(product.getProductID());
                 if (mainImage != null) {
                     product.setMainImageUrl(mainImage.getImageUrl());
@@ -124,10 +123,6 @@ public class CartDAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (rs != null) rs.close();
-            if (stm != null) stm.close();
-            if (conn != null) conn.close();
         }
         return items;
     }

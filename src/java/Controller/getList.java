@@ -117,13 +117,10 @@ public class getList extends HttpServlet {
            
                 products = productDAO.getFilteredProducts(categoryID, ageID, sexID, priceRangeID, brandID, materialID, originID);
             } else {
-                 
                 products = productDAO.getAllProducts();
             }
 
             int totalProducts = products.size();
-
-           
             request.setAttribute("totalProducts", totalProducts);
             request.setAttribute("listP", products);
             request.setAttribute("superCategories", superCategoryDAO.getAllSuperCategories());
