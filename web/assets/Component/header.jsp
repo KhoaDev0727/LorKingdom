@@ -10,13 +10,13 @@
         <link rel="stylesheet" href="./assets/styleUser/styleHeader.css"/>
         <title>header page</title>
         <style>
-            .avatar img {
-                width: 50px;
-                height: 50px;
-                border-radius: 50%; /* Làm tròn ảnh */
-                border: 3px solid #ccc; /* Thêm viền màu xám */
-                object-fit: cover; /* Đảm bảo ảnh không bị méo */
-            }
+                .avatar img {
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%; /* Làm tròn ảnh */
+                    border: 3px solid #ccc; /* Thêm viền màu xám */
+                    object-fit: cover; /* Đảm bảo ảnh không bị méo */
+                }
         </style>
     </head>
     <body>
@@ -120,9 +120,6 @@
                     <li class="menu-item">
                         <a href="#" data-key="promotions">Khuyến Mãi</a>
                     </li>
-
-
-
                 </ul>
             </nav>
         </header>
