@@ -194,6 +194,10 @@
         <servlet-name>NotificationServlet</servlet-name>
         <servlet-class>Controller.NotificationServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AjaxSearchServlet</servlet-name>
+        <servlet-class>Controller.AjaxSearchServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>VerifyCodeServlet</servlet-name>
         <url-pattern>/VerifyCodeServlet</url-pattern>
@@ -381,6 +385,10 @@
     <servlet-mapping>
         <servlet-name>NotificationServlet</servlet-name>
         <url-pattern>/Admin/NotificationServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AjaxSearchServlet</servlet-name>
+        <url-pattern>/AjaxSearchServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

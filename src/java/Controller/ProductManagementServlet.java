@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jsoup.Jsoup;
 
 /**
  *
@@ -121,7 +122,12 @@ public class ProductManagementServlet extends HttpServlet {
                 request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
                 return;
             }
-
+            String plainTextContent = Jsoup.parse(description).text();
+            if (plainTextContent == null || plainTextContent.trim().isEmpty()) {
+                request.getSession().setAttribute("errorMessage", "Miêu tả không được để trống.");
+                request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
+                return;
+            }
             if (!quantityStr.matches("^\\d+$")) {
                 session.setAttribute("errorMessage", "Số lượng sản phẩm phải là số nguyên.");
                 request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);

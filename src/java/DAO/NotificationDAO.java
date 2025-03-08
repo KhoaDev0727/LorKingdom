@@ -143,4 +143,43 @@ public class NotificationDAO {
         }
         return notifications;
     }
+     public int getTotalNotificationsCount() throws SQLException, ClassNotFoundException {
+        String sql = "SELECT COUNT(*) FROM Notifications WHERE IsDeleted = 0";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+        return 0;
+    }
+
+    // Lấy danh sách thông báo theo trang
+    public List<Notification> getNotificationsByPage(int page, int pageSize) throws SQLException, ClassNotFoundException {
+        List<Notification> notifications = new ArrayList<>();
+        int offset = (page - 1) * pageSize;
+        // Sử dụng OFFSET/FETCH (SQL Server)
+        String sql = "SELECT * FROM Notifications WHERE IsDeleted = 0 ORDER BY CreatedAt ASC  OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, offset);
+            stmt.setInt(2, pageSize);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    notifications.add(new Notification(
+                        rs.getInt("NotificationID"),
+                        rs.getString("Title"),
+                        rs.getString("Content"),
+                        rs.getString("Type"),
+                        rs.getString("Status"),
+                        rs.getObject("AccountID") != null ? rs.getInt("AccountID") : null,
+                        rs.getBoolean("IsDeleted"),
+                        rs.getTimestamp("CreatedAt")
+                    ));
+                }
+            }
+        }
+        return notifications;
+    }
 }

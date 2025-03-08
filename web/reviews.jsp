@@ -12,8 +12,8 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     </head>
     <body>
-        <div class="mt-8 bg-white rounded-md shadow p-4 container">
-            <div class="container my-4">
+        <div class=" bg-white rounded-md shadow p-4 mt-10" style="width: 1360px; margin:0 auto;">
+            <div class="container my-4 ">
                 <h1 class="mb-4">ĐÁNH GIÁ SẢN PHẨM</h1>
                 <div class="bg-light p-4 rounded mb-4">
                     <div class="d-flex align-items-center mb-3">
@@ -99,7 +99,7 @@
                     success: function (data) {
                         var html = "";
                         if (data && data.length > 0) {
-                            $.each(data, function (index, review) { 
+                            $.each(data, function (index, review) {
                                 console.log(review.userName);
                                 html += '<div class="border-bottom pb-4 mb-4">';
                                 html += '    <div class="d-flex align-items-center mb-2">';

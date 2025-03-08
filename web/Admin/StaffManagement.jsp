@@ -71,7 +71,7 @@
 
                                 <!-- Staff Table -->
                                 <div class="table-responsive">
-                                    <%@ include file="Component/Pagination.jsp" %>
+                                    <%@ include file="Component/PaginationNotification.jsp" %>
                                     <table class="table table-bordered table-striped table-hover">
                                         <thead class="table-dark text-center">
                                             <tr>

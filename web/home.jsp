@@ -19,12 +19,12 @@
         <title>LorKingdom</title>
     </head>
 
-    <body class="bg-white font-sans text-l" style="margin-top: 120px;">
+    <body class="bg-white font-sans text-l" style="margin-top: 80px;">
         <!-- Header Section -->
         <jsp:include page="assets/Component/header.jsp"/>
         <!-- end Header Section -->
 
-        <section class="banner-section">
+        <section class="banner-section" > 
             <div id="horizontalBannerCarousel" class="carousel slide" data-bs-ride="carousel">
                 <!-- Indicators/Dots -->
                 <div class="carousel-indicators">
@@ -44,24 +44,26 @@
                     <div class="carousel-item">
                         <img src="./assets/img/banner3.png" class="d-block w-100" alt="Banner 3">
                     </div>
-                </div>
+                </div >
 
                 <!-- Controls/Arrows -->
                 <button class="carousel-control-prev" type="button" data-bs-target="#horizontalBannerCarousel" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Previous</span>
                 </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#horizontalBannerCarousel" data-bs-slide="next">
+                <button id="resultsCount" class="carousel-control-next" type="button" data-bs-target="#horizontalBannerCarousel" data-bs-slide="next">
                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Next</span>
                 </button>
             </div>
         </section>
 
-        <div class="bg-white" style="margin-top: 30px;">
-            <div class="flex flex-col lg:flex-row">
+        <div class="bg-white">
+
+            <div class="flex flex-col lg:flex-row" >
                 <!-- Sidebar -->
-                <div class="w-full lg:w-1/4 pl-12 ">
+
+                <div class="w-full lg:w-1/4 pl-12  " style="margin-top: 30px;">
                     <form action="getList" method="get" id="filterForm">
                         <!-- Category -->
                         <div class="mb-4" style="border-bottom:1px solid #ccc; margin-bottom: 5px; padding-bottom: 10px; margin-top: 70px;">
@@ -123,6 +125,43 @@
                             </div>
                         </div>
 
+                        <!-- Brand -->
+                        <div class="mb-4">
+                            <h3 class="font-semibold mb-2 text-orange-500">Brand</h3>
+                            <div class="w-full overflow-y-auto max-h-[300px]">
+                                <ul class="pl-4">
+                                    <c:forEach var="brand" items="${listB}">
+                                        <li style="border-bottom:1px solid #ccc; margin-bottom: 5px;">
+                                            <label class="block px-4 py-2">
+                                                <input type="radio" name="brandID" value="${brand.brandID}" ${param.brandID == brand.brandID ? 'checked' : ''} onchange="submitFilter()">
+                                                ${brand.name}
+                                            </label>
+                                        </li>
+                                    </c:forEach>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- Material -->
+                        <div class="mb-4">
+                            <h3 class="font-semibold mb-2 text-orange-500">Material</h3>
+                            <div class="w-full overflow-y-auto max-h-[300px]">
+                                <ul class="pl-4">
+                                    <c:forEach var="mat" items="${listM}">
+                                        <li style="border-bottom:1px solid #ccc; margin-bottom: 5px;">
+                                            <label class="block px-4 py-2">
+                                                <input type="radio" 
+                                                       name="materialID" 
+                                                       value="${mat.materialID}" 
+                                                       ${param.materialID == mat.materialID ? 'checked' : ''} 
+                                                       onchange="submitFilter()">
+                                                ${mat.name}
+                                            </label>
+                                        </li>
+                                    </c:forEach>
+                                </ul>
+                            </div>
+                        </div>
+
                         <!-- Sex -->
                         <div class="mb-4">
                             <h3 class="font-semibold mb-2 text-orange-500">Sex</h3>
@@ -140,51 +179,25 @@
                             </div>
                         </div>
 
-                        <!-- Brand -->
-                        <div class="mb-4">
-                            <h3 class="font-semibold mb-2 text-orange-500">Brand</h3>
-                            <div class="w-full overflow-y-auto max-h-[300px]">
-                                <ul class="pl-4">
-                                    <c:forEach var="brand" items="${listB}">
-                                        <li style="border-bottom:1px solid #ccc; margin-bottom: 5px;">
-                                            <label class="block px-4 py-2">
-                                                <input type="radio" name="brandID" value="${brand.brandID}" ${param.brandID == brand.brandID ? 'checked' : ''} onchange="submitFilter()">
-                                                ${brand.name}
-                                            </label>
-                                        </li>
-                                    </c:forEach>
-                                </ul>
-                            </div>
-                        </div>
 
-                        <!-- Material -->
-                        <div class="mb-4">
-                            <h3 class="font-semibold mb-2 text-orange-500">Material</h3>
-                            <div class="w-full overflow-y-auto max-h-[300px]">
-                                <ul class="pl-4">
-                                    <c:forEach var="material" items="${listM}">
-                                        <li style="border-bottom:1px solid #ccc; margin-bottom: 5px;">
-                                            <label class="block px-4 py-2">
-                                                <input type="radio" name="materialID" value="${material.materialID}" ${param.materialID == material.materialID ? 'checked' : ''} onchange="submitFilter()">
-                                                ${material.name}
-                                            </label>
-                                        </li>
-                                    </c:forEach>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <!-- Nút Reset Filter -->
-                        <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mt-4" onclick="resetFilter()">Reset</button>
                     </form>
                 </div>
 
 
 
                 <!-- Main Content -->
-                <div class="w-full lg:w-3/4 p-4">
+                <div class="w-full lg:w-3/4 p-4" >
                     <div class="flex justify-between items-center mb-4">
                         <div class="flex items-center">
+                            <button type="button"
+                                    class=" text-white px-4 py-2 rounded mt-4" 
+                                    style="background: #FF6600"
+                                    onclick="resetFilter()">
+                                Xoá bộ lọc
+                            </button>
+
+                        </div>
+                        <div class="flex items-center text-xl">
                             <span class="mr-2">
                                 Kết quả:
                             </span>
@@ -192,30 +205,16 @@
                                 ${totalProducts} products
                             </span>
                         </div>
-                        <div class="flex items-center">
-                            <span class="mr-2">
-                                Sắp xếp theo:
-                            </span>
-                            <select class="border border-gray-300 rounded p-2">
-                                <option value="mới nhất">
-                                    Mới nhất
-                                </option>
-                                <option value="giá thấp đến cao">
-                                    Giá thấp đến cao
-                                </option>
-                                <option value="giá cao đến thấp">
-                                    Giá cao đến thấp
-                                </option>
-                            </select>
-                        </div>
                     </div>
                     <div style="margin-bottom: 50px;" >
-
-                        <div id="productListContainer">
-                            <jsp:include page="productList.jsp"/>
+                        <div id="productListContainer" >
+                            <jsp:include page="assets/Component/partialProduct.jsp" />
                         </div>
+
                     </div>
+
                 </div>
+
             </div>
         </div>
 
@@ -233,10 +232,10 @@
                 const formData = new FormData(form);
                 formData.append("partial", "true");
                 const params = new URLSearchParams(formData).toString();
-
                 fetch("getList?" + params, {
                     method: "GET"
                 })
+
                         .then(response => response.text())
                         .then(data => {
                             document.getElementById("productListContainer").innerHTML = data;
@@ -250,18 +249,15 @@
             }
 
 
-            // Toggle thông báo khi click vào chuông
             document.addEventListener("DOMContentLoaded", function () {
                 var bellIcon = document.querySelector(".notification-icon");
                 var notificationBox = document.getElementById("notificationBox");
-
                 // Toggle thông báo khi click vào chuông
                 bellIcon.addEventListener("click", function (event) {
                     event.preventDefault();
                     event.stopPropagation(); // Ngăn sự kiện lan lên document
                     notificationBox.classList.toggle("active");
                 });
-
                 // Đóng thông báo khi click ra ngoài
                 document.addEventListener("click", function (event) {
                     if (!notificationBox.contains(event.target) && !bellIcon.contains(event.target)) {
@@ -269,21 +265,15 @@
                     }
                 });
             });
-            
-            
-            
-             // Toggle thông báo khi click vào chuông
             document.addEventListener("DOMContentLoaded", function () {
                 var bellIcon = document.querySelector(".notification-icon");
                 var notificationBox = document.getElementById("notificationBox");
-
                 // Toggle thông báo khi click vào chuông
                 bellIcon.addEventListener("click", function (event) {
                     event.preventDefault();
                     event.stopPropagation(); // Ngăn sự kiện lan lên document
                     notificationBox.classList.toggle("active");
                 });
-
                 // Đóng thông báo khi click ra ngoài
                 document.addEventListener("click", function (event) {
                     if (!notificationBox.contains(event.target) && !bellIcon.contains(event.target)) {
@@ -291,6 +281,51 @@
                     }
                 });
             });
+//            function goToPage(pageNumber) {
+//                const form = document.getElementById("filterForm");
+//                const formData = new FormData(form);
+//                formData.append("partial", "true");
+//                formData.append("page", pageNumber);
+//                const params = new URLSearchParams(formData).toString();
+//                fetch("getList?" + params, {method: "GET"})
+//                        .then(response => response.text())
+//                        .then(data => {
+//                            document.getElementById("productListContainer").innerHTML = data;
+//
+//                        })
+//                        .catch(error => console.error("Error while loading data:", error));
+//                document.getElementById("resultsCount").scrollIntoView({
+//                    behavior: 'smooth'
+//                });
+//            }
+            function goToPage(pageNumber) {
+                const form = document.getElementById("filterForm");
+                const formData = new FormData(form);
+                formData.append("partial", "true");
+                formData.append("page", pageNumber);
+
+                const params = new URLSearchParams(formData).toString();
+
+                fetch("getList?" + params, {method: "GET"})
+                        .then(response => response.text())
+                        .then(data => {
+                            // 1. Thay thế nội dung danh sách
+                            document.getElementById("productListContainer").innerHTML = data;
+
+                            // 2. Sau khi cập nhật xong, cuộn đến #resultsCount
+                            document.getElementById("resultsCount").scrollIntoView({
+                                behavior: 'smooth'
+                            });
+                        })
+                        .catch(error => console.error("Error while loading data:", error));
+            }
+            function resetFilter() {
+                // Reset form về trạng thái ban đầu
+                document.getElementById("filterForm").reset();
+                // Gửi lại request AJAX để hiển thị toàn bộ sản phẩm
+                submitFilter();
+            }
+
         </script>
 
     </body>

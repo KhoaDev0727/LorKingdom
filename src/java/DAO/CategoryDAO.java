@@ -73,6 +73,7 @@ public class CategoryDAO {
             ps.executeUpdate();
         }
     }
+
     public void deleteCategory(int categoryID) throws SQLException, ClassNotFoundException {
         String query = "UPDATE Category SET IsDeleted = 1 WHERE CategoryID = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
@@ -142,12 +143,48 @@ public class CategoryDAO {
         }
     }
 
-        public void restoreCategory(int categoryID) throws SQLException, ClassNotFoundException {
-            String query = "UPDATE Category SET IsDeleted = 0 WHERE CategoryID = ?";
-            try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
-                ps.setInt(1, categoryID);
-                ps.executeUpdate();
+    public void restoreCategory(int categoryID) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE Category SET IsDeleted = 0 WHERE CategoryID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, categoryID);
+            ps.executeUpdate();
+        }
+    }
+
+    public int getTotalCategoriesCount() throws SQLException, ClassNotFoundException {
+        String query = "SELECT COUNT(*) FROM Category WHERE IsDeleted = 0";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query);  ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
             }
         }
+        return 0;
+    }
+
+    public List<Category> getCategoriesByPage(int page, int pageSize) throws SQLException, ClassNotFoundException {
+        List<Category> categories = new ArrayList<>();
+        int offset = (page - 1) * pageSize;
+        String query = "SELECT CategoryID, SuperCategoryID, Name, CreatedAt, IsDeleted "
+                + "FROM Category "
+                + "WHERE IsDeleted = 0 "
+                + "ORDER BY CreatedAt ASC  "
+                + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, offset);
+            ps.setInt(2, pageSize);
+            try ( ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    categories.add(new Category(
+                            rs.getInt("CategoryID"),
+                            rs.getInt("SuperCategoryID"),
+                            rs.getString("Name"),
+                            rs.getDate("CreatedAt"),
+                            rs.getInt("IsDeleted")
+                    ));
+                }
+            }
+        }
+        return categories;
+    }
 
 }

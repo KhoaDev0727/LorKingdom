@@ -144,14 +144,32 @@ public class ProductServlet extends HttpServlet {
         }
     }
 
+
+
     private void listProducts(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, ClassNotFoundException, ServletException, IOException {
-        List<Product> products = productDAO.getAllProducts();
+            throws ServletException, IOException, SQLException, ClassNotFoundException {
+        int page = 1;
+        int pageSize = 10;
 
+        if (request.getParameter("page") != null) {
+            try {
+                page = Integer.parseInt(request.getParameter("page"));
+            } catch (NumberFormatException e) {
+                page = 1;
+            }
+        }
+
+        int totalProducts = new ProductDAO().getTotalProductsCount();
+        int totalPages = (int) Math.ceil((double) totalProducts / pageSize);
+
+        List<Product> products = new ProductDAO().getProductsByPage(page, pageSize);
         List<ProductImage> mainImages = ProductImageDAO.getMainProductImages();
-
-        request.setAttribute("products", products);
         request.setAttribute("mainImages", mainImages);
+        request.setAttribute("products", products);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+        // forward có thể chứa chuỗi truy vấn đã có sẵn (chẳng hạn "ProductServlet?action=list")
+        request.setAttribute("forward", "ProductServlet?action=list");
 
         request.getRequestDispatcher("ProductManagement.jsp").forward(request, response);
     }
@@ -300,5 +318,4 @@ public class ProductServlet extends HttpServlet {
 //            request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
 //        }
 //    }
-
 }

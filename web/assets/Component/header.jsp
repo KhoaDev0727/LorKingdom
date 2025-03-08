@@ -36,7 +36,7 @@
                 </div>
 
                 <div class="header-right">
-
+                    <a href="getList" >Sản Phẩm </a>
                     <a href="aboutus.jsp" data-key="aboutUs">Giới Thiệu</a>
                     <a href="#" data-key="help">Trợ giúp</a>
 
@@ -105,26 +105,6 @@
                     </div>
                 </div>
             </div>
-            <nav class="navbar">
-                <ul class="menu">
-                    <li class="menu-item">
-                        <a href="getList" >Hàng Mới</a>
-                    </li>
-                    <li class="menu-item dropdown">
-                        <a href=pageNewProduct.jsp data-key="products">Sản Phẩm</a>
-                        <div class="dropdown-menu">
-
-                        </div>
-                    </li>
-
-                    <li class="menu-item">
-                        <a href="#" data-key="promotions">Khuyến Mãi</a>
-                    </li>
-
-
-
-                </ul>
-            </nav>
         </header>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>

@@ -1,535 +1,536 @@
-<%@ page contentType="text/html" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>Dashboard - Notification Management</title>
+    <%@ page contentType="text/html" pageEncoding="UTF-8" %>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+    <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
+    <!DOCTYPE html>
+    <html lang="en">
+        <head>
+            <meta charset="utf-8" />
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+            <meta name="description" content="" />
+            <meta name="author" content="" />
+            <title>Dashboard - Notification Management</title>
 
-        <!-- Simple Datatables CSS (nếu dùng) -->
-        <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+            <!-- Simple Datatables CSS (nếu dùng) -->
+            <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
 
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" crossorigin="anonymous">
+            <!-- Bootstrap CSS -->
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" crossorigin="anonymous">
 
-        <!-- Font Awesome -->
-        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+            <!-- Font Awesome -->
+            <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 
-        <!-- Quill CSS -->
-        <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+            <!-- Quill CSS -->
+            <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
-        <!-- Custom CSS của bạn -->
-        <link rel="stylesheet" href="CSS/style.css" />
+            <!-- Custom CSS của bạn -->
+            <link rel="stylesheet" href="CSS/style.css" />
 
-        <!-- Tùy chọn: bạn có thể thêm script toggle sidebar, v.v. -->
-        <script src="JS/SideBarToggle.js"></script>
-    </head>
-    <body class="sb-nav-fixed">
-        <%@ include file="Component/SideBar.jsp" %>
+            <!-- Tùy chọn: bạn có thể thêm script toggle sidebar, v.v. -->
+            <script src="JS/SideBarToggle.js"></script>
+        </head>
+        <body class="sb-nav-fixed">
+            <%@ include file="Component/SideBar.jsp" %>
 
-        <div id="layoutSidenav">
-            <div id="layoutSidenav_content">
-                <div class="dashboard-container">
-                    <main>
-                        <div class="container-fluid px-5">
-                            <h1 class="mt-4">Notification Management</h1>
+            <div id="layoutSidenav">
+                <div id="layoutSidenav_content">
+                    <div class="dashboard-container">
+                        <main>
+                            <div class="container-fluid px-5">
+                                <h1 class="mt-4">Notification Management</h1>
 
-                            <div class="card mb-4">
-                                <div class="card-header">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <i class="fas fa-bell me-1"></i> Notifications List
-                                        </div>
-                                        <div>
-                                            <!-- Nút mở modal Add Notification -->
-                                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addNotificationModal">
-                                                <i class="fas fa-plus"></i> Add Notification
-                                            </button>
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <i class="fas fa-bell me-1"></i> Notifications List
+                                            </div>
+                                            <div>
+                                                <!-- Nút mở modal Add Notification -->
+                                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addNotificationModal">
+                                                    <i class="fas fa-plus"></i> Add Notification
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="card-body">
-                                    <!-- Search Form -->
-                                    <form action="NotificationServlet" method="GET" class="mb-4">
-                                        <div class="input-group">
-                                            <input type="hidden" name="action" value="search">
-                                            <input type="text" name="search" class="form-control" placeholder="Search Notification by Title, Content..." 
-                                                   value="${param.search}">
-                                            <button class="btn btn-outline-secondary" type="submit">
-                                                <i class="fas fa-search"></i>
-                                            </button>
-                                            <a href="NotificationServlet?action=list" class="btn btn-outline-danger">
-                                                <i class="fas fa-sync"></i>
-                                            </a>
-                                            <c:if test="${sessionScope.roleID == 1}">
-                                                <a href="NotificationServlet?action=listDeleted" class="btn btn-outline-danger">
-                                                    <i class="fas fa-trash"></i>
+                                    <div class="card-body">
+                                        <!-- Search Form -->
+                                        <form action="NotificationServlet" method="GET" class="mb-4">
+                                            <div class="input-group">
+                                                <input type="hidden" name="action" value="search">
+                                                <input type="text" name="search" class="form-control" placeholder="Search Notification by Title, Content..." 
+                                                       value="${param.search}">
+                                                <button class="btn btn-outline-secondary" type="submit">
+                                                    <i class="fas fa-search"></i>
+                                                </button>
+                                                <a href="NotificationServlet?action=list" class="btn btn-outline-danger">
+                                                    <i class="fas fa-sync"></i>
                                                 </a>
-                                            </c:if>
-                                        </div>
-                                    </form>
+                                                <c:if test="${sessionScope.roleID == 1}">
+                                                    <a href="NotificationServlet?action=listDeleted" class="btn btn-outline-danger">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </c:if>
+                                            </div>
+                                        </form>
 
-                                    <!-- Notification Table -->
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-striped table-hover">
-                                            <thead class="table-dark text-center">
-                                                <tr>
-                                                    <th>ID</th>
-                                                    <th>Title</th>
-                                                    <th>Content</th>
-                                                    <th>Type</th>
-                                                    <th>Status</th>
-                                                    <th>Account ID</th>
-                                                    <th>Created At</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <c:choose>
-                                                    <c:when test="${empty notifications}">
-                                                        <tr>
-                                                            <td colspan="8" class="text-center text-muted">No notifications found</td>
-                                                        </tr>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <c:forEach var="notification" items="${notifications}">
-                                                            <tr class="${notification.isDeleted ? 'deleted-row' : ''}">
-                                                                <td>${notification.notificationID}</td>
-                                                                <td>${notification.title}</td>
-                                                                <td>
-                                                                    <!-- 
-                                                                        RÚT GỌN NỘI DUNG: 
-                                                                        Nếu <= 100 ký tự, hiển thị tất cả
-                                                                        Nếu > 100 ký tự, hiển thị 100 ký tự + nút "View More" 
-                                                                    -->
-                                                                    <c:choose>
-                                                                        <c:when test="${fn:length(notification.content) <= 100}">
-                                                                            <button class="btn btn-link btn-sm"
-                                                                                    data-bs-toggle="modal"
-                                                                                    data-bs-target="#viewContentModal${notification.notificationID}">
-                                                                                View More
-                                                                            </button>
-                                                                        </c:when>
-                                                                        <c:otherwise>
-                                                                            <button class="btn btn-link btn-sm"
-                                                                                    data-bs-toggle="modal"
-                                                                                    data-bs-target="#viewContentModal${notification.notificationID}">
-                                                                                View More
-                                                                            </button>
-                                                                        </c:otherwise>
-                                                                    </c:choose>
-                                                                </td>
-                                                                <td>${notification.type}</td>
-                                                                <td>${notification.status}</td>
-                                                                <td>${notification.accountID != null ? notification.accountID : 'N/A'}</td>
-                                                                <td>${notification.createdAt}</td>
-                                                                <td>
-                                                                    <!-- Nếu chưa bị xóa -->
-                                                                    <c:if test="${!notification.isDeleted}">
-                                                                        <button class="btn btn-sm btn-warning"
-                                                                                data-bs-toggle="modal"
-                                                                                data-bs-target="#editNotificationModal${notification.notificationID}">
-                                                                            <i class="fas fa-edit"></i>
-                                                                        </button>
-                                                                        <button type="button" class="btn btn-sm btn-danger"
-                                                                                data-bs-toggle="modal"
-                                                                                data-bs-target="#confirmSoftDeleteModal"
-                                                                                onclick="setSoftDeleteNotificationID(${notification.notificationID})">
-                                                                            <i class="fas fa-trash"></i>
-                                                                        </button>
-                                                                    </c:if>
-                                                                    <!-- Nếu đã bị xóa -->
-                                                                    <c:if test="${notification.isDeleted}">
-                                                                        <button class="btn btn-sm btn-success"
-                                                                                onclick="location.href = 'NotificationServlet?action=restore&notificationID=${notification.notificationID}'">
-                                                                            Restore
-                                                                        </button>
-                                                                        <button type="button" class="btn btn-sm btn-danger"
-                                                                                data-bs-toggle="modal"
-                                                                                data-bs-target="#confirmHardDeleteModal"
-                                                                                onclick="setHardDeleteNotificationID(${notification.notificationID})">
-                                                                            <i class="fas fa-trash"></i>
-                                                                        </button>
-                                                                    </c:if>
-                                                                </td>
+                                        <!-- Notification Table -->
+                                        <div class="table-responsive">
+                                           <%@ include file="Component/PaginationNotification.jsp" %>
+                                            <table class="table table-bordered table-striped table-hover">
+                                                <thead class="table-dark text-center">
+                                                    <tr>
+                                                        <th>ID</th>
+                                                        <th>Title</th>
+                                                        <th>Content</th>
+                                                        <th>Type</th>
+                                                        <th>Status</th>
+                                                        <th>Account ID</th>
+                                                        <th>Created At</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <c:choose>
+                                                        <c:when test="${empty notifications}">
+                                                            <tr>
+                                                                <td colspan="8" class="text-center text-muted">No notifications found</td>
                                                             </tr>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:forEach var="notification" items="${notifications}">
+                                                                <tr class="${notification.isDeleted ? 'deleted-row' : ''}">
+                                                                    <td>${notification.notificationID}</td>
+                                                                    <td>${notification.title}</td>
+                                                                    <td>
+                                                                        <!-- 
+                                                                            RÚT GỌN NỘI DUNG: 
+                                                                            Nếu <= 100 ký tự, hiển thị tất cả
+                                                                            Nếu > 100 ký tự, hiển thị 100 ký tự + nút "View More" 
+                                                                        -->
+                                                                        <c:choose>
+                                                                            <c:when test="${fn:length(notification.content) <= 100}">
+                                                                                <button class="btn btn-link btn-sm"
+                                                                                        data-bs-toggle="modal"
+                                                                                        data-bs-target="#viewContentModal${notification.notificationID}">
+                                                                                    View More
+                                                                                </button>
+                                                                            </c:when>
+                                                                            <c:otherwise>
+                                                                                <button class="btn btn-link btn-sm"
+                                                                                        data-bs-toggle="modal"
+                                                                                        data-bs-target="#viewContentModal${notification.notificationID}">
+                                                                                    View More
+                                                                                </button>
+                                                                            </c:otherwise>
+                                                                        </c:choose>
+                                                                    </td>
+                                                                    <td>${notification.type}</td>
+                                                                    <td>${notification.status}</td>
+                                                                    <td>${notification.accountID != null ? notification.accountID : 'N/A'}</td>
+                                                                    <td>${notification.createdAt}</td>
+                                                                    <td>
+                                                                        <!-- Nếu chưa bị xóa -->
+                                                                        <c:if test="${!notification.isDeleted}">
+                                                                            <button class="btn btn-sm btn-warning"
+                                                                                    data-bs-toggle="modal"
+                                                                                    data-bs-target="#editNotificationModal${notification.notificationID}">
+                                                                                <i class="fas fa-edit"></i>
+                                                                            </button>
+                                                                            <button type="button" class="btn btn-sm btn-danger"
+                                                                                    data-bs-toggle="modal"
+                                                                                    data-bs-target="#confirmSoftDeleteModal"
+                                                                                    onclick="setSoftDeleteNotificationID(${notification.notificationID})">
+                                                                                <i class="fas fa-trash"></i>
+                                                                            </button>
+                                                                        </c:if>
+                                                                        <!-- Nếu đã bị xóa -->
+                                                                        <c:if test="${notification.isDeleted}">
+                                                                            <button class="btn btn-sm btn-success"
+                                                                                    onclick="location.href = 'NotificationServlet?action=restore&notificationID=${notification.notificationID}'">
+                                                                                Restore
+                                                                            </button>
+                                                                            <button type="button" class="btn btn-sm btn-danger"
+                                                                                    data-bs-toggle="modal"
+                                                                                    data-bs-target="#confirmHardDeleteModal"
+                                                                                    onclick="setHardDeleteNotificationID(${notification.notificationID})">
+                                                                                <i class="fas fa-trash"></i>
+                                                                            </button>
+                                                                        </c:if>
+                                                                    </td>
+                                                                </tr>
 
-                                                            <!-- Modal: Xem toàn bộ nội dung (View More) -->
-                                                        <div class="modal fade" id="viewContentModal${notification.notificationID}" tabindex="-1" aria-hidden="true">
-                                                            <div class="modal-dialog modal-lg">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title">Notification Content</h5>
-                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        <!-- Hiển thị toàn bộ nội dung -->
-                                                                        <c:out value="${notification.content}" escapeXml="false" />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <!-- Edit Notification Modal -->
-                                                        <div class="modal fade" id="editNotificationModal${notification.notificationID}">
-                                                            <div class="modal-dialog modal-lg">
-                                                                <div class="modal-content">
-                                                                    <form action="NotificationServlet" method="POST">
-                                                                        <input type="hidden" name="action" value="update">
-                                                                        <input type="hidden" name="notificationID" value="${notification.notificationID}">
+                                                                <!-- Modal: Xem toàn bộ nội dung (View More) -->
+                                                            <div class="modal fade" id="viewContentModal${notification.notificationID}" tabindex="-1" aria-hidden="true">
+                                                                <div class="modal-dialog modal-lg">
+                                                                    <div class="modal-content">
                                                                         <div class="modal-header">
-                                                                            <h5 class="modal-title">Edit Notification</h5>
+                                                                            <h5 class="modal-title">Notification Content</h5>
                                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                                         </div>
                                                                         <div class="modal-body">
-                                                                            <div class="mb-3">
-                                                                                <label class="form-label">Title</label>
-                                                                                <input type="text" class="form-control" name="title"
-                                                                                       value="${notification.title}" required maxlength="255">
-                                                                            </div>
-
-                                                                            <!-- Phần content dùng Quill -->
-                                                                            <div class="mb-3">
-                                                                                <label class="form-label">Content</label>
-                                                                                <!-- Quill container -->
-                                                                                <div id="editor-container-edit-${notification.notificationID}"
-                                                                                     style="height: 200px; background-color: #fff;"></div>
-                                                                                <!-- Input ẩn để lưu nội dung -->
-                                                                                <input type="hidden" id="content-edit-${notification.notificationID}"
-                                                                                       name="content">
-                                                                            </div>
-
-                                                                            <div class="mb-3">
-                                                                                <label class="form-label">Type</label>
-                                                                                <select class="form-control" name="type" required>
-                                                                                    <option value="System" ${notification.type == 'System' ? 'selected' : ''}>System</option>
-                                                                                    <option value="Promotional" ${notification.type == 'Promotional' ? 'selected' : ''}>Promotional</option>
-                                                                                    <option value="User" ${notification.type == 'User' ? 'selected' : ''}>User</option>
-                                                                                </select>
-                                                                            </div>
-                                                                            <div class="mb-3">
-                                                                                <label class="form-label">Status</label>
-                                                                                <select class="form-control" name="status" required>
-                                                                                    <option value="Read" ${notification.status == 'Read' ? 'selected' : ''}>Read</option>
-                                                                                    <option value="Unread" ${notification.status == 'Unread' ? 'selected' : ''}>Unread</option>
-                                                                                </select>
-                                                                            </div>
+                                                                            <!-- Hiển thị toàn bộ nội dung -->
+                                                                            <c:out value="${notification.content}" escapeXml="false" />
                                                                         </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                            <button type="submit" class="btn btn-primary">Update</button>
-                                                                        </div>
-                                                                    </form>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    </c:forEach>
-                                                </c:otherwise>
-                                            </c:choose>
-                                            </tbody>
-                                        </table>
+
+                                                            <!-- Edit Notification Modal -->
+                                                            <div class="modal fade" id="editNotificationModal${notification.notificationID}">
+                                                                <div class="modal-dialog modal-lg">
+                                                                    <div class="modal-content">
+                                                                        <form action="NotificationServlet" method="POST">
+                                                                            <input type="hidden" name="action" value="update">
+                                                                            <input type="hidden" name="notificationID" value="${notification.notificationID}">
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title">Edit Notification</h5>
+                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                <div class="mb-3">
+                                                                                    <label class="form-label">Title</label>
+                                                                                    <input type="text" class="form-control" name="title"
+                                                                                           value="${notification.title}" required maxlength="255">
+                                                                                </div>
+
+                                                                                <!-- Phần content dùng Quill -->
+                                                                                <div class="mb-3">
+                                                                                    <label class="form-label">Content</label>
+                                                                                    <!-- Quill container -->
+                                                                                    <div id="editor-container-edit-${notification.notificationID}"
+                                                                                         style="height: 200px; background-color: #fff;"></div>
+                                                                                    <!-- Input ẩn để lưu nội dung -->
+                                                                                    <input type="hidden" id="content-edit-${notification.notificationID}"
+                                                                                           name="content">
+                                                                                </div>
+
+                                                                                <div class="mb-3">
+                                                                                    <label class="form-label">Type</label>
+                                                                                    <select class="form-control" name="type" required>
+                                                                                        <option value="System" ${notification.type == 'System' ? 'selected' : ''}>System</option>
+                                                                                        <option value="Promotional" ${notification.type == 'Promotional' ? 'selected' : ''}>Promotional</option>
+                                                                                        <option value="User" ${notification.type == 'User' ? 'selected' : ''}>User</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                                <div class="mb-3">
+                                                                                    <label class="form-label">Status</label>
+                                                                                    <select class="form-control" name="status" required>
+                                                                                        <option value="Read" ${notification.status == 'Read' ? 'selected' : ''}>Read</option>
+                                                                                        <option value="Unread" ${notification.status == 'Unread' ? 'selected' : ''}>Unread</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                                <button type="submit" class="btn btn-primary">Update</button>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </c:forEach>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </main>
+                        </main>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Add Notification Modal -->
-        <div class="modal fade" id="addNotificationModal">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <form action="NotificationServlet" method="POST">
-                        <input type="hidden" name="action" value="add">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Add New Notification</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="title" class="form-label">Title</label>
-                                <input type="text" class="form-control" id="title" name="title" required maxlength="255">
+            <!-- Add Notification Modal -->
+            <div class="modal fade" id="addNotificationModal">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <form action="NotificationServlet" method="POST">
+                            <input type="hidden" name="action" value="add">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Add New Notification</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
-
-                            <!-- Phần content dùng Quill -->
-                            <div class="mb-3">
-                                <label class="form-label">Content</label>
-                                <!-- Quill container -->
-                                <div id="editor-container" style="height: 200px; background-color: #fff;"></div>
-                                <!-- Input ẩn để lưu nội dung -->
-                                <input type="hidden" id="content" name="content">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="type" class="form-label">Type</label>
-                                <select class="form-control" id="type" name="type" required>
-                                    <option value="System">System</option>
-                                    <option value="Promotional">Promotional</option>
-                                    <option value="User">User</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Add Notification</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- Update Notification Modal (nếu cần) -->
-        <div class="modal fade" id="updateNotificationModal">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <form action="NotificationServlet" method="POST">
-                        <input type="hidden" name="action" value="update">
-                        <!-- Hidden input chứa ID của notification cần cập nhật -->
-                        <input type="hidden" id="notificationID" name="notificationID" value="${notification.notificationID}">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Update Notification</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="updateTitle" class="form-label">Title</label>
-                                <input type="text" class="form-control" id="updateTitle" name="title" required maxlength="255" value="${notification.title}">
-                            </div>
-
-                            <!-- Phần content dùng Quill -->
-                            <div class="mb-3">
-                                <label class="form-label">Content</label>
-                                <!-- Quill container với nội dung hiện có -->
-                                <div id="editor-container-update" style="height: 200px; background-color: #fff;">
-                                    ${notification.content}
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="title" class="form-label">Title</label>
+                                    <input type="text" class="form-control" id="title" name="title" required maxlength="255">
                                 </div>
-                                <!-- Input ẩn để lưu nội dung cập nhật từ Quill -->
-                                <input type="hidden" id="updateContent" name="content" value="${notification.content}">
-                            </div>
 
-                            <div class="mb-3">
-                                <label for="updateType" class="form-label">Type</label>
-                                <select class="form-control" id="updateType" name="type" required>
-                                    <option value="System" ${notification.type == 'System' ? 'selected' : ''}>System</option>
-                                    <option value="Promotional" ${notification.type == 'Promotional' ? 'selected' : ''}>Promotional</option>
-                                    <option value="User" ${notification.type == 'User' ? 'selected' : ''}>User</option>
-                                </select>
+                                <!-- Phần content dùng Quill -->
+                                <div class="mb-3">
+                                    <label class="form-label">Content</label>
+                                    <!-- Quill container -->
+                                    <div id="editor-container" style="height: 200px; background-color: #fff;"></div>
+                                    <!-- Input ẩn để lưu nội dung -->
+                                    <input type="hidden" id="content" name="content">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="type" class="form-label">Type</label>
+                                    <select class="form-control" id="type" name="type" required>
+                                        <option value="System">System</option>
+                                        <option value="Promotional">Promotional</option>
+                                        <option value="User">User</option>
+                                    </select>
+                                </div>
                             </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Add Notification</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Update Notification Modal (nếu cần) -->
+            <div class="modal fade" id="updateNotificationModal">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <form action="NotificationServlet" method="POST">
+                            <input type="hidden" name="action" value="update">
+                            <!-- Hidden input chứa ID của notification cần cập nhật -->
+                            <input type="hidden" id="notificationID" name="notificationID" value="${notification.notificationID}">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Update Notification</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="updateTitle" class="form-label">Title</label>
+                                    <input type="text" class="form-control" id="updateTitle" name="title" required maxlength="255" value="${notification.title}">
+                                </div>
+
+                                <!-- Phần content dùng Quill -->
+                                <div class="mb-3">
+                                    <label class="form-label">Content</label>
+                                    <!-- Quill container với nội dung hiện có -->
+                                    <div id="editor-container-update" style="height: 200px; background-color: #fff;">
+                                        ${notification.content}
+                                    </div>
+                                    <!-- Input ẩn để lưu nội dung cập nhật từ Quill -->
+                                    <input type="hidden" id="updateContent" name="content" value="${notification.content}">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="updateType" class="form-label">Type</label>
+                                    <select class="form-control" id="updateType" name="type" required>
+                                        <option value="System" ${notification.type == 'System' ? 'selected' : ''}>System</option>
+                                        <option value="Promotional" ${notification.type == 'Promotional' ? 'selected' : ''}>Promotional</option>
+                                        <option value="User" ${notification.type == 'User' ? 'selected' : ''}>User</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Update Notification</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Soft Delete Modal -->
+            <div class="modal fade" id="confirmSoftDeleteModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirm Deletion</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            This notification will be moved to trash!
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <form method="POST" action="NotificationServlet">
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="notificationID" id="softDeleteNotificationID">
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hard Delete Modal -->
+            <div class="modal fade" id="confirmHardDeleteModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirm Permanent Deletion</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            This notification will be permanently deleted!
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <form method="POST" action="NotificationServlet">
+                                <input type="hidden" name="action" value="hardDelete">
+                                <input type="hidden" name="notificationID" id="hardDeleteNotificationID">
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error Message Modal -->
+            <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-dark">
+                            ${sessionScope.errorMessage}
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Update Notification</button>
                         </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- Soft Delete Modal -->
-        <div class="modal fade" id="confirmSoftDeleteModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Confirm Deletion</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        This notification will be moved to trash!
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <form method="POST" action="NotificationServlet">
-                            <input type="hidden" name="action" value="delete">
-                            <input type="hidden" name="notificationID" id="softDeleteNotificationID">
-                            <button type="submit" class="btn btn-danger">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </form>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Hard Delete Modal -->
-        <div class="modal fade" id="confirmHardDeleteModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Confirm Permanent Deletion</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        This notification will be permanently deleted!
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <form method="POST" action="NotificationServlet">
-                            <input type="hidden" name="action" value="hardDelete">
-                            <input type="hidden" name="notificationID" id="hardDeleteNotificationID">
-                            <button type="submit" class="btn btn-danger">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </form>
+            <!-- Success Message Modal -->
+            <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success text-white">
+                            <h5 class="modal-title" id="successModalLabel">Success</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-dark">
+                            ${sessionScope.successMessage}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Error Message Modal -->
-        <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header bg-danger text-white">
-                        <h5 class="modal-title" id="errorModalLabel">Error</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body text-dark">
-                        ${sessionScope.errorMessage}
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <!-- Bootstrap JS -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
-        <!-- Success Message Modal -->
-        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header bg-success text-white">
-                        <h5 class="modal-title" id="successModalLabel">Success</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body text-dark">
-                        ${sessionScope.successMessage}
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <!-- Quill JS -->
+            <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 
-        <!-- Bootstrap JS -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+            <script>
+                                                                                        // =========================
+                                                                                        //  Quill cho Add Modal
+                                                                                        // =========================
+                                                                                        const quillAdd = new Quill('#editor-container', {
+                                                                                            theme: 'snow',
+                                                                                            modules: {
+                                                                                                toolbar: [
+                                                                                                    ['bold', 'italic', 'underline', 'strike'],
+                                                                                                    [{'header': [1, 2, 3, false]}],
+                                                                                                    [{'list': 'ordered'}, {'list': 'bullet'}],
+                                                                                                    [{'script': 'sub'}, {'script': 'super'}],
+                                                                                                    [{'indent': '-1'}, {'indent': '+1'}],
+                                                                                                    [{'direction': 'rtl'}],
+                                                                                                    [{'size': ['small', false, 'large', 'huge']}],
+                                                                                                    [{'header': [1, 2, 3, 4, 5, 6, false]}],
+                                                                                                    [{'color': []}, {'background': []}],
+                                                                                                    [{'font': []}],
+                                                                                                    [{'align': []}],
+                                                                                                    ['link'],
+                                                                                                    ['clean']
+                                                                                                ]
+                                                                                            },
+                                                                                            placeholder: 'Describe your product in detail...'
+                                                                                        });
 
-        <!-- Quill JS -->
-        <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+                                                                                        // Lấy form Add Notification
+                                                                                        var formAdd = document.querySelector('#addNotificationModal form');
+                                                                                        formAdd.onsubmit = function () {
+                                                                                            // Gán nội dung Quill vào input ẩn
+                                                                                            var contentInput = this.querySelector('input[name="content"]');
+                                                                                            contentInput.value = quillAdd.root.innerHTML;
+                                                                                        };
 
-        <script>
-                                                                                    // =========================
-                                                                                    //  Quill cho Add Modal
-                                                                                    // =========================
-                                                                                    const quillAdd = new Quill('#editor-container', {
-                                                                                        theme: 'snow',
-                                                                                        modules: {
-                                                                                            toolbar: [
-                                                                                                ['bold', 'italic', 'underline', 'strike'],
-                                                                                                [{'header': [1, 2, 3, false]}],
-                                                                                                [{'list': 'ordered'}, {'list': 'bullet'}],
-                                                                                                [{'script': 'sub'}, {'script': 'super'}],
-                                                                                                [{'indent': '-1'}, {'indent': '+1'}],
-                                                                                                [{'direction': 'rtl'}],
-                                                                                                [{'size': ['small', false, 'large', 'huge']}],
-                                                                                                [{'header': [1, 2, 3, 4, 5, 6, false]}],
-                                                                                                [{'color': []}, {'background': []}],
-                                                                                                [{'font': []}],
-                                                                                                [{'align': []}],
-                                                                                                ['link'],
-                                                                                                ['clean']
-                                                                                            ]
-                                                                                        },
-                                                                                        placeholder: 'Describe your product in detail...'
-                                                                                    });
+                                                                                        // =========================
+                                                                                        //  Quill cho Edit Modals
+                                                                                        // =========================
+                <c:forEach var="notification" items="${notifications}">
+                    <c:if test="${!notification.isDeleted}">
+                                                                                        const quillEdit${notification.notificationID} = new Quill('#editor-container-edit-${notification.notificationID}', {
+                                                                                            theme: 'snow',
+                                                                                            modules: {
+                                                                                                toolbar: [
+                                                                                                    ['bold', 'italic', 'underline', 'strike'],
+                                                                                                    [{'header': [1, 2, 3, false]}],
+                                                                                                    [{'list': 'ordered'}, {'list': 'bullet'}],
+                                                                                                    [{'script': 'sub'}, {'script': 'super'}],
+                                                                                                    [{'indent': '-1'}, {'indent': '+1'}],
+                                                                                                    [{'direction': 'rtl'}],
+                                                                                                    [{'size': ['small', false, 'large', 'huge']}],
+                                                                                                    [{'header': [1, 2, 3, 4, 5, 6, false]}],
+                                                                                                    [{'color': []}, {'background': []}],
+                                                                                                    [{'font': []}],
+                                                                                                    [{'align': []}],
+                                                                                                    ['link'],
+                                                                                                    ['clean']
+                                                                                                ]
+                                                                                            },
+                                                                                            placeholder: 'Describe your notification in detail...'
+                                                                                        });
 
-                                                                                    // Lấy form Add Notification
-                                                                                    var formAdd = document.querySelector('#addNotificationModal form');
-                                                                                    formAdd.onsubmit = function () {
-                                                                                        // Gán nội dung Quill vào input ẩn
-                                                                                        var contentInput = this.querySelector('input[name="content"]');
-                                                                                        contentInput.value = quillAdd.root.innerHTML;
-                                                                                    };
+                                                                                        // Set nội dung ban đầu cho editor (tránh lỗi escape HTML)
+                                                                                        quillEdit${notification.notificationID}.root.innerHTML = '${notification.content}'
+                                                                                                .replace(/&amp;/g, '&')
+                                                                                                .replace(/&lt;/g, '<')
+                                                                                                .replace(/&gt;/g, '>');
 
-                                                                                    // =========================
-                                                                                    //  Quill cho Edit Modals
-                                                                                    // =========================
-            <c:forEach var="notification" items="${notifications}">
-                <c:if test="${!notification.isDeleted}">
-                                                                                    const quillEdit${notification.notificationID} = new Quill('#editor-container-edit-${notification.notificationID}', {
-                                                                                        theme: 'snow',
-                                                                                        modules: {
-                                                                                            toolbar: [
-                                                                                                ['bold', 'italic', 'underline', 'strike'],
-                                                                                                [{'header': [1, 2, 3, false]}],
-                                                                                                [{'list': 'ordered'}, {'list': 'bullet'}],
-                                                                                                [{'script': 'sub'}, {'script': 'super'}],
-                                                                                                [{'indent': '-1'}, {'indent': '+1'}],
-                                                                                                [{'direction': 'rtl'}],
-                                                                                                [{'size': ['small', false, 'large', 'huge']}],
-                                                                                                [{'header': [1, 2, 3, 4, 5, 6, false]}],
-                                                                                                [{'color': []}, {'background': []}],
-                                                                                                [{'font': []}],
-                                                                                                [{'align': []}],
-                                                                                                ['link'],
-                                                                                                ['clean']
-                                                                                            ]
-                                                                                        },
-                                                                                        placeholder: 'Describe your notification in detail...'
-                                                                                    });
+                                                                                        // Xử lý submit form Edit
+                                                                                        document.querySelector('#editNotificationModal${notification.notificationID} form').onsubmit = function () {
+                                                                                            const contentInput = document.getElementById('content-edit-${notification.notificationID}');
+                                                                                            contentInput.value = quillEdit${notification.notificationID}.root.innerHTML;
+                                                                                        };
+                    </c:if>
+                </c:forEach>
 
-                                                                                    // Set nội dung ban đầu cho editor (tránh lỗi escape HTML)
-                                                                                    quillEdit${notification.notificationID}.root.innerHTML = '${notification.content}'
-                                                                                            .replace(/&amp;/g, '&')
-                                                                                            .replace(/&lt;/g, '<')
-                                                                                            .replace(/&gt;/g, '>');
+                                                                                        // Hàm set ID cho Soft Delete
+                                                                                        function setSoftDeleteNotificationID(notificationID) {
+                                                                                            document.getElementById("softDeleteNotificationID").value = notificationID;
+                                                                                        }
 
-                                                                                    // Xử lý submit form Edit
-                                                                                    document.querySelector('#editNotificationModal${notification.notificationID} form').onsubmit = function () {
-                                                                                        const contentInput = document.getElementById('content-edit-${notification.notificationID}');
-                                                                                        contentInput.value = quillEdit${notification.notificationID}.root.innerHTML;
-                                                                                    };
-                </c:if>
-            </c:forEach>
-
-                                                                                    // Hàm set ID cho Soft Delete
-                                                                                    function setSoftDeleteNotificationID(notificationID) {
-                                                                                        document.getElementById("softDeleteNotificationID").value = notificationID;
-                                                                                    }
-
-                                                                                    // Hàm set ID cho Hard Delete
-                                                                                    function setHardDeleteNotificationID(notificationID) {
-                                                                                        document.getElementById("hardDeleteNotificationID").value = notificationID;
-                                                                                    }
+                                                                                        // Hàm set ID cho Hard Delete
+                                                                                        function setHardDeleteNotificationID(notificationID) {
+                                                                                            document.getElementById("hardDeleteNotificationID").value = notificationID;
+                                                                                        }
 
 
-        </script>
-        <script>
-            window.onload = function () {
-                const errorMessage = "${sessionScope.errorMessage}";
-                if (errorMessage && errorMessage.trim() !== "") {
-                    // Nếu có nội dung lỗi trong session => mở modal
-                    const errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
-                    errorModal.show();
-            <% request.getSession().removeAttribute("errorMessage"); %>
-                }
+            </script>
+            <script>
+                window.onload = function () {
+                    const errorMessage = "${sessionScope.errorMessage}";
+                    if (errorMessage && errorMessage.trim() !== "") {
+                        // Nếu có nội dung lỗi trong session => mở modal
+                        const errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
+                        errorModal.show();
+                <% request.getSession().removeAttribute("errorMessage"); %>
+                    }
 
-                const successMessage = "${sessionScope.successMessage}";
-                if (successMessage && successMessage.trim() !== "") {
-                    const successModal = new bootstrap.Modal(document.getElementById("successModal"));
-                    successModal.show();
-            <% request.getSession().removeAttribute("successMessage"); %>
-                }
-            };
-        </script>
+                    const successMessage = "${sessionScope.successMessage}";
+                    if (successMessage && successMessage.trim() !== "") {
+                        const successModal = new bootstrap.Modal(document.getElementById("successModal"));
+                        successModal.show();
+                <% request.getSession().removeAttribute("successMessage"); %>
+                    }
+                };
+            </script>
 
-    </body>
-</html>
+        </body>
+    </html>

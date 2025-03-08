@@ -74,8 +74,27 @@ public class NotificationServlet extends HttpServlet {
 
     private void listNotifications(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
-        List<Notification> notifications = notificationDAO.getAllNotifications();
+        int page = 1;
+        int pageSize = 10;
+
+        if (request.getParameter("page") != null) {
+            try {
+                page = Integer.parseInt(request.getParameter("page"));
+            } catch (NumberFormatException e) {
+                page = 1;
+            }
+        }
+
+        int totalNotifications = notificationDAO.getTotalNotificationsCount();
+        int totalPages = (int) Math.ceil((double) totalNotifications / pageSize);
+
+        List<Notification> notifications = notificationDAO.getNotificationsByPage(page, pageSize);
+
         request.setAttribute("notifications", notifications);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+        System.out.println(totalPages);
+        request.setAttribute("forward", "NotificationServlet?action=list");
         request.getRequestDispatcher("NotificationManagement.jsp").forward(request, response);
     }
 
@@ -93,18 +112,18 @@ public class NotificationServlet extends HttpServlet {
         String type = request.getParameter("type");
         String accountIDStr = request.getParameter("accountID");
         Integer accountID = (accountIDStr != null && !accountIDStr.trim().isEmpty()) ? Integer.parseInt(accountIDStr) : null;
-//        String plainTextContent = Jsoup.parse(content).text();
-//        if (plainTextContent == null || plainTextContent.trim().isEmpty()) {
-//            request.getSession().setAttribute("errorMessage", "Nội dung không được để trống.");
-//            response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
-//            return;
-//        }
+        String plainTextContent = Jsoup.parse(content).text();
+        if (plainTextContent == null || plainTextContent.trim().isEmpty()) {
+            request.getSession().setAttribute("errorMessage", "Nội dung không được để trống.");
+            response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
+            return;
+        }
         String plainTextTitle = Jsoup.parse(title).text();
         if (plainTextTitle == null || plainTextTitle.trim().isEmpty()) {
             request.getSession().setAttribute("errorMessage", "Tiêu đề không được để trống.");
             response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
             return;
-        }   
+        }
         // ======= Validation =======
         // 1) Tiêu đề không được để trống
         if (title == null || title.trim().isEmpty()) {
@@ -126,7 +145,7 @@ public class NotificationServlet extends HttpServlet {
         }
         // 4) Type phải thuộc 1 trong 3 giá trị hợp lệ
         if (type == null || (!type.equals("System") && !type.equals("Promotional") && !type.equals("User"))) {
-            request.getSession().setAttribute("errorMessage", "Invalid notification type.");
+            request.getSession().setAttribute("errorMessage", "Loại thông báo không hợp lệ.");
             response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
             return;
         }
@@ -250,4 +269,5 @@ public class NotificationServlet extends HttpServlet {
         request.setAttribute("notifications", notifications);
         request.getRequestDispatcher("NotificationManagement.jsp").forward(request, response);
     }
+
 }
