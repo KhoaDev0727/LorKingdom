@@ -38,6 +38,7 @@ import java.util.List;
 import DAO.UpdateProductDataLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jsoup.Jsoup;
 
 /**
  *
@@ -167,7 +168,12 @@ public class updateProductServlet extends HttpServlet {
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
-
+            String plainTextContent = Jsoup.parse(description).text();
+            if (plainTextContent == null || plainTextContent.trim().isEmpty()) {
+                request.getSession().setAttribute("errorMessage", "Miêu tả không được để trống.");
+                request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
+                return;
+            }
             // 2. Kiểm tra định dạng tên
             String namePattern = "^[\\p{L}\\s]+$";
             if (!productName.matches(namePattern)) {

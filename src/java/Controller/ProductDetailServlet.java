@@ -35,6 +35,8 @@ import java.util.logging.Logger;
  */
 public class ProductDetailServlet extends HttpServlet {
 
+    ProductDAO productDAO = new ProductDAO();
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -80,10 +82,12 @@ public class ProductDetailServlet extends HttpServlet {
                 response.sendRedirect("home.jsp");
                 return;
             }
+
             int productId = Integer.parseInt(productIdStr);
             // Lấy thông tin sản phẩm
             Product product = ProductDAO.getProductById(productId);
-            // Lấy các thông tin liên quan
+
+            // Lấy các DAO liên quan
             CategoryDAO categoryDAO = new CategoryDAO();
             OriginDAO originDAO = new OriginDAO();
             AgeDAO ageDAO = new AgeDAO();
@@ -91,11 +95,15 @@ public class ProductDetailServlet extends HttpServlet {
             MaterialDAO materialDAO = new MaterialDAO();
             SexDAO sexDAO = new SexDAO();
             ProductImageDAO productImageDAO = new ProductImageDAO();
+            ProductDAO productDAO = new ProductDAO(); // nếu cần dùng để gọi hàm lấy sản phẩm liên quan
+
+            // ===== GIỮ NGUYÊN CODE LIÊN QUAN TỚI REVIEW =====
             // Xử lý đánh giá
             int rating5 = 0, rating4 = 0, rating3 = 0, rating2 = 0, rating1 = 0;
-            int totalRating = 0, totalComment = 0, totalImage = 0;
+            int totalComment = 0, totalImage = 0;
             List<Review> listReviews = ReviewDAO.showReviewForCustomer(productId); // Sử dụng productId thực tế
             List<Account> inforCustomers = new ArrayList<>();
+
             for (Review review : listReviews) {
                 Account account = AccountDAO.getInforAccountByID(review.getAccountID());
                 if (account != null && !inforCustomers.contains(account)) {
@@ -129,9 +137,11 @@ public class ProductDetailServlet extends HttpServlet {
 
             int totalReview = listReviews.size();
             double mediumRating = totalReview > 0
-                    ? (double) (rating5 * 5 + rating4 * 4 + rating3 * 3 + rating2 * 2 + rating1 * 1) / totalReview : 0;
+                    ? (double) (rating5 * 5 + rating4 * 4 + rating3 * 3 + rating2 * 2 + rating1 * 1) / totalReview
+                    : 0;
+            // ===== KẾT THÚC PHẦN CODE REVIEW =====
 
-            // Set attributes
+            // Set các attribute cho sản phẩm
             request.setAttribute("product", product);
             request.setAttribute("category", categoryDAO.getCategoryNameByProductId(productId));
             request.setAttribute("origin", originDAO.getOriginNameByProductId(productId));
@@ -141,7 +151,8 @@ public class ProductDetailServlet extends HttpServlet {
             request.setAttribute("sex", sexDAO.getSexNameByProductId(productId));
             request.setAttribute("mainImages", ProductImageDAO.getMainProductImages());
             request.setAttribute("listImages", ProductImageDAO.getSecondaryProductImagesByProductId(productId));
-            // Review attributes
+
+            // Set các attribute liên quan review
             request.setAttribute("mediumRatings", mediumRating);
             request.setAttribute("rating5", rating5);
             request.setAttribute("rating4", rating4);
@@ -152,7 +163,11 @@ public class ProductDetailServlet extends HttpServlet {
             request.setAttribute("totalComment", totalComment);
             request.setAttribute("totalImage", totalImage);
             request.setAttribute("inforCustomers", inforCustomers);
-  
+           
+            int categoryID = product.getCategoryID();
+            List<Product> relatedProducts = productDAO.getRelatedProductsByCategory(categoryID, product.getProductID(), 8);
+            request.setAttribute("relatedProducts", relatedProducts);
+
             request.getRequestDispatcher("ProductDetailPage.jsp").forward(request, response);
 
         } catch (NumberFormatException | ClassNotFoundException e) {
@@ -188,6 +203,3 @@ public class ProductDetailServlet extends HttpServlet {
     }// </editor-fold>
 
 }
-
-
-

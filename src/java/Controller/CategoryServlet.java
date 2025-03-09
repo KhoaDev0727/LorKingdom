@@ -143,11 +143,30 @@ public class CategoryServlet extends HttpServlet {
 
     private void listCategories(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
-        List<Category> categories = categoryDAO.getAllCategories();
+        int page = 1;
+        int pageSize = 10; // Số bản ghi trên 1 trang (có thể điều chỉnh)
+
+        if (request.getParameter("page") != null) {
+            try {
+                page = Integer.parseInt(request.getParameter("page"));
+            } catch (NumberFormatException e) {
+                page = 1;
+            }
+        }
+
+        int totalCategories = categoryDAO.getTotalCategoriesCount();
+        int totalPages = (int) Math.ceil((double) totalCategories / pageSize);
+
+        List<Category> categories = categoryDAO.getCategoriesByPage(page, pageSize);
+
         List<SuperCategory> superCategories = superCategoryDAO.getActiveSuperCategories();
 
-        request.setAttribute("superCategories", superCategories);
         request.setAttribute("categories", categories);
+        request.setAttribute("superCategories", superCategories);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("forward", "CategoryServlet?action=list");
+
         request.getRequestDispatcher("CategoryManagement.jsp").forward(request, response);
     }
 

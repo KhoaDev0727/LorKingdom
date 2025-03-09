@@ -77,6 +77,7 @@
                                         </div>
                                     </form>
                                     <div class="table-responsive">
+                                        <%@ include file="Component/PaginationProduct.jsp" %>
                                         <table class="table table-bordered table-striped table-hover">
                                             <thead class="table-dark">
                                                 <tr>
@@ -353,3 +354,6 @@
         </script>
     </body>
 </html>
+
+
+
