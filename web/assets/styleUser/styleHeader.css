@@ -15,7 +15,6 @@ header {
     width: 100%;
     z-index: 1000;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    margin-bottom: 50px;
 }
 .header .search-container .form-control {
     width: 400px; /* Hoặc bất kỳ giá trị nào bạn muốn */

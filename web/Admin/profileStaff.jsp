@@ -23,22 +23,17 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <link rel="stylesheet" href="./CSS/styleProfileStaff.css">
         <title>Hồ sơ nhân viên</title>
-   
+
     </head>
     <body>
-        <div class="container mt-3">
-            <a href="${pageContext.request.contextPath}/Admin/DashBoard.jsp" class="btn btn-outline-primary">
-                <i class="fas fa-arrow-left"></i> Về trang chủ
-            </a>
-        </div>
-        
+
         <div class="page-content" id="page-content">
             <div class="padding">
                 <div class="container d-flex justify-content-center">
                     <div class="card user-card-full">
                         <div class="row box-content">
                             <!-- user-profile -->
-                            <div class="bg-c-lite-green user-profile">
+                            <div class="bg-c-lite-green user-profile d-flex flex-column">
                                 <div class="text-center text-white">
                                     <div class="avatar-container">
                                         <div class="avatar-container">
@@ -56,8 +51,16 @@
                                         </div>
                                     </div>
                                     <h6 class="f-w-600 title" style="font-size: 20px;">Xin chào, ${account.userName}</h6>
-                                    <p>Vai trò: Staff (ID: ${account.roleID})</p>
+                                    <p>Vai trò: Staff (ID: ${account.roleID})</p>     
                                 </div>
+
+                                <!-- Nút Về trang chủ nằm dưới cùng -->
+                                <div class="d-flex justify-content-center mt-auto">
+                                    <a href="${pageContext.request.contextPath}/Admin/DashBoard.jsp" class="btn" style="background: linear-gradient(135deg, #20c997, #17a2b8); color: white;">
+                                        <i class="fas fa-arrow-left"></i> Về trang chủ
+                                    </a>
+                                </div>
+
                             </div>
 
                             <!-- Card block -->
@@ -104,6 +107,7 @@
                                                 </div>
                                             </div>
                                             <button type="submit" class="btn-update">Cập nhật</button>
+
                                         </div>
                                     </div>
                                 </form>

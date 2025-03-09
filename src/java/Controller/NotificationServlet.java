@@ -1,8 +1,10 @@
 package Controller;
 
+import DAO.AccountDAO;
 import org.jsoup.Jsoup;
 
 import DAO.NotificationDAO;
+import Model.Account;
 import Model.Notification;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -60,6 +62,12 @@ public class NotificationServlet extends HttpServlet {
                     case "search":
                         searchNotifications(request, response);
                         break;
+                    case "sendToAll": // Gửi cho tất cả khách hàng RoleID = 3
+                        sendToAllCustomers(request, response);
+                        break;
+                    case "sendSpecific": // Gửi cho khách hàng được chọn
+                        sendToSpecificCustomers(request, response);
+                        break;
                     default:
                         listNotifications(request, response);
                         break;
@@ -72,10 +80,62 @@ public class NotificationServlet extends HttpServlet {
         }
     }
 
+    private void sendToAllCustomers(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, IOException {
+        int notificationID = Integer.parseInt(request.getParameter("notificationID"));
+        AccountDAO accountDAO = new AccountDAO();
+        List<Account> customers = accountDAO.getAllAccountCustomer(3, 1, Integer.MAX_VALUE); // Lấy tất cả khách hàng RoleID = 3
+
+        for (Account customer : customers) {
+            notificationDAO.updateNotificationAccountID(notificationID, customer.getAccountId());
+        }
+
+        response.setContentType("text/plain");
+        response.getWriter().write("Thông báo đã được gửi đến tất cả khách hàng thành công!");
+    }
+
+    private void sendToSpecificCustomers(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, IOException, ServletException {
+        int notificationID = Integer.parseInt(request.getParameter("notificationID"));
+        String[] accountIDs = request.getParameterValues("accountIDs");
+
+        if (accountIDs != null && accountIDs.length > 0) {
+            for (String accountIDStr : accountIDs) {
+                int accountID = Integer.parseInt(accountIDStr);
+                notificationDAO.updateNotificationAccountID(notificationID, accountID);
+            }
+            request.getSession().setAttribute("successMessage", "Thông báo đã được gửi đến khách hàng đã chọn thành công!");
+        } else {
+            request.getSession().setAttribute("errorMessage", "Không có khách hàng nào được chọn!");
+        }
+        response.sendRedirect("NotificationServlet?action=list");
+    }
+
     private void listNotifications(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
-        List<Notification> notifications = notificationDAO.getAllNotifications();
+        int page = 1;
+        int pageSize = 10;
+
+        if (request.getParameter("page") != null) {
+            try {
+                page = Integer.parseInt(request.getParameter("page"));
+            } catch (NumberFormatException e) {
+                page = 1;
+            }
+        }
+
+        int totalNotifications = notificationDAO.getTotalNotificationsCount();
+        int totalPages = (int) Math.ceil((double) totalNotifications / pageSize);
+
+        List<Notification> notifications = notificationDAO.getNotificationsByPage(page, pageSize);
+        AccountDAO accountDAO = new AccountDAO();
+        List<Account> accounts = accountDAO.getAllAccountCustomer(3, 1, Integer.MAX_VALUE); // Lấy tất cả khách hàng RoleID = 3
+
         request.setAttribute("notifications", notifications);
+        request.setAttribute("accounts", accounts); // Truyền danh sách khách hàng
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("forward", "NotificationServlet?action=list");
         request.getRequestDispatcher("NotificationManagement.jsp").forward(request, response);
     }
 
@@ -93,18 +153,18 @@ public class NotificationServlet extends HttpServlet {
         String type = request.getParameter("type");
         String accountIDStr = request.getParameter("accountID");
         Integer accountID = (accountIDStr != null && !accountIDStr.trim().isEmpty()) ? Integer.parseInt(accountIDStr) : null;
-//        String plainTextContent = Jsoup.parse(content).text();
-//        if (plainTextContent == null || plainTextContent.trim().isEmpty()) {
-//            request.getSession().setAttribute("errorMessage", "Nội dung không được để trống.");
-//            response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
-//            return;
-//        }
+        String plainTextContent = Jsoup.parse(content).text();
+        if (plainTextContent == null || plainTextContent.trim().isEmpty()) {
+            request.getSession().setAttribute("errorMessage", "Nội dung không được để trống.");
+            response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
+            return;
+        }
         String plainTextTitle = Jsoup.parse(title).text();
         if (plainTextTitle == null || plainTextTitle.trim().isEmpty()) {
             request.getSession().setAttribute("errorMessage", "Tiêu đề không được để trống.");
             response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
             return;
-        }   
+        }
         // ======= Validation =======
         // 1) Tiêu đề không được để trống
         if (title == null || title.trim().isEmpty()) {
@@ -126,7 +186,7 @@ public class NotificationServlet extends HttpServlet {
         }
         // 4) Type phải thuộc 1 trong 3 giá trị hợp lệ
         if (type == null || (!type.equals("System") && !type.equals("Promotional") && !type.equals("User"))) {
-            request.getSession().setAttribute("errorMessage", "Invalid notification type.");
+            request.getSession().setAttribute("errorMessage", "Loại thông báo không hợp lệ.");
             response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
             return;
         }
@@ -250,4 +310,5 @@ public class NotificationServlet extends HttpServlet {
         request.setAttribute("notifications", notifications);
         request.getRequestDispatcher("NotificationManagement.jsp").forward(request, response);
     }
+
 }

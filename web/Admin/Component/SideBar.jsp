@@ -49,6 +49,7 @@
                                     <li><a class="dropdown-item" href="CustomerManagementServlet">Customer Management</a></li>
                                     <li><a class="dropdown-item" href="StaffManagementServlet">Staff Management</a></li>
                                     <li><a class="dropdown-item" href="ProductManagement.jsp">Product Management</a></li>
+                                    <li><a class="dropdown-item" href="NotificationServlet?&action=list">Notification Management</a></li>
                                     <li><a class="dropdown-item" href="RoleServlet">Role Management</a></li>
                                 </ul>
                             </div>
@@ -100,9 +101,9 @@
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" href="ReviewManagementServlet">View Review</a></li>
-                                     <li><a class="dropdown-item" href="FinancialDashboardServlet">Financial Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="FinancialDashboardServlet">Financial Dashboard</a></li>
                                 </ul>
-                  
+
                             </div>
                         </div>
                     </div>
