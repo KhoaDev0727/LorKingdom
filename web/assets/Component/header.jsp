@@ -17,6 +17,117 @@
                 border: 3px solid #ccc; /* Thêm viền màu xám */
                 object-fit: cover; /* Đảm bảo ảnh không bị méo */
             }
+
+            /* Phong cách notification box giống Shopee */
+            .notification-container {
+                position: relative;
+                display: inline-block;
+            }
+
+            .notification-icon {
+                color: gold;
+                font-size: 28px;
+                background: none;
+                text-decoration: none;
+                position: relative;
+            }
+
+            .notification-badge {
+                position: absolute;
+                top: -5px;
+                right: -10px;
+                background: #ff2a00; 
+                color: white;
+                border-radius: 50%;
+                width: 20px;
+                height: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+            }
+
+            .notification-box {
+                display: none;
+                position: absolute;
+                right: 0;
+                top: 40px;
+                width: 350px;
+                background: white;
+                border-radius: 4px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+                z-index: 1000;
+                max-height: 400px;
+                overflow-y: auto;
+            }
+
+            .notification-box.active {
+                display: block;
+            }
+
+            .notification-box h4 {
+                padding: 10px 15px;
+                margin: 0;
+                font-size: 16px;
+                color: #333;
+                border-bottom: 1px solid #eee;
+            }
+
+            .notification-item {
+                padding: 10px 15px;
+                border-bottom: 1px solid #f5f5f5;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                transition: background 0.2s;
+                cursor: pointer;
+            }
+
+            .notification-item:hover {
+                background: #f8f8f8;
+            }
+
+            .notification-item img {
+                width: 40px;
+                height: 40px;
+                border-radius: 4px;
+                object-fit: cover;
+            }
+
+            .notification-item p {
+                margin: 0;
+                font-size: 14px;
+                color: #555;
+            }
+
+            .notification-item p strong {
+                color: #333;
+                font-size: 15px;
+            }
+
+            .notification-empty {
+                padding: 20px;
+                text-align: center;
+                color: #999;
+                font-size: 14px;
+            }
+
+            .status-dot {
+                width: 8px;
+                height: 8px;
+                background-color: green;
+                border-radius: 50%;
+                display: inline-block;
+                margin-left: 5px;
+            }
+
+            .hidden {
+                display: none;
+            }
+
+            .notification-item.read {
+                opacity: 0.6;
+            }
         </style>
     </head>
     <body>
@@ -42,26 +153,34 @@
 
                     <!-- Icon notification here -->
                     <div class="notification-container">
-                        <a href="#" class="notification-icon" style="color: gold; font-size: 28px; background: none;"
-                           onclick="toggleNotification(event)">
+                        <a href="#" class="notification-icon" style="font-size: 28px;" onclick="toggleNotification(event)">
                             <i class="fas fa-bell"></i>
                             <span class="notification-badge">
-                                0
+                                ${sessionScope.notificationCount != null ? sessionScope.notificationCount : '0'}
                             </span>
                         </a>
-                        <!-- Box thông báo -->
                         <div class="notification-box" id="notificationBox">
                             <h4>Thông Báo</h4>
-                            <div class="notification-item">
-                                <img src="" alt="icon">
-                                <p><strong>Bộ sưu tập dành cho bạn</strong></p>
-                                <p>Top sản phẩm hot nhất đang giảm giá!</p>
-                            </div>
-                            <div class="notification-item">
-                                <img src="" alt="icon">
-                                <p><strong>Mã Freeship</strong></p>
-                                <p>Sắp hết hạn, dùng ngay hôm nay!</p>
-                            </div>
+                            <c:choose>
+                                <c:when test="${empty sessionScope.userNotifications}">
+                                    <div class="notification-empty">
+                                        Chưa có thông báo nào!
+                                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:forEach var="notification" items="${sessionScope.userNotifications}">
+                                        <div class="notification-item ${notification.status eq 'Read' ? 'read' : ''}" onclick="markAsRead(this, ${notification.notificationID})">
+                                            <div>
+                                                <p><strong>${notification.title}</strong> 
+                                                    <span class="status-dot ${notification.read ? 'hidden' : ''}"></span>
+                                                </p>
+                                                <p>${notification.content}</p>
+                                            </div>
+                                        </div>
+                                    </c:forEach>
+
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                     </div>
 
@@ -108,47 +227,79 @@
         </header>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
-                               function updateCart() {
-                                   $.ajax({
-                                       url: 'CartManagementServlet',
-                                       type: 'POST',
-                                       data: {action: 'getTotalCart'},
-                                       dataType: 'json',
-                                       success: function (data) {
-                                           $('.cart-badge').text(data.cartSize);
-                                       },
-                                       error: function (xhr, status, error) {
-                                           console.error('Error:', error);
-                                       }
-                                   });
-                               }
-                               // Cập nhật mỗi 5 giây
-                               setInterval(updateCart, 2000);
+                                            function updateCart() {
+                                                $.ajax({
+                                                    url: 'CartManagementServlet',
+                                                    type: 'POST',
+                                                    data: {action: 'getTotalCart'},
+                                                    dataType: 'json',
+                                                    success: function (data) {
+                                                        $('.cart-badge').text(data.cartSize);
+                                                    },
+                                                    error: function (xhr, status, error) {
+                                                        console.error('Error:', error);
+                                                    }
+                                                });
+                                            }
+                                            // Cập nhật mỗi 5 giây
+                                            setInterval(updateCart, 2000);
 
-                               // Gọi ngay khi trang load
-                               $(document).ready(function () {
-                                   updateCart();
-                               });
+                                            // Gọi ngay khi trang load
+                                            $(document).ready(function () {
+                                                updateCart();
+                                            });
 
-                               // Toggle thông báo khi click vào chuông
-                               document.addEventListener("DOMContentLoaded", function () {
-                                   var bellIcon = document.querySelector(".notification-icon");
-                                   var notificationBox = document.getElementById("notificationBox");
+                                            // Toggle thông báo khi click vào chuông
+                                            document.addEventListener("DOMContentLoaded", function () {
+                                                var bellIcon = document.querySelector(".notification-icon");
+                                                var notificationBox = document.getElementById("notificationBox");
 
-                                   // Toggle thông báo khi click vào chuông
-                                   bellIcon.addEventListener("click", function (event) {
-                                       event.preventDefault();
-                                       event.stopPropagation(); // Ngăn sự kiện lan lên document
-                                       notificationBox.classList.toggle("active");
-                                   });
+                                                // Toggle thông báo khi click vào chuông
+                                                bellIcon.addEventListener("click", function (event) {
+                                                    event.preventDefault();
+                                                    event.stopPropagation(); // Ngăn sự kiện lan lên document
+                                                    notificationBox.classList.toggle("active");
+                                                });
 
-                                   // Đóng thông báo khi click ra ngoài
-                                   document.addEventListener("click", function (event) {
-                                       if (!notificationBox.contains(event.target) && !bellIcon.contains(event.target)) {
-                                           notificationBox.classList.remove("active");
-                                       }
-                                   });
-                               });
+                                                // Đóng thông báo khi click ra ngoài
+                                                document.addEventListener("click", function (event) {
+                                                    if (!notificationBox.contains(event.target) && !bellIcon.contains(event.target)) {
+                                                        notificationBox.classList.remove("active");
+                                                    }
+                                                });
+                                            });
+
+
+                                            function markAsRead(element, notificationId) {
+                                                // Ẩn chấm xanh và làm mờ thông báo
+                                                element.classList.add("read");
+                                                let dot = element.querySelector(".status-dot");
+                                                if (dot)
+                                                    dot.classList.add("hidden");
+
+                                                // Gửi AJAX cập nhật trạng thái đã đọc
+                                                $.ajax({
+                                                    url: "MarkNotificationReadServlet",
+                                                    type: "POST",
+                                                    data: {id: notificationId},
+                                                    dataType: "json",
+                                                    success: function (response) {
+                                                        if (response.status === "success") {
+                                                            console.log("Notification marked as read.");
+                                                            // Cập nhật số lượng thông báo trên giao diện
+                                                            let badge = document.querySelector(".notification-badge");
+                                                            badge.textContent = response.unreadCount;
+                                                            // Bỏ phần ẩn badge khi unreadCount === 0
+                                                        } else {
+                                                            console.error("Error: " + response.message);
+                                                        }
+                                                    },
+                                                    error: function (xhr, status, error) {
+                                                        console.error("AJAX Error: " + error);
+                                                    }
+                                                });
+                                            }
+
         </script>
 
     </body>

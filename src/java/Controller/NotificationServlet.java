@@ -1,8 +1,10 @@
 package Controller;
 
+import DAO.AccountDAO;
 import org.jsoup.Jsoup;
 
 import DAO.NotificationDAO;
+import Model.Account;
 import Model.Notification;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -60,6 +62,12 @@ public class NotificationServlet extends HttpServlet {
                     case "search":
                         searchNotifications(request, response);
                         break;
+                    case "sendToAll": // Gửi cho tất cả khách hàng RoleID = 3
+                        sendToAllCustomers(request, response);
+                        break;
+                    case "sendSpecific": // Gửi cho khách hàng được chọn
+                        sendToSpecificCustomers(request, response);
+                        break;
                     default:
                         listNotifications(request, response);
                         break;
@@ -70,6 +78,37 @@ public class NotificationServlet extends HttpServlet {
             request.getSession().setAttribute("errorMessage", "Error: " + e.getMessage());
             response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
         }
+    }
+
+    private void sendToAllCustomers(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, IOException {
+        int notificationID = Integer.parseInt(request.getParameter("notificationID"));
+        AccountDAO accountDAO = new AccountDAO();
+        List<Account> customers = accountDAO.getAllAccountCustomer(3, 1, Integer.MAX_VALUE); // Lấy tất cả khách hàng RoleID = 3
+
+        for (Account customer : customers) {
+            notificationDAO.updateNotificationAccountID(notificationID, customer.getAccountId());
+        }
+
+        response.setContentType("text/plain");
+        response.getWriter().write("Thông báo đã được gửi đến tất cả khách hàng thành công!");
+    }
+
+    private void sendToSpecificCustomers(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ClassNotFoundException, IOException, ServletException {
+        int notificationID = Integer.parseInt(request.getParameter("notificationID"));
+        String[] accountIDs = request.getParameterValues("accountIDs");
+
+        if (accountIDs != null && accountIDs.length > 0) {
+            for (String accountIDStr : accountIDs) {
+                int accountID = Integer.parseInt(accountIDStr);
+                notificationDAO.updateNotificationAccountID(notificationID, accountID);
+            }
+            request.getSession().setAttribute("successMessage", "Thông báo đã được gửi đến khách hàng đã chọn thành công!");
+        } else {
+            request.getSession().setAttribute("errorMessage", "Không có khách hàng nào được chọn!");
+        }
+        response.sendRedirect("NotificationServlet?action=list");
     }
 
     private void listNotifications(HttpServletRequest request, HttpServletResponse response)
@@ -89,11 +128,13 @@ public class NotificationServlet extends HttpServlet {
         int totalPages = (int) Math.ceil((double) totalNotifications / pageSize);
 
         List<Notification> notifications = notificationDAO.getNotificationsByPage(page, pageSize);
+        AccountDAO accountDAO = new AccountDAO();
+        List<Account> accounts = accountDAO.getAllAccountCustomer(3, 1, Integer.MAX_VALUE); // Lấy tất cả khách hàng RoleID = 3
 
         request.setAttribute("notifications", notifications);
+        request.setAttribute("accounts", accounts); // Truyền danh sách khách hàng
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
-        System.out.println(totalPages);
         request.setAttribute("forward", "NotificationServlet?action=list");
         request.getRequestDispatcher("NotificationManagement.jsp").forward(request, response);
     }

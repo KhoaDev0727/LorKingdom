@@ -7,6 +7,7 @@ package Model;
 import java.sql.Timestamp;
 
 public class Notification {
+
     private int notificationID;
     private String title;
     private String content;
@@ -30,6 +31,10 @@ public class Notification {
         this.accountID = accountID;
         this.isDeleted = isDeleted;
         this.createdAt = createdAt;
+    }
+
+    public boolean isRead() {
+        return "Read".equalsIgnoreCase(this.status);
     }
 
     public int getNotificationID() {
