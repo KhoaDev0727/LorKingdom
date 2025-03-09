@@ -203,6 +203,10 @@
         <servlet-class>Controller.AddPromotionServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>UpdatePromotion</servlet-name>
+        <servlet-class>Controller.UpdatePromotion</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>AjaxSearchServlet</servlet-name>
         <servlet-class>Controller.AjaxSearchServlet</servlet-class>
     </servlet>
@@ -404,6 +408,10 @@
     <servlet-mapping>
         <servlet-name>AddPromotionServlet</servlet-name>
         <url-pattern>/Admin/addPromotion</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdatePromotion</servlet-name>
+        <url-pattern>/Admin/Update Promotion</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>AjaxSearchServlet</servlet-name>
