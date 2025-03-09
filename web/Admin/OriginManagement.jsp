@@ -161,7 +161,7 @@
                                                                             <input type="hidden" name="originID" value="${origin.originID}">
                                                                             <div class="mb-3">
                                                                                 <label class="form-label">Origin Name</label>
-                                                                                <input type="text" class="form-control" name="originName" value="${origin.name}" required>
+                                                                                <input type="text" class="form-control" name="name" value="${origin.name}" required>
                                                                             </div>
                                                                         </div>
                                                                         <div class="modal-footer">

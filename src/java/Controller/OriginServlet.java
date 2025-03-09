@@ -186,38 +186,66 @@ public class OriginServlet extends HttpServlet {
 
     // Cập nhật Origin
     private void updateOrigin(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, ClassNotFoundException, ServletException, IOException {
+        throws SQLException, ClassNotFoundException, ServletException, IOException {
+    try {
+        // Kiểm tra và parse originID
+        String originIDStr = request.getParameter("originID");
+        if (originIDStr == null || originIDStr.isEmpty()) {
+            request.getSession().setAttribute("errorMessage", "Origin ID is missing.");
+            response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
+            return;
+        }
+        int originID;
         try {
-            int originID = Integer.parseInt(request.getParameter("originID"));
-            String name = request.getParameter("name");
-            if (name == null || name.trim().isEmpty()) {
-                request.getSession().setAttribute("errorMessage", "Origin name cannot be empty.");
-                response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
-                return;
-            }
-            if (name.length() > 255) {
-                request.getSession().setAttribute("errorMessage", "Origin name is too long. Maximum 255 characters allowed.");
-                response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
-                return;
-            }
-            if (!name.matches("^[\\p{L} _-]+$")) {
-                request.getSession().setAttribute("errorMessage", "Origin names must contain only letters and spaces.");
-                response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
-                return;
-            }
-            if (originDAO.isOriginExists(name.trim())) {
-                request.getSession().setAttribute("errorMessage", "Origin already exists.");
-                response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
-                return;
-            }
-            Origin origin = new Origin(0, name, null, 0);
-            originDAO.updateOrigin(origin);
-            request.getSession().setAttribute("successMessage", "Origin updated successfully.");
+            originID = Integer.parseInt(originIDStr);
         } catch (NumberFormatException e) {
             request.getSession().setAttribute("errorMessage", "Invalid Origin ID.");
+            response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
+            return;
         }
-        response.sendRedirect("OriginServlet?action=list");
+
+        // Kiểm tra name
+        String name = request.getParameter("name");
+        if (name == null || name.trim().isEmpty()) {
+            request.getSession().setAttribute("errorMessage", "Origin name cannot be empty.");
+            response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
+            return;
+        }
+        if (name.length() > 255) {
+            request.getSession().setAttribute("errorMessage", "Origin name is too long. Maximum 255 characters allowed.");
+            response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
+            return;
+        }
+        if (!name.matches("^[\\p{L} _-]+$")) {
+            request.getSession().setAttribute("errorMessage", "Origin names must contain only letters and spaces.");
+            response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
+            return;
+        }
+
+        // Kiểm tra nếu originDAO có bị null không
+        if (originDAO == null) {
+            request.getSession().setAttribute("errorMessage", "Database connection error.");
+            response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
+            return;
+        }
+
+        // Kiểm tra xem origin đã tồn tại chưa
+        if (originDAO.isOriginExists(name.trim())) {
+            request.getSession().setAttribute("errorMessage", "Origin already exists.");
+            response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
+            return;
+        }
+
+        // Cập nhật Origin
+        Origin origin = new Origin(originID, name, null, 0);
+        originDAO.updateOrigin(origin);
+        request.getSession().setAttribute("successMessage", "Origin updated successfully.");
+
+    } catch (Exception e) {
+        request.getSession().setAttribute("errorMessage", "An unexpected error occurred: " + e.getMessage());
     }
+    response.sendRedirect("OriginServlet?action=list");
+}
 
     // Tìm kiếm Origin theo từ khóa
     private void searchOrigin(HttpServletRequest request, HttpServletResponse response)
