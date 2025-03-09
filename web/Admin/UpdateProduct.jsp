@@ -231,6 +231,9 @@
 
                         <!-- Submit Buttons -->
                         <div class="d-flex justify-content-end gap-3 mt-4">
+                            <a href="ProductServlet?&action=list" class="btn btn-primary btn-sm">
+                                Trở Về
+                            </a>
                             <button type="reset" class="btn btn-outline-secondary px-4">
                                 <i class="fas fa-undo me-2"></i>Reset
                             </button>
@@ -312,8 +315,7 @@
             <% request.getSession().removeAttribute("errorMessage"); %>
                 }
             };
-        </script>
-        <script>
+
 
             var quill = new Quill('#editor-container', {
                 theme: 'snow'

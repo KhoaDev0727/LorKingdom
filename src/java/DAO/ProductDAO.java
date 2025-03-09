@@ -277,7 +277,7 @@ public class ProductDAO {
         products = executeQuery(query.toString(), params);
         return products;
     }
-    
+
     private List<Product> executeQuery(String query, List<Object> params) throws ClassNotFoundException {
         List<Product> products = new ArrayList<>();
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement stm = conn.prepareStatement(query)) {
@@ -311,6 +311,33 @@ public class ProductDAO {
         return products;
     }
 
+    public Product getProduct(int id) {
+        Product p = null;
+        try {
+            conn = DBConnection.getConnection();
+            stm = conn.prepareStatement(SELECT_PRODUCT_BY_ID);
+            stm.setInt(1, id);
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                p = new Product(rs.getString("SKU"),
+                        rs.getInt("CategoryID"),
+                        rs.getInt("MaterialID"),
+                        rs.getInt("AgeID"),
+                        rs.getInt("SexID"),
+                        rs.getInt("PriceRangeID"),
+                        rs.getInt("BrandID"),
+                        rs.getInt("OriginID"),
+                        rs.getString("Name"),
+                        rs.getDouble("Price"),
+                        rs.getInt("Quantity"),
+                        rs.getString("Description"));
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+        return p;
+    }
+
     public static Product getProductById(int productId) throws ClassNotFoundException {
         Product product = null;
         try {
@@ -342,34 +369,7 @@ public class ProductDAO {
         return product;
     }
 
-    public Product getProduct(int id) {
-        Product p = null;
-        try {
-            conn = DBConnection.getConnection();
-            stm = conn.prepareStatement(SELECT_PRODUCT_BY_ID);
-            stm.setInt(1, id);
-            rs = stm.executeQuery();
-            while (rs.next()) {
-                p = new Product(rs.getString("SKU"),
-                        rs.getInt("CategoryID"),
-                        rs.getInt("MaterialID"),
-                        rs.getInt("AgeID"),
-                        rs.getInt("SexID"),
-                        rs.getInt("PriceRangeID"),
-                        rs.getInt("BrandID"),
-                        rs.getInt("OriginID"),
-                        rs.getString("Name"),
-                        rs.getDouble("Price"),
-                        rs.getInt("Quantity"),
-                        rs.getString("Description"));
-            }
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
-        return p;
-    }
 // (Tùy chọn) Tìm kiếm sản phẩm theo từ khóa
-
     public List<Product> searchProducts(String keyword) throws SQLException, ClassNotFoundException {
         List<Product> products = new ArrayList<>();
         String query = "SELECT * FROM Product WHERE Name LIKE ?";

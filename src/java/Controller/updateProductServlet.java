@@ -182,7 +182,15 @@ public class updateProductServlet extends HttpServlet {
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
+          
 
+            String cleanedPriceStart = priceStr.replaceAll("[^\\d]", "");
+            if (cleanedPriceStart.length() < 4) {
+                session.setAttribute("errorMessage", "Giá trị phải có ít nhất 4 chữ số.");
+                request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
+                return;
+            }
+            
             // 3. Kiểm tra tên sản phẩm đã tồn tại chưa (nếu cần)
             if (ProductDAO.isProductNameExists(productName, 0)) {
                 session.setAttribute("errorMessage", "Tên sản phẩm đã tồn tại trong hệ thống!");
@@ -199,6 +207,7 @@ public class updateProductServlet extends HttpServlet {
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
+
             if (!stockQuantityStr.matches("^\\d+$")) {
                 session.setAttribute("errorMessage", "Số lượng sản phẩm phải là số nguyên.");
                 UpdateProductDataLoader.loadDataForUpdate(request, productID);
