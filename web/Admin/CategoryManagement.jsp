@@ -93,6 +93,7 @@
                                     </form>
                                     <!-- Customer Table -->
                                     <div class="table-responsive">
+                                        <%@ include file="Component/PaginationCategory.jsp" %>
                                         <table class="table table-bordered table-striped table-hover">
                                             <thead class="table-dark">
                                                 <tr>
