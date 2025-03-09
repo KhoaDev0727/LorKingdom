@@ -180,15 +180,7 @@
                                                                                        required
                                                                                        value="${fn:replace(bounds[1], ',', '')}" />
                                                                             </div>
-
-                                                                            <div class="mb-3">
-                                                                                <label class="form-label">Unit</label>
-                                                                                <select class="form-select" name="unit">
-                                                                                    <option value="trăm" <c:if test="${rangeParts[1] eq 'trăm'}">selected</c:if>>Trăm</option>
-                                                                                    <option value="triệu" <c:if test="${rangeParts[1] eq 'triệu'}">selected</c:if>>Triệu</option>
-                                                                                    </select>
-                                                                                </div>
-                                                                            </div>
+                                                                         
                                                                             <div class="modal-footer">
                                                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                                                                 <button type="submit" class="btn btn-primary">Save changes</button>
@@ -229,13 +221,6 @@
                             <div class="mb-3">
                                 <label class="form-label">End Price</label>
                                 <input type="text" class="form-control" name="priceEnd" id="priceStart" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Unit</label>
-                                <select class="form-select" name="unit">
-                                    <option value="trăm">Trăm</option>
-                                    <option value="triệu">Triệu</option>
-                                </select>
                             </div>
                         </div>
                         <div class="modal-footer">

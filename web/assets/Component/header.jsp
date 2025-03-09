@@ -10,13 +10,124 @@
         <link rel="stylesheet" href="./assets/styleUser/styleHeader.css"/>
         <title>header page</title>
         <style>
-                .avatar img {
-                    width: 50px;
-                    height: 50px;
-                    border-radius: 50%; /* Làm tròn ảnh */
-                    border: 3px solid #ccc; /* Thêm viền màu xám */
-                    object-fit: cover; /* Đảm bảo ảnh không bị méo */
-                }
+            .avatar img {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%; /* Làm tròn ảnh */
+                border: 3px solid #ccc; /* Thêm viền màu xám */
+                object-fit: cover; /* Đảm bảo ảnh không bị méo */
+            }
+
+            /* Phong cách notification box giống Shopee */
+            .notification-container {
+                position: relative;
+                display: inline-block;
+            }
+
+            .notification-icon {
+                color: gold;
+                font-size: 28px;
+                background: none;
+                text-decoration: none;
+                position: relative;
+            }
+
+            .notification-badge {
+                position: absolute;
+                top: -5px;
+                right: -10px;
+                background: #ff2a00; 
+                color: white;
+                border-radius: 50%;
+                width: 20px;
+                height: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+            }
+
+            .notification-box {
+                display: none;
+                position: absolute;
+                right: 0;
+                top: 40px;
+                width: 350px;
+                background: white;
+                border-radius: 4px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+                z-index: 1000;
+                max-height: 400px;
+                overflow-y: auto;
+            }
+
+            .notification-box.active {
+                display: block;
+            }
+
+            .notification-box h4 {
+                padding: 10px 15px;
+                margin: 0;
+                font-size: 16px;
+                color: #333;
+                border-bottom: 1px solid #eee;
+            }
+
+            .notification-item {
+                padding: 10px 15px;
+                border-bottom: 1px solid #f5f5f5;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                transition: background 0.2s;
+                cursor: pointer;
+            }
+
+            .notification-item:hover {
+                background: #f8f8f8;
+            }
+
+            .notification-item img {
+                width: 40px;
+                height: 40px;
+                border-radius: 4px;
+                object-fit: cover;
+            }
+
+            .notification-item p {
+                margin: 0;
+                font-size: 14px;
+                color: #555;
+            }
+
+            .notification-item p strong {
+                color: #333;
+                font-size: 15px;
+            }
+
+            .notification-empty {
+                padding: 20px;
+                text-align: center;
+                color: #999;
+                font-size: 14px;
+            }
+
+            .status-dot {
+                width: 8px;
+                height: 8px;
+                background-color: green;
+                border-radius: 50%;
+                display: inline-block;
+                margin-left: 5px;
+            }
+
+            .hidden {
+                display: none;
+            }
+
+            .notification-item.read {
+                opacity: 0.6;
+            }
         </style>
     </head>
     <body>
@@ -113,23 +224,7 @@
                     </div>
                 </div>
             </div>
-            <nav class="navbar">
-                <ul class="menu">
-                    <li class="menu-item">
-                        <a href="getList" >Hàng Mới</a>
-                    </li>
-                    <li class="menu-item dropdown">
-                        <a href=pageNewProduct.jsp data-key="products">Sản Phẩm</a>
-                        <div class="dropdown-menu">
 
-                        </div>
-                    </li>
-
-                    <li class="menu-item">
-                        <a href="#" data-key="promotions">Khuyến Mãi</a>
-                    </li>
-                </ul>
-            </nav>
         </header>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>

@@ -189,13 +189,13 @@ public class CategoryServlet extends HttpServlet {
             return;
         }
 
-        if (!name.matches("^[\\p{L} '_-]+$")) {
+        if (!name.matches("^[\\p{L} '_,.-]+$")) {
             request.getSession().setAttribute("errorMessage", "Tên danh mục chỉ được chứa chữ cái, khoảng trắng, dấu gạch dưới (_), dấu gạch ngang (-) và dấu phẩy đơn (').");
             response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
             return;
         }
 
-        if (categoryDAO.isCategoryExists(name)) {
+        if (categoryDAO.isCategoryExists(name, 0)) {
             request.getSession().setAttribute("errorMessage", "Tên danh mục đã tồn tại.");
             response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
             return;
@@ -291,13 +291,13 @@ public class CategoryServlet extends HttpServlet {
             return;
         }
 
-        if (!name.matches("^[\\p{L} '_-]+$")) {
+        if (!name.matches("^[\\p{L} '_,.-]+$")) {
             request.getSession().setAttribute("errorMessage", "Tên danh mục chỉ được chứa chữ cái, khoảng trắng, dấu gạch dưới (_), dấu gạch ngang (-) và dấu phẩy đơn (').");
             response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
             return;
         }
 
-        if (categoryDAO.isCategoryExists(name)) {
+        if (categoryDAO.isCategoryExists(name, categoryID)) {
             request.getSession().setAttribute("errorMessage", "Tên danh mục đã tồn tại.");
             response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
             return;

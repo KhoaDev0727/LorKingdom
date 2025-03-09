@@ -159,7 +159,7 @@ public class OriginServlet extends HttpServlet {
         request.getRequestDispatcher("OriginManagement.jsp").forward(request, response);
     }
 
-    // Thêm mới Origin
+    
     private void addOrigin(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         String name = request.getParameter("name");
