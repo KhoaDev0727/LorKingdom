@@ -276,6 +276,23 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="errorModalLabel">Lỗi</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        ${errorModal}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="redirectToPromotion()">Quay lại</button>
+                    </div>
+                </div>
+            </div>
+        </div>      
+
 
         <!-- Script to Set Order ID for Deletion -->
         <!-- Script Xóa -->

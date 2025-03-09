@@ -122,10 +122,6 @@
         <servlet-class>Controller.test</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>LoginPageServlet</servlet-name>
-        <servlet-class>Controller.LoginPageServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>RegisterPageServlet</servlet-name>
         <servlet-class>Controller.RegisterPageServlet</servlet-class>
     </servlet>
@@ -213,6 +209,10 @@
     <servlet>
         <servlet-name>MarkNotificationReadServlet</servlet-name>
         <servlet-class>Controller.MarkNotificationReadServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>LoginPageServlet</servlet-name>
+        <servlet-class>Controller.LoginPageServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>VerifyCodeServlet</servlet-name>
@@ -329,10 +329,6 @@
         <url-pattern>/Admin/PriceRangeServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>LoginPageServlet</servlet-name>
-        <url-pattern>/Admin/LoginPageServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>RegisterPageServlet</servlet-name>
         <url-pattern>/Admin/RegisterPageServlet</url-pattern>
     </servlet-mapping>
@@ -411,7 +407,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>UpdatePromotion</servlet-name>
-        <url-pattern>/Admin/Update Promotion</url-pattern>
+        <url-pattern>/Admin/UpdatePromotion</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>AjaxSearchServlet</servlet-name>
@@ -420,6 +416,10 @@
     <servlet-mapping>
         <servlet-name>MarkNotificationReadServlet</servlet-name>
         <url-pattern>/MarkNotificationReadServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LoginPageServlet</servlet-name>
+        <url-pattern>/Admin/LoginPageServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

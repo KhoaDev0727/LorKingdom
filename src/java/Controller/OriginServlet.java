@@ -163,11 +163,6 @@ public class OriginServlet extends HttpServlet {
     private void addOrigin(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         String name = request.getParameter("name");
-        if (name == null || name.trim().isEmpty()) {
-            request.getSession().setAttribute("errorMessage", "Origin name cannot be empty.");
-            response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
-            return;
-        }
         if (name.length() > 255) {
             request.getSession().setAttribute("errorMessage", "Origin name is too long. Maximum 255 characters allowed.");
             response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
@@ -195,11 +190,6 @@ public class OriginServlet extends HttpServlet {
         try {
             int originID = Integer.parseInt(request.getParameter("originID"));
             String name = request.getParameter("name");
-            if (name == null || name.trim().isEmpty()) {
-                request.getSession().setAttribute("errorMessage", "Origin name cannot be empty.");
-                response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
-                return;
-            }
             if (name == null || name.trim().isEmpty()) {
                 request.getSession().setAttribute("errorMessage", "Origin name cannot be empty.");
                 response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
