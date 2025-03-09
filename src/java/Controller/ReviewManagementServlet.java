@@ -245,9 +245,9 @@ public class ReviewManagementServlet extends HttpServlet {
             boolean updated = ReviewDAO.UpdateStatusReview(reviewID, status);
 
             if (!updated) {
-                session.setAttribute("errorMessage", "Đánh giá của bạn đã khôi phục thất bại.");
+                session.setAttribute("errorMessage", "Đánh giá của bạn đã được cập nhật thành công.");
             } else {
-                session.setAttribute("successMessage", "Đánh giá của bạn đã được khôi phục.");
+                session.setAttribute("successMessage", "Đánh giá của bạn  câp nhật thất bại.");
             }
             showReview(request, response);
         } catch (Exception e) {
@@ -277,7 +277,7 @@ public class ReviewManagementServlet extends HttpServlet {
             showReview(request, response);
         } catch (Exception e) {
             e.printStackTrace();
-            session.setAttribute("message", "An error occurred while adding review");
+            session.setAttribute("message", "Có lỗi xảy ra khi bạn đánh giá sản phẩm");
             session.setAttribute("messageType", "danger");
             showReview(request, response);
         }
@@ -320,8 +320,6 @@ public class ReviewManagementServlet extends HttpServlet {
                     .setDateFormat("yyyy-MM-dd HH:mm:ss")
                     .create();
             String json = gson.toJson(listReviews);
-            System.out.println("JSON Response: " + json);
-
             // Thiết lập response
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");

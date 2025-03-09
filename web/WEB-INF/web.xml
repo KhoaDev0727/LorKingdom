@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+
     <!-- Welcome Page -->
     <welcome-file-list>
         <welcome-file>getList</welcome-file>
     </welcome-file-list>
-    <!--
-    <welcome-file-list>
-        <welcome-file>formComment.jsp</welcome-file>
-    </welcome-file-list>
-    -->
-    <!--    <welcome-file-list>
-        <welcome-file>ViewReview.jsp</welcome-file>
-    </welcome-file-list> -->
-    <!--   Servlet Configurations -->
+
+    <!-- Servlet Configurations -->
     <servlet>
         <servlet-name>ForgotPasswordServlet</servlet-name>
         <servlet-class>Controller.ForgotPasswordServlet</servlet-class>
@@ -118,10 +114,6 @@
         <servlet-class>Controller.OriginServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>test</servlet-name>
-        <servlet-class>Controller.test</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>LoginPageServlet</servlet-name>
         <servlet-class>Controller.LoginPageServlet</servlet-class>
     </servlet>
@@ -169,7 +161,6 @@
         <servlet-name>ManageOrderServlet</servlet-name>
         <servlet-class>Controller.ManageOrderServlet</servlet-class>
     </servlet>
-    <!-- Servlet Mappings -->
     <servlet>
         <servlet-name>CartManagementServlet</servlet-name>
         <servlet-class>Controller.CartManagementServlet</servlet-class>
@@ -201,28 +192,25 @@
     <servlet>
         <servlet-name>MarkNotificationReadServlet</servlet-name>
         <servlet-class>Controller.MarkNotificationReadServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>OrderCustomerServlet</servlet-name>
         <servlet-class>Controller.OrderCustomerServlet</servlet-class>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>VerifyCodeServlet</servlet-name>
-        <url-pattern>/VerifyCodeServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ResendVerificationServlet</servlet-name>
-        <url-pattern>/ResendVerificationServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>SendVerificationServlet</servlet-name>
-        <url-pattern>/SendVerificationServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ResetPasswordServlet</servlet-name>
-        <url-pattern>/ResetPasswordServlet</url-pattern>
-    </servlet-mapping>
+    <servlet>
+        <servlet-name>RoleServlet</servlet-name>
+        <servlet-class>Controller.RoleServlet</servlet-class>
+    </servlet>
+
+    <!-- Servlet Mappings -->
     <servlet-mapping>
         <servlet-name>ForgotPasswordServlet</servlet-name>
         <url-pattern>/ForgotPasswordServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ReviewManagementServlet</servlet-name>
+        <url-pattern>/ReviewManagementServlet</url-pattern>
+        <url-pattern>/Admin/ReviewManagementServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
@@ -245,37 +233,20 @@
         <url-pattern>/UpdateAvatarServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>CustomerManagementServlet</servlet-name>
-        <url-pattern>/Admin/CustomerManagementServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>StaffManagementServlet</servlet-name>
-        <url-pattern>/Admin/StaffManagementServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ProductManagementServlet</servlet-name>
-        <url-pattern>/Admin/ProductManagementServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ShippingMethodServlet</servlet-name>
-        <url-pattern>/Admin/ShippingMethodServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ReviewManagementServlet</servlet-name>
-        <url-pattern>/ReviewManagementServlet</url-pattern>
-        <url-pattern>/Admin/ReviewManagementServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>FinancialDashboardServlet</servlet-name>
-        <url-pattern>/Admin/FinancialDashboardServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>CategoryServlet</servlet-name>
         <url-pattern>/Admin/CategoryServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>SuperCategoryServlet</servlet-name>
         <url-pattern>/Admin/SuperCategoryServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CustomerManagementServlet</servlet-name>
+        <url-pattern>/Admin/CustomerManagementServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>StaffManagementServlet</servlet-name>
+        <url-pattern>/Admin/StaffManagementServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>SexServlet</servlet-name>
@@ -286,6 +257,34 @@
         <url-pattern>/Admin/AgeServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>FinancialDashboardServlet</servlet-name>
+        <url-pattern>/Admin/FinancialDashboardServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProductManagementServlet</servlet-name>
+        <url-pattern>/Admin/ProductManagementServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShippingMethodServlet</servlet-name>
+        <url-pattern>/Admin/ShippingMethodServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ResetPasswordServlet</servlet-name>
+        <url-pattern>/ResetPasswordServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SendVerificationServlet</servlet-name>
+        <url-pattern>/SendVerificationServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ResendVerificationServlet</servlet-name>
+        <url-pattern>/ResendVerificationServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VerifyCodeServlet</servlet-name>
+        <url-pattern>/VerifyCodeServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>getList</servlet-name>
         <url-pattern>/getList</url-pattern>
     </servlet-mapping>
@@ -293,20 +292,6 @@
         <servlet-name>BrandServlet</servlet-name>
         <url-pattern>/Admin/BrandServlet</url-pattern>
     </servlet-mapping>
-    <!-- Cua Loc -->
-    <servlet-mapping>
-        <servlet-name>OriginServlet</servlet-name>
-        <url-pattern>/Admin/OriginServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>OrderView</servlet-name>
-        <url-pattern>/Admin/OrderView</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ManageOrderServlet</servlet-name>
-        <url-pattern>/Admin/OrderServlet</url-pattern>
-    </servlet-mapping>
-    <!-- Cua Luan -->
     <servlet-mapping>
         <servlet-name>MaterialServlet</servlet-name>
         <url-pattern>/Admin/MaterialServlet</url-pattern>
@@ -320,16 +305,16 @@
         <url-pattern>/Admin/PriceRangeServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>OriginServlet</servlet-name>
+        <url-pattern>/Admin/OriginServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>LoginPageServlet</servlet-name>
         <url-pattern>/Admin/LoginPageServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>RegisterPageServlet</servlet-name>
         <url-pattern>/Admin/RegisterPageServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>PaymentMethodServlet</servlet-name>
-        <url-pattern>/Admin/PaymentMethodServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>SendVerificationPage</servlet-name>
@@ -342,6 +327,10 @@
     <servlet-mapping>
         <servlet-name>VerifyCodePage</servlet-name>
         <url-pattern>/Admin/VerifyCodePage</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PaymentMethodServlet</servlet-name>
+        <url-pattern>/Admin/PaymentMethodServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>LogoutPage</servlet-name>
@@ -359,18 +348,17 @@
         <servlet-name>ProductDetailServlet</servlet-name>
         <url-pattern>/ProductDetailServlet</url-pattern>
     </servlet-mapping>
-    <!-- Session Timeout -->
+    <servlet-mapping>
+        <servlet-name>OrderView</servlet-name>
+        <url-pattern>/Admin/OrderView</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ManageOrderServlet</servlet-name>
+        <url-pattern>/Admin/OrderServlet</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>CartManagementServlet</servlet-name>
         <url-pattern>/Cart</url-pattern>
-    </servlet-mapping>
-    <servlet>
-        <servlet-name>RoleServlet</servlet-name>
-        <servlet-class>Controller.RoleServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>RoleServlet</servlet-name>
-        <url-pattern>/Admin/RoleServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ProfileStaffServlet</servlet-name>
@@ -393,14 +381,6 @@
         <url-pattern>/Admin/NotificationServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>OrderCustomerServlet</servlet-name>
-        <url-pattern>/purchase</url-pattern>
-    </servlet-mapping>
-        <servlet-mapping>
-        <servlet-name>NotificationServlet</servlet-name>
-        <url-pattern>/Admin/NotificationServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>AjaxSearchServlet</servlet-name>
         <url-pattern>/AjaxSearchServlet</url-pattern>
     </servlet-mapping>
@@ -408,6 +388,17 @@
         <servlet-name>MarkNotificationReadServlet</servlet-name>
         <url-pattern>/MarkNotificationReadServlet</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OrderCustomerServlet</servlet-name>
+        <url-pattern>/purchase</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RoleServlet</servlet-name>
+        <url-pattern>/Admin/RoleServlet</url-pattern>
+    </servlet-mapping>
+
+    <!-- Session Timeout -->
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
+</web-app>
