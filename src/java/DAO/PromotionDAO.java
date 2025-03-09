@@ -287,17 +287,17 @@ public class PromotionDAO extends DBConnect.DBConnection {
 //            e.printStackTrace();
 //        }
 //    }
-        public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        try {
-            PromotionDAO dao = new PromotionDAO();
-            List<Promotion> list = dao.getAllPromotionsPerPage(0, 5);
-            for (Promotion P : list) {
-                System.out.println(P);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+//        public static void main(String[] args) throws SQLException, ClassNotFoundException {
+//        try {
+//            PromotionDAO dao = new PromotionDAO();
+//            List<Promotion> list = dao.getAllPromotionsPerPage(0, 5);
+//            for (Promotion P : list) {
+//                System.out.println(P);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//    }
 //    public static void main(String[] args) {
 //        try {
 //            // Tạo đối tượng Promotion với dữ liệu mẫu
@@ -317,6 +317,46 @@ public class PromotionDAO extends DBConnect.DBConnection {
 //            promotionDAO.addPromotion(pro);
 //
 //            System.out.println("Thêm khuyến mãi thành công!");
+//        } catch (SQLException | ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//        
+//            public static void main(String[] args) {
+//        try {
+//            PromotionDAO promotionDAO = new PromotionDAO();
+//            
+//            // Chọn ID của một khuyến mãi có sẵn trong cơ sở dữ liệu
+//            int promotionId = 3; // Thay đổi ID phù hợp với dữ liệu thực tế
+//
+//            // Lấy thông tin khuyến mãi hiện tại
+//            Promotion existingPromotion = promotionDAO.getById(promotionId);
+//            
+//            if (existingPromotion != null) {
+//                System.out.println("Trước khi cập nhật:");
+//                System.out.println(existingPromotion);
+//                
+//                // Cập nhật thông tin khuyến mãi
+//                existingPromotion.setName("Khuyến mãi mùa hè");
+//                existingPromotion.setDescription("Giảm giá đặc biệt mùa hè 2025");
+//                existingPromotion.setDiscountPercent(20.0);
+//                existingPromotion.setStartDate(Date.valueOf("2025-06-01"));
+//                existingPromotion.setEndDate(Date.valueOf("2025-06-30"));
+//                existingPromotion.setStatus("Active");
+//                existingPromotion.setUpdatedAt(new Date(System.currentTimeMillis()));
+//
+//                // Gọi phương thức update
+//                promotionDAO.updatePromotion(existingPromotion);
+//                
+//                // Lấy lại dữ liệu sau cập nhật để kiểm tra
+//                Promotion updatedPromotion = promotionDAO.getById(promotionId);
+//                
+//                System.out.println("Sau khi cập nhật:");
+//                System.out.println(updatedPromotion);
+//                
+//            } else {
+//                System.out.println("Không tìm thấy khuyến mãi có ID: " + promotionId);
+//            }
 //        } catch (SQLException | ClassNotFoundException e) {
 //            e.printStackTrace();
 //        }

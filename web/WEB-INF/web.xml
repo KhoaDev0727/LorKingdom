@@ -202,6 +202,10 @@
         <servlet-name>AddPromotionServlet</servlet-name>
         <servlet-class>Controller.AddPromotionServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UpdatePromotionServlet</servlet-name>
+        <servlet-class>Controller.UpdatePromotionServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>VerifyCodeServlet</servlet-name>
         <url-pattern>/VerifyCodeServlet</url-pattern>
@@ -397,6 +401,10 @@
     <servlet-mapping>
         <servlet-name>AddPromotionServlet</servlet-name>
         <url-pattern>/Admin/addPromotion</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdatePromotionServlet</servlet-name>
+        <url-pattern>/Admin/UpdatePromotion</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

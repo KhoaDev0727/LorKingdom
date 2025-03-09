@@ -8,7 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Dashboard - Order Management</title>
+        <title>Dashboard - Promotion Management</title>
         <!-- External CSS and JS -->
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="CSS/style.css" />
@@ -34,205 +34,304 @@
                             </div>
                         </c:if>
 
-                        <!-- Tìm kiếm -->
                         <div class="search-box mb-3">
-                            <form action="${pageContext.request.contextPath}/promotionController" method="POST" class="input-group">
+                            <form action="${pageContext.request.contextPath}/Admin/promotionController" method="POST" class="input-group">
                                 <input type="hidden" name="action" value="search">
                                 <input type="text" name="promotionName" class="form-control" placeholder="Enter Name" required>
-                                <button class="btn btn-outline-primary" type="submit"><i class="fas fa-search"></i> Search</button>
-                                <a href="${pageContext.request.contextPath}/Admin/promotionController" class="btn btn-outline-secondary"><i class="fas fa-sync"></i> Reset</a>
+                                <button class="btn btn-outline-primary" type="submit"><i class="fas fa-search"></i></button>
                             </form>
                         </div>
 
                         <!-- Form tìm kiếm theo mức giảm giá -->
                         <div class="search-box mb-3">
-                            <form action="${pageContext.request.contextPath}/promotionController" method="POST" class="input-group">
+                            <form action="${pageContext.request.contextPath}/Admin/promotionController" method="POST" class="input-group">
                                 <input type="hidden" name="action" value="searchByDiscount">
                                 <input type="number" step="0.1" name="minDiscount" class="form-control" placeholder="Enter minimum discount %" required>
-                                <button class="btn btn-outline-primary" type="submit"><i class="fas fa-search"></i> Search</button>
+                                <button class="btn btn-outline-primary" type="submit"><i class="fas fa-search"></i></button>
                             </form>
                         </div>
 
-                        
+                    </div>
+                    <!-- Nút Thêm Khuyến Mãi -->
+                    <div class="text-end mb-3">
+                        <!-- Thay vì điều hướng đến trang mới, chúng ta mở Modal -->
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addPromotionModal">
+                            <i class="fas fa-plus"></i> Add Promotion
+                        </button>
+                    </div>
 
-                        <!-- Nút Thêm Khuyến Mãi -->
-                        <div class="text-end mb-3">
-                            <!-- Thay vì điều hướng đến trang mới, chúng ta mở Modal -->
-                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addPromotionModal">
-                                <i class="fas fa-plus"></i> Add Promotion
-                            </button>
-                        </div>
+                    <!-- Modal Thêm Khuyến Mãi -->
+                    <div class="modal fade" id="addPromotionModal" tabindex="-1" aria-labelledby="addPromotionModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="addPromotionModalLabel">Add New Promotion</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="addPromotion" id="addPromotionForm" method="post">
+                                        <div class="mb-3">
+                                            <label for="productID" class="form-label">Select Product</label>
+                                            <select name="productID" id="productID" class="form-select" required>
+                                                <option value="">-- Select Product --</option>
+                                                <c:forEach var="product" items="${productList}">
+                                                    <option value="${product.productID}">${product.productID} - ${product.name}</option>
+                                                </c:forEach>
+                                            </select>
+                                        </div>
 
-                        <!-- Modal Thêm Khuyến Mãi -->
-                        <div class="modal fade" id="addPromotionModal" tabindex="-1" aria-labelledby="addPromotionModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="addPromotionModalLabel">Add New Promotion</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form action="addPromotion" method="post">
-                                            <div class="mb-3">
-                                                <label for="productID" class="form-label">Select Product</label>
-                                                <select name="productID" id="productID" class="form-select" required>
-                                                    <option value="">-- Select Product --</option>
-                                                    <c:forEach var="product" items="${productList}">
-                                                        <option value="${product.productID}">${product.productID} - ${product.name}</option>
-                                                    </c:forEach>
-                                                </select>
-                                            </div>
+                                        <div class="mb-3">
+                                            <label for="name" class="form-label">Promotion Name</label>
+                                            <input type="text" name="name" class="form-control" required>
+                                        </div>
 
-                                            <div class="mb-3">
-                                                <label for="name" class="form-label">Promotion Name</label>
-                                                <input type="text" name="name" class="form-control" required>
-                                            </div>
+                                        <div class="mb-3">
+                                            <label for="description" class="form-label">Description</label>
+                                            <textarea name="description" class="form-control" required></textarea>
+                                        </div>
 
-                                            <div class="mb-3">
-                                                <label for="description" class="form-label">Description</label>
-                                                <textarea name="description" class="form-control" required></textarea>
-                                            </div>
+                                        <div class="mb-3">
+                                            <label for="discountPercent" class="form-label">Discount Percent</label>
+                                            <input type="number" step="0.01" name="discountPercent" class="form-control" required>
+                                        </div>
 
-                                            <div class="mb-3">
-                                                <label for="discountPercent" class="form-label">Discount Percent</label>
-                                                <input type="number" step="0.01" name="discountPercent" class="form-control" required>
-                                            </div>
+                                        <div class="mb-3">
+                                            <label for="startDate" class="form-label">Start Date</label>
+                                            <input type="date" name="startDate" class="form-control" required>
+                                        </div>
 
-                                            <div class="mb-3">
-                                                <label for="startDate" class="form-label">Start Date</label>
-                                                <input type="date" name="startDate" class="form-control" required>
-                                            </div>
+                                        <div class="mb-3">
+                                            <label for="endDate" class="form-label">End Date</label>
+                                            <input type="date" name="endDate" class="form-control" required>
+                                        </div>
 
-                                            <div class="mb-3">
-                                                <label for="endDate" class="form-label">End Date</label>
-                                                <input type="date" name="endDate" class="form-control" required>
-                                            </div>
+                                        <div class="mb-3">
+                                            <label for="status" class="form-label">Status</label>
+                                            <select name="status" class="form-select">
+                                                <option value="Active">Active</option>
+                                                <option value="Expired">Expired</option>
+                                            </select>
+                                        </div>
 
-                                            <div class="mb-3">
-                                                <label for="status" class="form-label">Status</label>
-                                                <select name="status" class="form-select">
-                                                    <option value="Active">Active</option>
-                                                    <option value="Expired">Expired</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="d-grid">
-                                                <button type="submit" class="btn btn-success">Add Promotion</button>
-                                            </div>
-                                        </form>
-                                    </div>
+                                        <div class="d-grid">
+                                            <button type="submit" class="btn btn-success">Add Promotion</button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Order List Table -->
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <i class="fas fa-table me-1"></i> Promotion List
-                                    </div>
+                    </div>
+                    <!-- Order List Table -->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-table me-1"></i> Promotion List
                                 </div>
                             </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-striped table-hover">
-                                        <thead class="table-dark text-center">
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover">
+                                    <thead class="table-dark text-center">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>ProductID</th>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>DiscountPercent (%)</th>
+                                            <th>StartDate</th>
+                                            <th>EndDate</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>                                           
+                                        <c:forEach items="${listP}" var="o">
                                             <tr>
-                                                <th>ID</th>
-                                                <th>ProductID</th>
-                                                <th>Name</th>
-                                                <th>Description</th>
-                                                <th>DiscountPercent (%)</th>
-                                                <th>StartDate</th>
-                                                <th>EndDate</th>
-                                                <th>Status</th>
-                                                <th>CreatedAt</th>
-                                                <th>UpdatedAt</th>
-                                                <th>Action</th>
+                                                <td>${o.promotionID}</td>
+                                                <td>${o.productID}</td>
+                                                <td>${o.name}</td>
+                                                <td>${o.description}</td>
+                                                <td>${o.discountPercent}%</td>
+                                                <td>${o.startDate}</td>
+                                                <td>${o.endDate}</td>
+                                                <td><span class="badge ${o.status == 'Active' ? 'bg-success' : 'bg-danger'}">${o.status}</span></td>
+                                                <td class="text-center">
+                                                    <button class="btn btn-sm btn-primary" onclick="openEditModal('${o.promotionID}', '${o.productID}', '${o.name}', '${o.description}', '${o.discountPercent}', '${o.startDate}', '${o.endDate}', '${o.status}')">
+                                                        <i class="fas fa-edit"></i> 
+                                                    </button>
+                                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" onclick="setDeletePromotionID(${o.promotionID})">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+
+
+                                                </td>
                                             </tr>
-                                        </thead>
-                                        <tbody>
-                                                    <c:forEach items="${listP}" var="o">
-                                                        <tr>
-                                                            <td>${o.promotionID}</td>
-                                                            <td>${o.productID}</td>
-                                                            <td>${o.name}</td>
-                                                            <td>${o.description}</td>
-                                                            <td>${o.discountPercent}%</td>
-                                                            <td>${o.startDate}</td>
-                                                            <td>${o.endDate}</td>
-                                                            <td>
-                                                                <span class="badge ${o.status == 'Active' ? 'bg-success' : 'bg-danger'}">
-                                                                    ${o.status}
-                                                                </span>
-                                                            </td>
-                                                            <td>${o.createdAt}</td>
-                                                            <td>${o.updatedAt}</td>
-                                                            <td class="text-center">
-                                                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" onclick="setDeletePromotionID(${o.promotionID})">
-                                                                    <i class="fas fa-trash"></i> 
-                                                                </button>
 
-                                                                <a href="${pageContext.request.contextPath}/updatePromotion?id=${o.promotionID}" class="btn btn-sm btn-primary">
-                                                                    <i class="fas fa-edit"></i> 
-                                                                </a>
-                                                            </td>
-
-
-                                                        </tr>
-                                                    </c:forEach>                        
-                                        </tbody>
-                                    </table>
-                                </div>
+                                        </c:forEach>                          
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-
-                        <!-- Pagination -->
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination justify-content-center">
-                                <c:forEach begin="1" end="${endPage}" var="i">
-                                    <li class="page-item <c:if test='${i == currentPage}'>active</c:if>'">
-                                        <a class="page-link" href="${pageContext.request.contextPath}/Admin/promotionController?index=${i}">${i}</a>
-                                    </li>
-                                </c:forEach>
-                            </ul>
-                        </nav>
                     </div>
-                </main>
+
+                    <!-- Pagination -->
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            <c:forEach begin="1" end="${endPage}" var="i">
+                                <li class="page-item <c:if test='${i == currentPage}'>active</c:if>'">
+                                    <a class="page-link" href="${pageContext.request.contextPath}/Admin/promotionController?index=${i}">${i}</a>
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </nav>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Modal Xác Nhận Xóa -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger" id="confirmDeleteModalLabel"><i class="fas fa-exclamation-triangle"></i> Xác Nhận Xóa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn xóa khuyến mãi này không?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <form id="deleteForm" method="POST" action="promotionController">
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="promotionID" id="deletePromotionID">
+                    <button type="submit" class="btn btn-danger">Xóa</button>
+                </form>
             </div>
         </div>
-
-        <!-- Modal Xác Nhận Xóa -->
-        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title text-danger" id="confirmDeleteModalLabel"><i class="fas fa-exclamation-triangle"></i> Xác Nhận Xóa</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        Bạn có chắc chắn muốn xóa khuyến mãi này không?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <form id="deleteForm" method="POST" action="promotionController">
-                            <input type="hidden" name="action" value="delete">
-                            <input type="hidden" name="promotionID" id="deletePromotionID">
-                            <button type="submit" class="btn btn-danger">Xóa</button>
-                        </form>
-                    </div>
-                </div>
+    </div>
+</div>
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="errorModalLabel">Lỗi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ${errorModal}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="redirectToPromotion()">Quay lại</button>
             </div>
         </div>
+    </div>
+</div>      
 
-        <!-- Script to Set Order ID for Deletion -->
-        <script>
-            function setDeletePromotionID(promotionID) {
-                document.getElementById('deletePromotionID').value = promotionID;
-            }
-        </script>
-    </body>
+
+<!-- Modal Cập Nhật Khuyến Mãi -->
+<div class="modal fade" id="editPromotionModal" tabindex="-1" aria-labelledby="editPromotionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editPromotionModalLabel">Update Promotion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="UpdatePromotion" method="post">
+                    <input type="hidden" id="editPromotionID" name="promotionID">
+
+                    <div class="mb-3">
+                        <label for="editProductID" class="form-label">Select Product</label>
+                        <select name="productID" id="editProductID" class="form-select" required>
+                            <option value="">-- Select Product --</option>
+                            <c:forEach var="product" items="${productList}">
+                                <option value="${product.productID}">${product.productID} - ${product.name}</option>
+                            </c:forEach>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editName" class="form-label">Promotion Name</label>
+                        <input type="text" id="editName" name="name" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editDescription" class="form-label">Description</label>
+                        <textarea id="editDescription" name="description" class="form-control" required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editDiscountPercent" class="form-label">Discount Percent</label>
+                        <input type="number" step="0.01" id="editDiscountPercent" name="discountPercent" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editStartDate" class="form-label">Start Date</label>
+                        <input type="date" id="editStartDate" name="startDate" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editEndDate" class="form-label">End Date</label>
+                        <input type="date" id="editEndDate" name="endDate" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editStatus" class="form-label">Status</label>
+                        <select name="status" id="editStatus" class="form-select">
+                            <option value="Active">Active</option>
+                            <option value="Expired">Expired</option>
+                        </select>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Update Promotion</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script to Set Order ID for Deletion -->
+<!-- Script Xóa -->
+<script>
+    function setDeletePromotionID(promotionID) {
+        document.getElementById('deletePromotionID').value = promotionID;
+    }
+</script>
+<!-- Script mở Modal -->
+<script>
+    function openEditModal(id, productID, name, description, discountPercent, startDate, endDate, status) {
+        document.getElementById("editPromotionID").value = id;
+        document.getElementById("editProductID").value = productID;
+        document.getElementById("editName").value = name;
+        document.getElementById("editDescription").value = description;
+        document.getElementById("editDiscountPercent").value = discountPercent;
+        document.getElementById("editStartDate").value = startDate;
+        document.getElementById("editEndDate").value = endDate;
+        document.getElementById("editStatus").value = status;
+        new bootstrap.Modal(document.getElementById("editPromotionModal")).show();
+    }
+</script>
+<script>
+    function redirectToPromotion() {
+        window.location.href = "promotionController";
+    }
+    // Kiểm tra nếu có lỗi thì bật modal
+    window.onload = function () {
+        var errorMessage = "${errorModal}";
+        if (errorMessage.trim() !== "") {
+            var errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
+            errorModal.show();
+        }
+    };
+</script>
+
+</body>
 </html>
 
 

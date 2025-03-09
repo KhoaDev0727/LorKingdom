@@ -33,9 +33,9 @@ public class AddPromotionServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            PromotionDAO dao = new PromotionDAO();
+             
+            PromotionDAO dao = new PromotionDAO();       
             List<Product> productList = dao.getAllProducts(); // Lấy danh sách sản phẩm
-
             request.setAttribute("productList", productList);
         } catch (Exception e) {
         }
@@ -75,8 +75,8 @@ public class AddPromotionServlet extends HttpServlet {
 
             if (promotionDAO.isPromotionExist(name, discountPercent)) {
                 // Nếu promotion với cùng tên và cùng % giảm giá đã tồn tại, không thêm vào
-                request.setAttribute("errorMessage", "Khuyến mãi đã tồn tại với cùng tên và phần trăm giảm giá!");
-                request.getRequestDispatcher("addPromotion.jsp").forward(request, response);
+                request.setAttribute("errorModal", "Khuyến mãi đã tồn tại với cùng tên và phần trăm giảm giá!");
+                request.getRequestDispatcher("PromotionController.jsp").forward(request, response);
                 return;
             } else if (promotionDAO.isPromotionWithNameExist(name)) {
                 // Nếu đã có promotion với tên này nhưng khác % giảm giá, vẫn cho phép thêm
@@ -91,8 +91,8 @@ public class AddPromotionServlet extends HttpServlet {
 
         } catch (SQLException | ClassNotFoundException | NumberFormatException e) {
             e.printStackTrace();
-            request.setAttribute("errorMessage", "Có lỗi xảy ra, vui lòng thử lại!");
-            request.getRequestDispatcher("addPromotion.jsp").forward(request, response);
+            request.setAttribute("errorModal", "Khuyến mãi đã tồn tại với cùng tên và phần trăm giảm giá!");
+            request.getRequestDispatcher("PromotionController.jsp").forward(request, response);
         }
     }
 
