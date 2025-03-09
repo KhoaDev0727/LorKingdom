@@ -1,6 +1,7 @@
 package Controller;
 
 import DAO.PromotionDAO;
+import DAO.RoleDAO;
 import Model.Product;
 import Model.Promotion;
 import java.io.IOException;
@@ -10,8 +11,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 public class PromotionController extends HttpServlet {
+
+    RoleDAO roleDAO = new RoleDAO();
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -50,7 +54,14 @@ public class PromotionController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession();
+        Integer userRoleID = (Integer) session.getAttribute("roleID");
+        if (userRoleID == null) {
+            response.sendRedirect(request.getContextPath() + "/Admin/loginPage.jsp");
+            return;
+        } else {
+            processRequest(request, response);
+        }
     }
 
     @Override
@@ -60,7 +71,6 @@ public class PromotionController extends HttpServlet {
 
         try {
             PromotionDAO dao = new PromotionDAO();
-
             // Xóa khuyến mãi
             if ("delete".equals(action)) {
                 int proId = Integer.parseInt(request.getParameter("promotionID"));
@@ -84,7 +94,7 @@ public class PromotionController extends HttpServlet {
                 List<Promotion> promotionList = dao.searchPromotionByDiscount(minDiscount);
                 request.setAttribute("promotionList", promotionList);
                 request.setAttribute("minDiscount", minDiscount);
-                request.getRequestDispatcher("Admin/PromotionSearchResult.jsp").forward(request, response);
+                request.getRequestDispatcher("PromotionSearchResult.jsp").forward(request, response);
                 return;
             }
 

@@ -165,8 +165,6 @@
                                                     <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" onclick="setDeletePromotionID(${o.promotionID})">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
-
-
                                                 </td>
                                             </tr>
 
