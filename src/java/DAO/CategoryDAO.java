@@ -102,17 +102,23 @@ public class CategoryDAO {
         return categories;
     }
 
-    public boolean isCategoryExists(String name) throws SQLException, ClassNotFoundException {
-        String query = "SELECT COUNT(*) FROM Category WHERE Name = ?";
+    public boolean isCategoryExists(String name, int categoryID) throws SQLException, ClassNotFoundException {
+        String query;
+        if (categoryID <= 0) {
+            query = "SELECT COUNT(*) FROM Category WHERE Name = ?";
+        } else {
+            query = "SELECT COUNT(*) FROM Category WHERE Name = ? AND CategoryID <> ?";
+        }
+
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, name);
+            if (categoryID > 0) {
+                ps.setInt(2, categoryID);
+            }
             try ( ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     int count = rs.getInt(1);
-                    if (count > 1) {
-                        throw new SQLException("Multiple categories found with the name: " + name);
-                    }
-                    return count == 1;
+                    return count > 0;
                 }
             }
         }

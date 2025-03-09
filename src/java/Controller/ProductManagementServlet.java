@@ -24,7 +24,7 @@ import org.jsoup.Jsoup;
 
 /**
  *
- * @author Truong Van Khang - CE181852
+ * @author Le Trong Luan - CE181151
  */
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024 * 2, // 2MB
@@ -122,6 +122,14 @@ public class ProductManagementServlet extends HttpServlet {
                 request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
                 return;
             }
+
+            String cleanedPriceStart = priceStartStr.replaceAll("[^\\d]", "");
+            if (cleanedPriceStart.length() < 4) {
+                session.setAttribute("errorMessage", "Giá trị phải có ít nhất 4 chữ số.");
+                request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
+                return;
+            }
+
             String plainTextContent = Jsoup.parse(description).text();
             if (plainTextContent == null || plainTextContent.trim().isEmpty()) {
                 request.getSession().setAttribute("errorMessage", "Miêu tả không được để trống.");

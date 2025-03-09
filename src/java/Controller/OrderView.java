@@ -64,8 +64,6 @@ public class OrderView extends HttpServlet {
         processRequest(request, response);
     }
 
-    
-
     /**
      * Handles the HTTP <code>POST</code> method.
      *
@@ -88,11 +86,9 @@ public class OrderView extends HttpServlet {
                 try {
                     // Chuyển đổi minAmountStr thành BigDecimal
                     Double minAmount = new Double(minAmountStr);
-
                     // Gọi phương thức tìm kiếm từ DAO
                     OrderDAO dao = new OrderDAO();
                     List<Order> list = dao.searchByMoney(minAmount);
-
                     // Lưu kết quả vào request và chuyển tiếp tới trang JSP
                     request.setAttribute("listO", list); // Lưu kết quả tìm kiếm vào request
                     request.getRequestDispatcher("OrderManagement.jsp").forward(request, response);

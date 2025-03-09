@@ -17,6 +17,33 @@ public class OrderDetail {
     private int quantity;
     float unitPrice;
     float discount;
+    private String productImage;
+    private int productID;
+    private double Price;
+
+    public String getProductImage() {
+        return productImage;
+    }
+
+    public void setProductImage(String productImage) {
+        this.productImage = productImage;
+    }
+
+    public int getProductID() {
+        return productID;
+    }
+
+    public void setProductID(int productID) {
+        this.productID = productID;
+    }
+
+    public double getPrice() {
+        return Price;
+    }
+
+    public void setPrice(double Price) {
+        this.Price = Price;
+    }
 
     public OrderDetail() {
     }
@@ -82,6 +109,7 @@ public class OrderDetail {
     public String toString() {
         return "OrderDetail{" + "orderDetailID=" + orderDetailID + ", orderID=" + orderID + ", productName=" + productName + ", quantity=" + quantity + ", unitPrice=" + unitPrice + ", discount=" + discount + '}';
     }
+
 
     
     
