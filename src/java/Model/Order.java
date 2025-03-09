@@ -4,7 +4,9 @@
  */
 package Model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -21,6 +23,7 @@ public class Order {
     private float totalAmount;
     private Date createdAt;
     private Date updatedAt;
+    private List<OrderDetail> orderDetails = new ArrayList<>();
 
     public Order() {
     }
@@ -114,9 +117,13 @@ public class Order {
         return "Order{" + "orderId=" + orderId + ", accountName=" + accountName + ", payMentMethodName=" + payMentMethodName + ", shipingMethodName=" + shipingMethodName + ", orderDate=" + orderDate + ", status=" + status + ", totalAmount=" + totalAmount + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + '}';
     }
 
-    
-    
+    public List<OrderDetail> getOrderDetails() {
+        return orderDetails;
+    }
 
-    
+    public void addOrderDetail(OrderDetail detail) {
+        this.orderDetails.add(detail);
+    }
+
 
 }
