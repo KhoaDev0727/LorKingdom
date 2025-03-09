@@ -195,6 +195,12 @@
         <servlet-class>Controller.NotificationServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>AjaxSearchServlet</servlet-name>
+        <servlet-class>Controller.AjaxSearchServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>MarkNotificationReadServlet</servlet-name>
+        <servlet-class>Controller.MarkNotificationReadServlet</servlet-class>
         <servlet-name>OrderCustomerServlet</servlet-name>
         <servlet-class>Controller.OrderCustomerServlet</servlet-class>
     </servlet>
@@ -390,7 +396,18 @@
         <servlet-name>OrderCustomerServlet</servlet-name>
         <url-pattern>/purchase</url-pattern>
     </servlet-mapping>
+        <servlet-mapping>
+        <servlet-name>NotificationServlet</servlet-name>
+        <url-pattern>/Admin/NotificationServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AjaxSearchServlet</servlet-name>
+        <url-pattern>/AjaxSearchServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MarkNotificationReadServlet</servlet-name>
+        <url-pattern>/MarkNotificationReadServlet</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
-</web-app>
