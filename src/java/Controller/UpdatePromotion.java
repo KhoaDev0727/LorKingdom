@@ -42,8 +42,8 @@ public class UpdatePromotion extends HttpServlet {
             Date endDate = convertStringToSQLDate(request.getParameter("endDate"));
             Date updatedAt = new Date(System.currentTimeMillis());
 
-            // Kiểm tra xem promotion đã tồn tại chưa
-            if (promotionDAO.isPromotionExist(name, discountPercent)) {
+            // Kiểm tra xem promotion đã tồn tại nhưng bỏ qua chính nó khi cập nhật
+            if (promotionDAO.isPromotionExistForUpdate(promotionID, name, discountPercent)) {
                 request.getSession().setAttribute("errorModal", "Promotion already exists with the same name and discount percent.");
                 response.sendRedirect("promotionController");
                 return;

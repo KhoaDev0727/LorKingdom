@@ -260,6 +260,20 @@ public class PromotionDAO extends DBConnect.DBConnection {
         }
         return promotions;
     }
+    public boolean isPromotionExistForUpdate(int promotionID, String name, double discountPercent) throws SQLException, ClassNotFoundException {
+    String sql = "SELECT COUNT(*) FROM Promotions WHERE name = ? AND discountPercent = ? AND PromotionID <> ?";
+    try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, name);
+        ps.setDouble(2, discountPercent);
+        ps.setInt(3, promotionID);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1) > 0;
+        }
+    }
+    return false;
+}
+
 
 //      public static void main(String[] args) {
 //        PromotionDAO promotionDAO = new PromotionDAO(); // Tạo đối tượng DAO
