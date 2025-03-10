@@ -33,8 +33,8 @@ public class AddPromotionServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-             
-            PromotionDAO dao = new PromotionDAO();       
+
+            PromotionDAO dao = new PromotionDAO();
             List<Product> productList = dao.getAllProducts(); // Lấy danh sách sản phẩm
             request.setAttribute("productList", productList);
         } catch (Exception e) {
@@ -75,17 +75,19 @@ public class AddPromotionServlet extends HttpServlet {
 
             if (promotionDAO.isPromotionExist(name, discountPercent)) {
                 // Nếu promotion với cùng tên và cùng % giảm giá đã tồn tại, không thêm vào
-                request.setAttribute("errorModal", "Khuyến mãi đã tồn tại với cùng tên và phần trăm giảm giá!");
-                request.getRequestDispatcher("PromotionController.jsp").forward(request, response);
+                request.getSession().setAttribute("errorModal", "Khuyến mãi đã tồn tại với cùng tên và phần trăm giảm giá!");
+                 response.sendRedirect("promotionController");
                 return;
             } else if (promotionDAO.isPromotionWithNameExist(name)) {
                 // Nếu đã có promotion với tên này nhưng khác % giảm giá, vẫn cho phép thêm
                 promotionDAO.addPromotion(pro);
-                response.sendRedirect("promotionController");
+                request.getSession().setAttribute("successModal", "Thêm khuyến mãi thành công!");
+                 response.sendRedirect("promotionController");
                 return;
             } else {
                 // Nếu chưa có promotion nào trùng tên, thêm bình thường
                 promotionDAO.addPromotion(pro);
+                request.getSession().setAttribute("successModal", "Thêm khuyến mãi thành công!");
                 response.sendRedirect("promotionController");
             }
 

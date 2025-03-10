@@ -196,18 +196,18 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Deletion</h5>
+                        <h5 class="modal-title text-danger" id="confirmDeleteModalLabel"><i class="fas fa-exclamation-triangle"></i> Xác Nhận Xóa</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Are you sure you want to delete this order?
+                        Bạn có chắc chắn muốn xóa khuyến mãi này không?
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <form id="deleteForm" method="POST" action="OrderServlet">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <form id="deleteForm" method="POST" action="promotionController">
                             <input type="hidden" name="action" value="delete">
-                            <input type="hidden" name="orderId" id="deleteOrderID">
-                            <button type="submit" class="btn btn-danger">Delete</button>
+                            <input type="hidden" name="promotionID" id="deletePromotionID">
+                            <button type="submit" class="btn btn-danger">Xóa</button>
                         </form>
                     </div>
                 </div>
@@ -276,22 +276,57 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <%-- Hiển thị modal khi có thông báo --%>
+        <%-- Hiển thị modal khi có thông báo --%>
+        <% 
+            String successMessage = (String) session.getAttribute("successModal");
+            String errorMessage = (String) session.getAttribute("errorModal");
+        %>
+
+        <!-- Bootstrap Modal -->
+        <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header bg-danger text-white">
-                        <h5 class="modal-title" id="errorModalLabel">Lỗi</h5>
+                    <div class="modal-header">
+                        <h5 class="modal-title text-center" id="notificationModalLabel">
+                            <%= (successMessage != null) ? "Thành Công" : "Lỗi" %>
+                        </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        ${errorModal}
+                    <div class="modal-body text-center">
+                        <p class="<%= (successMessage != null) ? "text-success" : "text-danger" %> fw-bold">
+                            <%= (successMessage != null) ? successMessage : errorMessage %>
+                        </p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="redirectToPromotion()">Quay lại</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                     </div>
                 </div>
             </div>
-        </div>      
+        </div>
+
+        <!-- Script Hiển Thị Modal -->
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var successMessage = "<%= successMessage %>";
+                var errorMessage = "<%= errorMessage %>";
+
+                if (successMessage.trim() !== "null" || errorMessage.trim() !== "null") {
+                    var myModal = new bootstrap.Modal(document.getElementById("notificationModal"));
+                    myModal.show();
+
+                    // Tự động đóng modal sau 3 giây
+                    setTimeout(() => {
+                        myModal.hide();
+                    }, 3000);
+                }
+            });
+        </script>
+
+        <%-- Xóa thông báo khỏi session để không hiển thị lại --%>
+        <% session.removeAttribute("successModal"); %>
+        <% session.removeAttribute("errorModal"); %>
+
 
 
         <!-- Script to Set Order ID for Deletion -->
@@ -328,6 +363,7 @@
                 }
             };
         </script>
+
 
     </body>
 </html>
