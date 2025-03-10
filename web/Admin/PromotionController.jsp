@@ -276,20 +276,17 @@
                 </div>
             </div>
         </div>
-        <%-- Hiển thị modal khi có thông báo --%>
-        <%-- Hiển thị modal khi có thông báo --%>
         <% 
             String successMessage = (String) session.getAttribute("successModal");
             String errorMessage = (String) session.getAttribute("errorModal");
         %>
-
         <!-- Bootstrap Modal -->
         <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title text-center" id="notificationModalLabel">
-                            <%= (successMessage != null) ? "Thành Công" : "Lỗi" %>
+                            <%= (successMessage != null) ? "Success" : "Error" %>
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
@@ -304,25 +301,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Script Hiển Thị Modal -->
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                var successMessage = "<%= successMessage %>";
-                var errorMessage = "<%= errorMessage %>";
-
-                if (successMessage.trim() !== "null" || errorMessage.trim() !== "null") {
-                    var myModal = new bootstrap.Modal(document.getElementById("notificationModal"));
-                    myModal.show();
-
-                    // Tự động đóng modal sau 3 giây
-                    setTimeout(() => {
-                        myModal.hide();
-                    }, 3000);
-                }
-            });
-        </script>
-
         <%-- Xóa thông báo khỏi session để không hiển thị lại --%>
         <% session.removeAttribute("successModal"); %>
         <% session.removeAttribute("errorModal"); %>
@@ -350,18 +328,22 @@
                 new bootstrap.Modal(document.getElementById("editPromotionModal")).show();
             }
         </script>
+                <!-- Script Hiển Thị Modal -->
         <script>
-            function redirectToPromotion() {
-                window.location.href = "promotionController";
-            }
-            // Kiểm tra nếu có lỗi thì bật modal
-            window.onload = function () {
-                var errorMessage = "${errorModal}";
-                if (errorMessage.trim() !== "") {
-                    var errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
-                    errorModal.show();
+            document.addEventListener("DOMContentLoaded", function () {
+                var successMessage = "<%= successMessage %>";
+                var errorMessage = "<%= errorMessage %>";
+
+                if (successMessage.trim() !== "null" || errorMessage.trim() !== "null") {
+                    var myModal = new bootstrap.Modal(document.getElementById("notificationModal"));
+                    myModal.show();
+
+                    // Tự động đóng modal sau 3 giây
+                    setTimeout(() => {
+                        myModal.hide();
+                    }, 3000);
                 }
-            };
+            });
         </script>
 
 
