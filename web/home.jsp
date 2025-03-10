@@ -24,39 +24,86 @@
         <jsp:include page="assets/Component/header.jsp"/>
         <!-- end Header Section -->
 
-        <section class="banner-section" > 
-            <div id="horizontalBannerCarousel" class="carousel slide" data-bs-ride="carousel">
-                <!-- Indicators/Dots -->
-                <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#horizontalBannerCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                    <button type="button" data-bs-target="#horizontalBannerCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                    <button type="button" data-bs-target="#horizontalBannerCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        <!---------------------------------- Banner Section ---------------------------------->
+        <section id="hero" class="hero section dark-background">
+
+            <div id="hero-carousel" data-bs-interval="5000" class="container carousel carousel-fade"
+                 data-bs-ride="carousel">
+
+                <!-- Slide 1 -->
+                <div class="carousel-item active">
+                    <div class="carousel-container">
+                        <img src="./assets/img/banner01.png" alt="">
+                    </div>
                 </div>
 
-                <!-- Slides -->
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <img src="./assets/img/banner1.png" class="d-block w-100" alt="Banner 1">
+                <!-- Slide 2 -->
+                <div class="carousel-item">
+                    <div class="carousel-container">
+                        <img src="./assets/img/banner02.png" alt="">
                     </div>
-                    <div class="carousel-item">
-                        <img src="./assets/img/banner2.png" class="d-block w-100" alt="Banner 2">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="./assets/img/banner3.png" class="d-block w-100" alt="Banner 3">
-                    </div>
-                </div >
+                </div>
 
-                <!-- Controls/Arrows -->
-                <button class="carousel-control-prev" type="button" data-bs-target="#horizontalBannerCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button id="resultsCount" class="carousel-control-next" type="button" data-bs-target="#horizontalBannerCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
+                <!-- Slide 3 -->
+                <div class="carousel-item">
+                    <div class="carousel-container">
+                        <img src="./assets/img/banner2.png" alt="">
+                    </div>
+                </div>
+
+                <a class="carousel-control-prev" href="#hero-carousel" role="button" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon bi bi-chevron-left" aria-hidden="true"></span>
+                </a>
+
+                <a class="carousel-control-next" href="#hero-carousel" role="button" data-bs-slide="next">
+                    <span class="carousel-control-next-icon bi bi-chevron-right" aria-hidden="true"></span>
+                </a>
+
             </div>
-        </section>
+
+            <svg class="hero-waves" viewBox="0 24 150 28 " preserveAspectRatio="none">
+            <defs>
+            <path id="wave-path" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z">
+            </path>
+            </defs>
+            <g class="wave1">
+            <use xlink:href="#wave-path" x="50" y="3"></use>
+            </g>
+            <g class="wave2">
+            <use xlink:href="#wave-path" x="50" y="0"></use>
+            </g>
+            <g class="wave3">
+            <use xlink:href="#wave-path" x="50" y="9"></use>
+            </g>
+            </svg>
+
+        </section><!-- /Hero Section -->
+
+
+        <!-- Call To Action Section -->
+        <section id="call-to-action" class="call-to-action section dark-background">
+
+            <div class="container">
+
+                <div class="row" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="col-xl-9 text-center text-xl-start">
+                        <h3 class="playful-title">Khơi Gợi Sáng Tạo - Chắp Cánh Tuổi Thơ</h3>
+                        <p class="playful-text">
+                            Khám phá thế giới đồ chơi an toàn, sáng tạo và đầy màu sắc dành cho bé yêu.  
+                            Giúp bé phát triển trí tuệ, rèn luyện kỹ năng và thỏa sức vui chơi mỗi ngày!  
+                        </p>
+                    </div>
+                    <div class="col-xl-3 cta-btn-container text-center">
+                        <a class="cta-btn align-middle" href="#">Mua Ngay</a>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </section><!-- /Call To Action Section -->
+
+        <!---------------------------------- Banner Section ---------------------------------->
 
         <div class="bg-white">
 
@@ -218,69 +265,71 @@
             </div>
         </div>
 
+        <!-- Vendor JS Files -->
+        <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
         <script>
-            // Ví dụ điều khiển hiển thị menu dropdown
-            function toggleMenu(menuId) {
-                var menu = document.getElementById(menuId);
-                menu.classList.toggle('hidden');
-            }
+                                        // Ví dụ điều khiển hiển thị menu dropdown
+                                        function toggleMenu(menuId) {
+                                            var menu = document.getElementById(menuId);
+                                            menu.classList.toggle('hidden');
+                                        }
 
-            // Hàm gửi bộ lọc bằng AJAX
-            function submitFilter() {
-                const form = document.getElementById("filterForm");
-                const formData = new FormData(form);
-                formData.append("partial", "true");
-                const params = new URLSearchParams(formData).toString();
-                fetch("getList?" + params, {
-                    method: "GET"
-                })
+                                        // Hàm gửi bộ lọc bằng AJAX
+                                        function submitFilter() {
+                                            const form = document.getElementById("filterForm");
+                                            const formData = new FormData(form);
+                                            formData.append("partial", "true");
+                                            const params = new URLSearchParams(formData).toString();
+                                            fetch("getList?" + params, {
+                                                method: "GET"
+                                            })
 
-                        .then(response => response.text())
-                        .then(data => {
-                            document.getElementById("productListContainer").innerHTML = data;
-                        })
-                        .catch(error => console.error("Lỗi khi load dữ liệu:", error));
-            }
+                                                    .then(response => response.text())
+                                                    .then(data => {
+                                                        document.getElementById("productListContainer").innerHTML = data;
+                                                    })
+                                                    .catch(error => console.error("Lỗi khi load dữ liệu:", error));
+                                        }
 
-            function resetFilter() {
-                document.getElementById("filterForm").reset();
-                submitFilter();
-            }
+                                        function resetFilter() {
+                                            document.getElementById("filterForm").reset();
+                                            submitFilter();
+                                        }
 
 
-            document.addEventListener("DOMContentLoaded", function () {
-                var bellIcon = document.querySelector(".notification-icon");
-                var notificationBox = document.getElementById("notificationBox");
-                // Toggle thông báo khi click vào chuông
-                bellIcon.addEventListener("click", function (event) {
-                    event.preventDefault();
-                    event.stopPropagation(); // Ngăn sự kiện lan lên document
-                    notificationBox.classList.toggle("active");
-                });
-                // Đóng thông báo khi click ra ngoài
-                document.addEventListener("click", function (event) {
-                    if (!notificationBox.contains(event.target) && !bellIcon.contains(event.target)) {
-                        notificationBox.classList.remove("active");
-                    }
-                });
-            });
-            document.addEventListener("DOMContentLoaded", function () {
-                var bellIcon = document.querySelector(".notification-icon");
-                var notificationBox = document.getElementById("notificationBox");
-                // Toggle thông báo khi click vào chuông
-                bellIcon.addEventListener("click", function (event) {
-                    event.preventDefault();
-                    event.stopPropagation(); // Ngăn sự kiện lan lên document
-                    notificationBox.classList.toggle("active");
-                });
-                // Đóng thông báo khi click ra ngoài
-                document.addEventListener("click", function (event) {
-                    if (!notificationBox.contains(event.target) && !bellIcon.contains(event.target)) {
-                        notificationBox.classList.remove("active");
-                    }
-                });
-            });
+                                        document.addEventListener("DOMContentLoaded", function () {
+                                            var bellIcon = document.querySelector(".notification-icon");
+                                            var notificationBox = document.getElementById("notificationBox");
+                                            // Toggle thông báo khi click vào chuông
+                                            bellIcon.addEventListener("click", function (event) {
+                                                event.preventDefault();
+                                                event.stopPropagation(); // Ngăn sự kiện lan lên document
+                                                notificationBox.classList.toggle("active");
+                                            });
+                                            // Đóng thông báo khi click ra ngoài
+                                            document.addEventListener("click", function (event) {
+                                                if (!notificationBox.contains(event.target) && !bellIcon.contains(event.target)) {
+                                                    notificationBox.classList.remove("active");
+                                                }
+                                            });
+                                        });
+                                        document.addEventListener("DOMContentLoaded", function () {
+                                            var bellIcon = document.querySelector(".notification-icon");
+                                            var notificationBox = document.getElementById("notificationBox");
+                                            // Toggle thông báo khi click vào chuông
+                                            bellIcon.addEventListener("click", function (event) {
+                                                event.preventDefault();
+                                                event.stopPropagation(); // Ngăn sự kiện lan lên document
+                                                notificationBox.classList.toggle("active");
+                                            });
+                                            // Đóng thông báo khi click ra ngoài
+                                            document.addEventListener("click", function (event) {
+                                                if (!notificationBox.contains(event.target) && !bellIcon.contains(event.target)) {
+                                                    notificationBox.classList.remove("active");
+                                                }
+                                            });
+                                        });
 //            function goToPage(pageNumber) {
 //                const form = document.getElementById("filterForm");
 //                const formData = new FormData(form);
@@ -298,33 +347,33 @@
 //                    behavior: 'smooth'
 //                });
 //            }
-            function goToPage(pageNumber) {
-                const form = document.getElementById("filterForm");
-                const formData = new FormData(form);
-                formData.append("partial", "true");
-                formData.append("page", pageNumber);
+                                        function goToPage(pageNumber) {
+                                            const form = document.getElementById("filterForm");
+                                            const formData = new FormData(form);
+                                            formData.append("partial", "true");
+                                            formData.append("page", pageNumber);
 
-                const params = new URLSearchParams(formData).toString();
+                                            const params = new URLSearchParams(formData).toString();
 
-                fetch("getList?" + params, {method: "GET"})
-                        .then(response => response.text())
-                        .then(data => {
-                            // 1. Thay thế nội dung danh sách
-                            document.getElementById("productListContainer").innerHTML = data;
+                                            fetch("getList?" + params, {method: "GET"})
+                                                    .then(response => response.text())
+                                                    .then(data => {
+                                                        // 1. Thay thế nội dung danh sách
+                                                        document.getElementById("productListContainer").innerHTML = data;
 
-                            // 2. Sau khi cập nhật xong, cuộn đến #resultsCount
-                            document.getElementById("resultsCount").scrollIntoView({
-                                behavior: 'smooth'
-                            });
-                        })
-                        .catch(error => console.error("Error while loading data:", error));
-            }
-            function resetFilter() {
-                // Reset form về trạng thái ban đầu
-                document.getElementById("filterForm").reset();
-                // Gửi lại request AJAX để hiển thị toàn bộ sản phẩm
-                submitFilter();
-            }
+                                                        // 2. Sau khi cập nhật xong, cuộn đến #resultsCount
+                                                        document.getElementById("resultsCount").scrollIntoView({
+                                                            behavior: 'smooth'
+                                                        });
+                                                    })
+                                                    .catch(error => console.error("Error while loading data:", error));
+                                        }
+                                        function resetFilter() {
+                                            // Reset form về trạng thái ban đầu
+                                            document.getElementById("filterForm").reset();
+                                            // Gửi lại request AJAX để hiển thị toàn bộ sản phẩm
+                                            submitFilter();
+                                        }
 
         </script>
 
