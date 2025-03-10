@@ -7,15 +7,12 @@ package DAO;
 import DBConnect.DBConnection;
 import Model.Order;
 import Model.OrderDetail;
-import java.math.BigDecimal;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -276,35 +273,24 @@ public class OrderDAO extends DBConnect.DBConnection {
     }
 
 //    Cua Khang 
-    public static List<Order> getOrdersByUser(int accountId, String status) {
+    public static List<Order> getOrdersByUser(int accountId, int status) {
         List<Order> orders = new ArrayList<>();
         Map<Integer, Order> orderMap = new HashMap<>();
-        String sql = "\n"
-                + "\n"
-                + "SELECT o.OrderID, o.OrderDate, o.TotalAmount, s.Status, \n"
-                + "       d.ProductID, p.Name, d.Quantity, d.UnitPrice, \n"
+        String sql = "SELECT o.OrderID, o.OrderDate, o.TotalAmount, s.Status, \n"
+                + "       d.ProductID, p.Name, d.Quantity, d.UnitPrice,  \n"
                 + "       (SELECT TOP 1 Image FROM ProductImages \n"
-                + "        WHERE ProductID = d.ProductID AND IsMain = 1) AS ProductImage\n"
+                + "        WHERE ProductID = d.ProductID AND IsMain = 1) AS ProductImage,\n"
+                + "       c.Name AS CategoryName  \n"
                 + "FROM Orders o \n"
                 + "JOIN StatusOrder s ON o.StatusID = s.StatusID \n"
                 + "JOIN OrderDetails d ON o.OrderID = d.OrderID \n"
                 + "JOIN Product p ON d.ProductID = p.ProductID \n"
-                + "WHERE o.OrderID = 3;\n"
-                + "\n"
-                + "SELECT o.OrderID, o.OrderDate, o.TotalAmount, s.Status, \n"
-                + "       d.ProductID, p.Name, d.Quantity, d.UnitPrice, \n"
-                + "       (SELECT TOP 1 Image FROM ProductImages \n"
-                + "        WHERE ProductID = d.ProductID AND IsMain = 1) AS ProductImage\n"
-                + "FROM Orders o \n"
-                + "JOIN StatusOrder s ON o.StatusID = s.StatusID \n"
-                + "JOIN OrderDetails d ON o.OrderID = d.OrderID \n"
-                + "JOIN Product p ON d.ProductID = p.ProductID \n"
-                + "WHERE o.AccountID = ? AND s.StatusID = ?\n"
-                + "ORDER BY o.OrderDate DESC";
-
+                + "LEFT JOIN Category c ON p.CategoryID = c.CategoryID \n"
+                + "WHERE o.AccountID = ? AND s.StatusID = ? \n"
+                + "ORDER BY o.OrderDate DESC;";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, accountId);   // Set the first placeholder to accountId
-            ps.setString(2, status);   // Set the second placeholder to status
+            ps.setInt(2, status);   // Set the second placeholder to status
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -327,34 +313,13 @@ public class OrderDAO extends DBConnect.DBConnection {
                 detail.setQuantity(rs.getInt("Quantity"));
                 detail.setPrice(rs.getDouble("UnitPrice"));
                 detail.setProductImage(rs.getString("ProductImage"));
+                detail.setCategoryName(rs.getString("CategoryName"));
                 order.addOrderDetail(detail);
             }
         } catch (Exception e) {
             e.printStackTrace();
 
         }
-        for (Order order : orders) {
-            for (OrderDetail orderDetail : order.getOrderDetails()) {
-                System.out.println("Product ID: " + orderDetail.getProductID());
-                System.out.println("Product Name: " + orderDetail.getProductName());
-                System.out.println("Quantity: " + orderDetail.getQuantity());
-                System.out.println("Unit Price: " + orderDetail.getPrice());
-                System.out.println("Image: " + orderDetail.getProductImage());
-            }
-            System.out.println(order.getOrderDate());
-        }
-
         return orders;
     }
-//    public static void main(String[] args) throws SQLException, ClassNotFoundException {
-//        try {
-//            OrderDAO dao = new OrderDAO();
-//            List<Order> list = dao.getOrdersByPage(1, 5);
-//            for (Order order : list) {
-//                System.out.println(order);
-//            }
-//        } catch (SQLException e) {
-//            System.out.println(e);
-//        }
-//    }
 }

@@ -262,8 +262,13 @@
     <servlet-mapping>
         <servlet-name>ReviewManagementServlet</servlet-name>
         <url-pattern>/ReviewManagementServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>ReviewManagementServlet</servlet-name>
         <url-pattern>/Admin/ReviewManagementServlet</url-pattern>
     </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>FinancialDashboardServlet</servlet-name>
         <url-pattern>/Admin/FinancialDashboardServlet</url-pattern>

@@ -19,7 +19,7 @@
                     <div class="d-flex align-items-center mb-3">
                         <span class="display-4 font-weight-bold text-danger">
                             <fmt:setLocale value="vi_VN" />
-                            <fmt:formatNumber value="${mediumRatings}" type="number" />
+                        <fmt:formatNumber value="${mediumRatings}" type="number" maxFractionDigits="1" />
                             <span class="h4 ml-2">trên 5</span>
                         </span>
                     </div>
@@ -49,7 +49,7 @@
                                 </c:forEach>
                                 <div class="border-bottom pb-4 mb-4">
                                     <div class="d-flex align-items-center mb-2">
-                                        <img src="https://placehold.co/40x40" alt="User avatar" class="rounded-circle mr-2" width="40" height="40">
+                                        <img src="${customer.image}" alt="User avatar" class="rounded-circle mr-2" width=60" height="60">
                                         <div>
                                             <span class="font-weight-bold">${customer.userName}</span>
                                             <div class="d-flex align-items-center">
