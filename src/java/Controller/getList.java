@@ -4,20 +4,10 @@
  */
 package Controller;
 
-import Model.SuperCategory;
-import Model.Category;
-import Model.Age;
-import Model.Sex;
-import Model.PriceRange;
-import Model.Brand;
-import Model.Material;
-import Model.Origin;
+import DAO.AccountDAO;
 import Model.Product;
-import Model.ProductImage;
-
 import DAO.ProductDAO;
 import DAO.ProductImageDAO;
-import DAO.OriginDAO;
 import DAO.MaterialDAO;
 import DAO.BrandDAO;
 import DAO.PriceRangeDAO;
@@ -25,13 +15,19 @@ import DAO.SexDAO;
 import DAO.AgeDAO;
 import DAO.SuperCategoryDAO;
 import DAO.CategoryDAO;
+import DAO.ReviewDAO;
+import Model.Account;
+import Model.Review;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -112,32 +108,18 @@ public class getList extends HttpServlet {
             Integer brandID = parseIntOrNull(request.getParameter("brandID"));
             boolean hasFilters = (categoryID != null || ageID != null || sexID != null
                     || priceRangeID != null || brandID != null);
-
-            System.out.println("=== DEBUG FILTERS ===");
-            System.out.println("categoryID = " + categoryID);
-            System.out.println("ageID       = " + ageID);
-            System.out.println("sexID       = " + sexID);
-            System.out.println("priceRangeID= " + priceRangeID);
-            System.out.println("brandID     = " + brandID);
-            System.out.println("hasFilters  = " + hasFilters);
-            System.out.println("=====================");
-
-            // Lấy toàn bộ danh sách sản phẩm (hoặc theo filter)
             List<Product> allProducts;
             String search = (String) request.getAttribute("search");
             if (search != null && !search.trim().isEmpty()) {
                 allProducts = productDAO.searchProducts(search.trim().toLowerCase());
-            }
-            else  if (hasFilters) {
+            } else if (hasFilters) {
                 allProducts = productDAO.getFilteredProducts(categoryID, ageID, sexID,
                         priceRangeID, brandID);
             } else {
                 allProducts = productDAO.getAllProducts();
             }
-
             // Tính tổng số sản phẩm
             int totalProducts = allProducts.size();
-            System.out.println(totalProducts);
             // Tính tổng số trang
             int totalPages = (int) Math.ceil((double) totalProducts / itemsPerPage);
 
@@ -154,11 +136,49 @@ public class getList extends HttpServlet {
             if (endIndex > totalProducts) {
                 endIndex = totalProducts;
             }
-
             // Cắt danh sách cho trang hiện tại
             List<Product> productsPerPage = allProducts.subList(offset, endIndex);
-
             // Gán dữ liệu vào request
+            //Phaanf cua Khang 
+            Map<Integer, Double> mediumRatingMap = new HashMap<>();
+            for (Product product : productsPerPage) { // Duyệt từng sản phẩm
+                List<Review> listReviews = ReviewDAO.showReviewForCustomer(product.getProductID());
+
+                int rating5 = 0, rating4 = 0, rating3 = 0, rating2 = 0, rating1 = 0;
+                int totalReview = listReviews.size();
+
+                for (Review review : listReviews) {
+                    switch (review.getRating()) {
+                        case 5:
+                            rating5++;
+                            break;
+                        case 4:
+                            rating4++;
+                            break;
+                        case 3:
+                            rating3++;
+                            break;
+                        case 2:
+                            rating2++;
+                            break;
+                        default:
+                            rating1++;
+                            break;
+                    }
+                }
+
+                double mediumRating = (totalReview > 0)
+                        ? (double) (rating5 * 5 + rating4 * 4 + rating3 * 3 + rating2 * 2 + rating1 * 1) / totalReview
+                        : 0;
+
+                // Lưu vào map với key là productID
+                mediumRatingMap.put(product.getProductID(), mediumRating);
+            }
+
+            // Đưa danh sách đánh giá trung bình vào request để chuyển sang JSP
+            request.setAttribute("mediumRatingMap", mediumRatingMap);
+
+            // Het
             request.setAttribute("listP", productsPerPage);
             request.setAttribute("totalProducts", totalProducts);
 

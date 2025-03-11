@@ -44,10 +44,17 @@
                             <p class="text-orange-500 text-xl">
                                 <fmt:formatNumber value="${product.price}" pattern="#,###" />₫
                             </p>
-                            <span class="text-gray-400 mb-2 text-sm w-25 h-50" style="background-color: red;">
-                                &nbsp;
-                            </span>
+                            <span class="text-gray-400 mb-2 text-sm w-30 h-50">
+                                <c:set var="intRating" value="${mediumRatingMap[product.productID]}" />
 
+                                <c:forEach begin="1" end="${intRating}" var="i">
+                                    <i class="fas fa-star text-danger"></i>
+                                </c:forEach>
+
+                                <c:forEach begin="${intRating + 1}" end="5" var="i">
+                                    <i class="far fa-star text-danger"></i>
+                                </c:forEach>
+                            </span>
                         </div>
                         <form action="${pageContext.request.contextPath}/CartManagementServlet" method="POST">
                             <input type="hidden" name="productID" value="${product.productID}">

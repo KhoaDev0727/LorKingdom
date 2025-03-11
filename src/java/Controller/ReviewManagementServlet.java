@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
-
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -228,7 +227,7 @@ public class ReviewManagementServlet extends HttpServlet {
             response.sendRedirect("ReviewManagementServlet?action=trash");
         } catch (Exception e) {
             e.printStackTrace();
-            session.setAttribute("message", "An error occurred");
+            session.setAttribute("message", "Đã xảy ra lỗi.");
             session.setAttribute("messageType", "danger");
             response.sendRedirect("ReviewManagementServlet?action=trash");
         }
@@ -316,7 +315,6 @@ public class ReviewManagementServlet extends HttpServlet {
                 .setDateFormat("yyyy-MM-dd HH:mm:ss")
                 .create();
         String json = gson.toJson(listReviews);
-        System.out.println(json);
         // Thiết lập response
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
