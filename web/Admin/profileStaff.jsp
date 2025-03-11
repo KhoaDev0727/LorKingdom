@@ -29,152 +29,186 @@
         <c:if test="${empty sessionScope.roleID}">
             <c:redirect url="/Admin/loginPage.jsp"/>
         </c:if>
-        <div class="page-content" id="page-content">
-            <div class="padding">
-                <div class="container d-flex justify-content-center">
-                    <div class="card user-card-full">
-                        <div class="row box-content">
-                            <!-- user-profile -->
-                            <div class="bg-c-lite-green user-profile d-flex flex-column">
-                                <div class="text-center text-white">
-                                    <div class="avatar-container">
-                                        <div class="avatar-container">
-                                            <c:if test="${not empty account.image}">
-                                                <img src="${pageContext.request.contextPath}/${account.image}" alt="Avatar" class="avatar">
-                                            </c:if>
-                                            <form action="UpdateAvatarPage" method="post" enctype="multipart/form-data">
-                                                <input type="hidden" name="currentImage" value="${account.image}">
-                                                <label for="file-upload" class="custom-file-upload">
-                                                    <i class="fas fa-camera"></i>
-                                                </label>
-                                                <input id="file-upload" type="file" name="avatar" accept="image/*" required hidden>
-                                                <button type="submit">Tải lên Avatar</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                    <h6 class="f-w-600 title" style="font-size: 20px;">Xin chào, ${account.userName}</h6>
-                                    <p>Vai trò: Staff (ID: ${account.roleID})</p>     
-                                </div>
+        <div class="container-fluid">
+            <div class="sidebar">
+                <div class="profile">
+                    <div class="d-flex container profile-img">
+                        <c:if test="${not empty account.image}">
+                            <img style="width: 150px; height: 150px" src="${account.image}" alt="Avatar" class="avatar">
+                        </c:if>
+                        <span class="username">Xin chào, ${account.userName}</span>
+                        <p style="color: white;">Vai trò: Staff (ID: ${account.roleID})</p>
+                    </div>
+                </div>
+                <nav class="nav">
+                    <ul>
+                        <li><a href="#" id="profile-link"><i class="fas fa-user"></i> Quản lý hồ sơ</a></li>
+                        <li><a href="#" id="orders-link"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a></li>
+                    </ul>
+                </nav>
+            </div>
 
-                                <!-- Nút Về trang chủ nằm dưới cùng -->
-                                <div class="d-flex justify-content-center mt-auto">
-                                    <a href="${pageContext.request.contextPath}/Admin/DashBoard.jsp" class="btn" style="background: linear-gradient(135deg, #20c997, #17a2b8); color: white;">
-                                        <i class="fas fa-arrow-left"></i> Về trang chủ
-                                    </a>
-                                </div>
+            <div class="right-menu">
+                <div id="profile-section">
+                    <!-- staff profile -->
+                    <div id="profile-section" class="container">
+                        <div class="row align-items-center p-4 bg-light rounded shadow-sm">
+                            <!-- staff Info -->
+                            <div class="user-info col-md-8">
+                                <div class="card p-4 border-0 shadow-sm">
+                                    <h2 class="text-warning">Thông tin hồ sơ nhân viên</h2>
+                                    <form action="ProfileStaffServlet" method="post" id="profileStaffForm">
+                                        <div class="card-body">
+                                            <p class="text-muted">Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
 
-                            </div>
+                                            <div class="mb-3">
+                                                <p class="fw-bold">Email</p>
+                                                <h6 class="text-secondary">${account.email}</h6>
+                                            </div>
 
-                            <!-- Card block -->
-                            <div class="user-info">
-                                <form action="ProfileStaffServlet" method="post" id="profileStaffForm">
-                                    <div class="right">
-                                        <div class="card-block">
-                                            <h3 class="">Thông tin hồ sơ nhân viên</h3>
-                                            <div class="">
-                                                <div class="">
-                                                    <p class="">Email</p>
-                                                    <h6 class="">${account.email}</h6>
-                                                </div>
-                                                <div class="">
-                                                    <p class="">Trạng thái</p>
-                                                    <h6 class="">${account.status}</h6>
-                                                </div>
-                                                <!-- Phone -->
-                                                <div class="">
-                                                    <p class="">Điện thoại</p>
-                                                    <div class="d-flex">
-                                                        <h6 id="displayPhone">${account.phoneNumber}</h6>
-                                                        <input type="hidden" name="phoneNumber" id="phoneNumberInput" value="${account.phoneNumber}">
-                                                        <a href="#" class="text-primary text-decoration-none change-btn" data-bs-toggle="modal" data-bs-target="#editPhoneModal">Thay đổi</a>
-                                                    </div>
-                                                </div>
-                                                <!-- Address -->
-                                                <div class="">
-                                                    <p class="">Địa chỉ</p>
-                                                    <div class="d-flex">
-                                                        <h6 id="displayAddress">${empty account.address ? "Địa chỉ không có sẵn" : account.address}</h6>
-                                                        <input type="hidden" name="address" id="addressInput" value="${account.address}">
-                                                        <a href="#" class="text-primary text-decoration-none change-btn" data-bs-toggle="modal" data-bs-target="#editAddressModal">Thay đổi</a>
-                                                    </div>
-                                                </div>
-                                                <!-- Password -->
-                                                <div class="">
-                                                    <p class="">Mật khẩu</p>
-                                                    <div class="d-flex">
-                                                        <h6 id="displayPassword">****</h6>
-                                                        <input type="hidden" name="password" id="passwordInput" value="">
-                                                        <a href="#" class="text-primary text-decoration-none change-btn" data-bs-toggle="modal" data-bs-target="#editPasswordModal">Thay đổi</a>
-                                                    </div>
+                                            <div class="mb-3">
+                                                <p class="fw-bold">Trạng thái</p>
+                                                <h6 class="text-secondary">${account.status}</h6>
+                                            </div>
+
+                                            <!-- Phone -->
+                                            <div class="mb-3">
+                                                <p class="fw-bold">Điện thoại</p>
+                                                <div class="d-flex align-items-center">
+                                                    <h6 id="displayPhone" class="me-2">${account.phoneNumber}</h6>
+                                                    <input type="hidden" name="phoneNumber" id="phoneNumberInput"
+                                                           value="${account.phoneNumber}">
+                                                    <a href="#" class="text-primary text-decoration-none change-btn fw-bold"
+                                                       data-bs-toggle="modal" data-bs-target="#editPhoneModal">Thay đổi</a>
                                                 </div>
                                             </div>
-                                            <button type="submit" class="btn-update">Cập nhật</button>
 
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
+                                            <!-- Address -->
+                                            <div class="mb-3">
+                                                <p class="fw-bold">Địa chỉ</p>
+                                                <div class="d-flex align-items-center">
+                                                    <h6 id="displayAddress" class="me-2">${empty account.address ? "Địa chỉ
+                                                                                           không có sẵn" : account.address}</h6>
+                                                    <input type="hidden" name="address" id="addressInput"
+                                                           value="${account.address}">
+                                                    <a href="#" class="text-primary text-decoration-none change-btn fw-bold"
+                                                       data-bs-toggle="modal" data-bs-target="#editAddressModal">Thay
+                                                        đổi</a>
+                                                </div>
+                                            </div>
 
-                            <!-- Modal box -->
-                            <div class="modal fade" id="editPhoneModal" tabindex="-1" aria-labelledby="editPhoneModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editPhoneModalLabel">Sửa số điện thoại</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <!-- Password -->
+                                            <div class="mb-3">
+                                                <p class="fw-bold">Mật khẩu</p>
+                                                <div class="d-flex align-items-center">
+                                                    <h6 id="displayPassword" class="me-2">****</h6>
+                                                    <input type="hidden" name="password" id="passwordInput" value="">
+                                                    <a href="#" class="text-primary text-decoration-none change-btn fw-bold"
+                                                       data-bs-toggle="modal" data-bs-target="#editPasswordModal">Thay
+                                                        đổi</a>
+                                                </div>
+                                            </div>
+
+                                            <button type="submit" class="btn mt-3 w-100 background-button" style="color: white; font-weight: 550;">Cập nhật</button>
                                         </div>
-                                        <div class="modal-body">
-                                            <label for="newPhoneNumber" class="form-label">Số điện thoại mới:</label>
-                                            <input type="text" id="newPhoneNumber" class="form-control" placeholder="Nhập số điện thoại mới">
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
-                                            <button type="button" class="btn btn-save" onclick="updatePhoneNumber()">Lưu</button>
-                                        </div>
-                                    </div>
+                                    </form>
                                 </div>
                             </div>
 
-                            <div class="modal fade" id="editAddressModal" tabindex="-1" aria-labelledby="editAddressModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editAddressModalLabel">Sửa Địa Chỉ</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <label for="newAddress" class="form-label">Địa chỉ mới:</label>
-                                            <input type="text" id="newAddress" class="form-control" placeholder="Nhập địa chỉ mới">
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
-                                            <button type="button" class="btn btn-save" onclick="updateAddress()">Lưu</button>
-                                        </div>
-                                    </div>
+                            <!-- Avatar -->
+                            <div class="col-md-4 text-center">
+                                <div class="card shadow-sm p-4 d-flex justify-content-center align-items-center">
+                                    <c:if test="${not empty account.image}">
+                                        <img src="${account.image}" class="img-fluid rounded-circle border" width="150"
+                                             alt="Avatar">
+                                    </c:if>
+                                    <form action="UpdateAvatarPage" method="post" enctype="multipart/form-data"
+                                          class="mt-3 text-center">
+                                        <label for="file-upload" class="btn btn-secondary">
+                                            <i class="fas fa-camera"></i> Chọn ảnh
+                                        </label>
+                                        <input id="file-upload" type="file" name="avatar" accept="image/*" hidden>
+                                        <button type="submit" class="btn mt-2 w-100 background-button" style="color: white; font-weight: 550;">Tải lên Avatar</button>
+                                    </form>
                                 </div>
-                            </div>
 
-                            <div class="modal fade" id="editPasswordModal" tabindex="-1" aria-labelledby="editPasswordModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editPasswordModalLabel">Chỉnh sửa mật khẩu</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <label for="newPassword" class="form-label">Mật khẩu mới:</label>
-                                            <input type="password" id="newPassword" class="form-control" placeholder="Nhập mật khẩu mới">
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
-                                            <button type="button" class="btn btn-save" onclick="updatePassword()">Lưu</button>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
-                            <!-- Modal box -->
                         </div>
+
+
+                        <!-- Modal box -->
+                        <div class="modal fade" id="editPhoneModal" tabindex="-1" aria-labelledby="editPhoneModalLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editPhoneModalLabel">Sửa số điện thoại</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <label for="newPhoneNumber" class="form-label">Số điện thoại mới:</label>
+                                        <input type="text" id="newPhoneNumber" class="form-control"
+                                               placeholder="Nhập số điện thoại mới">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy
+                                            bỏ</button>
+                                        <button type="button" class="btn btn-save"
+                                                onclick="updatePhoneNumber()">Lưu</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="editAddressModal" tabindex="-1" aria-labelledby="editAddressModalLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editAddressModalLabel">Sửa Địa Chỉ</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <label for="newAddress" class="form-label">Địa chỉ mới:</label>
+                                        <input type="text" id="newAddress" class="form-control"
+                                               placeholder="Nhập địa chỉ mới">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy
+                                            bỏ</button>
+                                        <button type="button" class="btn btn-save" onclick="updateAddress()">Lưu</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="editPasswordModal" tabindex="-1"
+                             aria-labelledby="editPasswordModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editPasswordModalLabel">Chỉnh sửa mật khẩu</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <label for="newPassword" class="form-label">Mật khẩu mới:</label>
+                                        <input type="password" id="newPassword" class="form-control"
+                                               placeholder="Nhập mật khẩu mới">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy
+                                            bỏ</button>
+                                        <button type="button" class="btn btn-save" onclick="updatePassword()">Lưu</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Modal box -->
                     </div>
+                    <!-- end profile -->
                 </div>
             </div>
         </div>

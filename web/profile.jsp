@@ -26,11 +26,6 @@
                             <h6 class="text-secondary">${account.status}</h6>
                         </div>
 
-                        <div class="mb-3">
-                            <p class="fw-bold">Số dư</p>
-                            <h6 class="text-success fw-bold">${account.balance}</h6>
-                        </div>
-
                         <!-- Phone -->
                         <div class="mb-3">
                             <p class="fw-bold">Điện thoại</p>

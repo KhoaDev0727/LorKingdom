@@ -14,7 +14,7 @@ public class ProfileStaffServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("email") == null) {
-            response.sendRedirect("login.jsp");
+            response.sendRedirect("loginPage.jsp");
             return;
         }
 
@@ -23,7 +23,7 @@ public class ProfileStaffServlet extends HttpServlet {
         Account account = accountDAO.getAccountByEmail(email);
 
         if (account == null || account.getRoleID() != 2) { // Kiểm tra nếu không phải staff (RoleID = 2)
-            response.sendRedirect("login.jsp");
+            response.sendRedirect("loginPage.jsp");
             return;
         }
 
@@ -39,7 +39,7 @@ public class ProfileStaffServlet extends HttpServlet {
         Account account = (Account) session.getAttribute("account");
 
         if (account == null || account.getRoleID() != 2) { // Kiểm tra role staff
-            response.sendRedirect("login.jsp");
+            response.sendRedirect("loginPage.jsp");
             return;
         }
 
