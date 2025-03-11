@@ -145,6 +145,11 @@ public class ProductDetailServlet extends HttpServlet {
             request.setAttribute("product", product);
             request.setAttribute("category", categoryDAO.getCategoryNameByProductId(productId));
             request.setAttribute("origin", originDAO.getOriginNameByProductId(productId));
+            String originName = originDAO.getOriginNameByProductId(productId);
+            System.out.println("originName = " + originName);
+
+            request.setAttribute("origin", originName);
+
             request.setAttribute("age", ageDAO.getAgeRangeByProductId(productId));
             request.setAttribute("brand", brandDAO.getBrandNameByProductId(productId));
             request.setAttribute("materail", materialDAO.getMaterialNameByProductId(productId));
@@ -163,7 +168,7 @@ public class ProductDetailServlet extends HttpServlet {
             request.setAttribute("totalComment", totalComment);
             request.setAttribute("totalImage", totalImage);
             request.setAttribute("inforCustomers", inforCustomers);
-           
+
             int categoryID = product.getCategoryID();
             List<Product> relatedProducts = productDAO.getRelatedProductsByCategory(categoryID, product.getProductID(), 8);
             request.setAttribute("relatedProducts", relatedProducts);

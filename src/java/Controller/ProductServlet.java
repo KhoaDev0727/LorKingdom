@@ -144,8 +144,6 @@ public class ProductServlet extends HttpServlet {
         }
     }
 
-
-
     private void listProducts(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException, ClassNotFoundException {
         int page = 1;
@@ -176,6 +174,7 @@ public class ProductServlet extends HttpServlet {
 
     private void listDeletedProducts(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
+        String productIDStr = request.getParameter("productID");
         List<Product> products = productDAO.getDeletedProducts();
         List<ProductImage> mainImages = ProductImageDAO.getMainProductImages();
 
@@ -224,6 +223,9 @@ public class ProductServlet extends HttpServlet {
             listProducts(request, response);
             return;
         }
+        List<ProductImage> mainImages = ProductImageDAO.getMainProductImages();
+        request.setAttribute("mainImages", mainImages);
+
         List<Product> products = productDAO.searchProducts(keyword.trim().toLowerCase());
         request.setAttribute("products", products);
         request.getRequestDispatcher("ProductManagement.jsp").forward(request, response);

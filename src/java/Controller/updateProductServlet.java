@@ -1,6 +1,6 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
+     * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+     * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 package Controller;
 
@@ -102,6 +102,7 @@ public class updateProductServlet extends HttpServlet {
             MaterialDAO materialDAO = new MaterialDAO();
             PriceRangeDAO priceRangeDAO = new PriceRangeDAO();
             OriginDAO originDAO = new OriginDAO();
+            System.out.println("product.description = " + product.getDescription());
 
             List<Category> listCategories = categoryDAO.getAllCategories();
             List<Brand> listBrands = brandDAO.getActiveBrand();
@@ -134,13 +135,199 @@ public class updateProductServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+//        @Override
+//        protected void doPost(HttpServletRequest request, HttpServletResponse response)
+//                throws ServletException, IOException {
+//            try {
+//                HttpSession session = request.getSession();
+//
+//                
+//                int productID = Integer.parseInt(request.getParameter("productID"));
+//                String productName = request.getParameter("productName");
+//                String priceStr = request.getParameter("price");
+//                String stockQuantityStr = request.getParameter("stockQuantity");
+//                String description = request.getParameter("description");
+//
+//                int category = Integer.parseInt(request.getParameter("category"));
+//                int gender = Integer.parseInt(request.getParameter("gender"));
+//                int priceRange = Integer.parseInt(request.getParameter("priceRange"));
+//                int brand = Integer.parseInt(request.getParameter("brand"));
+//                int ageGroup = Integer.parseInt(request.getParameter("ageGroup"));
+//                int origin = Integer.parseInt(request.getParameter("origin"));
+//                int material = Integer.parseInt(request.getParameter("material"));
+//                String SKU = request.getParameter("SKU");
+//
+//               
+//                if (productName == null || productName.trim().isEmpty()
+//                        || priceStr == null || priceStr.trim().isEmpty()
+//                        || stockQuantityStr == null || stockQuantityStr.trim().isEmpty()
+//                        || description == null || description.trim().isEmpty()) {
+//
+//                    session.setAttribute("errorMessage", "Vui lòng nhập đầy đủ thông tin bắt buộc!");
+//                    UpdateProductDataLoader.loadDataForUpdate(request, productID);
+//                    request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
+//                    return;
+//                }
+//                String plainTextContent = Jsoup.parse(description).text();
+//                if (plainTextContent == null || plainTextContent.trim().isEmpty()) {
+//                    request.getSession().setAttribute("errorMessage", "Miêu tả không được để trống.");
+//                    request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
+//                    return;
+//                }
+//              
+//                String namePattern = "^[\\p{L}\\s]+$";
+//                if (!productName.matches(namePattern)) {
+//                    session.setAttribute("errorMessage", "Tên sản phẩm chỉ được chứa chữ cái (có dấu) và khoảng trắng!");
+//                    UpdateProductDataLoader.loadDataForUpdate(request, productID);
+//                    request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
+//                    return;
+//                }
+//
+//                String cleanedPriceStart = priceStr.replaceAll("[^\\d]", "");
+//                if (cleanedPriceStart.length() < 4) {
+//                    session.setAttribute("errorMessage", "Giá trị phải có ít nhất 4 chữ số.");
+//                    request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
+//                    return;
+//                }
+//
+//              
+//                if (ProductDAO.isProductNameExists(productName, 0)) {
+//                    session.setAttribute("errorMessage", "Tên sản phẩm đã tồn tại trong hệ thống!");
+//                    UpdateProductDataLoader.loadDataForUpdate(request, productID);
+//                    request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
+//                    return;
+//                }
+//
+//               
+//                priceStr = priceStr.replace(".", "").replace(",", ".");
+//                if (!priceStr.matches("^\\d+(\\.\\d+)?$")) {
+//                    session.setAttribute("errorMessage", "Giá sản phẩm phải là số.");
+//                    UpdateProductDataLoader.loadDataForUpdate(request, productID);
+//                    request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
+//                    return;
+//                }
+//
+//                if (!stockQuantityStr.matches("^\\d+$")) {
+//                    session.setAttribute("errorMessage", "Số lượng sản phẩm phải là số nguyên.");
+//                    UpdateProductDataLoader.loadDataForUpdate(request, productID);
+//                    request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
+//                    return;
+//                }
+//
+//                double price = Double.parseDouble(priceStr);
+//                int stockQuantity = Integer.parseInt(stockQuantityStr);
+//
+//              
+//                Product p = new Product();
+//                p.setProductID(productID);
+//                p.setSKU(SKU);
+//                p.setName(productName);
+//                p.setCategoryID(category);
+//                p.setSexID(gender);
+//                p.setPriceRangeID(priceRange);
+//                p.setBrandID(brand);
+//                p.setAgeID(ageGroup);
+//                p.setOriginID(origin);
+//                p.setMaterialID(material);
+//                p.setDescription(description);
+//                p.setPrice(price);
+//                p.setQuantity(stockQuantity);
+//
+//            
+//                UploadImageProduct handleImageProduct = new UploadImageProduct();
+//                String uploadPath = getServletContext().getRealPath("/uploads");
+//                File uploadDir = new File(uploadPath);
+//                if (!uploadDir.exists()) {
+//                    uploadDir.mkdirs();
+//                }
+//
+//              
+//                Part mainImagePart = request.getPart("mainImageUpload");
+//
+//             
+//                List<Part> detailImageParts = new ArrayList<>();
+//                for (Part part : request.getParts()) {
+//                    if ("detailImages".equals(part.getName()) && part.getSize() > 0) {
+//                        detailImageParts.add(part);
+//                    }
+//                }
+//
+//                if (mainImagePart.getSize() > 0) {
+//                    String mainImageFileName = handleImageProduct.generateUniqueFileName(mainImagePart);
+//                    String mainImageFilePath = handleImageProduct.saveFile(mainImagePart, uploadPath, mainImageFileName);
+//
+//                    ProductImage currentMainImage = ProductImageDAO.getMainImage(productID);
+//                    if (currentMainImage != null) {
+//                        boolean imgUpdated = ProductImageDAO.updateProductImage(currentMainImage.getImageID(), mainImageFilePath, 1);
+//                        if (!imgUpdated) {
+//                            System.out.println("Lỗi cập nhật ảnh chính.");
+//                        }
+//                    } else {
+//                        boolean imgAdded = ProductImageDAO.addProductImage(productID, mainImageFilePath, 1);
+//                        if (!imgAdded) {
+//                            System.out.println("Lỗi thêm ảnh chính.");
+//                        }
+//                    }
+//                }
+//
+//                for (Part part : detailImageParts) {
+//                    String detailImageFileName = handleImageProduct.generateUniqueFileName(part);
+//                    String detailImageFilePath = handleImageProduct.saveFile(part, uploadPath, detailImageFileName);
+//                    boolean detailAdded = ProductImageDAO.addProductImage(productID, detailImageFilePath, 0);
+//                    if (!detailAdded) {
+//                        System.out.println("Lỗi thêm ảnh chi tiết: " + detailImageFileName);
+//                    }
+//                }
+//
+//                boolean updated = ProductDAO.updateProduct(p);
+//                System.out.println("=== [DEBUG] Received update form data ===");
+//                System.out.println("productID = " + productID);
+//                System.out.println("productName = " + productName);
+//                System.out.println("priceStr = " + priceStr);
+//                System.out.println("stockQuantityStr = " + stockQuantityStr);
+//                System.out.println("description = " + description);
+//                System.out.println("category = " + category);
+//                System.out.println("gender = " + gender);
+//                System.out.println("priceRange = " + priceRange);
+//                System.out.println("brand = " + brand);
+//                System.out.println("ageGroup = " + ageGroup);
+//                System.out.println("origin = " + origin);
+//                System.out.println("material = " + material);
+//                System.out.println("SKU = " + SKU);
+//
+//                if (updated) {
+//                    session.setAttribute("successMessage", "Cập nhật sản phẩm thành công!");
+//                    response.sendRedirect("ProductServlet?action=list");
+//                } else {
+//                    session.setAttribute("errorMessage", "Có lỗi xảy ra khi cập nhật sản phẩm (DB update fail).");
+//                    UpdateProductDataLoader.loadDataForUpdate(request, productID);
+//                    request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
+//                }
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//              
+//                HttpSession session = request.getSession();
+//                session.setAttribute("errorMessage", "Có lỗi xảy ra khi cập nhật sản phẩm (Exception).");
+//
+//             
+//                String productIDStr = request.getParameter("productID");
+//                if (productIDStr != null) {
+//                    int productID = Integer.parseInt(productIDStr);
+//                    try {
+//                        UpdateProductDataLoader.loadDataForUpdate(request, productID);
+//                    } catch (ClassNotFoundException ex) {
+//                        Logger.getLogger(updateProductServlet.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+//                }
+//                request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
+//            }
+//        }
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
             HttpSession session = request.getSession();
-
-            // Lấy các tham số
             int productID = Integer.parseInt(request.getParameter("productID"));
             String productName = request.getParameter("productName");
             String priceStr = request.getParameter("price");
@@ -156,8 +343,6 @@ public class updateProductServlet extends HttpServlet {
             int material = Integer.parseInt(request.getParameter("material"));
             String SKU = request.getParameter("SKU");
 
-            // ============= KIỂM TRA LỖI =============
-            // 1. Kiểm tra rỗng
             if (productName == null || productName.trim().isEmpty()
                     || priceStr == null || priceStr.trim().isEmpty()
                     || stockQuantityStr == null || stockQuantityStr.trim().isEmpty()
@@ -171,10 +356,9 @@ public class updateProductServlet extends HttpServlet {
             String plainTextContent = Jsoup.parse(description).text();
             if (plainTextContent == null || plainTextContent.trim().isEmpty()) {
                 request.getSession().setAttribute("errorMessage", "Miêu tả không được để trống.");
-                request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
+                request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
-            // 2. Kiểm tra định dạng tên
             String namePattern = "^[\\p{L}\\s]+$";
             if (!productName.matches(namePattern)) {
                 session.setAttribute("errorMessage", "Tên sản phẩm chỉ được chứa chữ cái (có dấu) và khoảng trắng!");
@@ -182,24 +366,19 @@ public class updateProductServlet extends HttpServlet {
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
-          
-
             String cleanedPriceStart = priceStr.replaceAll("[^\\d]", "");
             if (cleanedPriceStart.length() < 4) {
+                UpdateProductDataLoader.loadDataForUpdate(request, productID);
                 session.setAttribute("errorMessage", "Giá trị phải có ít nhất 4 chữ số.");
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
-            
-            // 3. Kiểm tra tên sản phẩm đã tồn tại chưa (nếu cần)
             if (ProductDAO.isProductNameExists(productName, 0)) {
                 session.setAttribute("errorMessage", "Tên sản phẩm đã tồn tại trong hệ thống!");
                 UpdateProductDataLoader.loadDataForUpdate(request, productID);
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
-
-            // 4. Kiểm tra price, quantity
             priceStr = priceStr.replace(".", "").replace(",", ".");
             if (!priceStr.matches("^\\d+(\\.\\d+)?$")) {
                 session.setAttribute("errorMessage", "Giá sản phẩm phải là số.");
@@ -207,18 +386,15 @@ public class updateProductServlet extends HttpServlet {
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
-
             if (!stockQuantityStr.matches("^\\d+$")) {
                 session.setAttribute("errorMessage", "Số lượng sản phẩm phải là số nguyên.");
                 UpdateProductDataLoader.loadDataForUpdate(request, productID);
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
-
             double price = Double.parseDouble(priceStr);
             int stockQuantity = Integer.parseInt(stockQuantityStr);
 
-            // ============ TẠO ĐỐI TƯỢNG PRODUCT =============
             Product p = new Product();
             p.setProductID(productID);
             p.setSKU(SKU);
@@ -234,7 +410,6 @@ public class updateProductServlet extends HttpServlet {
             p.setPrice(price);
             p.setQuantity(stockQuantity);
 
-            // ============= XỬ LÝ UPLOAD ẢNH =============
             UploadImageProduct handleImageProduct = new UploadImageProduct();
             String uploadPath = getServletContext().getRealPath("/uploads");
             File uploadDir = new File(uploadPath);
@@ -242,10 +417,7 @@ public class updateProductServlet extends HttpServlet {
                 uploadDir.mkdirs();
             }
 
-            // Ảnh chính
             Part mainImagePart = request.getPart("mainImageUpload");
-
-            // Ảnh chi tiết
             List<Part> detailImageParts = new ArrayList<>();
             for (Part part : request.getParts()) {
                 if ("detailImages".equals(part.getName()) && part.getSize() > 0) {
@@ -256,7 +428,6 @@ public class updateProductServlet extends HttpServlet {
             if (mainImagePart.getSize() > 0) {
                 String mainImageFileName = handleImageProduct.generateUniqueFileName(mainImagePart);
                 String mainImageFilePath = handleImageProduct.saveFile(mainImagePart, uploadPath, mainImageFileName);
-
                 ProductImage currentMainImage = ProductImageDAO.getMainImage(productID);
                 if (currentMainImage != null) {
                     boolean imgUpdated = ProductImageDAO.updateProductImage(currentMainImage.getImageID(), mainImageFilePath, 1);
@@ -281,6 +452,20 @@ public class updateProductServlet extends HttpServlet {
             }
 
             boolean updated = ProductDAO.updateProduct(p);
+            System.out.println("=== [DEBUG] Received update form data ===");
+            System.out.println("productID = " + productID);
+            System.out.println("productName = " + productName);
+            System.out.println("priceStr = " + priceStr);
+            System.out.println("stockQuantityStr = " + stockQuantityStr);
+            System.out.println("description = " + description);
+            System.out.println("category = " + category);
+            System.out.println("gender = " + gender);
+            System.out.println("priceRange = " + priceRange);
+            System.out.println("brand = " + brand);
+            System.out.println("ageGroup = " + ageGroup);
+            System.out.println("origin = " + origin);
+            System.out.println("material = " + material);
+            System.out.println("SKU = " + SKU);
 
             if (updated) {
                 session.setAttribute("successMessage", "Cập nhật sản phẩm thành công!");
@@ -290,14 +475,10 @@ public class updateProductServlet extends HttpServlet {
                 UpdateProductDataLoader.loadDataForUpdate(request, productID);
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
-            // Nếu có Exception => nạp lại dữ liệu + báo lỗi
             HttpSession session = request.getSession();
             session.setAttribute("errorMessage", "Có lỗi xảy ra khi cập nhật sản phẩm (Exception).");
-
-            // Lấy productID từ request, nạp lại data
             String productIDStr = request.getParameter("productID");
             if (productIDStr != null) {
                 int productID = Integer.parseInt(productIDStr);
@@ -322,6 +503,3 @@ public class updateProductServlet extends HttpServlet {
     }// </editor-fold>
 
 }
-
-
-

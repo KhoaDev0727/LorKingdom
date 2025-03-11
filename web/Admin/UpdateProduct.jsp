@@ -144,7 +144,8 @@
                             <!-- Quill editor container -->
                             <div id="editor-container"></div>
                             <!-- Hidden field to store description -->
-                            <input type="hidden" name="description" value="${product.description}" />
+                            <input type="hidden" name="description" id="descriptionInput" />
+
                         </div>
                     </div>
 
@@ -162,10 +163,11 @@
                                     <label class="form-label">Price ($)</label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="fas fa-tag"></i></span>
-                                        <input type="number" class="form-control" min="0" step="0.01" 
+                                        <input type="number" class="form-control" 
                                                name="price" 
                                                value="${product.price}" 
                                                required />
+
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -253,24 +255,6 @@
         <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 
         <script src="JS/AddNewProduct.js"></script>
-        <!-- Modal Error -->
-        <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header bg-danger text-white">
-                        <h5 class="modal-title" id="errorModalLabel">Error</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p id="errorMessage">${sessionScope.errorMessage}</p>
-                    </div>
-                    <div class="modal-footer">
-                        <!-- Nếu muốn có nút quay lại cũng có thể thêm -->
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Success Message Modal -->
         <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
@@ -290,12 +274,13 @@
                 </div>
             </div>
         </div>
+        <!-- Chỉ định nghĩa 1 modal lỗi duy nhất -->
         <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header bg-danger text-white">
                         <h5 class="modal-title" id="errorModalLabel">Error</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <p id="errorMessage">${sessionScope.errorMessage}</p>
@@ -309,24 +294,33 @@
 
         <script>
             window.onload = function () {
-                let errorMessage = "${sessionScope.errorMessage}";
+                var errorMessage = "${sessionScope.errorMessage}";
                 if (errorMessage && errorMessage.trim() !== "") {
-                    let errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+                    var errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
                     errorModal.show();
-            <% request.getSession().removeAttribute("errorMessage"); %>
                 }
             };
+        </script>
 
+        <script>
 
             var quill = new Quill('#editor-container', {
                 theme: 'snow'
             });
-
             var oldDesc = document.querySelector('input[name="description"]').value;
             quill.root.innerHTML = oldDesc;
 
+        </script>
+        <script>
+           
+            var oldDesc = '<c:out value="${product.description}" escapeXml="false"/>';
+
+            console.log("oldDesc = ", oldDesc);
+
+            quill.root.innerHTML = oldDesc;
+
             document.querySelector('form').addEventListener('submit', function () {
-                document.querySelector('input[name="description"]').value = quill.root.innerHTML;
+                document.getElementById('descriptionInput').value = quill.root.innerHTML;
             });
         </script>
     </body>
