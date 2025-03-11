@@ -188,27 +188,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <!-- Material -->
-                        <div class="mb-4">
-                            <h3 class="font-semibold mb-2 text-orange-500">Chất Liệu</h3>
-                            <div class="w-full overflow-y-auto max-h-[300px]">
-                                <ul class="pl-4">
-                                    <c:forEach var="mat" items="${listM}">
-                                        <li style="border-bottom:1px solid #ccc; margin-bottom: 5px;">
-                                            <label class="block px-4 py-2">
-                                                <input type="radio" 
-                                                       name="materialID" 
-                                                       value="${mat.materialID}" 
-                                                       ${param.materialID == mat.materialID ? 'checked' : ''} 
-                                                       onchange="submitFilter()">
-                                                ${mat.name}
-                                            </label>
-                                        </li>
-                                    </c:forEach>
-                                </ul>
-                            </div>
-                        </div>
-
+                       
                         <!-- Sex -->
                         <div class="mb-4">
                             <h3 class="font-semibold mb-2 text-orange-500">Giới Tính</h3>
