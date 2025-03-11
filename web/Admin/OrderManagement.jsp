@@ -17,9 +17,11 @@
         <script src="JS/SideBarToggle.js"></script>
     </head>
     <body class="sb-nav-fixed">
+        <c:if test="${empty sessionScope.roleID}">
+            <c:redirect url="/Admin/loginPage.jsp"/>
+        </c:if>
         <!-- Sidebar (Included) -->
         <%@ include file="Component/SideBar.jsp" %>
-
         <div id="layoutSidenav">
             <div id="layoutSidenav_content">
                 <main>

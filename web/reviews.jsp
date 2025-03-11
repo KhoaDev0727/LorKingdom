@@ -19,7 +19,7 @@
                     <div class="d-flex align-items-center mb-3">
                         <span class="display-4 font-weight-bold text-danger">
                             <fmt:setLocale value="vi_VN" />
-                        <fmt:formatNumber value="${mediumRatings}" type="number" maxFractionDigits="1" />
+                            <fmt:formatNumber value="${mediumRatings}" type="number" maxFractionDigits="1" />
                             <span class="h4 ml-2">trên 5</span>
                         </span>
                     </div>
@@ -49,16 +49,17 @@
                                 </c:forEach>
                                 <div class="border-bottom pb-4 mb-4">
                                     <div class="d-flex align-items-center mb-2">
-                                        <img src="${customer.image}" alt="User avatar" class="rounded-circle mr-2" width=60" height="60">
+                                        <img src="${customer.image}" alt="User avatar" class="rounded-circle mr-2" style="width:60px; height:60px">
                                         <div>
                                             <span class="font-weight-bold">${customer.userName}</span>
                                             <div class="d-flex align-items-center">
                                                 <c:forEach begin="1" end="${review.rating}" var="i">
                                                     <i class="fas fa-star text-danger"></i>
                                                 </c:forEach>
-                                                <c:if test="${review.rating % 1 != 0}">
-                                                    <i class="fas fa-star-half-alt text-danger"></i>
-                                                </c:if>
+                                                <!-- Sao rỗng (empty stars) -->
+                                                <c:forEach begin="${review.rating + 1}" end="5" var="i">
+                                                    <i class="far fa-star text-danger"></i>
+                                                </c:forEach>
                                             </div>
                                         </div>
                                     </div>
@@ -100,18 +101,17 @@
                         var html = "";
                         if (data && data.length > 0) {
                             $.each(data, function (index, review) {
-                                console.log(review.userName);
                                 html += '<div class="border-bottom pb-4 mb-4">';
                                 html += '    <div class="d-flex align-items-center mb-2">';
-                                html += '        <img src="https://placehold.co/40x40" alt="User avatar" class="rounded-circle mr-2" width="40" height="40">';
+                                html += '        <img src= "' + review.account.image + '" alt="User avatar" class="rounded-circle mr-2" width="40" height="40">';
                                 html += '        <div>';
                                 html += '            <span class="font-weight-bold">' + review.account.userName + '</span>';
                                 html += '            <div class="d-flex align-items-center">';
-                                for (var i = 1; i <= review.Rating; i++) {
+                                for (var i = 1; i <= Math.floor(review.Rating); i++) {
                                     html += '<i class="fas fa-star text-danger"></i>';
                                 }
-                                if (review.rating % 1 !== 0) {
-                                    html += '<i class="fas fa-star-half-alt text-danger"></i>';
+                                for (var i = Math.ceil(review.Rating); i < 5; i++) {
+                                    html += '<i class="far fa-star text-danger"></i>';
                                 }
                                 html += '            </div>';
                                 html += '        </div>';

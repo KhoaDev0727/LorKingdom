@@ -13,25 +13,22 @@
 
         <!-- Simple Datatables CSS (nếu dùng) -->
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" crossorigin="anonymous">
-
         <!-- Font Awesome -->
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-
         <!-- Quill CSS -->
         <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-
         <!-- Custom CSS của bạn -->
         <link rel="stylesheet" href="CSS/style.css" />
-
         <!-- Tùy chọn: bạn có thể thêm script toggle sidebar, v.v. -->
         <script src="JS/SideBarToggle.js"></script>
     </head>
     <body class="sb-nav-fixed">
+        <c:if test="${empty sessionScope.roleID}">
+            <c:redirect url="/Admin/loginPage.jsp"/>
+        </c:if>
         <%@ include file="Component/SideBar.jsp" %>
-
         <div id="layoutSidenav">
             <div id="layoutSidenav_content">
                 <div class="dashboard-container">

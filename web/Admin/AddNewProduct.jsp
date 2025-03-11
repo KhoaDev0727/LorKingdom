@@ -18,9 +18,11 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <link rel="stylesheet" href="CSS/NewProductCss.css"/>
     </head>
-    <body>
+    <body> 
+         <c:if test="${empty sessionScope.roleID}">
+            <c:redirect url="/Admin/loginPage.jsp"/>
+        </c:if>
         <div class="container">
-
             <form action="ProductManagementServlet" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
                 <div class="row">
                     <h2 class="text-center mb-4 fw-bold text-primary">Add New Product</h2>

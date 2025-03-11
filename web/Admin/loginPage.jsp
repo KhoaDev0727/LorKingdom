@@ -9,88 +9,88 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trang đăng nhập</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="./CSS/styleLoginAdmin.css">
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Trang đăng nhập</title>
+        <!-- Bootstrap 5 CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="./CSS/styleLoginAdmin.css">
+    </head>
 
-<body>
-    <!-- Banner -->
-    <div class="containers">
-        <div class="background">
-            <img src="./assets/img/back-login.jpg" alt="Sea Background" class="background-img">
-        </div>
-        <div class="login-section">
-            <div class="login-form">
-                <div class="logo">
-                    <img src="./assets/img/logo-login.png" alt="Lorkingdom Logo" class="logo-img">
+    <body>
+        <!-- Banner -->
+        <div class="containers">
+            <div class="background">
+                <img src="./assets/img/back-login.jpg" alt="Sea Background" class="background-img">
+            </div>
+            <div class="login-section">
+                <div class="login-form">
+                    <div class="logo">
+                        <img src="./assets/img/logo-login.png" alt="Lorkingdom Logo" class="logo-img">
+                    </div>
+                    <h2 class="mb-4" style="font-weight: 600;">Trang đăng nhập</h2>
+                    <form method="POST" action="LoginPageServlet">
+                        <!-- Email Input -->
+                        <div class="mb-4">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" class="form-control" id="email" name="email" placeholder="Email"
+                                       value="${param.email}">
+                            </div>
+                            <!-- Display email error if any -->
+                            <c:if test="${not empty requestScope.emailError}">
+                                <div class="text-danger">${requestScope.emailError}</div>
+                            </c:if>
+                        </div>
+
+                        <!-- Password Input -->
+                        <div class="mb-4">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-key"></i></span>
+                                <input type="password" class="form-control" id="password" name="password"
+                                       placeholder="Mật khẩu">
+                            </div>
+                            <!-- Display password error if any -->
+                            <c:if test="${not empty requestScope.passwordError}">
+                                <div class="text-danger">${requestScope.passwordError}</div>
+                            </c:if>
+                        </div>
+
+                        <!-- Display general error -->
+                        <c:if test="${not empty requestScope.error}">
+                            <div class="alert alert-danger">
+                                ${requestScope.error}
+                            </div>
+                        </c:if>
+
+                        <!-- Login Button -->
+                        <button type="submit" class="btn btn-primary login-btn">Đăng nhập</button>
+
+                        <!-- Forgot Password Link -->
+                        <div class="FP mt-4">
+
+                            <div class="register-link">
+                                <span>Bạn chưa có tài khoản? <a href="registerPage.jsp">Đăng ký</a></span>
+                            </div>
+
+                            <div class="forgot-password">
+                                <a href="forgotPasswordPage.jsp">Quên mật khẩu?</a>
+                            </div>
+
+                            <!-- Register Link -->
+
+                        </div>
+                    </form>
+
                 </div>
-                <h2 class="mb-4" style="font-weight: 600;">Trang đăng nhập</h2>
-                <form method="POST" action="LoginPageServlet">
-                    <!-- Email Input -->
-                    <div class="mb-4">
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-user"></i></span>
-                            <input type="text" class="form-control" id="email" name="email" placeholder="Email"
-                                value="${param.email}">
-                        </div>
-                        <!-- Display email error if any -->
-                        <c:if test="${not empty requestScope.emailError}">
-                            <div class="text-danger">${requestScope.emailError}</div>
-                        </c:if>
-                    </div>
-
-                    <!-- Password Input -->
-                    <div class="mb-4">
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-key"></i></span>
-                            <input type="password" class="form-control" id="password" name="password"
-                                placeholder="Mật khẩu">
-                        </div>
-                        <!-- Display password error if any -->
-                        <c:if test="${not empty requestScope.passwordError}">
-                            <div class="text-danger">${requestScope.passwordError}</div>
-                        </c:if>
-                    </div>
-
-                    <!-- Display general error -->
-                    <c:if test="${not empty requestScope.error}">
-                        <div class="alert alert-danger">
-                            ${requestScope.error}
-                        </div>
-                    </c:if>
-
-                    <!-- Login Button -->
-                    <button type="submit" class="btn btn-primary login-btn">Đăng nhập</button>
-
-                    <!-- Forgot Password Link -->
-                    <div class="FP mt-4">
-
-                        <div class="register-link">
-                            <span>Bạn chưa có tài khoản? <a href="registerPage.jsp">Đăng ký</a></span>
-                        </div>
-
-                        <div class="forgot-password">
-                            <a href="forgotPasswordPage.jsp">Quên mật khẩu?</a>
-                        </div>
-
-                        <!-- Register Link -->
-
-                    </div>
-                </form>
-
             </div>
         </div>
-    </div>
 
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+        <!-- Bootstrap JS and dependencies -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
 
 </html>

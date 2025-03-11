@@ -259,7 +259,7 @@ public class ReviewManagementServlet extends HttpServlet {
         HttpSession session = request.getSession();
         try {
             String uploadPath = request.getServletContext().getRealPath("/") + File.separator + UPLOAD_DIR;
-            int productId = Integer.parseInt( request.getParameter("productId"));
+            int productId = Integer.parseInt(request.getParameter("productId"));
             int accountId = (Integer) session.getAttribute("userID");
             int rating = Integer.parseInt(request.getParameter("rating"));
             String comment = request.getParameter("description");
@@ -271,7 +271,7 @@ public class ReviewManagementServlet extends HttpServlet {
             }
             Review review = new Review(accountId, productId, image, rating, comment);
             boolean added = ReviewDAO.addReview(review);
-   request.getRequestDispatcher("Setting.jsp").forward(request, response);
+            request.getRequestDispatcher("Setting.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
             session.setAttribute("message", "Có lỗi xảy ra khi bạn đánh giá sản phẩm");
@@ -303,29 +303,24 @@ public class ReviewManagementServlet extends HttpServlet {
 
     protected void getListReviewForCustomer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-        if ("fillterCustomer".equals(action)) {
-            String keyword = request.getParameter("keyWord");
-            String productIdStr = request.getParameter("productID");
+        String keyword = request.getParameter("keyWord");
+        String productIdStr = request.getParameter("productID");
 
-            if (keyword == null || keyword.isEmpty()) {
-                keyword = "6"; // Mặc định là "Tất Cả"
-            }
-            int productId = Integer.parseInt(productIdStr);
-            List<Review> listReviews = ReviewDAO.getReviewsFromDatabase(keyword, productId);
-            // Chuyển danh sách thành JSON
-            Gson gson = new GsonBuilder()
-                    .setDateFormat("yyyy-MM-dd HH:mm:ss")
-                    .create();
-            String json = gson.toJson(listReviews);
-            // Thiết lập response
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(json);
+        if (keyword == null || keyword.isEmpty()) {
+            keyword = "6"; // Mặc định là "Tất Cả"
         }
-    }
-    
-   
+        int productId = Integer.parseInt(productIdStr);
+        List<Review> listReviews = ReviewDAO.getReviewsFromDatabase(keyword, productId);
+        // Chuyển danh sách thành JSON
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .create();
+        String json = gson.toJson(listReviews);
+        System.out.println(json);
+        // Thiết lập response
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(json);
     }
 
-        
-
+}

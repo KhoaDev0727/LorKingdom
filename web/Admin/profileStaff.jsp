@@ -26,7 +26,9 @@
 
     </head>
     <body>
-
+        <c:if test="${empty sessionScope.roleID}">
+            <c:redirect url="/Admin/loginPage.jsp"/>
+        </c:if>
         <div class="page-content" id="page-content">
             <div class="padding">
                 <div class="container d-flex justify-content-center">

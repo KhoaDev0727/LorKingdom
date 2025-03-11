@@ -17,6 +17,9 @@
         <script src="JS/SideBarToggle.js"></script>
     </head>
     <body class="sb-nav-fixed">
+        <c:if test="${empty sessionScope.roleID}">
+            <c:redirect url="/Admin/loginPage.jsp"/>
+        </c:if>
         <%@ include file="Component/SideBar.jsp" %>
         <div id="layoutSidenav">
             <div id="layoutSidenav_content">
@@ -125,39 +128,39 @@
                                                                     </c:if>
                                                                 </td>
                                                             </tr>
-                                                            
+
                                                             <!-- Edit Shipping Method Modal -->
-                                                            <div class="modal fade" id="editShippingMethodModal${method.shippingMethodID}">
-                                                                <div class="modal-dialog">
-                                                                    <div class="modal-content">
-                                                                        <form action="ShippingMethodServlet" method="POST" onsubmit="return validateForm()">
-                                                                            <input type="hidden" name="action" value="update">
-                                                                            <input type="hidden" name="shippingMethodID" value="${method.shippingMethodID}">
-                                                                            <div class="modal-header">
-                                                                                <h5 class="modal-title">Edit Shipping Method</h5>
-                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                        <div class="modal fade" id="editShippingMethodModal${method.shippingMethodID}">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <form action="ShippingMethodServlet" method="POST" onsubmit="return validateForm()">
+                                                                        <input type="hidden" name="action" value="update">
+                                                                        <input type="hidden" name="shippingMethodID" value="${method.shippingMethodID}">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title">Edit Shipping Method</h5>
+                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <div class="mb-3">
+                                                                                <label class="form-label">Method Name</label>
+                                                                                <input type="text" class="form-control" name="methodName" value="${method.methodName}" required>
                                                                             </div>
-                                                                            <div class="modal-body">
-                                                                                <div class="mb-3">
-                                                                                    <label class="form-label">Method Name</label>
-                                                                                    <input type="text" class="form-control" name="methodName" value="${method.methodName}" required>
-                                                                                </div>
-                                                                                <div class="mb-3">
-                                                                                    <label class="form-label">Description</label>
-                                                                                    <textarea class="form-control" name="description" rows="3">${method.description}</textarea>
-                                                                                </div>
+                                                                            <div class="mb-3">
+                                                                                <label class="form-label">Description</label>
+                                                                                <textarea class="form-control" name="description" rows="3">${method.description}</textarea>
                                                                             </div>
-                                                                            <div class="modal-footer">
-                                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                                <button type="submit" class="btn btn-primary">Save Changes</button>
-                                                                            </div>
-                                                                        </form>
-                                                                    </div>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                                        </div>
+                                                                    </form>
                                                                 </div>
                                                             </div>
-                                                        </c:forEach>
-                                                    </c:otherwise>
-                                                </c:choose>
+                                                        </div>
+                                                    </c:forEach>
+                                                </c:otherwise>
+                                            </c:choose>
                                             </tbody>
                                         </table>
                                     </div>
@@ -283,29 +286,29 @@
                 </div>
             </div>
         </div>
-                    
+
         <script>
             function setSoftDeleteshippingMethodID(shippingMethodID) {
                 document.getElementById("softDeleteshippingMethodID").value = shippingMethodID;
             }
-            
+
             function setHardDeleteShippingMethodID(shippingMethodID) {
                 document.getElementById("hardDeleteShippingMethodID").value = shippingMethodID;
             }
-            
+
             window.onload = function () {
                 const errorMessage = "${sessionScope.errorMessage}";
                 if (errorMessage && errorMessage.trim() !== "") {
                     const errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
                     errorModal.show();
-                    <% request.getSession().removeAttribute("errorMessage"); %>
+            <% request.getSession().removeAttribute("errorMessage"); %>
                 }
 
                 let successMessage = '${sessionScope.successMessage}';
                 if (successMessage && successMessage.trim() !== "null" && successMessage.trim() !== "") {
                     let successModal = new bootstrap.Modal(document.getElementById("successModal"));
                     successModal.show();
-                    <% session.removeAttribute("successMessage"); %>
+            <% session.removeAttribute("successMessage"); %>
                 }
             };
         </script>

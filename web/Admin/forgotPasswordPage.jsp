@@ -1,17 +1,17 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" d</title>
-    <link href="https://ccontent="width=device-width, initial-scale=1.0">
-    <title>Trang Quên mật khẩu</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./CSS/forgotPasswordPage.css"/>
-</head>
-<body style="background-image: url(./assets/img/back-forgot.jpg);
-             background-size: cover;">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" d</title>
+        <link href="https://ccontent="width=device-width, initial-scale=1.0">
+        <title>Trang Quên mật khẩu</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="./CSS/forgotPasswordPage.css"/>
+    </head>
+    <body style="background-image: url(./assets/img/back-forgot.jpg);
+          background-size: cover;"> 
     <div class="container mt-5">
         <div class="forgot-password-container" style="background-color: rgb(231, 231, 231);">
             <h3>Quên mật khẩu?</h3>

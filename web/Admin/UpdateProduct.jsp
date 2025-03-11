@@ -14,14 +14,15 @@
         <link rel="stylesheet" href="CSS/NewProductCss.css"/>
     </head>
     <body>
+        <c:if test="${empty sessionScope.roleID}">
+            <c:redirect url="/Admin/loginPage.jsp"/>
+        </c:if>
         <div class="container">
-
             <form action="updateProductServlet" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
                 <!-- Ẩn action và productID -->
                 <input name="action" value="update" type="hidden" />
                 <input type="hidden" name="productID" value="${product.productID}" />
                 <input type="hidden" name="SKU" value="${product.SKU}" />
-
                 <div class="row">
                     <h2 class="text-center mb-4 fw-bold text-primary">Update Product</h2>
                     <!-- Cột trái -->

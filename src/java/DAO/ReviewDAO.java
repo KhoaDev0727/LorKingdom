@@ -228,7 +228,7 @@ public class ReviewDAO {
         try {
             conn = DBConnection.getConnection();
             StringBuilder sql = new StringBuilder(
-                    "SELECT r.*, a.AccountName "
+                    "SELECT r.*, a.AccountName, a.Image "
                     + "FROM Reviews r JOIN Account a ON r.AccountID = a.AccountID "
                     + "WHERE r.ProductID = ?"
             );
@@ -264,6 +264,7 @@ public class ReviewDAO {
                 // Thêm UserName vào Review
                 Account acc = new Account();
                     acc.setUserName(rs.getString("AccountName"));
+                    acc.setImage(rs.getString("Image"));
                 r.setAccount(acc);
                 reviews.add(r);
             }
