@@ -34,6 +34,13 @@ public class LoginServlet extends HttpServlet {
         AccountDAO accountDAO = new AccountDAO();
         Account account = accountDAO.authenticateUser(email, password);
         if (account != null) {
+            // Kiểm tra trạng thái Status
+            if (!"Active".equalsIgnoreCase(account.getStatus())) {
+                request.setAttribute("error", "Tài khoản của bạn đã ngừng hoạt động. Vui lòng liên hệ quản trị viên để biết thêm chi tiết!");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+                return;
+            }
+            
             HttpSession session = request.getSession();
 //            try {
 //                ListCart = cartDAO.getCartItems(account.getAccountId());

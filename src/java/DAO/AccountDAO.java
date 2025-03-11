@@ -39,34 +39,35 @@ public class AccountDAO {
     private static String IS_EMAIL_EXIST = "SELECT COUNT(*) FROM Account WHERE Email = ?";
 
     public static boolean isEmailExists(String email) throws SQLException, ClassNotFoundException {
-    conn = DBConnection.getConnection();
-    try {
-        stm = conn.prepareStatement(IS_EMAIL_EXIST);
-        stm.setString(1, email);
-        rs = stm.executeQuery();
-        if (rs.next()) {
-            return rs.getInt(1) > 0; // Sửa từ > 1 thành > 0
+        conn = DBConnection.getConnection();
+        try {
+            stm = conn.prepareStatement(IS_EMAIL_EXIST);
+            stm.setString(1, email);
+            rs = stm.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // Sửa từ > 1 thành > 0
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    } 
-    return false;
-}
+        return false;
+    }
 
-      public static boolean isEmailExistsUpdate(String email) throws SQLException, ClassNotFoundException {
-    conn = DBConnection.getConnection();
-    try {
-        stm = conn.prepareStatement(IS_EMAIL_EXIST);
-        stm.setString(1, email);
-        rs = stm.executeQuery();
-        if (rs.next()) {
-            return rs.getInt(1) > 1; // Sửa từ > 1 thành > 0
+    public static boolean isEmailExistsUpdate(String email) throws SQLException, ClassNotFoundException {
+        conn = DBConnection.getConnection();
+        try {
+            stm = conn.prepareStatement(IS_EMAIL_EXIST);
+            stm.setString(1, email);
+            rs = stm.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 1; // Sửa từ > 1 thành > 0
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    } 
-    return false;
-}
+        return false;
+    }
+
     public Account getAccountByEmail(String email) {
         String query = "SELECT * FROM Account WHERE Email = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
@@ -597,6 +598,20 @@ public class AccountDAO {
             stmt.setString(1, hashedPassword);
             stmt.setString(2, email);
             return stmt.executeUpdate() > 0;
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean deactivateAccount(String email) {
+        String query = "UPDATE Account SET Status = 'Inactive', UpdatedAt = ? WHERE Email = ?";
+        Timestamp currentTimestamp = Timestamp.valueOf(LocalDateTime.now());
+
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setTimestamp(1, currentTimestamp);
+            ps.setString(2, email);
+            return ps.executeUpdate() > 0;
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
             return false;

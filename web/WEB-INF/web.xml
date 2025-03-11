@@ -203,6 +203,10 @@
         <servlet-name>PriceRangeServlet</servlet-name>
         <servlet-class>Controller.PriceRangeServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DeactivateAccountServlet</servlet-name>
+        <servlet-class>Controller.DeactivateAccountServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>VerifyCodeServlet</servlet-name>
         <url-pattern>/VerifyCodeServlet</url-pattern>
@@ -263,12 +267,10 @@
         <servlet-name>ReviewManagementServlet</servlet-name>
         <url-pattern>/ReviewManagementServlet</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
         <servlet-name>ReviewManagementServlet</servlet-name>
         <url-pattern>/Admin/ReviewManagementServlet</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
         <servlet-name>FinancialDashboardServlet</servlet-name>
         <url-pattern>/Admin/FinancialDashboardServlet</url-pattern>
@@ -403,6 +405,10 @@
     <servlet-mapping>
         <servlet-name>PriceRangeServlet</servlet-name>
         <url-pattern>/Admin/PriceRangeServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeactivateAccountServlet</servlet-name>
+        <url-pattern>/DeactivateAccountServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

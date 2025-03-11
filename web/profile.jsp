@@ -60,6 +60,7 @@
                         </div>
 
                         <button type="submit" class="btn btn-primary mt-3 w-100">Cập nhật</button>
+                        <button type="button" class="btn btn-danger mt-3 w-100" data-bs-toggle="modal" data-bs-target="#deactivateModal">Vô hiệu hóa tài khoản</button>
                     </div>
                 </form>
             </div>
@@ -83,6 +84,27 @@
         </div>
     </div>
 
+
+    <!-- Modal xác nhận vô hiệu hóa tài khoản -->
+    <div class="modal fade" id="deactivateModal" tabindex="-1" aria-labelledby="deactivateModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deactivateModalLabel">Xác nhận vô hiệu hóa tài khoản</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-danger">Bạn có chắc chắn muốn vô hiệu hóa tài khoản không? Hành động này sẽ khiến tài khoản của bạn ngừng hoạt động và bạn sẽ không thể đăng nhập được nữa.</p>
+                    <label for="deactivatePassword" class="form-label">Nhập mật khẩu để xác nhận:</label>
+                    <input type="password" id="deactivatePassword" class="form-control" placeholder="Nhập mật khẩu của bạn">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeactivateBtn" disabled onclick="deactivateAccount()">Vô hiệu hóa</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal box -->
     <div class="modal fade" id="editPhoneModal" tabindex="-1" aria-labelledby="editPhoneModalLabel"
@@ -242,5 +264,68 @@
                 timer: 1500
             });
         }
+    }
+</script>
+
+<script>
+    // Kích hoạt nút "Vô hiệu hóa" khi người dùng nhập mật khẩu
+    document.getElementById('deactivatePassword').addEventListener('input', function () {
+        const confirmDeactivateBtn = document.getElementById('confirmDeactivateBtn');
+        if (this.value.trim() !== '') {
+            confirmDeactivateBtn.disabled = false;
+        } else {
+            confirmDeactivateBtn.disabled = true;
+        }
+    });
+
+// Hàm xử lý vô hiệu hóa tài khoản
+    function deactivateAccount() {
+        const password = document.getElementById('deactivatePassword').value;
+
+        if (password.trim() === '') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Cảnh báo!',
+                text: 'Vui lòng nhập mật khẩu để xác nhận.'
+            });
+            return;
+        }
+
+        // Gửi yêu cầu AJAX đến servlet
+        $.ajax({
+            url: 'DeactivateAccountServlet',
+            type: 'POST',
+            data: {
+                password: password
+            },
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: response.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        // Đăng xuất người dùng và chuyển hướng về trang đăng nhập
+                        window.location.href = 'LogoutServlet';
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi!',
+                        text: response.message
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi!',
+                    text: 'Có lỗi xảy ra: ' + error
+                });
+            }
+        });
     }
 </script>
