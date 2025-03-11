@@ -322,3 +322,6 @@ public class updateProductServlet extends HttpServlet {
     }// </editor-fold>
 
 }
+
+
+

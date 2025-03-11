@@ -87,7 +87,7 @@ public class getList extends HttpServlet {
         ProductImageDAO productImageDAO = new ProductImageDAO();
 
         // Số sản phẩm mỗi trang (bạn có thể đổi thành 12 nếu muốn)
-        int itemsPerPage = 12;
+        int itemsPerPage = 9;
         // Trang hiện tại (mặc định là 1)
         int page = 1;
 
@@ -110,9 +110,8 @@ public class getList extends HttpServlet {
             Integer sexID = parseIntOrNull(request.getParameter("sexID"));
             Integer priceRangeID = parseIntOrNull(request.getParameter("priceRangeID"));
             Integer brandID = parseIntOrNull(request.getParameter("brandID"));
-            Integer materialID = parseIntOrNull(request.getParameter("materialID"));
             boolean hasFilters = (categoryID != null || ageID != null || sexID != null
-                    || priceRangeID != null || brandID != null || materialID != null);
+                    || priceRangeID != null || brandID != null);
 
             System.out.println("=== DEBUG FILTERS ===");
             System.out.println("categoryID = " + categoryID);
@@ -125,8 +124,12 @@ public class getList extends HttpServlet {
 
             // Lấy toàn bộ danh sách sản phẩm (hoặc theo filter)
             List<Product> allProducts;
-            if (hasFilters) {
-                allProducts = productDAO.getFilteredProducts(categoryID, ageID, sexID, materialID,
+            String search = (String) request.getAttribute("search");
+            if (search != null && !search.trim().isEmpty()) {
+                allProducts = productDAO.searchProducts(search.trim().toLowerCase());
+            }
+            else  if (hasFilters) {
+                allProducts = productDAO.getFilteredProducts(categoryID, ageID, sexID,
                         priceRangeID, brandID);
             } else {
                 allProducts = productDAO.getAllProducts();
@@ -134,6 +137,7 @@ public class getList extends HttpServlet {
 
             // Tính tổng số sản phẩm
             int totalProducts = allProducts.size();
+            System.out.println(totalProducts);
             // Tính tổng số trang
             int totalPages = (int) Math.ceil((double) totalProducts / itemsPerPage);
 
@@ -205,7 +209,12 @@ public class getList extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String searchKeyword = request.getParameter("search");
+
+        if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
+            request.setAttribute("search", searchKeyword);
+        }
+        doGet(request, response);
     }
 
     /**

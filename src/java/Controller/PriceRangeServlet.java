@@ -120,10 +120,10 @@ public class PriceRangeServlet extends HttpServlet {
                 case "update":
                     updatePriceRange(request, response);
                     break;
-                case "delete": // Xóa mềm
+                case "delete": 
                     softDeletePriceRange(request, response);
                     break;
-                case "hardDelete": // Xóa cứng
+                case "hardDelete": 
                     hardDeletePriceRange(request, response);
                     break;
                 case "restore":
@@ -149,7 +149,7 @@ public class PriceRangeServlet extends HttpServlet {
         request.getRequestDispatcher("PriceRangeManagement.jsp").forward(request, response);
     }
 
-    // 2) Hiển thị danh sách đã xóa mềm
+
     private void listDeletedPriceRanges(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         List<PriceRange> list = priceRangeDAO.getDeletedPriceRanges();
@@ -157,159 +157,6 @@ public class PriceRangeServlet extends HttpServlet {
         request.getRequestDispatcher("PriceRangeManagement.jsp").forward(request, response);
     }
 
-//    private void addPriceRange(HttpServletRequest request, HttpServletResponse response)
-//            throws SQLException, ClassNotFoundException, ServletException, IOException {
-//        HttpSession session = request.getSession();
-//        try {
-//            String priceStartStr = request.getParameter("priceStart");
-//            String priceEndStr = request.getParameter("priceEnd");
-//            String unit = request.getParameter("unit"); // lấy giá trị đơn vị từ form
-//
-//            if (priceStartStr == null || priceEndStr == null
-//                    || priceStartStr.trim().isEmpty() || priceEndStr.trim().isEmpty()) {
-//                session.setAttribute("errorMessage", "Vui lòng nhập đầy đủ các trường.");
-//                response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
-//                return;
-//            }
-//
-//            priceStartStr = priceStartStr.replace(".", "").replace(",", ".");
-//            priceEndStr = priceEndStr.replace(".", "").replace(",", ".");
-//
-//            double priceStart = Double.parseDouble(priceStartStr);
-//            double priceEnd = Double.parseDouble(priceEndStr);
-//
-//            if (priceStart < 0) {
-//                session.setAttribute("errorMessage", "Giá bắt đầu không được nhỏ hơn 0.");
-//                response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
-//                return;
-//            }
-//            if (priceEnd < priceStart) {
-//                session.setAttribute("errorMessage", "Giá kết thúc không được nhỏ hơn giá bắt đầu.");
-//                response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
-//                return;
-//            }
-//
-//            if (unit == null || unit.trim().isEmpty()) {
-//                unit = (priceStart >= 1000000 || priceEnd >= 1000000) ? "triệu" : "trăm";
-//            } else {
-//                if (unit.equals("trăm") && (priceStart >= 1000000 || priceEnd >= 1000000)) {
-//                    session.setAttribute("errorMessage", "Giá trị nhập không phù hợp với đơn vị 'trăm'. Vui lòng chọn 'triệu' cho giá >= 1,000,000.");
-//                    response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
-//                    return;
-//                }
-//            }
-//            if (unit.equals("triệu")) {
-//                priceStart = priceStart / 1000000;
-//                priceEnd = priceEnd / 1000000;
-//                if (priceStart > 20 || priceEnd > 20) {
-//                    session.setAttribute("errorMessage", "Giá không được vượt quá 20 triệu.");
-//                    response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
-//                    return;
-//                }
-//            } else { 
-//                if (priceStart > 20000000 || priceEnd > 20000000) {
-//                    session.setAttribute("errorMessage", "Giá không được vượt quá 20 triệu.");
-//                    response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
-//                    return;
-//                }
-//            }
-//
-//            DecimalFormat formatter = new DecimalFormat("#,###");
-//            String formattedPriceStart = formatter.format(priceStart);
-//            String formattedPriceEnd = formatter.format(priceEnd);
-//
-//            String priceRangeStr = formattedPriceStart + "-" + formattedPriceEnd + " " + unit;
-//            if (priceRangeDAO.isPriceRangeExists(priceRangeStr)) {
-//                session.setAttribute("errorMessage", "Khoảng giá đã tồn tại.");
-//                response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
-//                return;
-//            }
-//
-//            PriceRange priceRange = new PriceRange(0, priceRangeStr.trim(), null, 0);
-//            priceRangeDAO.addPriceRange(priceRange);
-//
-//            session.setAttribute("successMessage", "Khoảng giá được thêm thành công.");
-//            response.sendRedirect("PriceRangeServlet?action=list&showSuccessModal=true");
-//        } catch (NumberFormatException e) {
-//            session.setAttribute("errorMessage", "Giá trị nhập không hợp lệ.");
-//            response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
-//        }
-//    }
-//    private void updatePriceRange(HttpServletRequest request, HttpServletResponse response)
-//            throws SQLException, ClassNotFoundException, ServletException, IOException {
-//        HttpSession session = request.getSession();
-//        try {
-//            int id = Integer.parseInt(request.getParameter("priceRangeID"));
-//            String priceStartStr = request.getParameter("priceStart");
-//            String priceEndStr = request.getParameter("priceEnd");
-//            String unit = request.getParameter("unit"); // lấy đơn vị từ form
-//
-//            if (priceStartStr == null || priceEndStr == null
-//                    || priceStartStr.trim().isEmpty() || priceEndStr.trim().isEmpty()) {
-//                session.setAttribute("errorMessage", "Vui lòng nhập đầy đủ các trường.");
-//                response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
-//                return;
-//            }
-//
-//            double priceStart = Double.parseDouble(priceStartStr);
-//            double priceEnd = Double.parseDouble(priceEndStr);
-//
-//            if (priceStart < 0) {
-//                session.setAttribute("errorMessage", "Giá bắt đầu không được nhỏ hơn 0.");
-//                response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
-//                return;
-//            }
-//            if (priceEnd < priceStart) {
-//                session.setAttribute("errorMessage", "Giá kết thúc không được nhỏ hơn giá bắt đầu.");
-//                response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
-//                return;
-//            }
-//
-//            if (unit == null || unit.trim().isEmpty()) {
-//                unit = (priceStart >= 1000000 || priceEnd >= 1000000) ? "triệu" : "trăm";
-//            } else {
-//                if (unit.equals("trăm") && (priceStart >= 1000000 || priceEnd >= 1000000)) {
-//                    session.setAttribute("errorMessage", "Giá trị nhập không phù hợp với đơn vị 'trăm'. Vui lòng chọn 'triệu' cho giá >= 1,000,000.");
-//                    response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
-//                    return;
-//                }
-//            }
-//            if (unit.equals("triệu")) {
-//                priceStart = priceStart / 1000000;
-//                priceEnd = priceEnd / 1000000;
-//                if (priceStart > 20 || priceEnd > 20) {
-//                    session.setAttribute("errorMessage", "Giá không được vượt quá 20 triệu.");
-//                    response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
-//                    return;
-//                }
-//            } else { // Đơn vị "trăm"
-//                if (priceStart > 20000000 || priceEnd > 20000000) {
-//                    session.setAttribute("errorMessage", "Giá không được vượt quá 20 triệu.");
-//                    response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
-//                    return;
-//                }
-//            }
-//
-//            DecimalFormat formatter = new DecimalFormat("#,###");
-//            String formattedPriceStart = formatter.format(priceStart);
-//            String formattedPriceEnd = formatter.format(priceEnd);
-//
-//            String priceRangeStr = formattedPriceStart + "-" + formattedPriceEnd + " " + unit;
-//            if (priceRangeDAO.isPriceRangeExists(priceRangeStr)) {
-//                session.setAttribute("errorMessage", "Khoảng giá đã tồn tại.");
-//                response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
-//                return;
-//            }
-//
-//            PriceRange priceRange = new PriceRange(id, priceRangeStr.trim(), null, 0);
-//            priceRangeDAO.updatePriceRange(priceRange);
-//            session.setAttribute("successMessage", "Cập nhật khoảng giá được thêm thành công.");
-//            response.sendRedirect("PriceRangeServlet?action=list&showSuccessModal=true");
-//        } catch (NumberFormatException e) {
-//            session.setAttribute("errorMessage", "Giá trị nhập không hợp lệ.");
-//            response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
-//        }
-//    }
     private void addPriceRange(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         HttpSession session = request.getSession();

@@ -42,12 +42,12 @@
 
                             <div class="card mb-4">
                                 <div class="card-header">
-<!--                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <i class="fas fa-table me-1"></i> Price Range List
-                                        </div>
-                                    </div>-->
-                                     <div class="d-flex justify-content-between align-items-center">
+                                    <!--                                    <div class="d-flex justify-content-between align-items-center">
+                                                                            <div>
+                                                                                <i class="fas fa-table me-1"></i> Price Range List
+                                                                            </div>
+                                                                        </div>-->
+                                    <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <i class="fas fa-table me-1"></i> Price Range List
                                         </div>
@@ -58,7 +58,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="card-body">
                                     <!-- Search Form -->
                                     <form action="PriceRangeServlet" method="GET" class="mb-4">
@@ -90,64 +90,67 @@
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
-                                            
-                                                <c:choose>
-                                                    <c:when test="${empty priceRanges}">
-                                                        <tr>
-                                                            <td colspan="5" class="text-center text-muted">No Price Range available.</td>
-                                                        </tr>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <c:forEach var="pr" items="${priceRanges}">
-                                                            <tr class="${pr.isDeleted == 1 ? 'deleted-row' : ''}">
-                                                                <td>${pr.priceRangeID}</td>
-                                                                <td>${pr.priceRange}</td>
-                                                                <td>
-                                                                    <fmt:formatDate value="${pr.createdAt}" pattern="yyyy-MM-dd"/>
-                                                                </td>
-                                                                <td>
-                                                                    <c:choose>
-                                                                        <c:when test="${pr.isDeleted == 1}">
-                                                                            <span class="badge bg-secondary">Deleted</span>
-                                                                        </c:when>
-                                                                        <c:otherwise>
-                                                                            <span class="badge bg-success">Active</span>
-                                                                        </c:otherwise>
-                                                                    </c:choose>
-                                                                </td>
-                                                                <td>
-                                                                    <!-- Nếu isDeleted=0: cho sửa & xóa mềm -->
-                                                                    <c:if test="${pr.isDeleted == 0}">
-                                                                        <button class="btn btn-sm btn-warning"
-                                                                                data-bs-toggle="modal"
-                                                                                data-bs-target="#editPriceRangeModal-${pr.priceRangeID}">
-                                                                            <i class="fas fa-edit"></i>
-                                                                        </button>
-                                                                        <button type="button" class="btn btn-sm btn-danger"
-                                                                                data-bs-toggle="modal"
-                                                                                data-bs-target="#confirmSoftDeleteModal"
-                                                                                onclick="setSoftDeletePriceRangeID(${pr.priceRangeID})">
-                                                                            <i class="fas fa-trash"></i>
-                                                                        </button>
-                                                                    </c:if>
-                                                                    <!-- Nếu isDeleted=1: cho restore & xóa cứng -->
-                                                                    <c:if test="${pr.isDeleted == 1}">
-                                                                        <button class="btn btn-sm btn-success"
-                                                                                onclick="location.href = 'PriceRangeServlet?action=restore&priceRangeID=${pr.priceRangeID}'">
-                                                                            Restore
-                                                                        </button>
-                                                                        <button type="button" class="btn btn-sm btn-danger"
-                                                                                data-bs-toggle="modal"
-                                                                                data-bs-target="#confirmHardDeleteModal"
-                                                                                onclick="setHardDeletePriceRangeID(${pr.priceRangeID})">
-                                                                            <i class="fas fa-trash"></i>
-                                                                        </button>
-                                                                    </c:if>
-                                                                </td>
-                                                            </tr>
 
-                                                            <c:set var="rangeParts" value="${fn:contains(pr.priceRange, ' ') ? fn:split(pr.priceRange, ' ') : ['0', 'trăm']}" />
-                                                            <c:set var="bounds" value="${fn:contains(rangeParts[0], '-') ? fn:split(rangeParts[0], '-') : ['0', '0']}" />
+                                            <c:choose>
+                                                <c:when test="${empty priceRanges}">
+                                                    <tr>
+                                                        <td colspan="5" class="text-center text-muted">No Price Range available.</td>
+                                                    </tr>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <c:forEach var="pr" items="${priceRanges}">
+                                                        <tr class="${pr.isDeleted == 1 ? 'deleted-row' : ''}">
+                                                            <td>${pr.priceRangeID}</td>
+                                                            <td>${pr.priceRange}</td>
+                                                            <td>
+                                                                <fmt:formatDate value="${pr.createdAt}" pattern="yyyy-MM-dd"/>
+                                                            </td>
+                                                            <td>
+                                                                <c:choose>
+                                                                    <c:when test="${pr.isDeleted == 1}">
+                                                                        <span class="badge bg-secondary">Deleted</span>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <span class="badge bg-success">Active</span>
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                            </td>
+                                                            <td>
+                                                                <!-- Nếu isDeleted=0: cho sửa & xóa mềm -->
+                                                                <c:if test="${pr.isDeleted == 0}">
+                                                                    <button class="btn btn-sm btn-warning"
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#editPriceRangeModal-${pr.priceRangeID}">
+                                                                        <i class="fas fa-edit"></i>
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-sm btn-danger"
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#confirmSoftDeleteModal"
+                                                                            onclick="setSoftDeletePriceRangeID(${pr.priceRangeID})">
+                                                                        <i class="fas fa-trash"></i>
+                                                                    </button>
+                                                                </c:if>
+                                                                <!-- Nếu isDeleted=1: cho restore & xóa cứng -->
+                                                                <c:if test="${pr.isDeleted == 1}">
+                                                                    <button class="btn btn-sm btn-success"
+                                                                            onclick="location.href = 'PriceRangeServlet?action=restore&priceRangeID=${pr.priceRangeID}'">
+                                                                        Restore
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-sm btn-danger"
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#confirmHardDeleteModal"
+                                                                            onclick="setHardDeletePriceRangeID(${pr.priceRangeID})">
+                                                                        <i class="fas fa-trash"></i>
+                                                                    </button>
+                                                                </c:if>
+                                                            </td>
+                                                        </tr>
+
+                                                        <c:set var="cleanedPriceRange" value="${fn:replace(pr.priceRange, ' ', '')}" />
+                                                        <c:if test="${fn:contains(cleanedPriceRange, '-')}">
+                                                            <c:set var="bounds" value="${fn:split(cleanedPriceRange, '-')}"/>
+                                                        </c:if>
+
 
                                                         <div class="modal fade" id="editPriceRangeModal-${pr.priceRangeID}" tabindex="-1" aria-labelledby="editPriceRangeModalLabel-${pr.priceRangeID}" aria-hidden="true">
                                                             <div class="modal-dialog">
@@ -180,19 +183,19 @@
                                                                                        required
                                                                                        value="${fn:replace(bounds[1], ',', '')}" />
                                                                             </div>
-                                                                         
+
                                                                             <div class="modal-footer">
                                                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                                                                 <button type="submit" class="btn btn-primary">Save changes</button>
                                                                             </div>
-                                                                        </form>
-                                                                    </div>
+                                                                    </form>
                                                                 </div>
                                                             </div>
+                                                        </div>
                                                     </c:forEach>
                                                 </c:otherwise>
                                             </c:choose>
-                                            
+
                                         </table>
                                     </div>
                                 </div>
