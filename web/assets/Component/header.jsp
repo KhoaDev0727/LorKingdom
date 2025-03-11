@@ -36,7 +36,7 @@
                 position: absolute;
                 top: -5px;
                 right: -10px;
-                background: #ff2a00; 
+                background: #ff2a00;
                 color: white;
                 border-radius: 50%;
                 width: 20px;
@@ -138,12 +138,15 @@
                     <a href="home.jsp" class="logo">
                         <img src="assets/img/logo-login.png" alt="Lor Logo">
                     </a>
-                    <div class="input-group search-container">
-                        <span class="input-group-text bg-white border-end-0">
-                            <i class="fa fa-search"></i>
-                        </span>
-                        <input type="text" class="form-control border-start-0" placeholder="Tìm sản phẩm">
-                    </div>
+                    <form action="getList" method="post">
+                        <div class="input-group search-container">
+                            <button class="input-group-text bg-white border-end-0" type="submit">
+                                <i class="fa fa-search"></i>
+                            </button>
+                           <input type="text" name="search" class="form-control border-start-0" placeholder="Tìm sản phẩm">
+                        </div>
+                    </form>
+
                 </div>
 
                 <div class="header-right">

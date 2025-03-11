@@ -114,7 +114,7 @@
                     <form action="getList" method="get" id="filterForm">
                         <!-- Category -->
                         <div class="mb-4" style="border-bottom:1px solid #ccc; margin-bottom: 5px; padding-bottom: 10px; margin-top: 70px;">
-                            <h3 class="font-semibold mb-2 text-orange-500">Category</h3>
+                            <h3 class="font-semibold mb-2 text-orange-500">Danh Mục</h3>
                             <div class="w-full overflow-y-auto max-h-[400px]">
                                 <c:forEach var="superCat" items="${superCategories}" varStatus="status">
                                     <button type="button" onclick="toggleMenu('menu${status.index}')" class="block w-full text-left px-4 py-2 focus:outline-none">
@@ -140,7 +140,7 @@
 
                         <!-- Price Range -->
                         <div class="mb-4">
-                            <h3 class="font-semibold mb-2 text-orange-500">Price Range</h3>
+                            <h3 class="font-semibold mb-2 text-orange-500">Giá</h3>
                             <div class="w-full overflow-y-auto max-h-[300px]">
                                 <ul class="pl-4">
                                     <c:forEach var="price" items="${listPriceRanges}">
@@ -157,7 +157,7 @@
 
                         <!-- Age -->
                         <div class="mb-4" style="border-bottom:1px solid #ccc; margin-bottom: 5px;padding-bottom: 10px;">
-                            <h3 class="font-semibold mb-2 text-orange-500">Age</h3>
+                            <h3 class="font-semibold mb-2 text-orange-500">Tuổi</h3>
                             <div class="w-full overflow-y-auto max-h-[300px]">
                                 <ul class="pl-4">
                                     <c:forEach var="age" items="${ages}">
@@ -174,7 +174,7 @@
 
                         <!-- Brand -->
                         <div class="mb-4">
-                            <h3 class="font-semibold mb-2 text-orange-500">Brand</h3>
+                            <h3 class="font-semibold mb-2 text-orange-500">Thương Hiệu</h3>
                             <div class="w-full overflow-y-auto max-h-[300px]">
                                 <ul class="pl-4">
                                     <c:forEach var="brand" items="${listB}">
@@ -190,7 +190,7 @@
                         </div>
                         <!-- Material -->
                         <div class="mb-4">
-                            <h3 class="font-semibold mb-2 text-orange-500">Material</h3>
+                            <h3 class="font-semibold mb-2 text-orange-500">Chất Liệu</h3>
                             <div class="w-full overflow-y-auto max-h-[300px]">
                                 <ul class="pl-4">
                                     <c:forEach var="mat" items="${listM}">
@@ -211,7 +211,7 @@
 
                         <!-- Sex -->
                         <div class="mb-4">
-                            <h3 class="font-semibold mb-2 text-orange-500">Sex</h3>
+                            <h3 class="font-semibold mb-2 text-orange-500">Giới Tính</h3>
                             <div class="w-full overflow-y-auto max-h-[300px]">
                                 <ul class="pl-4">
                                     <c:forEach var="sex" items="${listS}">
@@ -249,7 +249,7 @@
                                 Kết quả:
                             </span>
                             <span class="font-bold">
-                                ${totalProducts} products
+                                ${totalProducts} Sản Phẩm  
                             </span>
                         </div>
                     </div>

@@ -39,7 +39,16 @@
                                 </c:forEach>
                             </p>
                         </div>
-                        <p class="text-orange-500 text-xl">  <fmt:formatNumber value="${product.price}" pattern="#,###" /></p>
+
+                        <div class="d-flex justify-content-between">
+                            <p class="text-orange-500 text-xl">
+                                <fmt:formatNumber value="${product.price}" pattern="#,###" />₫
+                            </p>
+                            <span class="text-gray-400 mb-2 text-sm w-25 h-50" style="background-color: red;">
+                                &nbsp;
+                            </span>
+
+                        </div>
                         <form action="${pageContext.request.contextPath}/CartManagementServlet" method="POST">
                             <input type="hidden" name="productID" value="${product.productID}">
                             <input type="hidden" name="price" value="${product.price}">

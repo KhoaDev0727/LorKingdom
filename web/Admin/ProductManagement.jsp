@@ -33,9 +33,10 @@
     </head>
     <body class="sb-nav-fixed">
         <div id="layoutSidenav">
-            <c:if test="${empty sessionScope.roleID}">
+            <c:if test="${empty sessionScope.roleID or (sessionScope.roleID ne 1 and sessionScope.roleID ne 4)}">
                 <c:redirect url="/Admin/loginPage.jsp"/>
             </c:if>
+
             <div id="layoutSidenav_content">
                 <%@ include file="Component/SideBar.jsp" %>
                 <div class="dashboard-container">
