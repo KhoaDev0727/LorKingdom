@@ -62,7 +62,7 @@ public class LoginServlet extends HttpServlet {
             }
 
             if (account.getRoleID() == 3) {
-                response.sendRedirect("home.jsp");
+                response.sendRedirect(request.getContextPath() +"/getList");
             } else {
                 request.setAttribute("error", "Bạn không có quyền đăng nhập!");
                 request.getRequestDispatcher("login.jsp").forward(request, response);

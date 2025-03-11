@@ -182,50 +182,50 @@
                                                         </div>
 
                                                         <!-- Send Notification Modal -->
-                                                        <c:forEach var="notification" items="${notifications}">
-                                                            <div class="modal fade" id="sendNotificationModal${notification.notificationID}" tabindex="-1" aria-hidden="true">
-                                                                <div class="modal-dialog modal-lg">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <h5 class="modal-title">Send Notification</h5>
-                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                                        </div>
-                                                                        <div class="modal-body">
-                                                                            <input type="hidden" id="sendNotificationID${notification.notificationID}" value="${notification.notificationID}">
-                                                                            <div class="mb-3">
-                                                                                <label class="form-label">Choose Sending Option:</label>
-                                                                                <div>
-                                                                                    <button type="button" class="btn btn-primary" onclick="sendToAllCustomers(${notification.notificationID})">
-                                                                                        Send to All Customers (RoleID = 3)
-                                                                                    </button>
-                                                                                    <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#selectCustomers${notification.notificationID}">
-                                                                                        Select Specific Customers
-                                                                                    </button>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="collapse" id="selectCustomers${notification.notificationID}">
-                                                                                <label class="form-label">Select Customers:</label>
-                                                                                <form id="sendSpecificForm${notification.notificationID}" action="NotificationServlet" method="POST">
-                                                                                    <input type="hidden" name="action" value="sendSpecific">
-                                                                                    <input type="hidden" name="notificationID" value="${notification.notificationID}">
-                                                                                    <select class="form-control" name="accountIDs" multiple required>
-                                                                                        <c:forEach var="account" items="${accounts}">
-                                                                                            <c:if test="${account.roleID == 3}">
-                                                                                                <option value="${account.accountId}">${account.userName} (ID: ${account.accountId})</option>
-                                                                                            </c:if>
-                                                                                        </c:forEach>
-                                                                                    </select>
-                                                                                    <button type="submit" class="btn btn-primary mt-2">Send to Selected Customers</button>
-                                                                                </form>
+
+
+                                                        <div class="modal fade" id="sendNotificationModal${notification.notificationID}" tabindex="-1" aria-hidden="true">
+                                                            <div class="modal-dialog modal-lg">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title">Send Notification</h5>
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <input type="hidden" id="sendNotificationID${notification.notificationID}" value="${notification.notificationID}">
+                                                                        <div class="mb-3">
+                                                                            <label class="form-label">Choose Sending Option:</label>
+                                                                            <div>
+                                                                                <button type="button" class="btn btn-primary" onclick="sendToAllCustomers(${notification.notificationID})">
+                                                                                    Send to All Customers (RoleID = 3)
+                                                                                </button>
+                                                                                <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#selectCustomers${notification.notificationID}">
+                                                                                    Select Specific Customers
+                                                                                </button>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                        <div class="collapse" id="selectCustomers${notification.notificationID}">
+                                                                            <label class="form-label">Select Customers:</label>
+                                                                            <form id="sendSpecificForm${notification.notificationID}" action="NotificationServlet" method="POST">
+                                                                                <input type="hidden" name="action" value="sendSpecific">
+                                                                                <input type="hidden" name="notificationID" value="${notification.notificationID}">
+                                                                                <select class="form-control" name="accountIDs" multiple required>
+                                                                                    <c:forEach var="account" items="${accounts}">
+                                                                                        <c:if test="${account.roleID == 3}">
+                                                                                            <option value="${account.accountId}">${account.userName} (ID: ${account.accountId})</option>
+                                                                                        </c:if>
+                                                                                    </c:forEach>
+                                                                                </select>
+                                                                                <button type="submit" class="btn btn-primary mt-2">Send to Selected Customers</button>
+                                                                            </form>
                                                                         </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </c:forEach>
+                                                        </div>
 
                                                         <!-- Edit Notification Modal -->
                                                         <div class="modal fade" id="editNotificationModal${notification.notificationID}">
@@ -337,7 +337,7 @@
             </div>
         </div>
 
-        <!-- Update Notification Modal (nếu cần) -->
+        <!-- Update Notification Modal -->
         <div class="modal fade" id="updateNotificationModal">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -477,89 +477,89 @@
         <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 
         <script>
-                                                                                        // =========================
-                                                                                        //  Quill cho Add Modal
-                                                                                        // =========================
-                                                                                        const quillAdd = new Quill('#editor-container', {
-                                                                                            theme: 'snow',
-                                                                                            modules: {
-                                                                                                toolbar: [
-                                                                                                    ['bold', 'italic', 'underline', 'strike'],
-                                                                                                    [{'header': [1, 2, 3, false]}],
-                                                                                                    [{'list': 'ordered'}, {'list': 'bullet'}],
-                                                                                                    [{'script': 'sub'}, {'script': 'super'}],
-                                                                                                    [{'indent': '-1'}, {'indent': '+1'}],
-                                                                                                    [{'direction': 'rtl'}],
-                                                                                                    [{'size': ['small', false, 'large', 'huge']}],
-                                                                                                    [{'header': [1, 2, 3, 4, 5, 6, false]}],
-                                                                                                    [{'color': []}, {'background': []}],
-                                                                                                    [{'font': []}],
-                                                                                                    [{'align': []}],
-                                                                                                    ['link'],
-                                                                                                    ['clean']
-                                                                                                ]
-                                                                                            },
-                                                                                            placeholder: 'Describe your product in detail...'
-                                                                                        });
+                                                                                    // =========================
+                                                                                    //  Quill cho Add Modal
+                                                                                    // =========================
+                                                                                    const quillAdd = new Quill('#editor-container', {
+                                                                                        theme: 'snow',
+                                                                                        modules: {
+                                                                                            toolbar: [
+                                                                                                ['bold', 'italic', 'underline', 'strike'],
+                                                                                                [{'header': [1, 2, 3, false]}],
+                                                                                                [{'list': 'ordered'}, {'list': 'bullet'}],
+                                                                                                [{'script': 'sub'}, {'script': 'super'}],
+                                                                                                [{'indent': '-1'}, {'indent': '+1'}],
+                                                                                                [{'direction': 'rtl'}],
+                                                                                                [{'size': ['small', false, 'large', 'huge']}],
+                                                                                                [{'header': [1, 2, 3, 4, 5, 6, false]}],
+                                                                                                [{'color': []}, {'background': []}],
+                                                                                                [{'font': []}],
+                                                                                                [{'align': []}],
+                                                                                                ['link'],
+                                                                                                ['clean']
+                                                                                            ]
+                                                                                        },
+                                                                                        placeholder: 'Describe your product in detail...'
+                                                                                    });
 
-                                                                                        // Lấy form Add Notification
-                                                                                        var formAdd = document.querySelector('#addNotificationModal form');
-                                                                                        formAdd.onsubmit = function () {
-                                                                                            // Gán nội dung Quill vào input ẩn
-                                                                                            var contentInput = this.querySelector('input[name="content"]');
-                                                                                            contentInput.value = quillAdd.root.innerHTML;
-                                                                                        };
+                                                                                    // Lấy form Add Notification
+                                                                                    var formAdd = document.querySelector('#addNotificationModal form');
+                                                                                    formAdd.onsubmit = function () {
+                                                                                        // Gán nội dung Quill vào input ẩn
+                                                                                        var contentInput = this.querySelector('input[name="content"]');
+                                                                                        contentInput.value = quillAdd.root.innerHTML;
+                                                                                    };
 
-                                                                                        // =========================
-                                                                                        //  Quill cho Edit Modals
-                                                                                        // =========================
+                                                                                    // =========================
+                                                                                    //  Quill cho Edit Modals
+                                                                                    // =========================
             <c:forEach var="notification" items="${notifications}">
                 <c:if test="${!notification.isDeleted}">
-                                                                                        const quillEdit${notification.notificationID} = new Quill('#editor-container-edit-${notification.notificationID}', {
-                                                                                            theme: 'snow',
-                                                                                            modules: {
-                                                                                                toolbar: [
-                                                                                                    ['bold', 'italic', 'underline', 'strike'],
-                                                                                                    [{'header': [1, 2, 3, false]}],
-                                                                                                    [{'list': 'ordered'}, {'list': 'bullet'}],
-                                                                                                    [{'script': 'sub'}, {'script': 'super'}],
-                                                                                                    [{'indent': '-1'}, {'indent': '+1'}],
-                                                                                                    [{'direction': 'rtl'}],
-                                                                                                    [{'size': ['small', false, 'large', 'huge']}],
-                                                                                                    [{'header': [1, 2, 3, 4, 5, 6, false]}],
-                                                                                                    [{'color': []}, {'background': []}],
-                                                                                                    [{'font': []}],
-                                                                                                    [{'align': []}],
-                                                                                                    ['link'],
-                                                                                                    ['clean']
-                                                                                                ]
-                                                                                            },
-                                                                                            placeholder: 'Describe your notification in detail...'
-                                                                                        });
+                                                                                    const quillEdit${notification.notificationID} = new Quill('#editor-container-edit-${notification.notificationID}', {
+                                                                                        theme: 'snow',
+                                                                                        modules: {
+                                                                                            toolbar: [
+                                                                                                ['bold', 'italic', 'underline', 'strike'],
+                                                                                                [{'header': [1, 2, 3, false]}],
+                                                                                                [{'list': 'ordered'}, {'list': 'bullet'}],
+                                                                                                [{'script': 'sub'}, {'script': 'super'}],
+                                                                                                [{'indent': '-1'}, {'indent': '+1'}],
+                                                                                                [{'direction': 'rtl'}],
+                                                                                                [{'size': ['small', false, 'large', 'huge']}],
+                                                                                                [{'header': [1, 2, 3, 4, 5, 6, false]}],
+                                                                                                [{'color': []}, {'background': []}],
+                                                                                                [{'font': []}],
+                                                                                                [{'align': []}],
+                                                                                                ['link'],
+                                                                                                ['clean']
+                                                                                            ]
+                                                                                        },
+                                                                                        placeholder: 'Describe your notification in detail...'
+                                                                                    });
 
-                                                                                        // Set nội dung ban đầu cho editor (tránh lỗi escape HTML)
-                                                                                        quillEdit${notification.notificationID}.root.innerHTML = '${notification.content}'
-                                                                                                .replace(/&amp;/g, '&')
-                                                                                                .replace(/&lt;/g, '<')
-                                                                                                .replace(/&gt;/g, '>');
+                                                                                    // Set nội dung ban đầu cho editor (tránh lỗi escape HTML)
+                                                                                    quillEdit${notification.notificationID}.root.innerHTML = '${notification.content}'
+                                                                                            .replace(/&amp;/g, '&')
+                                                                                            .replace(/&lt;/g, '<')
+                                                                                            .replace(/&gt;/g, '>');
 
-                                                                                        // Xử lý submit form Edit
-                                                                                        document.querySelector('#editNotificationModal${notification.notificationID} form').onsubmit = function () {
-                                                                                            const contentInput = document.getElementById('content-edit-${notification.notificationID}');
-                                                                                            contentInput.value = quillEdit${notification.notificationID}.root.innerHTML;
-                                                                                        };
+                                                                                    // Xử lý submit form Edit
+                                                                                    document.querySelector('#editNotificationModal${notification.notificationID} form').onsubmit = function () {
+                                                                                        const contentInput = document.getElementById('content-edit-${notification.notificationID}');
+                                                                                        contentInput.value = quillEdit${notification.notificationID}.root.innerHTML;
+                                                                                    };
                 </c:if>
             </c:forEach>
 
-                                                                                        // Hàm set ID cho Soft Delete
-                                                                                        function setSoftDeleteNotificationID(notificationID) {
-                                                                                            document.getElementById("softDeleteNotificationID").value = notificationID;
-                                                                                        }
+                                                                                    // Hàm set ID cho Soft Delete
+                                                                                    function setSoftDeleteNotificationID(notificationID) {
+                                                                                        document.getElementById("softDeleteNotificationID").value = notificationID;
+                                                                                    }
 
-                                                                                        // Hàm set ID cho Hard Delete
-                                                                                        function setHardDeleteNotificationID(notificationID) {
-                                                                                            document.getElementById("hardDeleteNotificationID").value = notificationID;
-                                                                                        }
+                                                                                    // Hàm set ID cho Hard Delete
+                                                                                    function setHardDeleteNotificationID(notificationID) {
+                                                                                        document.getElementById("hardDeleteNotificationID").value = notificationID;
+                                                                                    }
 
 
         </script>
