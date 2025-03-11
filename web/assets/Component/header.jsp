@@ -243,7 +243,7 @@
                                                 });
                                             }
                                             // Cập nhật mỗi 5 giây
-                                            setInterval(updateCart, 2000);
+                                            setInterval(updateCart, 2000000);
 
                                             // Gọi ngay khi trang load
                                             $(document).ready(function () {

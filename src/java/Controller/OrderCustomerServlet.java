@@ -64,18 +64,24 @@ public class OrderCustomerServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
 
         HttpSession session = request.getSession();
-//        Integer userId = (Integer) session.getAttribute("userId");
-        Integer userId = 3;
+        Integer userId = (Integer) session.getAttribute("userID");
         String status = request.getParameter("status");
-
+       int statusNew = 0;
         if (userId == null) {
             response.getWriter().write("[]");
             return;
         }
-
-        List<Order> orders = OrderDAO.getOrdersByUser(2, "2");
+        if (status.equalsIgnoreCase("Pending")) {
+            statusNew = 1;
+        }else if (status.equalsIgnoreCase("Shipped")) {
+             statusNew = 2;
+        }else if (status.equalsIgnoreCase("Delivered")) {
+             statusNew = 3;
+        }else if (status.equalsIgnoreCase("Cancelled")) {
+             statusNew = 4;
+        } 
+        List<Order> orders = OrderDAO.getOrdersByUser(3, statusNew);
         Gson gson = new Gson();
-        request.setAttribute("order", orders);
         response.getWriter().write(gson.toJson(orders));
     }
 

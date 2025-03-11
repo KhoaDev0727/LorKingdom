@@ -166,9 +166,6 @@ public class ReviewManagementServlet extends HttpServlet {
             int totalPages = myUntilsDAO.getTotalPagesSearchReview(filterRating, filterStatus, filterByIdUserProductID, PAGE_SIZE); // Chỉ ném SQLException
             int offset = (PAGE - 1) * PAGE_SIZE;
             List<Review> listReview = ReviewDAO.searchReview(filterRating, filterStatus, filterByIdUserProductID, offset, PAGE_SIZE);
-            for (Review review : listReview) {
-                System.out.println(review.getComment());
-            }
             request.setAttribute("reviews", listReview);
             request.setAttribute("filterByIdUserProductID", filterByIdUserProductID);
             request.setAttribute("filterRating", filterRating);
@@ -262,8 +259,8 @@ public class ReviewManagementServlet extends HttpServlet {
         HttpSession session = request.getSession();
         try {
             String uploadPath = request.getServletContext().getRealPath("/") + File.separator + UPLOAD_DIR;
-            int productId = 8;
-            int accountId = 2839;
+            int productId = Integer.parseInt( request.getParameter("productId"));
+            int accountId = (Integer) session.getAttribute("userID");
             int rating = Integer.parseInt(request.getParameter("rating"));
             String comment = request.getParameter("description");
 
@@ -274,7 +271,7 @@ public class ReviewManagementServlet extends HttpServlet {
             }
             Review review = new Review(accountId, productId, image, rating, comment);
             boolean added = ReviewDAO.addReview(review);
-            showReview(request, response);
+   request.getRequestDispatcher("Setting.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
             session.setAttribute("message", "Có lỗi xảy ra khi bạn đánh giá sản phẩm");
@@ -326,5 +323,9 @@ public class ReviewManagementServlet extends HttpServlet {
             response.getWriter().write(json);
         }
     }
+    
+   
+    }
 
-}
+        
+

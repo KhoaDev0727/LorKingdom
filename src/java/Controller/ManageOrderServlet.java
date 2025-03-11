@@ -14,6 +14,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,8 +88,16 @@ public class ManageOrderServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession();
+        Integer userRoleID = (Integer) session.getAttribute("roleID");
+        if (userRoleID == null) {
+            response.sendRedirect(request.getContextPath() + "/Admin/loginPage.jsp");
+            return;
+        } else {
+            processRequest(request, response);
+        }
     }
+    
 
     /**
      * Handles the HTTP <code>POST</code> method.

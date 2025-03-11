@@ -20,7 +20,15 @@ public class OrderDetail {
     private String productImage;
     private int productID;
     private double Price;
+     private String categoryName; 
 
+        public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
     public String getProductImage() {
         return productImage;
     }
