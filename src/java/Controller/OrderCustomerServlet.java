@@ -73,7 +73,7 @@ public class OrderCustomerServlet extends HttpServlet {
         }
         if (status.equalsIgnoreCase("Pending")) {
             statusNew = 1;
-        }else if (status.equalsIgnoreCase("Shipped")) {
+        }else if (status.equalsIgnoreCase("Shipping")) {
              statusNew = 2;
         }else if (status.equalsIgnoreCase("Delivered")) {
              statusNew = 3;

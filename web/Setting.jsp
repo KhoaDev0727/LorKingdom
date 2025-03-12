@@ -77,8 +77,8 @@
                 <div id="orders-section" class="hidden">
                     <div class="order-container">
                         <div class="order-tabs">
-                            <span class="tab active" data-status="Shipping">Vận chuyển</span>
-                            <span class="tab" data-status="Pending">Chờ giao hàng</span>
+                            <span class="tab active" data-status="Pending">Đang xử lý</span>
+                            <span class="tab" data-status="Shipping">Chờ giao hàng</span>
                             <span class="tab" data-status="Delivered">Hoàn thành</span>
                             <span class="tab" data-status="Cancelled">Đã hủy</span>
                         </div>

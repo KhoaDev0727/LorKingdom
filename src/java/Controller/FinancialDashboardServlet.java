@@ -5,12 +5,19 @@
 package Controller;
 
 import DAO.FinancialDashboardDAO;
+import static DAO.FinancialDashboardDAO.getCategorySales;
+import static DAO.FinancialDashboardDAO.getRevenueData;
+import Model.CategorySales;
+import Model.RevenueData;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -56,7 +63,36 @@ public class FinancialDashboardServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-              showDashBoard(request, response);
+        try {
+               Gson gson = new Gson();
+            
+            request.setAttribute("totalsolds", FinancialDashboardDAO.showTotalSold());
+            request.setAttribute("totalrevenues", FinancialDashboardDAO.showTotalRevenue());
+            request.setAttribute("totalcustomers", FinancialDashboardDAO.showTotalCustomer());
+
+//            // Truy vấn doanh thu
+            List<RevenueData> revenueData = getRevenueData();
+            List<CategorySales> categorySales = getCategorySales();
+            String categorySalesJson = gson.toJson(categorySales);
+            String revenueDataJson = gson.toJson(revenueData);
+//            List<CategorySales> dummyCategorySales = new ArrayList<>();
+//            dummyCategorySales.add(new CategorySales("Electronics", 1000));
+//            dummyCategorySales.add(new CategorySales("Clothing", 500));
+//            String categorySalesJson = gson.toJson(dummyCategorySales);
+            request.setAttribute("categorySalesJson", categorySalesJson);
+
+//            List<RevenueData> dummyRevenueData = new ArrayList<>();
+//            dummyRevenueData.add(new RevenueData("2023-01", 5000));
+//            dummyRevenueData.add(new RevenueData("2023-02", 6000));
+//            String revenueDataJson = gson.toJson(dummyRevenueData);
+            request.setAttribute("revenueDataJson", revenueDataJson);
+//
+//            request.setAttribute("categorySalesJson", categorySalesJson);
+//            request.setAttribute("categorySales", categorySales);
+            request.getRequestDispatcher("DashBoard.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -70,15 +106,12 @@ public class FinancialDashboardServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-  
+
     }
 
     protected void showDashBoard(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setAttribute("totalsolds", FinancialDashboardDAO.showTotalSold());
-        request.setAttribute("totalrevenues", FinancialDashboardDAO.showTotalRevenue());
-        request.setAttribute("totalcustomers", FinancialDashboardDAO.showTotalCustomer());
-        request.getRequestDispatcher("DashBoard.jsp").forward(request, response);
+
     }
 
     /**
