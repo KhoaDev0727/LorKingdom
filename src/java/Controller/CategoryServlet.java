@@ -144,7 +144,7 @@ public class CategoryServlet extends HttpServlet {
     private void listCategories(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         int page = 1;
-        int pageSize = 10; // Số bản ghi trên 1 trang (có thể điều chỉnh)
+        int pageSize = 10; 
 
         if (request.getParameter("page") != null) {
             try {
@@ -189,8 +189,8 @@ public class CategoryServlet extends HttpServlet {
             return;
         }
 
-        if (!name.matches("^[\\p{L} '_,.-]+$")) {
-            request.getSession().setAttribute("errorMessage", "Tên danh mục chỉ được chứa chữ cái, khoảng trắng, dấu gạch dưới (_), dấu gạch ngang (-) và dấu phẩy đơn (').");
+        if (!name.matches("^[\\p{L}]+$")) {
+            request.getSession().setAttribute("errorMessage", "Tên danh mục chỉ được chứa chữ cái, khoảng trắng.");
             response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
             return;
         }

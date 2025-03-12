@@ -353,9 +353,16 @@ public class updateProductServlet extends HttpServlet {
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
+            if (productName.length() > 30) {
+                session.setAttribute("errorMessage", "Tên sản phẩm chỉ không được dài quá 30 kí tự");
+                UpdateProductDataLoader.loadDataForUpdate(request, productID);
+                request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
+                return;
+            }
             String plainTextContent = Jsoup.parse(description).text();
             if (plainTextContent == null || plainTextContent.trim().isEmpty()) {
                 request.getSession().setAttribute("errorMessage", "Miêu tả không được để trống.");
+                UpdateProductDataLoader.loadDataForUpdate(request, productID);
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
@@ -409,7 +416,19 @@ public class updateProductServlet extends HttpServlet {
             p.setDescription(description);
             p.setPrice(price);
             p.setQuantity(stockQuantity);
+            if (price > 50000000) {
+                session.setAttribute("errorMessage", "Giá sản phẩm không được vượt quá 50,000,000.");
+                UpdateProductDataLoader.loadDataForUpdate(request, productID);
+                request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
+                return;
+            }
 
+            if (stockQuantity > 200) {
+                session.setAttribute("errorMessage", "Số lượng sản phẩm không được vượt quá 200");
+                UpdateProductDataLoader.loadDataForUpdate(request, productID);
+                request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
+                return;
+            }
             UploadImageProduct handleImageProduct = new UploadImageProduct();
             String uploadPath = getServletContext().getRealPath("/uploads");
             File uploadDir = new File(uploadPath);

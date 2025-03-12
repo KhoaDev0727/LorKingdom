@@ -17,7 +17,7 @@ header {
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
 }
 .header .search-container .form-control {
-    width: 400px; /* Hoặc bất kỳ giá trị nào bạn muốn */
+    width: 400px;  
 }
 
 .header_first {

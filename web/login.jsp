@@ -20,7 +20,7 @@
         <!-- Banner -->
         <div class="container-fluid2">  
             <div class="form-container">
-                <div class="container form">
+                <div class="container form-login">
                     <h3 class="mb-4">Đăng nhập vào LorKingdom</h3>
                     <form method="POST" action="LoginServlet">
                         <!-- Email Input -->

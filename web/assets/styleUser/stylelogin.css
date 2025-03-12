@@ -57,7 +57,7 @@ input {
     box-sizing: border-box;
 }
 
-button {
+.form-login button {
     width: 100%;
     padding: 12px;
     border: none;
@@ -66,16 +66,16 @@ button {
     margin-top: 10px;
 }
 
-button:hover {
+.form-login button:hover {
     opacity: 0.8;
 }
 
-button[type="submit"] {
+.form-login button[type="submit"] {
     background-color: white;
     color: white;
 }
 
-button.login-btn {
+.form-login button.login-btn {
     border-radius:20px;
     background: rgb(255, 89, 0);
     color: white;

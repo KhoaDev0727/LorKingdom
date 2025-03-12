@@ -295,7 +295,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addAgeModalLabel">Add Age Range</h5>
+                <h5 class="modal-title" id="addAgeModalLabel">Thêm khoảng tuổi</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -303,17 +303,17 @@
                     <input type="hidden" name="action" value="add">
 
                     <div class="mb-3">
-                        <label for="ageStart" class="form-label">Start Age</label>
+                        <label for="ageStart" class="form-label">Khoảng tuổi bắt đầu</label>
                         <input type="number" class="form-control" id="ageStart" name="ageStart" min="0" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="ageEnd" class="form-label">End Age</label>
+                        <label for="ageEnd" class="form-label">Khoảng tuổi kết thúc</label>
                         <input type="number" class="form-control" id="ageEnd" name="ageEnd" min="0" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="unit" class="form-label">Unit</label>
+                        <label for="unit" class="form-label">Đơn vị</label>
                         <select class="form-select" id="unit" name="unit">
                             <option value="tháng">Tháng</option>
                             <option value="tuổi">Tuổi</option>

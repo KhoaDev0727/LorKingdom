@@ -1,6 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
+    /*
+     * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+     * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 package Controller;
 
@@ -74,6 +74,7 @@ public class ProductManagementServlet extends HttpServlet {
 
         // Nạp lại dữ liệu cho trang AddNewProduct.jsp
         try {
+
             List<Category> listCategorys = c.getAllCategories();
             List<Sex> listGenders = s.getActiveSex();
             List<PriceRange> listPriceRanges = p.getAllActivePriceRanges();
@@ -104,6 +105,17 @@ public class ProductManagementServlet extends HttpServlet {
                     || quantityStr == null || quantityStr.trim().isEmpty()
                     || description == null || description.trim().isEmpty()) {
                 session.setAttribute("errorMessage", "Vui lòng nhập đầy đủ thông tin bắt buộc!");
+                request.setAttribute("enteredProductName", productName);
+                request.setAttribute("enteredPrice", priceStartStr);
+                request.setAttribute("enteredQuantity", quantityStr);
+                request.setAttribute("enteredDescription", description);
+                request.setAttribute("enteredCategory", request.getParameter("category"));
+                request.setAttribute("enteredGender", request.getParameter("gender"));
+                request.setAttribute("enteredPriceRange", request.getParameter("priceRange"));
+                request.setAttribute("enteredBrand", request.getParameter("brand"));
+                request.setAttribute("enteredAgeGroup", request.getParameter("ageGroup"));
+                request.setAttribute("enteredMaterial", request.getParameter("material"));
+                request.setAttribute("enteredOrigin", request.getParameter("origin"));
                 request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
                 return;
             }
@@ -119,6 +131,17 @@ public class ProductManagementServlet extends HttpServlet {
             priceStartStr = priceStartStr.replace(".", "").replace(",", ".");
             if (!priceStartStr.matches("^\\d+(\\.\\d+)?$")) {
                 session.setAttribute("errorMessage", "Giá sản phẩm phải là số.");
+                request.setAttribute("enteredProductName", productName);
+                request.setAttribute("enteredPrice", priceStartStr);
+                request.setAttribute("enteredQuantity", quantityStr);
+                request.setAttribute("enteredDescription", description);
+                request.setAttribute("enteredCategory", request.getParameter("category"));
+                request.setAttribute("enteredGender", request.getParameter("gender"));
+                request.setAttribute("enteredPriceRange", request.getParameter("priceRange"));
+                request.setAttribute("enteredBrand", request.getParameter("brand"));
+                request.setAttribute("enteredAgeGroup", request.getParameter("ageGroup"));
+                request.setAttribute("enteredMaterial", request.getParameter("material"));
+                request.setAttribute("enteredOrigin", request.getParameter("origin"));
                 request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
                 return;
             }
@@ -126,6 +149,17 @@ public class ProductManagementServlet extends HttpServlet {
             String cleanedPriceStart = priceStartStr.replaceAll("[^\\d]", "");
             if (cleanedPriceStart.length() < 4) {
                 session.setAttribute("errorMessage", "Giá trị phải có ít nhất 4 chữ số.");
+                request.setAttribute("enteredProductName", productName);
+                request.setAttribute("enteredPrice", priceStartStr);
+                request.setAttribute("enteredQuantity", quantityStr);
+                request.setAttribute("enteredDescription", description);
+                request.setAttribute("enteredCategory", request.getParameter("category"));
+                request.setAttribute("enteredGender", request.getParameter("gender"));
+                request.setAttribute("enteredPriceRange", request.getParameter("priceRange"));
+                request.setAttribute("enteredBrand", request.getParameter("brand"));
+                request.setAttribute("enteredAgeGroup", request.getParameter("ageGroup"));
+                request.setAttribute("enteredMaterial", request.getParameter("material"));
+                request.setAttribute("enteredOrigin", request.getParameter("origin"));
                 request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
                 return;
             }
@@ -133,11 +167,33 @@ public class ProductManagementServlet extends HttpServlet {
             String plainTextContent = Jsoup.parse(description).text();
             if (plainTextContent == null || plainTextContent.trim().isEmpty()) {
                 request.getSession().setAttribute("errorMessage", "Miêu tả không được để trống.");
+                request.setAttribute("enteredProductName", productName);
+                request.setAttribute("enteredPrice", priceStartStr);
+                request.setAttribute("enteredQuantity", quantityStr);
+                request.setAttribute("enteredDescription", description);
+                request.setAttribute("enteredCategory", request.getParameter("category"));
+                request.setAttribute("enteredGender", request.getParameter("gender"));
+                request.setAttribute("enteredPriceRange", request.getParameter("priceRange"));
+                request.setAttribute("enteredBrand", request.getParameter("brand"));
+                request.setAttribute("enteredAgeGroup", request.getParameter("ageGroup"));
+                request.setAttribute("enteredMaterial", request.getParameter("material"));
+                request.setAttribute("enteredOrigin", request.getParameter("origin"));
                 request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
                 return;
             }
             if (!quantityStr.matches("^\\d+$")) {
                 session.setAttribute("errorMessage", "Số lượng sản phẩm phải là số nguyên.");
+                request.setAttribute("enteredProductName", productName);
+                request.setAttribute("enteredPrice", priceStartStr);
+                request.setAttribute("enteredQuantity", quantityStr);
+                request.setAttribute("enteredDescription", description);
+                request.setAttribute("enteredCategory", request.getParameter("category"));
+                request.setAttribute("enteredGender", request.getParameter("gender"));
+                request.setAttribute("enteredPriceRange", request.getParameter("priceRange"));
+                request.setAttribute("enteredBrand", request.getParameter("brand"));
+                request.setAttribute("enteredAgeGroup", request.getParameter("ageGroup"));
+                request.setAttribute("enteredMaterial", request.getParameter("material"));
+                request.setAttribute("enteredOrigin", request.getParameter("origin"));
                 request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
                 return;
             }
@@ -145,15 +201,78 @@ public class ProductManagementServlet extends HttpServlet {
             double priceStart = Double.parseDouble(priceStartStr);
             int stockQuantity = Integer.parseInt(quantityStr);
 
+            if (priceStart > 50000000) {
+                session.setAttribute("errorMessage", "Giá sản phẩm không được vượt quá 50,000,000.");
+                request.setAttribute("enteredProductName", productName);
+                request.setAttribute("enteredPrice", priceStartStr);
+                request.setAttribute("enteredQuantity", quantityStr);
+                request.setAttribute("enteredDescription", description);
+                request.setAttribute("enteredCategory", request.getParameter("category"));
+                request.setAttribute("enteredGender", request.getParameter("gender"));
+                request.setAttribute("enteredPriceRange", request.getParameter("priceRange"));
+                request.setAttribute("enteredBrand", request.getParameter("brand"));
+                request.setAttribute("enteredAgeGroup", request.getParameter("ageGroup"));
+                request.setAttribute("enteredMaterial", request.getParameter("material"));
+                request.setAttribute("enteredOrigin", request.getParameter("origin"));
+                request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
+                return;
+            }
+            if (stockQuantity > 200) {
+                session.setAttribute("errorMessage", "Số lượng sản phẩm không được vượt quá 200");
+                request.setAttribute("enteredProductName", productName);
+                request.setAttribute("enteredPrice", priceStartStr);
+                request.setAttribute("enteredQuantity", quantityStr);
+                request.setAttribute("enteredDescription", description);
+                request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
+                return;
+            }
             String namePattern = "^[\\p{L}\\s]+$";
             if (!productName.matches(namePattern)) {
                 session.setAttribute("errorMessage", "Tên sản phẩm chỉ được chứa chữ cái (có dấu) và khoảng trắng.");
+                request.setAttribute("enteredProductName", productName);
+                request.setAttribute("enteredPrice", priceStartStr);
+                request.setAttribute("enteredQuantity", quantityStr);
+                request.setAttribute("enteredDescription", description);
+                request.setAttribute("enteredCategory", request.getParameter("category"));
+                request.setAttribute("enteredGender", request.getParameter("gender"));
+                request.setAttribute("enteredPriceRange", request.getParameter("priceRange"));
+                request.setAttribute("enteredBrand", request.getParameter("brand"));
+                request.setAttribute("enteredAgeGroup", request.getParameter("ageGroup"));
+                request.setAttribute("enteredMaterial", request.getParameter("material"));
+                request.setAttribute("enteredOrigin", request.getParameter("origin"));
+                request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
+                return;
+            }
+            if (productName.length() > 30) {
+                session.setAttribute("errorMessage", "Tên sản phẩm chỉ không được dài quá 30 kí tự");
+                request.setAttribute("enteredProductName", productName);
+                request.setAttribute("enteredPrice", priceStartStr);
+                request.setAttribute("enteredQuantity", quantityStr);
+                request.setAttribute("enteredDescription", description);
+                request.setAttribute("enteredCategory", request.getParameter("category"));
+                request.setAttribute("enteredGender", request.getParameter("gender"));
+                request.setAttribute("enteredPriceRange", request.getParameter("priceRange"));
+                request.setAttribute("enteredBrand", request.getParameter("brand"));
+                request.setAttribute("enteredAgeGroup", request.getParameter("ageGroup"));
+                request.setAttribute("enteredMaterial", request.getParameter("material"));
+                request.setAttribute("enteredOrigin", request.getParameter("origin"));
                 request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
                 return;
             }
 
             if (ProductDAO.isProductNameExists(productName, 0)) {
                 session.setAttribute("errorMessage", "Tên sản phẩm đã tồn tại trong hệ thống!");
+                request.setAttribute("enteredProductName", productName);
+                request.setAttribute("enteredPrice", priceStartStr);
+                request.setAttribute("enteredQuantity", quantityStr);
+                request.setAttribute("enteredDescription", description);
+                request.setAttribute("enteredCategory", request.getParameter("category"));
+                request.setAttribute("enteredGender", request.getParameter("gender"));
+                request.setAttribute("enteredPriceRange", request.getParameter("priceRange"));
+                request.setAttribute("enteredBrand", request.getParameter("brand"));
+                request.setAttribute("enteredAgeGroup", request.getParameter("ageGroup"));
+                request.setAttribute("enteredMaterial", request.getParameter("material"));
+                request.setAttribute("enteredOrigin", request.getParameter("origin"));
                 request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
                 return;
             }
@@ -187,6 +306,17 @@ public class ProductManagementServlet extends HttpServlet {
             if (mainImagePart == null || mainImagePart.getSize() <= 0) {
                 // Chưa chọn ảnh chính
                 session.setAttribute("errorMessage", "Vui lòng chọn ảnh chính (Main Image).");
+                request.setAttribute("enteredProductName", productName);
+                request.setAttribute("enteredPrice", priceStartStr);
+                request.setAttribute("enteredQuantity", quantityStr);
+                request.setAttribute("enteredDescription", description);
+                request.setAttribute("enteredCategory", request.getParameter("category"));
+                request.setAttribute("enteredGender", request.getParameter("gender"));
+                request.setAttribute("enteredPriceRange", request.getParameter("priceRange"));
+                request.setAttribute("enteredBrand", request.getParameter("brand"));
+                request.setAttribute("enteredAgeGroup", request.getParameter("ageGroup"));
+                request.setAttribute("enteredMaterial", request.getParameter("material"));
+                request.setAttribute("enteredOrigin", request.getParameter("origin"));
                 request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
                 return;
             }
@@ -199,6 +329,17 @@ public class ProductManagementServlet extends HttpServlet {
             }
             if (detailImageParts.isEmpty()) {
                 session.setAttribute("errorMessage", "Vui lòng chọn ít nhất 1 ảnh chi tiết (Detail Images).");
+                request.setAttribute("enteredProductName", productName);
+                request.setAttribute("enteredPrice", priceStartStr);
+                request.setAttribute("enteredQuantity", quantityStr);
+                request.setAttribute("enteredDescription", description);
+                request.setAttribute("enteredCategory", request.getParameter("category"));
+                request.setAttribute("enteredGender", request.getParameter("gender"));
+                request.setAttribute("enteredPriceRange", request.getParameter("priceRange"));
+                request.setAttribute("enteredBrand", request.getParameter("brand"));
+                request.setAttribute("enteredAgeGroup", request.getParameter("ageGroup"));
+                request.setAttribute("enteredMaterial", request.getParameter("material"));
+                request.setAttribute("enteredOrigin", request.getParameter("origin"));
                 request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
                 return;
             }

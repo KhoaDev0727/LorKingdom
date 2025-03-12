@@ -173,8 +173,14 @@ public class NotificationServlet extends HttpServlet {
             return;
         }
         // 2) Tiêu đề không quá 255 ký tự
-        if (title.length() > 255) {
-            request.getSession().setAttribute("errorMessage", "Tiêu đề quá dài. Chỉ được phép có tối đa 255 ký tự.");
+        if (title.length() > 50) {
+            request.getSession().setAttribute("errorMessage", "Tiêu đề quá dài. Chỉ được phép có tối đa 50 ký tự.");
+            response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
+            return;
+        }
+        
+         if (content.length() > 100) {
+            request.getSession().setAttribute("errorMessage", "Nội dung quá dài. Chỉ được phép có tối đa 100 ký tự.");
             response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
             return;
         }

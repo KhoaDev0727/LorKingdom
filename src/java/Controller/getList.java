@@ -232,7 +232,7 @@ public class getList extends HttpServlet {
         String searchKeyword = request.getParameter("search");
 
         if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
-            request.setAttribute("search", searchKeyword);
+            request.setAttribute("search", searchKeyword.toLowerCase());
         }
         doGet(request, response);
     }

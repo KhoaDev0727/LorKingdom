@@ -5,7 +5,6 @@
 --%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -26,7 +25,7 @@
             <form action="ProductManagementServlet" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
                 <div class="row">
                     <h2 class="text-center mb-4 fw-bold text-primary">Add New Product</h2>
-
+    
                     <div class="col-md-6">
                         <!-- Basic Information Section -->
                         <div class="form-section">
@@ -37,81 +36,102 @@
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Product Name</label>
-                                    <input type="text" class="form-control" name="productName" required oninvalid="this.setCustomValidity('Please enter the product name.')" oninput="this.setCustomValidity('')">
+                                    <input type="text" class="form-control" name="productName" required
+                                           oninvalid="this.setCustomValidity('Please enter the product name.')"
+                                           oninput="this.setCustomValidity('')"
+                                           value="${enteredProductName != null ? enteredProductName : ''}">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Category</label>
                                     <select class="form-select" name="category" required>
                                         <c:forEach items="${Categories}" var="cat"> 
-                                            <option value="${cat.categoryID}">${cat.name}</option>
+                                            <option value="${cat.categoryID}" 
+                                                <c:if test="${cat.categoryID == enteredCategory}">selected</c:if>>
+                                                ${cat.name}
+                                            </option>
                                         </c:forEach>
                                     </select>
                                 </div>
-
+    
                                 <div class="col-md-4">
                                     <label class="form-label">Gender</label>
                                     <select class="form-select" name="gender">
                                         <c:forEach items="${sexes}" var="sex"> 
-                                            <option value="${sex.sexID}">${sex.name}</option>
+                                            <option value="${sex.sexID}"
+                                                <c:if test="${sex.sexID == enteredGender}">selected</c:if>>
+                                                ${sex.name}
+                                            </option>
                                         </c:forEach>
                                     </select>
                                 </div>
-
+    
                                 <div class="col-md-4">
                                     <label class="form-label">Price Range</label>
                                     <select class="form-select" name="priceRange">
                                         <c:forEach items="${priceRanges}" var="pr"> 
-                                            <option value="${pr.priceRangeID}">${pr.priceRange}</option>
+                                            <option value="${pr.priceRangeID}"
+                                                <c:if test="${pr.priceRangeID == enteredPriceRange}">selected</c:if>>
+                                                ${pr.priceRange}
+                                            </option>
                                         </c:forEach>
                                     </select>
                                 </div>
-
+    
                                 <div class="col-md-4">
                                     <label class="form-label">Brand</label>
                                     <select class="form-select" name="brand">
                                         <c:forEach items="${brands}" var="brand"> 
-                                            <option value="${brand.brandID}">${brand.name}</option>
+                                            <option value="${brand.brandID}"
+                                                <c:if test="${brand.brandID == enteredBrand}">selected</c:if>>
+                                                ${brand.name}
+                                            </option>
                                         </c:forEach>
                                     </select>
                                 </div>
-
+    
                                 <div class="col-md-4">
                                     <label class="form-label">Age Group</label>
                                     <select class="form-select" name="ageGroup">
                                         <c:forEach items="${ages}" var="age"> 
-                                            <option value="${age.ageID}">${age.ageRange}</option>
+                                            <option value="${age.ageID}"
+                                                <c:if test="${age.ageID == enteredAgeGroup}">selected</c:if>>
+                                                ${age.ageRange}
+                                            </option>
                                         </c:forEach>
                                     </select>
                                 </div>
-
+    
                                 <div class="col-md-4">
                                     <label class="form-label">Material</label>
                                     <select class="form-select" name="material">
                                         <c:forEach items="${materials}" var="material"> 
-                                            <option value="${material.materialID}">${material.name}</option>
+                                            <option value="${material.materialID}"
+                                                <c:if test="${material.materialID == enteredMaterial}">selected</c:if>>
+                                                ${material.name}
+                                            </option>
                                         </c:forEach>
                                     </select>
                                 </div>
-
+    
                                 <div class="col-md-4">
                                     <label class="form-label">Origin</label>
                                     <select class="form-select" name="origin" required>
                                         <!-- Placeholder, có thể disabled nếu muốn -->
                                         <option value="" disabled>Select Origin</option>
-
+    
                                         <c:forEach items="${listOrigin}" var="origin" varStatus="st">
                                             <option value="${origin.originID}"
-                                                    <c:if test="${st.first}">selected</c:if>>
+                                                <c:if test="${origin.originID == enteredOrigin || (enteredOrigin == null && st.first)}">selected</c:if>>
                                                 ${origin.name}
                                             </option>
                                         </c:forEach>
                                     </select>
                                 </div>
-
-
+    
+    
                             </div>
                         </div>
-
+    
                         <!-- Description Section -->
                         <div class="form-section">
                             <h5 class="section-title">
@@ -119,11 +139,11 @@
                                 Product Description
                             </h5>
                             <div id="editor-container"></div>
-                            <input type="hidden" name="description">
+                            <input type="hidden" name="description" value="${enteredDescription != null ? enteredDescription : ''}">
                         </div>
                     </div>
                     <div class="col-md-6">
-
+    
                         <!-- Pricing Section -->
                         <div class="form-section">
                             <h5 class="section-title">
@@ -140,19 +160,20 @@
                                                name="price" 
                                                min="0" 
                                                required
-                                               value="${fn:replace(bounds[1], ',', '')}" />
+                                               value="${enteredPrice != null ? enteredPrice : ''}" />
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Stock Quantity</label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="fas fa-cubes"></i></span>
-                                        <input type="number" class="form-control" min="0" name="stockQuantity" required>
+                                        <input type="number" class="form-control" min="0" name="stockQuantity" required
+                                               value="${enteredQuantity != null ? enteredQuantity : ''}">
                                     </div>
                                 </div>
                             </div>
                         </div>
-
+    
                         <!-- Images Section -->
                         <div class="form-section">
                             <h5 class="section-title">
@@ -201,13 +222,13 @@
                                 </div>
                             </div>
                         </div>
-
+    
                         <!-- Submit Buttons -->
                         <div class="d-flex justify-content-end gap-3 mt-4">
                             <a href="ProductServlet?&action=list" class="btn btn-primary btn-sm">
                                 Trở Về
                             </a>
-
+    
                             <button type="reset" class="btn btn-outline-secondary px-4">
                                 <i class="fas fa-undo me-2"></i>Reset
                             </button>
@@ -236,7 +257,7 @@
                 </div>
             </div>
         </div>
-
+    
         <script>
             window.onload = function () {
                 let errorMessage = "${sessionScope.errorMessage}";
@@ -247,7 +268,7 @@
                 }
             };
         </script>
-
+    
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
         <script src="JS/AddNewProduct.js"></script>

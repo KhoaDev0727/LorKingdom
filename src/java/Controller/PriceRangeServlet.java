@@ -120,10 +120,10 @@ public class PriceRangeServlet extends HttpServlet {
                 case "update":
                     updatePriceRange(request, response);
                     break;
-                case "delete": 
+                case "delete":
                     softDeletePriceRange(request, response);
                     break;
-                case "hardDelete": 
+                case "hardDelete":
                     hardDeletePriceRange(request, response);
                     break;
                 case "restore":
@@ -149,7 +149,6 @@ public class PriceRangeServlet extends HttpServlet {
         request.getRequestDispatcher("PriceRangeManagement.jsp").forward(request, response);
     }
 
-
     private void listDeletedPriceRanges(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         List<PriceRange> list = priceRangeDAO.getDeletedPriceRanges();
@@ -170,7 +169,7 @@ public class PriceRangeServlet extends HttpServlet {
                 response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
                 return;
             }
-            String cleanedPriceStart = priceStartStr.replaceAll("[^\\d]", ""); 
+            String cleanedPriceStart = priceStartStr.replaceAll("[^\\d]", "");
             String cleanedPriceEnd = priceEndStr.replaceAll("[^\\d]", "");
             if (cleanedPriceStart.length() < 4 || cleanedPriceEnd.length() < 4) {
                 session.setAttribute("errorMessage", "Giá trị phải có ít nhất 4 chữ số.");
@@ -186,6 +185,11 @@ public class PriceRangeServlet extends HttpServlet {
 
             if (priceStart < 0) {
                 session.setAttribute("errorMessage", "Giá bắt đầu không được nhỏ hơn 0.");
+                response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
+                return;
+            }
+            if (priceEnd > 50000000) {
+                session.setAttribute("errorMessage", "Giá kết thúc không được lớn hơn 50,000,000.");
                 response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
                 return;
             }
@@ -241,16 +245,27 @@ public class PriceRangeServlet extends HttpServlet {
                 response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
                 return;
             }
-
-            double priceStart = Double.parseDouble(priceStartStr);
-            double priceEnd = Double.parseDouble(priceEndStr);
-            if (priceStart != Math.floor(priceStart) || priceEnd != Math.floor(priceEnd)) {
-                session.setAttribute("errorMessage", "Giá trị không được có phần thập phân.");
+            String cleanedPriceStart = priceStartStr.replaceAll("[^\\d]", "");
+            String cleanedPriceEnd = priceEndStr.replaceAll("[^\\d]", "");
+            if (cleanedPriceStart.length() < 4 || cleanedPriceEnd.length() < 4) {
+                session.setAttribute("errorMessage", "Giá trị phải có ít nhất 4 chữ số.");
                 response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
                 return;
             }
+            // Xử lý đầu vào nếu cần (loại bỏ dấu phân cách nếu có)
+            priceStartStr = priceStartStr.replace(".", "").replace(",", ".");
+            priceEndStr = priceEndStr.replace(".", "").replace(",", ".");
+
+            double priceStart = Double.parseDouble(priceStartStr);
+            double priceEnd = Double.parseDouble(priceEndStr);
+
             if (priceStart < 0) {
                 session.setAttribute("errorMessage", "Giá bắt đầu không được nhỏ hơn 0.");
+                response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
+                return;
+            }
+            if (priceEnd > 50000000) {
+                session.setAttribute("errorMessage", "Giá kết thúc không được lớn hơn 50,000,000.");
                 response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
                 return;
             }
@@ -259,15 +274,21 @@ public class PriceRangeServlet extends HttpServlet {
                 response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
                 return;
             }
+
             if (priceStart == priceEnd) {
                 session.setAttribute("errorMessage", "Giá bắt đầu và giá kết thúc không được bằng nhau.");
                 response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
                 return;
             }
-            // Định dạng lại khoảng giá
+            if (priceStart != Math.floor(priceStart) || priceEnd != Math.floor(priceEnd)) {
+                session.setAttribute("errorMessage", "Giá trị không được có phần thập phân.");
+                response.sendRedirect("PriceRangeServlet?action=list&showErrorModal=true");
+                return;
+            }
             DecimalFormat formatter = new DecimalFormat("#,###");
             String formattedPriceStart = formatter.format(priceStart);
             String formattedPriceEnd = formatter.format(priceEnd);
+
             String priceRangeStr = formattedPriceStart + " - " + formattedPriceEnd;
             if (priceRangeDAO.isPriceRangeExists(priceRangeStr)) {
                 session.setAttribute("errorMessage", "Khoảng giá đã tồn tại.");

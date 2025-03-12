@@ -165,9 +165,13 @@ public class BrandServlet extends HttpServlet {
             response.sendRedirect("BrandServlet?action=list&showErrorModal=true");
             return;
         }
-
-        if (name.length() > 100) {
-            request.getSession().setAttribute("errorMessage", "Tên thương hiệu quá dài. Tối đa 100 ký tự được phép.");
+        if (brandDAO.isBrandExists(name.trim())) {
+            request.getSession().setAttribute("errorMessage", "Thương hiệu đã tồn tại.");
+            response.sendRedirect("BrandServlet?action=list&showErrorModal=true");
+            return;
+        }
+        if (name.length() > 50) {
+            request.getSession().setAttribute("errorMessage", "Tên thương hiệu quá dài. Tối đa 50 ký tự được phép.");
             response.sendRedirect("BrandServlet?action=list&showErrorModal=true");
             return;
         }
@@ -177,12 +181,6 @@ public class BrandServlet extends HttpServlet {
                     "Tên thương hiệu chỉ được phép chứa chữ cái tiếng Việt (có dấu), "
                     + "dấu gạch ngang (-), dấu gạch dưới (_)"
                     + (/*nếu cho phép*/" và khoảng trắng"/*nếu không cho phép thì bỏ \s khỏi regex*/));
-            response.sendRedirect("BrandServlet?action=list&showErrorModal=true");
-            return;
-        }
-
-        if (brandDAO.isBrandExists(name.trim())) {
-            request.getSession().setAttribute("errorMessage", "Thương hiệu đã tồn tại.");
             response.sendRedirect("BrandServlet?action=list&showErrorModal=true");
             return;
         }
@@ -247,7 +245,6 @@ public class BrandServlet extends HttpServlet {
         }
     }
 
- 
     private void hardDeleteBrand(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, IOException {
         try {
