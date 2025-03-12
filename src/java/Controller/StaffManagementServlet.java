@@ -168,6 +168,7 @@ public class StaffManagementServlet extends HttpServlet {
     protected void addStaff(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
+        boolean redirected = false; // Biến để kiểm tra xem đã redirect chưa
         try {
             String uploadPath = request.getServletContext().getRealPath("/") + File.separator + UPLOAD_DIR;
             String userName = request.getParameter("userName").trim();
@@ -182,44 +183,67 @@ public class StaffManagementServlet extends HttpServlet {
             // Validate required fields
             if (userName.isEmpty() || phoneNumber.isEmpty() || email.isEmpty() || address.isEmpty()) {
                 session.setAttribute("errorMessage", "Tất cả các trường là bắt buộc.");
+                redirected = true;
                 response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
                 return;
             }
+            // Kiểm tra độ dài
+            if (userName.length() < 2 || userName.length() > 50) {
+                session.setAttribute("errorMessage", "Tên phải có từ 2 đến 50 ký tự.");
+                redirected = true;
+                response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
+                return;
+            }
+
+// Kiểm tra chỉ chứa chữ cWái và khoảng trắng
+            if (!userName.matches("[a-zA-ZÀ-Ỹà-ỹ\\s]+")) {
+                session.setAttribute("errorMessage", "Tên chỉ được chứa chữ cái và khoảng trắng.");
+                redirected = true;
+                response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
+                return;
+            }
+
+// Chuẩn hóa viết hoa chữ cái đầu
+            userName = formatName(userName);
             // Validate email format
             if (!email.matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
                 session.setAttribute("errorMessage", "Định dạng email không hợp lệ.");
+                redirected = true;
                 response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
                 return;
             }
             // Validate phone number (assumes 10 digits)
             if (!phoneNumber.matches("\\d{10}")) {
+                redirected = true;
                 session.setAttribute("errorMessage", "Số điện thoại phải có 10 chữ số.");
                 response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
                 return;
             }
             // Check for existing email or username
             if (AccountDAO.isEmailExists(email)) {
+                redirected = true;
                 session.setAttribute("errorMessage", "Email đã tồn tại.");
                 response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
                 return;
             }
             if (password == null || password.trim().isEmpty()) {
+                redirected = true;
                 request.getSession().setAttribute("errorMessage", "Mật khẩu không được để trống.");
-                showStaff(request, response);
+                response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
                 return;
             }
             try {
                 roleID = Integer.parseInt(request.getParameter("roleID"));
             } catch (NumberFormatException e) {
-                request.getSession().setAttribute("errorMessage", "Invalid role ID.");
-                showStaff(request, response);
+                redirected = true;
+                request.getSession().setAttribute("errorMessage", "Không tồn tại RoleID này.");
+                response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
                 return;
             }
 
             if (!password.isEmpty()) {
                 passwordHashed = MyUtils.hashPassword(password);
             }
-            System.out.println(userName + "  " + phoneNumber + " " + email + " " + passwordHashed + " " + address + " " + status);
             // Lấy ảnh cũ từ request
             String oldImage = request.getParameter("currentImage");
             // Nếu có file mới, upload ảnh mới, ngược lại giữ ảnh cũ
@@ -241,14 +265,16 @@ public class StaffManagementServlet extends HttpServlet {
         } catch (Exception e) {
             request.getSession().setAttribute("errorMessage", "Lỗi thêm nhân viên: " + e.getMessage());
         } finally {
-            response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
-            return;
+            if (!redirected) { // Chỉ redirect nếu chưa bị redirect trước đó
+                response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
+            }
         }
     }
 
     protected void updateStaff(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
+        boolean redirected = false;
         try {
             String uploadPath = request.getServletContext().getRealPath("/") + File.separator + UPLOAD_DIR;
             int accountID;
@@ -268,25 +294,67 @@ public class StaffManagementServlet extends HttpServlet {
             int roleID = Integer.parseInt(request.getParameter("roleID"));
             String oldImage = request.getParameter("currentImage").trim();
             // Validate required fields
+            // Validate required fields
             if (userName.isEmpty() || phoneNumber.isEmpty() || email.isEmpty() || address.isEmpty()) {
                 session.setAttribute("errorMessage", "Tất cả các trường là bắt buộc.");
+                redirected = true;
                 response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
                 return;
             }
+            // Kiểm tra độ dài
+            if (userName.length() < 2 || userName.length() > 50) {
+                session.setAttribute("errorMessage", "Tên phải có từ 2 đến 50 ký tự.");
+                redirected = true;
+                response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
+                return;
+            }
+            // Kiểm tra chỉ chứa chữ cWái và khoảng trắng
+            if (!userName.matches("[a-zA-ZÀ-Ỹà-ỹ\\s]+")) {
+                session.setAttribute("errorMessage", "Tên chỉ được chứa chữ cái và khoảng trắng.");
+                redirected = true;
+                response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
+                return;
+            }
+            // Chuẩn hóa viết hoa chữ cái đầu
+            userName = formatName(userName);
             // Validate email format
             if (!email.matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
                 session.setAttribute("errorMessage", "Định dạng email không hợp lệ.");
+                redirected = true;
                 response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
                 return;
             }
             // Validate phone number (assumes 10 digits)
             if (!phoneNumber.matches("\\d{10}")) {
+                redirected = true;
                 session.setAttribute("errorMessage", "Số điện thoại phải có 10 chữ số.");
                 response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
                 return;
             }
             // Check for existing email or username
             if (AccountDAO.isEmailExistsUpdate(email)) {
+                redirected = true;
+                session.setAttribute("errorMessage", "Email đã tồn tại.");
+                response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
+                return;
+            }
+            if (password == null || password.trim().isEmpty()) {
+                redirected = true;
+                request.getSession().setAttribute("errorMessage", "Mật khẩu không được để trống.");
+                response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
+                return;
+            }
+            try {
+                roleID = Integer.parseInt(request.getParameter("roleID"));
+            } catch (NumberFormatException e) {
+                redirected = true;
+                request.getSession().setAttribute("errorMessage", "Không tồn tại RoleID này.");
+                response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
+                return;
+            }
+            // Check for existing email or username
+            if (AccountDAO.isEmailExistsUpdate(email)) {
+                redirected = true;
                 session.setAttribute("errorMessage", "Email đã tồn tại.");
                 response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
                 return;
@@ -307,6 +375,7 @@ public class StaffManagementServlet extends HttpServlet {
             Account a = new Account(accountID, roleID, userName, phoneNumber, image, email, passwordHashed, address, status);
             boolean isUpdate = AccountDAO.updateProfileStaff(a);
             if (isUpdate) {
+                redirected = true;
                 request.getSession().setAttribute("successMessage", "Cập nhật nhân viên thành công.");
                 showStaff(request, response);
             } else {
@@ -318,6 +387,10 @@ public class StaffManagementServlet extends HttpServlet {
             request.getSession().setAttribute("errorMessage", "Lỗi tải lên hình ảnh: " + e.getMessage());
         } catch (Exception e) {
             request.getSession().setAttribute("errorMessage", "Lỗi cập nhật nhân viên.: " + e.getMessage());
+        } finally {
+            if (!redirected) { // Chỉ redirect nếu chưa bị redirect trước đó
+                response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
+            }
         }
     }
 
@@ -384,6 +457,20 @@ public class StaffManagementServlet extends HttpServlet {
             request.getSession().setAttribute("errorMessage", "Lỗi tìm kiếm nhân viên: " + e.getMessage());
             response.sendRedirect(request.getContextPath() + "/Admin/StaffManagementServlet");
         }
+    }
+
+    private String formatName(String name) {
+        name = name.replaceAll("\\s+", " "); // Xóa khoảng trắng thừa giữa các từ
+        String[] words = name.split(" ");
+        StringBuilder formattedName = new StringBuilder();
+
+        for (String word : words) {
+            formattedName.append(Character.toUpperCase(word.charAt(0)))
+                    .append(word.substring(1).toLowerCase())
+                    .append(" ");
+        }
+
+        return formattedName.toString().trim(); // Xóa khoảng trắng cuối
     }
 
     /**

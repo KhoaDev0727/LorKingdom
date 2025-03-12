@@ -109,7 +109,7 @@
                                                                          onclick="setModalImage(this.src);
                                                                                  var myModal = new bootstrap.Modal(document.getElementById('imageModal'));
                                                                                  myModal.show();"
-                                                                      >
+                                                                         >
                                                                 </c:if>
                                                             </td>
                                                             <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.userName}</td>
@@ -246,9 +246,10 @@
                                                                                 <label class="form-label">Role</label>
                                                                                 <select class="form-select" name="roleID">
                                                                                     <c:forEach var="r" items="${roles}">
-                                                                                        <option value="${r.roleID}" ${r.roleID == s.roleID ? 'selected' : ''}>
+                                                                                        <option value="${r.roleID}" ${r.roleID == s.roleID ? 'selected' : ''} ${r.roleID == 3 ? 'disabled' : ''}>
                                                                                             ${r.name}
                                                                                         </option>
+
                                                                                     </c:forEach>
                                                                                 </select>
                                                                             </div>
@@ -273,7 +274,7 @@
                                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                                 </div>
                                                                 <div class="modal-body">
-                                                                Bạn có chắc chắn muốn xóa nhân vien này ?
+                                                                    Bạn có chắc chắn muốn xóa nhân vien này ?
                                                                     <strong>${s.userName}</strong>?
                                                                 </div>
                                                                 <div class="modal-footer">
@@ -359,7 +360,7 @@
                                 <label class="form-label">Role</label>
                                 <select class="form-select" name="roleID">
                                     <c:forEach var="r" items="${roles}">
-                                        <option value="${r.roleID}" ${r.roleID == s.roleID ? 'selected' : ''}>
+                                        <option value="${r.roleID}" ${r.roleID == s.roleID ? 'selected' : ''} ${r.roleID == 3 ? 'disabled' : ''}>
                                             ${r.name}
                                         </option>
                                     </c:forEach>
