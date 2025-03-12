@@ -34,7 +34,7 @@
                 <div class="profile">
                     <div class="d-flex container profile-img">
                         <c:if test="${not empty account.image}">
-                            <img style="width: 150px; height: 150px" src="${account.image}" alt="Avatar" class="avatar">
+                            <img style="width: 150px; height: 150px" src="${pageContext.request.contextPath}/${account.image}" alt="Avatar" class="avatar">
                         </c:if>
                         <span class="username">Xin chào, ${account.userName}</span>
                         <p style="color: white;">Vai trò: Staff (ID: ${account.roleID})</p>
@@ -43,7 +43,8 @@
                 <nav class="nav">
                     <ul>
                         <li><a href="#" id="profile-link"><i class="fas fa-user"></i> Quản lý hồ sơ</a></li>
-                        <li><a href="#" id="orders-link"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a></li>
+                        <li><a href="DashBoard.jsp" id="profile-link"><i class="fas fa-chart-line"></i> Chuyển đến dashboard</a></li>
+                        <li><a href="LogoutPage" id="orders-link"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a></li>
                     </ul>
                 </nav>
             </div>
@@ -119,7 +120,7 @@
                             <div class="col-md-4 text-center">
                                 <div class="card shadow-sm p-4 d-flex justify-content-center align-items-center">
                                     <c:if test="${not empty account.image}">
-                                        <img src="${account.image}" class="img-fluid rounded-circle border" width="150"
+                                        <img src="${pageContext.request.contextPath}/${account.image}" class="img-fluid rounded-circle border" width="150"
                                              alt="Avatar">
                                     </c:if>
                                     <form action="UpdateAvatarPage" method="post" enctype="multipart/form-data"

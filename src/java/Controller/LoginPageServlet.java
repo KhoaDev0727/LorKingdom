@@ -39,6 +39,7 @@ public class LoginPageServlet extends HttpServlet {
             session.setAttribute("email", account.getEmail());
             session.setAttribute("userID", account.getAccountId());
             session.setAttribute("roleID", account.getRoleID());
+            session.setAttribute("imgePath", account.getImage());
             session.setAttribute("account", account);
 //            session.setMaxInactiveInterval(90000000); // 10 giây
             // Redirect based on role
