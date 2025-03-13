@@ -15,7 +15,7 @@
     <c:when test="true">
         <div style="margin-top: 20px; margin-bottom: 20px;">
             <c:if test="${currentPage > 1}">
-                <a href="${forward}&page=${currentPage - 1}"
+                <a href="${forward}?&page=${currentPage - 1}"
                    style="padding: 5px 10px; border: 1px solid #ccc; border-radius: 4px; text-decoration: none; color: #333; margin-right: 10px;">
                     Previous
                 </a>
@@ -26,7 +26,7 @@
             </span>
 
             <c:if test="${currentPage < totalPages}">
-                <a href="${forward}&page=${currentPage + 1}"
+                <a href="${forward}?&page=${currentPage + 1}"
                    style="padding: 5px 10px; border: 1px solid #ccc; border-radius: 4px; text-decoration: none; color: #333; margin-left: 10px;">
                     Next
                 </a>

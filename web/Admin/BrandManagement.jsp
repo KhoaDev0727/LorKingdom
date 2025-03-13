@@ -241,7 +241,7 @@
                         <form method="POST" action="BrandServlet">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="brandID" id="softDeleteBrandID">
-                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                            <button type="submit" class="btn btn-danger">Xóa</i></button>
                         </form>
                     </div>
                 </div>
@@ -264,7 +264,7 @@
                         <form method="POST" action="BrandServlet">
                             <input type="hidden" name="action" value="hardDelete">
                             <input type="hidden" name="brandID" id="hardDeleteBrandID">
-                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                            <button type="submit" class="btn btn-danger">Xóa</button>
                         </form>
                     </div>
                 </div>

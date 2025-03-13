@@ -231,7 +231,7 @@
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="materialID" id="softDeleteMaterialID">
                             <button type="submit" class="btn btn-danger">
-                                <i class="fas fa-trash"></i>
+                             Xóa
                             </button>
                         </form>
                     </div>
@@ -256,7 +256,7 @@
                             <input type="hidden" name="action" value="hardDelete">
                             <input type="hidden" name="materialID" id="hardDeleteMaterialID">
                             <button type="submit" class="btn btn-danger">
-                                <i class="fas fa-trash"></i> 
+                              Xóa
                             </button>
                         </form>
                     </div>
