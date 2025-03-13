@@ -32,9 +32,14 @@
         </style>
     </head>
     <body class="sb-nav-fixed">
-        <c:if test="${empty sessionScope.roleID}">
-            <c:redirect url="/Admin/loginPage.jsp"/>
-        </c:if>
+        <c:choose>
+            <c:when test="${empty sessionScope.roleID || sessionScope.roleID eq 2}">
+                <c:redirect url="/Admin/loginPage.jsp"/>
+            </c:when>
+            <c:when test="${sessionScope.roleID eq 3}">
+                <c:redirect url="/LogoutServlet"/>
+            </c:when>
+        </c:choose>
         <div id="layoutSidenav">
             <div id="layoutSidenav_content">
                 <%@ include file="Component/SideBar.jsp" %>
@@ -42,7 +47,7 @@
                     <main>
                         <div class="container-fluid px-5">
                             <h1 class="mt-4">Category Management</h1>
-                           
+
                             <form action="CategoryServlet" method="POST" class="mt-4">
                                 <input type="hidden" name="action" value="add">
 
@@ -195,7 +200,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                      
+
                                                     </c:forEach>
                                                 </c:otherwise>
                                             </c:choose>

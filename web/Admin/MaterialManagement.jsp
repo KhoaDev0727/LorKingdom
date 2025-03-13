@@ -18,10 +18,14 @@
         <script src="JS/SideBarToggle.js"></script>
     </head>
     <body class="sb-nav-fixed">
-        <c:if test="${empty sessionScope.roleID or (sessionScope.roleID ne 1 and sessionScope.roleID ne 4)}">
-            <c:redirect url="/Admin/loginPage.jsp"/>
-        </c:if>
-
+        <c:choose>
+            <c:when test="${empty sessionScope.roleID || sessionScope.roleID eq 2}">
+                <c:redirect url="/Admin/loginPage.jsp"/>
+            </c:when>
+            <c:when test="${sessionScope.roleID eq 3}">
+                <c:redirect url="/LogoutServlet"/>
+            </c:when>
+        </c:choose>
         <div id="layoutSidenav">
             <div id="layoutSidenav_content">
                 <%@ include file="Component/SideBar.jsp" %>
@@ -231,7 +235,7 @@
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="materialID" id="softDeleteMaterialID">
                             <button type="submit" class="btn btn-danger">
-                             Xóa
+                                Xóa
                             </button>
                         </form>
                     </div>
@@ -256,7 +260,7 @@
                             <input type="hidden" name="action" value="hardDelete">
                             <input type="hidden" name="materialID" id="hardDeleteMaterialID">
                             <button type="submit" class="btn btn-danger">
-                              Xóa
+                                Xóa
                             </button>
                         </form>
                     </div>

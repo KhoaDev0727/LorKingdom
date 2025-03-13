@@ -125,72 +125,80 @@
             }
         </style>
     </head>
-    <body>
-        <header class="header">
-            <h1>Tên Cửa Hàng</h1>
-            <div class="progress-bar">
-                <div class="progress-step">Giỏ Hàng</div>
-                <div class="progress-step">Thông Tin</div>
-                <div class="progress-step">Thanh Toán</div>
-                <div class="progress-step">Xác Nhận</div>
-            </div>
-        </header>
-
-        <div class="container">
-            <!-- Left Column - Cart Items & Delivery Info -->
-            <div class="cart-items">
-                <h2>Giỏ Hàng (3 sản phẩm)</h2>
-
-                <!-- Cart Item 1 -->
-                <div class="cart-item">
-                    <img src="product1.jpg" alt="Product 1" class="item-image">
-                    <div class="item-details">
-                        <h3>Tên Sản Phẩm 1</h3>
-                        <p>Số lượng: 1</p>
-                        <p>Giá: 500.000₫</p>
-                    </div>
-                </div>
-
-                <!-- Delivery Information -->
-                <h2>Thông Tin Giao Hàng</h2>
-                <form>
-                    <div class="form-group">
-                        <label>Họ và Tên:</label>
-                        <input type="text" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Số Điện Thoại:</label>
-                        <input type="tel" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Địa Chỉ:</label>
-                        <textarea rows="3"></textarea>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Right Column - Order Summary -->
-            <div class="order-summary">
-                <h2>Tóm Tắt Đơn Hàng</h2>
-                <div class="summary-details">
-                    <p>Tạm Tính: <span>1.500.000₫</span></p>
-                    <p>Phí Vận Chuyển: <span>30.000₫</span></p>
-                    <hr>
-                    <p class="total">Tổng Cộng: <span>1.530.000₫</span></p>
-                </div>
-
-                <!-- Payment Section -->
-                <div class="payment-methods">
-                    <h3>Phương Thức Thanh Toán</h3>
-                    <select>
-                        <option>Thẻ Tín Dụng</option>
-                        <option>COD</option>
-                        <option>Ví Điện Tử</option>
-                    </select>
-                </div>
-
-                <button class="checkout-btn">ĐẶT HÀNG</button>
-            </div>
+    <body> 
+    <c:choose>
+        <c:when test="${empty sessionScope.roleID}">
+            <c:redirect url="/login.jsp"/>
+        </c:when>
+        <c:when test="${sessionScope.roleID eq 2 || sessionScope.roleID eq 4 ||  sessionScope.roleID eq 1}">
+            <c:redirect url="/Admin/loginPage.jsp"/>
+        </c:when>
+    </c:choose>
+    <header class="header">
+        <h1>Tên Cửa Hàng</h1>
+        <div class="progress-bar">
+            <div class="progress-step">Giỏ Hàng</div>
+            <div class="progress-step">Thông Tin</div>
+            <div class="progress-step">Thanh Toán</div>
+            <div class="progress-step">Xác Nhận</div>
         </div>
-    </body>
+    </header>
+
+    <div class="container">
+        <!-- Left Column - Cart Items & Delivery Info -->
+        <div class="cart-items">
+            <h2>Giỏ Hàng (3 sản phẩm)</h2>
+
+            <!-- Cart Item 1 -->
+            <div class="cart-item">
+                <img src="product1.jpg" alt="Product 1" class="item-image">
+                <div class="item-details">
+                    <h3>Tên Sản Phẩm 1</h3>
+                    <p>Số lượng: 1</p>
+                    <p>Giá: 500.000₫</p>
+                </div>
+            </div>
+
+            <!-- Delivery Information -->
+            <h2>Thông Tin Giao Hàng</h2>
+            <form>
+                <div class="form-group">
+                    <label>Họ và Tên:</label>
+                    <input type="text" required>
+                </div>
+                <div class="form-group">
+                    <label>Số Điện Thoại:</label>
+                    <input type="tel" required>
+                </div>
+                <div class="form-group">
+                    <label>Địa Chỉ:</label>
+                    <textarea rows="3"></textarea>
+                </div>
+            </form>
+        </div>
+
+        <!-- Right Column - Order Summary -->
+        <div class="order-summary">
+            <h2>Tóm Tắt Đơn Hàng</h2>
+            <div class="summary-details">
+                <p>Tạm Tính: <span>1.500.000₫</span></p>
+                <p>Phí Vận Chuyển: <span>30.000₫</span></p>
+                <hr>
+                <p class="total">Tổng Cộng: <span>1.530.000₫</span></p>
+            </div>
+
+            <!-- Payment Section -->
+            <div class="payment-methods">
+                <h3>Phương Thức Thanh Toán</h3>
+                <select>
+                    <option>Thẻ Tín Dụng</option>
+                    <option>COD</option>
+                    <option>Ví Điện Tử</option>
+                </select>
+            </div>
+
+            <button class="checkout-btn">ĐẶT HÀNG</button>
+        </div>
+    </div>
+</body>
 </html>

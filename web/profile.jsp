@@ -80,7 +80,6 @@
                     <button type="submit" class="btn btn-primary mt-2 w-100">Tải lên Avatar</button>
                 </form>
             </div>
-
         </div>
     </div>
 

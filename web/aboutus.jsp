@@ -21,11 +21,18 @@
     </head>
 
     <body>
-        
+        <c:choose>
+            <c:when test="${empty sessionScope.roleID}">
+                <c:redirect url="/login.jsp"/>
+            </c:when>
+            <c:when test="${sessionScope.roleID eq 2 || sessionScope.roleID eq 4 ||  sessionScope.roleID eq 1}">
+                <c:redirect url="/Admin/loginPage.jsp"/>
+            </c:when>
+        </c:choose>
         <!-- Header Section -->
         <jsp:include page="assets/Component/header.jsp"/>
-    <!-- end Header Section -->
-        
+        <!-- end Header Section -->
+
         <div class="image-banner">
             <div class="image-banner">
                 <img src="./img/banneraboutus.png" alt="LorKingdom Banner">
@@ -116,7 +123,7 @@
             </div>
         </section>        
 
-        
+
         <!-- Unique Experiences Section -->
         <section class="section1">
             <div class="video-content" style="margin-left: 30px; text-align: center;">
@@ -125,11 +132,11 @@
                         src="https://www.youtube.com/embed/TDgESP7-hpk"
                         frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
                 </iframe>
-        
+
                 <!-- Fallback Option -->
                 <p style="margin-top: 10px;">Video không khả dụng? Xem trực tiếp trên <a href="https://www.youtube.com/watch?v=TDgESP7-hpk" target="_blank">YouTube</a></p>
             </div>
-        
+
             <div class="text-content" style="margin-top: 20px;">
                 <h2>Khám Phá Thế Giới Đồ Chơi Sáng Tạo</h2>
                 <div class="underline" style="margin: 10px 0; width: 80px; height: 2px; background-color: #ff9800;"></div>
@@ -142,7 +149,7 @@
                 </p>
             </div>
         </section>
-        
+
 
         <section class="section-history">
             <div class="text-content">
@@ -158,7 +165,7 @@
                 </p>
             </div>
         </section>
-        
+
         <section class="section1">
             <div class="text-content">
                 <h2>Khám Phá Thế Giới Đồ Chơi Đầy Sáng Tạo</h2>
@@ -171,7 +178,7 @@
                     Hãy cùng khám phá các bộ sưu tập đồ chơi phong phú, giúp trẻ vừa học vừa chơi, phát triển toàn diện cả về thể chất lẫn tinh thần.
                 </p>
             </div>
-        
+
             <div class="video-content" style="margin-left: 30px; display: flex; justify-content: center; margin-top: 20px;">
                 <iframe width="560" height="315"
                         src="https://www.youtube.com/embed/c12cv5JMVYM"
@@ -179,7 +186,7 @@
                 </iframe>
             </div>            
         </section>
-        
+
         <!-- Footer Section -->
         <%@include file="assets/Component/footer.jsp" %>
 

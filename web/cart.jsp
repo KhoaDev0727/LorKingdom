@@ -13,14 +13,20 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
     <body>
+        <c:choose>
+            <c:when test="${empty sessionScope.roleID}">
+                <c:redirect url="/login.jsp"/>
+            </c:when>
+            <c:when test="${sessionScope.roleID eq 2 || sessionScope.roleID eq 4 ||  sessionScope.roleID eq 1}">
+                <c:redirect url="/Admin/loginPage.jsp"/>
+            </c:when>
+        </c:choose>
         <c:if test="${not empty sessionScope.errorMessage}">
             <div class="error-message">
                 ${sessionScope.errorMessage}
                 <% session.removeAttribute("errorMessage"); %>
             </div>
         </c:if>
-
-
         <div class="cart-container">
             <div class="cart-content">
                 <div class="cart-items">

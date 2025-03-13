@@ -17,9 +17,14 @@
         <script src="JS/SideBarToggle.js"></script>
     </head>
     <body class="sb-nav-fixed">
-        <c:if test="${empty sessionScope.roleID}">
-            <c:redirect url="/Admin/loginPage.jsp"/>
-        </c:if>
+        <c:choose>
+            <c:when test="${empty sessionScope.roleID || sessionScope.roleID eq 4}">
+                <c:redirect url="/Admin/loginPage.jsp"/>
+            </c:when>
+            <c:when test="${sessionScope.roleID eq 3}">
+                <c:redirect url="/LogoutServlet"/>
+            </c:when>
+        </c:choose>
         <div id="layoutSidenav">
             <div id="layoutSidenav_content">
                 <%@ include file="Component/SideBar.jsp" %>

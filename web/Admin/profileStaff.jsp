@@ -3,7 +3,6 @@
 <%@ page import="Model.Account" %>
 <%@ page import="jakarta.servlet.http.HttpSession" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
 <c:set var="account" value="${sessionScope.account}" />
 
 <!DOCTYPE html>
@@ -26,9 +25,14 @@
 
     </head>
     <body>
-        <c:if test="${empty sessionScope.roleID}">
-            <c:redirect url="/Admin/loginPage.jsp"/>
-        </c:if>
+        <c:choose>
+            <c:when test="${empty sessionScope.roleID}">
+                <c:redirect url="/Admin/loginPage.jsp"/>
+            </c:when>
+            <c:when test="${sessionScope.roleID eq 3}">
+                <c:redirect url="/LogoutServlet"/>
+            </c:when>
+        </c:choose>
         <div class="container-fluid">
             <div class="sidebar">
                 <div class="profile">
@@ -37,13 +41,20 @@
                             <img style="width: 150px; height: 150px" src="${pageContext.request.contextPath}/${account.image}" alt="Avatar" class="avatar">
                         </c:if>
                         <span class="username">Xin chào, ${account.userName}</span>
-                        <p style="color: white;">Vai trò: Staff (ID: ${account.roleID})</p>
+                        <p style="color: white;">Vai trò:
+                            <c:if test="${account.roleID eq 1}">ADMIN</c:if>
+                            <c:if test="${account.roleID eq 2}"> STAFF
+                            </c:if>
+                            <c:if test="${account.roleID eq 4}"> WAREHOUSE
+                            </c:if>
+                            (ID: ${account.roleID})
+                        </p>
                     </div>
                 </div>
                 <nav class="nav">
                     <ul>
                         <li><a href="#" id="profile-link"><i class="fas fa-user"></i> Quản lý hồ sơ</a></li>
-                        <li><a href="DashBoard.jsp" id="profile-link"><i class="fas fa-chart-line"></i> Chuyển đến dashboard</a></li>
+                        <li><a href="FinancialDashboardServlet" id="profile-link"><i class="fas fa-chart-line"></i> Chuyển đến dashboard</a></li>
                         <li><a href="LogoutPage" id="orders-link"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a></li>
                     </ul>
                 </nav>

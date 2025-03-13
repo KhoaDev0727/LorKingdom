@@ -13,7 +13,7 @@
     <body>
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <c:if test="${roleID eq 1}">
-                <a class="navbar-brand ps-3" href="index.html">Management ADMIN</a>
+                <a class="navbar-brand ps-3" href="FinancialDashboardServlet">Management ADMIN</a>
 
             </c:if>
             <c:if test="${roleID eq 2}">
@@ -32,8 +32,8 @@
 
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#!">Settings</a></li>
-                        <li><a class="dropdown-item" href="#!">Activity Log</a></li>
+                        <li><a class="dropdown-item" href="profileStaff.jsp">Settings</a></li>
+<!--                        <li><a class="dropdown-item" href="#!">Activity Log</a></li>-->
                         <li>
                             <hr class="dropdown-divider" />
                         </li>

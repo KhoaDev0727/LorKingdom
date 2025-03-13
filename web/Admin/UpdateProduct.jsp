@@ -14,9 +14,14 @@
         <link rel="stylesheet" href="CSS/NewProductCss.css"/>
     </head>
     <body>
-        <c:if test="${empty sessionScope.roleID}">
-            <c:redirect url="/Admin/loginPage.jsp"/>
-        </c:if>
+        <c:choose>
+            <c:when test="${empty sessionScope.roleID ||sessionScope.roleID eq 2 }">
+                <c:redirect url="/Admin/loginPage.jsp"/>
+            </c:when>
+            <c:when test="${sessionScope.roleID eq 3}">
+                <c:redirect url="/LogoutServlet"/>
+            </c:when>
+        </c:choose>
         <div class="container">
             <form action="updateProductServlet" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
                 <!-- Ẩn action và productID -->

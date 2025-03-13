@@ -19,9 +19,14 @@
     </head>
 </style>
 <body class="sb-nav-fixed">
-    <c:if test="${empty sessionScope.roleID}">
-        <c:redirect url="/Admin/loginPage.jsp"/>
-    </c:if>
+    <c:choose>
+        <c:when test="${empty sessionScope.roleID || (sessionScope.roleID eq 2 || sessionScope.roleID eq 4)}">
+            <c:redirect url="/Admin/loginPage.jsp"/>
+        </c:when>
+        <c:when test="${sessionScope.roleID eq 3}">
+            <c:redirect url="/LogoutServlet"/>
+        </c:when>
+    </c:choose>
     <div id="layoutSidenav">
         <div id="layoutSidenav_content">
             <!-- Side Bar -->
@@ -150,6 +155,7 @@
                                                                 </c:choose>
                                                             </td>
                                                             <td>
+
                                                                 <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editCustomerModal${s.accountId}"
                                                                         ${s.isDeleted eq 1 ? 'disabled' : ''}>
                                                                     <i class="fas fa-edit"></i>
@@ -158,6 +164,7 @@
                                                                         ${s.isDeleted eq 1 ? 'disabled' : ''}>
                                                                     <i class="fas fa-trash"></i>
                                                                 </button>
+
                                                             </td>
                                                         </tr>
 
