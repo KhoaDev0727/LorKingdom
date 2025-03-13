@@ -7,6 +7,8 @@ package DAO;
 import DBConnect.DBConnection;
 import Model.Notification;
 import java.sql.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -227,14 +229,30 @@ public class NotificationDAO {
         }
         return notifications;
     }
-    
+
     public boolean markNotificationAsRead(int notificationID) throws SQLException, ClassNotFoundException {
         String sql = "UPDATE Notifications SET Status = 'Read' WHERE NotificationID = ? AND IsDeleted = 0";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, notificationID);
             int rowsUpdated = stmt.executeUpdate();
             return rowsUpdated > 0;
+        }
+    }
+
+    public String getRelativeTime(Timestamp createdAt) {
+        LocalDateTime notificationTime = createdAt.toLocalDateTime();
+        LocalDateTime now = LocalDateTime.now();
+        Duration duration = Duration.between(notificationTime, now);
+        long seconds = duration.getSeconds();
+
+        if (seconds < 60) {
+            return "Vừa xong";
+        } else if (seconds < 3600) {
+            return (seconds / 60) + " phút trước";
+        } else if (seconds < 86400) {
+            return (seconds / 3600) + " giờ trước";
+        } else {
+            return (seconds / 86400) + " ngày trước";
         }
     }
 

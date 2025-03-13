@@ -108,7 +108,6 @@ public class ProductManagementServlet extends HttpServlet {
                 request.setAttribute("enteredProductName", productName);
                 request.setAttribute("enteredPrice", priceStartStr);
                 request.setAttribute("enteredQuantity", quantityStr);
-                request.setAttribute("enteredDescription", description);
                 request.setAttribute("enteredCategory", request.getParameter("category"));
                 request.setAttribute("enteredGender", request.getParameter("gender"));
                 request.setAttribute("enteredPriceRange", request.getParameter("priceRange"));
@@ -134,7 +133,6 @@ public class ProductManagementServlet extends HttpServlet {
                 request.setAttribute("enteredProductName", productName);
                 request.setAttribute("enteredPrice", priceStartStr);
                 request.setAttribute("enteredQuantity", quantityStr);
-                request.setAttribute("enteredDescription", description);
                 request.setAttribute("enteredCategory", request.getParameter("category"));
                 request.setAttribute("enteredGender", request.getParameter("gender"));
                 request.setAttribute("enteredPriceRange", request.getParameter("priceRange"));
@@ -152,7 +150,6 @@ public class ProductManagementServlet extends HttpServlet {
                 request.setAttribute("enteredProductName", productName);
                 request.setAttribute("enteredPrice", priceStartStr);
                 request.setAttribute("enteredQuantity", quantityStr);
-                request.setAttribute("enteredDescription", description);
                 request.setAttribute("enteredCategory", request.getParameter("category"));
                 request.setAttribute("enteredGender", request.getParameter("gender"));
                 request.setAttribute("enteredPriceRange", request.getParameter("priceRange"));
@@ -170,7 +167,6 @@ public class ProductManagementServlet extends HttpServlet {
                 request.setAttribute("enteredProductName", productName);
                 request.setAttribute("enteredPrice", priceStartStr);
                 request.setAttribute("enteredQuantity", quantityStr);
-                request.setAttribute("enteredDescription", description);
                 request.setAttribute("enteredCategory", request.getParameter("category"));
                 request.setAttribute("enteredGender", request.getParameter("gender"));
                 request.setAttribute("enteredPriceRange", request.getParameter("priceRange"));
@@ -186,7 +182,6 @@ public class ProductManagementServlet extends HttpServlet {
                 request.setAttribute("enteredProductName", productName);
                 request.setAttribute("enteredPrice", priceStartStr);
                 request.setAttribute("enteredQuantity", quantityStr);
-                request.setAttribute("enteredDescription", description);
                 request.setAttribute("enteredCategory", request.getParameter("category"));
                 request.setAttribute("enteredGender", request.getParameter("gender"));
                 request.setAttribute("enteredPriceRange", request.getParameter("priceRange"));
@@ -206,7 +201,6 @@ public class ProductManagementServlet extends HttpServlet {
                 request.setAttribute("enteredProductName", productName);
                 request.setAttribute("enteredPrice", priceStartStr);
                 request.setAttribute("enteredQuantity", quantityStr);
-                request.setAttribute("enteredDescription", description);
                 request.setAttribute("enteredCategory", request.getParameter("category"));
                 request.setAttribute("enteredGender", request.getParameter("gender"));
                 request.setAttribute("enteredPriceRange", request.getParameter("priceRange"));
@@ -222,7 +216,6 @@ public class ProductManagementServlet extends HttpServlet {
                 request.setAttribute("enteredProductName", productName);
                 request.setAttribute("enteredPrice", priceStartStr);
                 request.setAttribute("enteredQuantity", quantityStr);
-                request.setAttribute("enteredDescription", description);
                 request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
                 return;
             }
@@ -232,7 +225,6 @@ public class ProductManagementServlet extends HttpServlet {
                 request.setAttribute("enteredProductName", productName);
                 request.setAttribute("enteredPrice", priceStartStr);
                 request.setAttribute("enteredQuantity", quantityStr);
-                request.setAttribute("enteredDescription", description);
                 request.setAttribute("enteredCategory", request.getParameter("category"));
                 request.setAttribute("enteredGender", request.getParameter("gender"));
                 request.setAttribute("enteredPriceRange", request.getParameter("priceRange"));
@@ -248,7 +240,6 @@ public class ProductManagementServlet extends HttpServlet {
                 request.setAttribute("enteredProductName", productName);
                 request.setAttribute("enteredPrice", priceStartStr);
                 request.setAttribute("enteredQuantity", quantityStr);
-                request.setAttribute("enteredDescription", description);
                 request.setAttribute("enteredCategory", request.getParameter("category"));
                 request.setAttribute("enteredGender", request.getParameter("gender"));
                 request.setAttribute("enteredPriceRange", request.getParameter("priceRange"));
@@ -265,7 +256,6 @@ public class ProductManagementServlet extends HttpServlet {
                 request.setAttribute("enteredProductName", productName);
                 request.setAttribute("enteredPrice", priceStartStr);
                 request.setAttribute("enteredQuantity", quantityStr);
-                request.setAttribute("enteredDescription", description);
                 request.setAttribute("enteredCategory", request.getParameter("category"));
                 request.setAttribute("enteredGender", request.getParameter("gender"));
                 request.setAttribute("enteredPriceRange", request.getParameter("priceRange"));
@@ -309,7 +299,6 @@ public class ProductManagementServlet extends HttpServlet {
                 request.setAttribute("enteredProductName", productName);
                 request.setAttribute("enteredPrice", priceStartStr);
                 request.setAttribute("enteredQuantity", quantityStr);
-                request.setAttribute("enteredDescription", description);
                 request.setAttribute("enteredCategory", request.getParameter("category"));
                 request.setAttribute("enteredGender", request.getParameter("gender"));
                 request.setAttribute("enteredPriceRange", request.getParameter("priceRange"));
@@ -332,8 +321,6 @@ public class ProductManagementServlet extends HttpServlet {
                 request.setAttribute("enteredProductName", productName);
                 request.setAttribute("enteredPrice", priceStartStr);
                 request.setAttribute("enteredQuantity", quantityStr);
-                request.setAttribute("enteredDescription", description);
-                request.setAttribute("enteredCategory", request.getParameter("category"));
                 request.setAttribute("enteredGender", request.getParameter("gender"));
                 request.setAttribute("enteredPriceRange", request.getParameter("priceRange"));
                 request.setAttribute("enteredBrand", request.getParameter("brand"));

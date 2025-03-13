@@ -58,6 +58,7 @@ public class LoginServlet extends HttpServlet {
                 List<Notification> userNotifications = notificationDAO.getNotificationsByAccountID(account.getAccountId());
                 int unreadCount = 0;
                 for (Notification n : userNotifications) {
+                    n.setRelativeTime(notificationDAO.getRelativeTime(n.getCreatedAt())); // Gán thời gian tương đối
                     if ("Unread".equalsIgnoreCase(n.getStatus())) {
                         unreadCount++;
                     }

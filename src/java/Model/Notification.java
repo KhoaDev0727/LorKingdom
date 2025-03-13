@@ -16,6 +16,7 @@ public class Notification {
     private Integer accountID; // Nullable
     private boolean isDeleted;
     private Timestamp createdAt;
+    private String relativeTime;
 
     public Notification() {
         this.isDeleted = false;
@@ -99,5 +100,13 @@ public class Notification {
 
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
+    }
+    
+    public String getRelativeTime() {
+        return relativeTime;
+    }
+
+    public void setRelativeTime(String relativeTime) {
+        this.relativeTime = relativeTime;
     }
 }
