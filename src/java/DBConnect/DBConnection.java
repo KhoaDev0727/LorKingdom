@@ -13,11 +13,11 @@ public class DBConnection {
 //    private static String url = "jdbc:sqlserver://QUIN;databaseName=LorKingDom;encrypt=true;trustServerCertificate=true";
 //    private static String user = "sa";
 //    private static String pass = "12345";
-    
+//    
 //    private static String url = "jdbc:sqlserver://QUIN;databaseName=LorKingDom;encrypt=true;trustServerCertificate=true";
 //    private static String user = "sa";
 //    private static String pass = "12345";
-    
+//    
 //    private static String url = "jdbc:sqlserver://QUIN;databaseName=LorKingDom;encrypt=true;trustServerCertificate=true";
 //    private static String user = "sa";
 //    private static String pass = "12345";
