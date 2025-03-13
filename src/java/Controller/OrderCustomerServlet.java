@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -63,26 +64,57 @@ public class OrderCustomerServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        HttpSession session = request.getSession();
-        Integer userId = (Integer) session.getAttribute("userID");
-        String status = request.getParameter("status");
-       int statusNew = 0;
-        if (userId == null) {
-            response.getWriter().write("[]");
-            return;
+        try {
+            HttpSession session = request.getSession();
+            Integer userId = (Integer) session.getAttribute("userID");
+            String statusParam = request.getParameter("status");
+            String pageParam = request.getParameter("page");
+
+            int page = 1;
+            if (pageParam != null && !pageParam.isEmpty()) {
+                try {
+                    page = Integer.parseInt(pageParam);
+                } catch (NumberFormatException e) {
+                    // Giữ nguyên giá trị mặc định
+                }
+            }
+
+            int pageSize = 3;
+
+            if (userId == null) {
+                response.getWriter().write("[]");
+                return;
+            }
+
+            int statusId = 0;
+            if (statusParam != null) {
+                switch (statusParam.trim().toLowerCase()) {
+                    case "pending":
+                        statusId = 1;
+                        break;
+                    case "shipping":
+                        statusId = 2;
+                        break;
+                    case "delivered":
+                        statusId = 3;
+                        break;
+                    case "cancelled":
+                        statusId = 4;
+                        break;
+                    // Mặc định không xử lý statusId = 0
+                }
+            }
+
+            Map<String, Object> result = OrderDAO.getOrdersByUser(userId, statusId, page, pageSize);
+
+            Gson gson = new Gson();
+            System.out.println(gson.toJson(result));
+            response.getWriter().write(gson.toJson(result));
+
+        } catch (Exception e) {
+            response.getWriter().write("{\"error\":\"Invalid request\"}");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
-        if (status.equalsIgnoreCase("Pending")) {
-            statusNew = 1;
-        }else if (status.equalsIgnoreCase("Shipping")) {
-             statusNew = 2;
-        }else if (status.equalsIgnoreCase("Delivered")) {
-             statusNew = 3;
-        }else if (status.equalsIgnoreCase("Cancelled")) {
-             statusNew = 4;
-        } 
-        List<Order> orders = OrderDAO.getOrdersByUser(3, statusNew);
-        Gson gson = new Gson();
-        response.getWriter().write(gson.toJson(orders));
     }
 
     /**

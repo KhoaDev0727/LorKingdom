@@ -99,6 +99,8 @@ public class CustomerManagementServlet extends HttpServlet {
                     case "update":
                         updateCustomer(request, response);
                         break;
+                    case "deactiveAccount":
+                        break;
                     default:
                         showListCustomer(request, response);
                 }
@@ -284,6 +286,7 @@ public class CustomerManagementServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/Admin/CustomerManagementServlet");
         }
     }
+
 
     /**
      * Returns a short description of the servlet.

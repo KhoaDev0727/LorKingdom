@@ -16,7 +16,7 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <style> 
+        <style>
             .text-muted {
                 text-align: left;
             }
@@ -45,6 +45,20 @@
 
             #star-rating .fa-star.active {
                 color: #ffc107; /* Màu vàng cho sao được chọn */
+            }
+            /* Thêm vào phần style */
+            .page-btn {
+                padding: 5px 12px;
+                border: 1px solid #ddd;
+                margin: 0 2px;
+                cursor: pointer;
+                border-radius: 4px;
+            }
+
+            .page-btn.active {
+                background-color: #dc3545;
+                color: white;
+                border-color: #dc3545;
             }
         </style>
     </head>
@@ -82,6 +96,7 @@
                             <span class="tab" data-status="Delivered">Hoàn thành</span>
                             <span class="tab" data-status="Cancelled">Đã hủy</span>
                         </div>
+                        <div id="pagination-container" class="d-flex justify-content-center gap-2 my-4"></div>
                         <div class="order-content">
                             <img src="./assets/img/notifi-order.png" alt="Chưa có đơn hàng" class="no-order-img">
                             <p>Chưa có đơn hàng</p>
@@ -152,7 +167,6 @@
         <%@include file="assets/Component/footer.jsp" %>
 
         <script src="assets/js/fowrard.js">
-
         </script>
     </body>
 </html>

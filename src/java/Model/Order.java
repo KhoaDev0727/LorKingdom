@@ -20,7 +20,7 @@ public class Order {
     private String shipingMethodName;
     private Date orderDate;
     private String status;
-    private float totalAmount;
+    private double totalAmount;
     private Date createdAt;
     private Date updatedAt;
     private List<OrderDetail> orderDetails = new ArrayList<>();
@@ -88,11 +88,11 @@ public class Order {
         this.status = status;
     }
 
-    public float getTotalAmount() {
+    public double getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(float totalAmount) {
+    public void setTotalAmount(double totalAmount) {
         this.totalAmount = totalAmount;
     }
 

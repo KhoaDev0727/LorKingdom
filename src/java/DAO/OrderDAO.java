@@ -273,24 +273,58 @@ public class OrderDAO extends DBConnect.DBConnection {
     }
 
 //    Cua Khang 
-    public static List<Order> getOrdersByUser(int accountId, int status) {
+    public static Map<String, Object> getOrdersByUser(int accountId, int status, int page, int pageSize) {
+        Map<String, Object> result = new HashMap<>();
         List<Order> orders = new ArrayList<>();
         Map<Integer, Order> orderMap = new HashMap<>();
-        String sql = "SELECT o.OrderID, o.OrderDate, o.TotalAmount, s.Status, \n"
-                + "       d.ProductID, p.Name, d.Quantity, d.UnitPrice,  \n"
-                + "       (SELECT TOP 1 Image FROM ProductImages \n"
-                + "        WHERE ProductID = d.ProductID AND IsMain = 1) AS ProductImage,\n"
-                + "       c.Name AS CategoryName  \n"
-                + "FROM Orders o \n"
-                + "JOIN StatusOrder s ON o.StatusID = s.StatusID \n"
-                + "JOIN OrderDetails d ON o.OrderID = d.OrderID \n"
-                + "JOIN Product p ON d.ProductID = p.ProductID \n"
-                + "LEFT JOIN Category c ON p.CategoryID = c.CategoryID \n"
-                + "WHERE o.AccountID = ? AND s.StatusID = ? \n"
-                + "ORDER BY o.OrderDate DESC;";
-        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, accountId);   // Set the first placeholder to accountId
-            ps.setInt(2, status);   // Set the second placeholder to status
+        String sql = "    WITH OrderCTE AS (\n"
+                + "        SELECT o.OrderID, o.OrderDate, o.TotalAmount, s.Status,\n"
+                + "               ROW_NUMBER() OVER (ORDER BY o.OrderDate DESC) AS RowNum\n"
+                + "        FROM Orders o\n"
+                + "        JOIN StatusOrder s ON o.StatusID = s.StatusID\n"
+                + "        WHERE o.AccountID = ? AND s.StatusID = ?\n"
+                + "    ),\n"
+                + "    PagedOrders AS (\n"
+                + "        SELECT OrderID, OrderDate, TotalAmount, Status\n"
+                + "        FROM OrderCTE\n"
+                + "        WHERE RowNum BETWEEN ? AND ?\n"
+                + "    )\n"
+                + "    SELECT po.OrderID, po.OrderDate, po.TotalAmount, po.Status,\n"
+                + "           d.ProductID, p.Name AS ProductName, d.Quantity, d.UnitPrice,\n"
+                + "           (SELECT TOP 1 Image FROM ProductImages \n"
+                + "            WHERE ProductID = d.ProductID AND IsMain = 1) AS ProductImage,\n"
+                + "           c.Name AS CategoryName\n"
+                + "    FROM PagedOrders po\n"
+                + "    JOIN OrderDetails d ON po.OrderID = d.OrderID\n"
+                + "    JOIN Product p ON d.ProductID = p.ProductID\n"
+                + "    LEFT JOIN Category c ON p.CategoryID = c.CategoryID\n"
+                + "    ORDER BY po.OrderDate DESC;";
+
+        String countSql = "SELECT COUNT(DISTINCT o.OrderID) AS TotalOrders "
+                + "FROM Orders o "
+                + "JOIN StatusOrder s ON o.StatusID = s.StatusID "
+                + "WHERE o.AccountID = ? AND s.StatusID = ? ";
+
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(sql);  PreparedStatement countPs = conn.prepareStatement(countSql)) {
+
+            // Tính toán phân trang
+            int offset = (page - 1) * pageSize;
+            int startRow = offset + 1;
+            int endRow = offset + pageSize;
+
+            // Đếm tổng số đơn
+            countPs.setInt(1, accountId);
+            countPs.setInt(2, status);
+            ResultSet countRs = countPs.executeQuery();
+            int total = countRs.next() ? countRs.getInt("TotalOrders") : 0;
+            result.put("total", total);
+
+            // Lấy dữ liệu đơn hàng
+            ps.setInt(1, accountId);
+            ps.setInt(2, status);
+            ps.setInt(3, startRow);
+            ps.setInt(4, endRow);
+
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -301,7 +335,7 @@ public class OrderDAO extends DBConnect.DBConnection {
                     order = new Order();
                     order.setOrderId(orderId);
                     order.setOrderDate(rs.getDate("OrderDate"));
-                    order.setTotalAmount(rs.getFloat("TotalAmount"));
+                    order.setTotalAmount(rs.getDouble("TotalAmount"));
                     order.setStatus(rs.getString("Status"));
                     orderMap.put(orderId, order);
                     orders.add(order);
@@ -309,17 +343,19 @@ public class OrderDAO extends DBConnect.DBConnection {
 
                 OrderDetail detail = new OrderDetail();
                 detail.setProductID(rs.getInt("ProductID"));
-                detail.setProductName(rs.getString("Name"));
+                detail.setProductName(rs.getString("ProductName"));
                 detail.setQuantity(rs.getInt("Quantity"));
                 detail.setPrice(rs.getDouble("UnitPrice"));
                 detail.setProductImage(rs.getString("ProductImage"));
                 detail.setCategoryName(rs.getString("CategoryName"));
                 order.addOrderDetail(detail);
+
             }
+
+            result.put("orders", orders);
         } catch (Exception e) {
             e.printStackTrace();
-
         }
-        return orders;
+        return result;
     }
 }

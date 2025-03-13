@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
+    let currentPage = 1;
+    let totalPages = 1;
     // Lấy các phần tử DOM chính
     const profileSection = document.getElementById("profile-section");
     const ordersSection = document.getElementById("orders-section");
@@ -64,69 +66,89 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Load dữ liệu đơn hàng từ API
-    async function loadOrders(status) {
-        try {
-            const response = await fetch(`purchase?status=${status}`);
-            if (!response.ok) {
-                throw new Error(`Lỗi HTTP: ${response.status} - ${response.statusText}`);
-            }
-            const orders = await response.json();
-            console.log("Dữ liệu đơn hàng:", orders); // Debug
-            renderOrders(orders);
-        } catch (error) {
-            console.error("Lỗi khi tải đơn hàng:", error);
-            showNoOrders();
-        }
+   function renderPagination(total, pageSize) {
+    const paginationContainer = document.getElementById("pagination-container");
+    totalPages = Math.ceil(total / pageSize);
+    
+    let html = '';
+    for (let i = 1; i <= totalPages; i++) {
+        html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
     }
+    paginationContainer.innerHTML = html;
 
-    // Render danh sách đơn hàng
-    function renderOrders(orders) {
-        const orderContent = document.querySelector(".order-content");
-        if (!orderContent) {
-            console.error("Không tìm thấy .order-content để render đơn hàng");
-            return;
-        }
+    // Thêm event listener cho các nút trang
+    document.querySelectorAll('.page-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            currentPage = parseInt(btn.dataset.page);
+            await loadOrders(currentStatus, currentPage);
+        });
+    });
+}
 
-        if (!orders || !Array.isArray(orders) || orders.length === 0) {
+// Sửa hàm loadOrders
+async function loadOrders(status, page = 1) {
+    try {
+        currentPage = page;
+        currentStatus = status; // Lưu trạng thái hiện tại
+        
+        const response = await fetch(`purchase?status=${status}&page=${page}`);
+        if (!response.ok) throw new Error(`Lỗi HTTP: ${response.status}`);
+        
+        const data = await response.json(); // Nhận cả orders và total
+        console.log("Dữ liệu nhận được:", data);
+        
+        if (data.error) {
             showNoOrders();
             return;
         }
 
-        orderContent.innerHTML = orders.map(order => `
-            <div class="order-item">
-                <h3>Đơn hàng ${order.orderId || "Không xác định"}</h3>
-                ${(order.orderDetails && Array.isArray(order.orderDetails) ? order.orderDetails : []).map(detail => `
-                    <div class="d-flex mb-3 align-items-center">
-                        <img src="${detail.productImage || './assets/img/default-product.png'}" 
-                             class="me-3" style="width: 100px; height: 100px;" alt="Hình sản phẩm">
-                        <div class="flex-grow-1">
-                            <div class="fw-bold">${detail.productName || 'Không có tên'}</div>
-                            <div class="text-muted">Phân loại: ${detail.categoryName || 'Mặc định'}</div>
-                            <div class="text-muted">Số lượng: x${detail.quantity || 0}</div>
-                        </div>
-                        <div class="text-end">
-                            <div class="text-danger fw-bold">${formatCurrency(detail.Price)}</div>
-                            ${order.status === 'Delivered' ? `
-                                <button class="btn btn-warning mt-2" 
-                                        data-bs-toggle="modal" 
-                                        data-bs-target="#reviewModal"
-                                        data-product-id="${detail.productID || ''}"
-                                        data-order-id="${order.orderId || ''}"
-                                        data-product-name="${detail.productName || ''}"
-                                        data-product-img="${detail.productImage || ''}">
-                                    Đánh giá
-                                </button>
-                            ` : ''}
-                        </div>
+        renderOrders(data.orders);
+        renderPagination(data.total, 3); // pageSize = 3
+    } catch (error) {
+        console.error("Lỗi khi tải đơn hàng:", error);
+        showNoOrders();
+    }
+}
+
+// Sửa hàm renderOrders (sửa thuộc tính chi tiết)
+function renderOrders(orders) {
+    const orderContent = document.querySelector(".order-content");
+    // ... phần đầu giữ nguyên
+    
+    orderContent.innerHTML = orders.map(order => `
+        <div class="order-item">
+            <h3>Đơn hàng ${order.orderId}</h3>
+            ${order.orderDetails.map(detail => `
+                <div class="d-flex mb-3 align-items-center">
+                    <img src="${detail.productImage || './assets/img/default-product.png'}" 
+                         class="me-3" style="width: 100px; height: 100px;" alt="Hình sản phẩm">
+                    <div class="flex-grow-1">
+                        <div class="fw-bold">${detail.productName}</div>
+                        <div class="text-muted">Phân loại: ${detail.categoryName}</div>
+                        <div class="text-muted">Số lượng: x${detail.quantity}</div>
                     </div>
-                `).join('')}
-                <div class="border-top pt-3 text-end">
-                    <div class="h4 text-danger fw-bold">Tổng: ${formatCurrency(order.totalAmount)}</div>
+                    <div class="text-end">
+                        <div class="text-danger fw-bold">${formatCurrency(detail.price)}</div> <!-- Sửa Price -> price -->
+                        ${order.status === 'Delivered' ? `
+                            <button class="btn btn-warning mt-2" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#reviewModal"
+                                    data-product-id="${detail.productId}" 
+                                    data-order-id="${order.orderId}"
+                                    data-product-name="${detail.productName}"
+                                    data-product-img="${detail.productImage}">
+                                Đánh giá
+                            </button>
+                        ` : ''}
+                    </div>
                 </div>
+            `).join('')}
+            <div class="border-top pt-3 text-end">
+                <div class="h4 text-danger fw-bold">Tổng: ${formatCurrency(order.totalAmount)}</div>
             </div>
-        `).join('');
-    }
+        </div>
+    `).join('');
+}
 
     // Xử lý khi modal đánh giá được mở
     if (reviewModal) {
@@ -160,14 +182,14 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Không tìm thấy #reviewModal");
     }
 
- const ratingText = document.getElementById("rating-text");
+    const ratingText = document.getElementById("rating-text");
     const ratingInput = document.getElementById("rating-input");
     const starContainer = document.getElementById("star-rating");
 
     if (starContainer && ratingText && ratingInput) {
         // Khởi tạo trạng thái mặc định 5 sao
         updateRating(5);
-        
+
         // Sử dụng event delegation để xử lý click trên các sao
         starContainer.addEventListener("click", function (e) {
             const star = e.target.closest(".fa-star");
