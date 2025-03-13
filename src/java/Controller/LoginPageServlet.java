@@ -44,6 +44,7 @@ public class LoginPageServlet extends HttpServlet {
 //            session.setMaxInactiveInterval(90000000); // 10 giây
             // Redirect based on role
             if (account.getRoleID() == 1) {
+                request.setAttribute("roleID", account.getRoleID());
                 response.sendRedirect("FinancialDashboardServlet"); // Admin dashboard
             } else if (account.getRoleID() == 2 || account.getRoleID() == 4 ) {
                 response.sendRedirect("profileStaff.jsp"); // Staff dashboard
