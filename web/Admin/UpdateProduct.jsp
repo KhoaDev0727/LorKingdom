@@ -163,10 +163,9 @@
                                     <label class="form-label">Price ($)</label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="fas fa-tag"></i></span>
-                                        <input type="number" class="form-control" 
-                                               name="price" 
-                                               value="${product.price}" 
-                                               required />
+                                        <input type="text" class="form-control" name="price"
+                                               value="${priceTruncated}" required />
+
 
                                     </div>
                                 </div>
@@ -312,7 +311,7 @@
 
         </script>
         <script>
-           
+
             var oldDesc = '<c:out value="${product.description}" escapeXml="false"/>';
 
             console.log("oldDesc = ", oldDesc);
