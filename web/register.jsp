@@ -23,7 +23,7 @@
         <!-- Banner -->
         <div class="container-fluid2">
             <div class="form-container">
-                <div class="container form">
+                <div class="container form-register">
                     <h3>Tạo tài khoản của bạn</h3>
                     <form id="registerForm" method="POST">
                         <!-- Username Input -->
@@ -83,7 +83,8 @@
                         </div>                   
 
                         <!-- Register Button -->
-                        <button type="submit" class="btn btn-primary register-btn">Đăng ký</button>
+                      <button id="registerButton" class="btn btn-primary register-btn">Đăng ký</button>
+
 
                         <!-- Login Link -->
                         <div class="login-link mt-3">

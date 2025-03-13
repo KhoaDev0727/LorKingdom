@@ -56,7 +56,7 @@ input {
     box-sizing: border-box;
 }
 
-button {
+#registerButton {
     width: 100%;
     padding: 12px;
     border: none;
@@ -65,11 +65,11 @@ button {
     margin-top: 10px;
 }
 
-button:hover {
+#registerButton:hover {
     opacity: 0.8;
 }
 
-button.register-btn {
+#registerButton {
     border-radius:30px;
     background: rgb(255, 89, 0);
     color: white;
