@@ -115,6 +115,7 @@
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <li><a class="dropdown-item" href="ReviewManagementServlet">View Review</a></li>
+                                         <li><a class="dropdown-item" href="promotionController">Promotion Management</a></li>
                                     </ul>
 
                                 </div>
