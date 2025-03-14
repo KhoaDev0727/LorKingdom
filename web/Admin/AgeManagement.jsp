@@ -263,7 +263,7 @@
                         <form method="POST" action="AgeServlet">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="ageID" id="softDeleteAgeID">
-                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Xóa </button>
+                            <button type="submit" class="btn btn-danger">Xóa</button>
                         </form>
                     </div>
                 </div>
@@ -286,7 +286,7 @@
                         <form method="POST" action="AgeServlet">
                             <input type="hidden" name="action" value="hardDelete">
                             <input type="hidden" name="ageID" id="hardDeleteAgeID">
-                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Xóa </button>
+                            <button type="submit" class="btn btn-danger">Xóa</button>
                         </form>
                     </div>
                 </div>

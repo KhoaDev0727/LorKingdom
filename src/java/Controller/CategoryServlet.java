@@ -183,8 +183,8 @@ public class CategoryServlet extends HttpServlet {
 
         name = name.trim();
 
-        if (name.length() > 255) {
-            request.getSession().setAttribute("errorMessage", "Tên danh mục quá dài. Tối đa 255 ký tự.");
+        if (name.length() > 50) {
+            request.getSession().setAttribute("errorMessage", "Tên danh mục quá dài. Tối đa 50 ký tự.");
             response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
             return;
         }
@@ -228,7 +228,7 @@ public class CategoryServlet extends HttpServlet {
         try {
             int categoryID = Integer.parseInt(request.getParameter("categoryID"));
             categoryDAO.deleteCategory(categoryID);
-            request.getSession().setAttribute("successMessage", "Danh mục đã đã được xóa mềm.");
+            request.getSession().setAttribute("successMessage", "Danh mục đã đã được đã đưa vào thùng rác thành công.");
             response.sendRedirect("CategoryServlet?action=list");
         } catch (NumberFormatException e) {
             request.getSession().setAttribute("errorMessage", "ID danh mục không hợp lệ.");
@@ -241,7 +241,7 @@ public class CategoryServlet extends HttpServlet {
         try {
             int categoryID = Integer.parseInt(request.getParameter("categoryID"));
             categoryDAO.hardDeleteCategory(categoryID);
-            request.getSession().setAttribute("successMessage", "Danh mục đã được xóa cứng.");
+            request.getSession().setAttribute("successMessage", "Danh mục đã được xóa thành công.");
             response.sendRedirect("CategoryServlet?action=listDeleted");
         } catch (NumberFormatException e) {
             request.getSession().setAttribute("errorMessage", "ID danh mục không hợp lệ.");
@@ -285,14 +285,14 @@ public class CategoryServlet extends HttpServlet {
 
         name = name.trim();
 
-        if (name.length() > 255) {
-            request.getSession().setAttribute("errorMessage", "Tên danh mục quá dài. Tối đa 255 ký tự.");
+        if (name.length() > 50) {
+            request.getSession().setAttribute("errorMessage", "Tên danh mục quá dài. Tối đa 50 ký tự.");
             response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
             return;
         }
 
-        if (!name.matches("^[\\p{L} '_,.-]+$")) {
-            request.getSession().setAttribute("errorMessage", "Tên danh mục chỉ được chứa chữ cái, khoảng trắng, dấu gạch dưới (_), dấu gạch ngang (-) và dấu phẩy đơn (').");
+        if (!name.matches("^[\\p{L}]+$")) {
+            request.getSession().setAttribute("errorMessage", "Tên danh mục chỉ được chứa chữ cái, khoảng trắng.");
             response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
             return;
         }

@@ -311,7 +311,7 @@ public class PriceRangeServlet extends HttpServlet {
         try {
             int prID = Integer.parseInt(request.getParameter("priceRangeID"));
             priceRangeDAO.softDeletePriceRange(prID);
-            request.getSession().setAttribute("successMessage", "Đã xóa mềm Price Range thành công.");
+            request.getSession().setAttribute("successMessage", "Đã đưa phạm vi giá vào thùng rác thành công");
             response.sendRedirect("PriceRangeServlet?action=list");
         } catch (NumberFormatException e) {
             request.getSession().setAttribute("errorMessage", "ID phạm vi giá không hợp lệ.");
@@ -324,7 +324,7 @@ public class PriceRangeServlet extends HttpServlet {
         try {
             int prID = Integer.parseInt(request.getParameter("priceRangeID"));
             priceRangeDAO.hardDeletePriceRange(prID);
-            request.getSession().setAttribute("successMessage", "Đã xóa cứng phạm vi giá  thành công.");
+            request.getSession().setAttribute("successMessage", "Đã xóa phạm vi giá  thành công.");
             response.sendRedirect("PriceRangeServlet?action=listDeleted");
         } catch (NumberFormatException e) {
             request.getSession().setAttribute("errorMessage", "ID phạm vi giá không hợp lệ.");
@@ -337,7 +337,7 @@ public class PriceRangeServlet extends HttpServlet {
         try {
             int prID = Integer.parseInt(request.getParameter("priceRangeID"));
             priceRangeDAO.restorePriceRange(prID);
-            request.getSession().setAttribute("successMessage", "Đã khôi phục Price Range thành công.");
+            request.getSession().setAttribute("successMessage", "Đã khôi phục phạm vi giá thành công.");
         } catch (NumberFormatException e) {
             request.getSession().setAttribute("errorMessage", "ID phạm vi giá không hợp lệ.");
         }

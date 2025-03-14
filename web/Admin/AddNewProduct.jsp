@@ -233,10 +233,6 @@
                             <a href="ProductServlet?&action=list" class="btn btn-primary btn-sm">
                                 Trở Về
                             </a>
-
-                            <button type="reset" class="btn btn-outline-secondary px-4">
-                                <i class="fas fa-undo me-2"></i>Reset
-                            </button>
                             <button type="submit" class="btn btn-primary px-4">
                                 <i class="fas fa-plus-circle me-2"></i>Add Product
                             </button>

@@ -235,8 +235,8 @@ public class ProductManagementServlet extends HttpServlet {
                 request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
                 return;
             }
-            if (productName.length() > 30) {
-                session.setAttribute("errorMessage", "Tên sản phẩm chỉ không được dài quá 30 kí tự");
+            if (productName.length() > 50) {
+                session.setAttribute("errorMessage", "Tên sản phẩm chỉ không được dài quá 50 kí tự");
                 request.setAttribute("enteredProductName", productName);
                 request.setAttribute("enteredPrice", priceStartStr);
                 request.setAttribute("enteredQuantity", quantityStr);

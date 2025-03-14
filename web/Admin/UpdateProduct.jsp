@@ -241,9 +241,6 @@
                             <a href="ProductServlet?&action=list" class="btn btn-primary btn-sm">
                                 Trở Về
                             </a>
-                            <button type="reset" class="btn btn-outline-secondary px-4">
-                                <i class="fas fa-undo me-2"></i>Reset
-                            </button>
                             <button type="submit" class="btn btn-primary px-4">
                                 <i class="fas fa-save me-2"></i>Update Product
                             </button>
@@ -290,7 +287,7 @@
                         <p id="errorMessage">${sessionScope.errorMessage}</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ðóng</button>
                     </div>
                 </div>
             </div>
@@ -302,6 +299,7 @@
                 if (errorMessage && errorMessage.trim() !== "") {
                     var errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
                     errorModal.show();
+            <% request.getSession().removeAttribute("errorMessage"); %>
                 }
             };
         </script>

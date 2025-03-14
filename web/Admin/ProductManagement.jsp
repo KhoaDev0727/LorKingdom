@@ -288,18 +288,18 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Confirm Soft Delete</h5>
+                        <h5 class="modal-title">Xác nhận xóa</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        Are you sure you want to soft delete this product?
+                       Bạn có muốn đưa sản phẩm này vào thùng rác không
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                         <form method="POST" action="ProductServlet">
                             <input type="hidden" name="action" value="softDelete">
                             <input type="hidden" name="productID" id="softDeleteProductID">
-                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                            <button type="submit" class="btn btn-danger">Xóa</i></button>
                         </form>
                     </div>
                 </div>
@@ -311,18 +311,18 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Confirm Hard Delete</h5>
+                        <h5 class="modal-title">Xác nhận xóa</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        Are you sure you want to hard delete this product permanently?
+                       Bạn có muốn xóa sản phẩm này vĩnh viễn không?
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                         <form method="POST" action="ProductServlet">
                             <input type="hidden" name="action" value="hardDelete">
                             <input type="hidden" name="productID" id="hardDeleteProductID">
-                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                            <button type="submit" class="btn btn-danger">Xóa</button>
                         </form>
                     </div>
                 </div>

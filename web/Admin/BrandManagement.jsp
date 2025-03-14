@@ -238,7 +238,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        Thương hiệu này sẽ được chuyển vào thùng rác!
+                        Bạn có muốn thương hiệu này sẽ được chuyển vào thùng rác!
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>

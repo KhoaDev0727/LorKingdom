@@ -188,7 +188,7 @@ public class ProductServlet extends HttpServlet {
             throws SQLException, ClassNotFoundException, IOException {
         int productID = Integer.parseInt(request.getParameter("productID"));
         productDAO.softDeleteProduct(productID);
-        request.getSession().setAttribute("successMessage", "Sản phẩm đã được xóa mềm thành công.");
+        request.getSession().setAttribute("successMessage", "Sản phẩm đã được đã được đưa vào thùng rác thành công.");
         response.sendRedirect("ProductServlet?action=list");
     }
 
@@ -197,7 +197,7 @@ public class ProductServlet extends HttpServlet {
             throws SQLException, ClassNotFoundException, IOException {
         int productID = Integer.parseInt(request.getParameter("productID"));
         productDAO.hardDeleteProduct(productID);
-        request.getSession().setAttribute("successMessage", "Sản phẩm đã được xóa cứng thành công.");
+        request.getSession().setAttribute("successMessage", "Sản phẩm đã được xóa thành công.");
         response.sendRedirect("ProductServlet?action=listDeleted");
     }
 
@@ -205,7 +205,7 @@ public class ProductServlet extends HttpServlet {
             throws SQLException, ClassNotFoundException, IOException {
         String productIDStr = request.getParameter("productID");
         if (productIDStr == null || productIDStr.trim().isEmpty()) {
-            request.getSession().setAttribute("errorMessage", "Product ID is missing or invalid.");
+            request.getSession().setAttribute("errorMessage", "ID sản phẩm  không hợp lệ.");
             response.sendRedirect("ProductServlet?action=list&showErrorModal=true");
             return;
         }
@@ -233,91 +233,4 @@ public class ProductServlet extends HttpServlet {
     // Trong ProductServlet.java
     private UploadImageProduct handleImageProduct = new UploadImageProduct();
 
-//    private void updateAll(HttpServletRequest request, HttpServletResponse response)
-//            throws ServletException, IOException, SQLException, ClassNotFoundException {
-//        try {
-//           
-//            int productID = Integer.parseInt(request.getParameter("productID"));
-//            String productName = request.getParameter("productName");
-//            int category = Integer.parseInt(request.getParameter("category"));
-//            int gender = Integer.parseInt(request.getParameter("gender"));
-//            int priceRange = Integer.parseInt(request.getParameter("priceRange"));
-//            int brand = Integer.parseInt(request.getParameter("brand"));
-//            int ageGroup = Integer.parseInt(request.getParameter("ageGroup"));
-//            int origin = Integer.parseInt(request.getParameter("origin"));
-//            int material = Integer.parseInt(request.getParameter("material"));
-//            String description = request.getParameter("description");
-//            double price = Double.parseDouble(request.getParameter("price"));
-//            int stockQuantity = Integer.parseInt(request.getParameter("stockQuantity"));
-//
-//            String SKU = request.getParameter("SKU");
-//        
-//            System.out.println("----- [DEBUG] updateAll() -----");
-//            System.out.println("productID = " + productID);
-//            System.out.println("productName = " + productName);
-//            System.out.println("category = " + category);
-//            System.out.println("gender = " + gender);
-//            System.out.println("priceRange = " + priceRange);
-//            System.out.println("brand = " + brand);
-//            System.out.println("ageGroup = " + ageGroup);
-//            System.out.println("origin = " + origin);
-//            System.out.println("material = " + material);
-//            System.out.println("description = " + description);
-//            System.out.println("price = " + price);
-//            System.out.println("stockQuantity = " + stockQuantity);
-//            System.out.println("SKU = " + SKU);
-//            System.out.println("--------------------------------");
-//
-//            Product p = new Product();
-//            p.setProductID(productID);
-//            p.setSKU(SKU);
-//            p.setName(productName);
-//            p.setCategoryID(category);
-//            p.setSexID(gender);
-//            p.setPriceRangeID(priceRange);
-//            p.setBrandID(brand);
-//            p.setAgeID(ageGroup);
-//            p.setOriginID(origin);
-//            p.setMaterialID(material);
-//            p.setDescription(description);
-//            p.setPrice(price);
-//            p.setQuantity(stockQuantity);
-//
-//            List<String> imagePaths = new ArrayList<>();
-//            String uploadPath = getServletContext().getRealPath("/uploads");
-//            File uploadDir = new File(uploadPath);
-//            if (!uploadDir.exists()) {
-//                uploadDir.mkdirs();
-//            }
-//
-//            Part mainImagePart = request.getPart("mainImageUpload");
-//            if (mainImagePart != null && mainImagePart.getSize() > 0) {
-//                String mainImageFileName = handleImageProduct.generateUniqueFileName(mainImagePart);
-//                String mainImageFilePath = handleImageProduct.saveFile(mainImagePart, uploadPath, mainImageFileName);
-//                imagePaths.add(mainImageFilePath);
-//            }
-//
-//            for (Part part : request.getParts()) {
-//                if (part.getName().equals("detailImages") && part.getSize() > 0) {
-//                    String detailImageFileName = handleImageProduct.generateUniqueFileName(part);
-//                    String detailImageFilePath = handleImageProduct.saveFile(part, uploadPath, detailImageFileName);
-//                    imagePaths.add(detailImageFilePath);
-//                }
-//            }
-//
-//            boolean updated = ProductDAO.updateProduct(p);
-//
-//            if (updated) {
-//                request.getSession().setAttribute("successMessage", "Cập nhật sản phẩm thành công!");
-//                response.sendRedirect("AgeManagement?action=list");
-//            } else {
-//                request.getSession().setAttribute("errorMessage", "Cập nhật sản phẩm thất bại!");
-//                request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            request.getSession().setAttribute("errorMessage", "Có lỗi xảy ra khi cập nhật sản phẩm.");
-//            request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
-//        }
-//    }
 }
