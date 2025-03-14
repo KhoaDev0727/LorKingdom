@@ -273,89 +273,119 @@ public class OrderDAO extends DBConnect.DBConnection {
     }
 
 //    Cua Khang 
-        public static Map<String, Object> getOrdersByUser(int accountId, int status, int page, int pageSize) {
-            Map<String, Object> result = new HashMap<>();
-            List<Order> orders = new ArrayList<>();
-            Map<Integer, Order> orderMap = new HashMap<>();
-            String sql = "    WITH OrderCTE AS (\n"
-                    + "        SELECT o.OrderID, o.OrderDate, o.TotalAmount, s.Status,\n"
-                    + "               ROW_NUMBER() OVER (ORDER BY o.OrderDate DESC) AS RowNum\n"
-                    + "        FROM Orders o\n"
-                    + "        JOIN StatusOrder s ON o.StatusID = s.StatusID\n"
-                    + "        WHERE o.AccountID = ? AND s.StatusID = ?\n"
-                    + "    ),\n"
-                    + "    PagedOrders AS (\n"
-                    + "        SELECT OrderID, OrderDate, TotalAmount, Status\n"
-                    + "        FROM OrderCTE\n"
-                    + "        WHERE RowNum BETWEEN ? AND ?\n"
-                    + "    )\n"
-                    + "    SELECT po.OrderID, po.OrderDate, po.TotalAmount, po.Status,\n"
-                    + "           d.ProductID, p.Name AS ProductName, d.Quantity, d.UnitPrice,\n"
-                    + "           (SELECT TOP 1 Image FROM ProductImages \n"
-                    + "            WHERE ProductID = d.ProductID AND IsMain = 1) AS ProductImage,\n"
-                    + "           c.Name AS CategoryName\n"
-                    + "    FROM PagedOrders po\n"
-                    + "    JOIN OrderDetails d ON po.OrderID = d.OrderID\n"
-                    + "    JOIN Product p ON d.ProductID = p.ProductID\n"
-                    + "    LEFT JOIN Category c ON p.CategoryID = c.CategoryID\n"
-                    + "    ORDER BY po.OrderDate DESC;";
+    public static Map<String, Object> getOrdersByUser(int accountId, int status, int page, int pageSize) {
+        Map<String, Object> result = new HashMap<>();
+        List<Order> orders = new ArrayList<>();
+        Map<Integer, Order> orderMap = new HashMap<>();
+        String sql = "    WITH OrderCTE AS (\n"
+                + "        SELECT o.OrderID, o.OrderDate, o.TotalAmount, s.Status,\n"
+                + "               ROW_NUMBER() OVER (ORDER BY o.OrderDate DESC) AS RowNum\n"
+                + "        FROM Orders o\n"
+                + "        JOIN StatusOrder s ON o.StatusID = s.StatusID\n"
+                + "        WHERE o.AccountID = ? AND s.StatusID = ?\n"
+                + "    ),\n"
+                + "    PagedOrders AS (\n"
+                + "        SELECT OrderID, OrderDate, TotalAmount, Status\n"
+                + "        FROM OrderCTE\n"
+                + "        WHERE RowNum BETWEEN ? AND ?\n"
+                + "    )\n"
+                + "    SELECT po.OrderID, po.OrderDate, po.TotalAmount, po.Status,\n"
+                + "           d.ProductID, p.Name AS ProductName, d.Quantity, d.UnitPrice,\n"
+                + "           (SELECT TOP 1 Image FROM ProductImages \n"
+                + "            WHERE ProductID = d.ProductID AND IsMain = 1) AS ProductImage,\n"
+                + "           c.Name AS CategoryName\n"
+                + "    FROM PagedOrders po\n"
+                + "    JOIN OrderDetails d ON po.OrderID = d.OrderID\n"
+                + "    JOIN Product p ON d.ProductID = p.ProductID\n"
+                + "    LEFT JOIN Category c ON p.CategoryID = c.CategoryID\n"
+                + "    ORDER BY po.OrderDate DESC;";
 
-            String countSql = "SELECT COUNT(DISTINCT o.OrderID) AS TotalOrders "
-                    + "FROM Orders o "
-                    + "JOIN StatusOrder s ON o.StatusID = s.StatusID "
-                    + "WHERE o.AccountID = ? AND s.StatusID = ? ";
+        String countSql = "SELECT COUNT(DISTINCT o.OrderID) AS TotalOrders "
+                + "FROM Orders o "
+                + "JOIN StatusOrder s ON o.StatusID = s.StatusID "
+                + "WHERE o.AccountID = ? AND s.StatusID = ? ";
 
-            try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(sql);  PreparedStatement countPs = conn.prepareStatement(countSql)) {
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(sql);  PreparedStatement countPs = conn.prepareStatement(countSql)) {
 
-                // Tính toán phân trang
-                int offset = (page - 1) * pageSize;
-                int startRow = offset + 1;
-                int endRow = offset + pageSize;
+            // Tính toán phân trang
+            int offset = (page - 1) * pageSize;
+            int startRow = offset + 1;
+            int endRow = offset + pageSize;
 
-                // Đếm tổng số đơn
-                countPs.setInt(1, accountId);
-                countPs.setInt(2, status);
-                ResultSet countRs = countPs.executeQuery();
-                int total = countRs.next() ? countRs.getInt("TotalOrders") : 0;
-                result.put("total", total);
+            // Đếm tổng số đơn
+            countPs.setInt(1, accountId);
+            countPs.setInt(2, status);
+            ResultSet countRs = countPs.executeQuery();
+            int total = countRs.next() ? countRs.getInt("TotalOrders") : 0;
+            result.put("total", total);
 
-                // Lấy dữ liệu đơn hàng
-                ps.setInt(1, accountId);
-                ps.setInt(2, status);
-                ps.setInt(3, startRow);
-                ps.setInt(4, endRow);
+            // Lấy dữ liệu đơn hàng
+            ps.setInt(1, accountId);
+            ps.setInt(2, status);
+            ps.setInt(3, startRow);
+            ps.setInt(4, endRow);
 
-                ResultSet rs = ps.executeQuery();
+            ResultSet rs = ps.executeQuery();
 
-                while (rs.next()) {
-                    int orderId = rs.getInt("OrderID");
-                    Order order = orderMap.get(orderId);
+            while (rs.next()) {
+                int orderId = rs.getInt("OrderID");
+                Order order = orderMap.get(orderId);
 
-                    if (order == null) {
-                        order = new Order();
-                        order.setOrderId(orderId);
-                        order.setOrderDate(rs.getDate("OrderDate"));
-                        order.setTotalAmount(rs.getDouble("TotalAmount"));
-                        order.setStatus(rs.getString("Status"));
-                        orderMap.put(orderId, order);
-                        orders.add(order);
-                    }
-
-                    OrderDetail detail = new OrderDetail();
-                    detail.setProductID(rs.getInt("ProductID"));
-                    detail.setProductName(rs.getString("ProductName"));
-                    detail.setQuantity(rs.getInt("Quantity"));
-                    detail.setPrice(rs.getDouble("UnitPrice"));
-                    detail.setProductImage(rs.getString("ProductImage"));
-                    detail.setCategoryName(rs.getString("CategoryName"));
-                    order.addOrderDetail(detail);
-
+                if (order == null) {
+                    order = new Order();
+                    order.setOrderId(orderId);
+                    order.setOrderDate(rs.getDate("OrderDate"));
+                    order.setTotalAmount(rs.getDouble("TotalAmount"));
+                    order.setStatus(rs.getString("Status"));
+                    orderMap.put(orderId, order);
+                    orders.add(order);
                 }
 
-                result.put("orders", orders);
-            } catch (Exception e) {
-                e.printStackTrace();
+                OrderDetail detail = new OrderDetail();
+                detail.setProductID(rs.getInt("ProductID"));
+                detail.setProductName(rs.getString("ProductName"));
+                detail.setQuantity(rs.getInt("Quantity"));
+                detail.setPrice(rs.getDouble("UnitPrice"));
+                detail.setProductImage(rs.getString("ProductImage"));
+                detail.setCategoryName(rs.getString("CategoryName"));
+                order.addOrderDetail(detail);
+
             }
-            return result;
+
+            result.put("orders", orders);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return result;
+    }
+
+    public void updateOrderStatus(int orderId, int statusId) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE Orders SET StatusID = ? WHERE OrderID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, statusId);
+            ps.setInt(2, orderId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException("Lỗi khi cập nhật trạng thái đơn hàng: " + e.getMessage());
+        }
+    }
+
+    public int getStatusIdByName(String statusName) throws SQLException, ClassNotFoundException {
+        int statusId = -1;
+        String query = "SELECT StatusID FROM StatusOrder WHERE Status = ?";
+
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, statusName);
+            try ( ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    statusId = rs.getInt("StatusID");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new SQLException("Lỗi khi lấy StatusID: " + e.getMessage());
+        }
+        return statusId;
+    }
+
 }
