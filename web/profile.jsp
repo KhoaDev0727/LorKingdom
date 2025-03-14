@@ -85,7 +85,7 @@
 
 
     <!-- Modal xác nhận vô hiệu hóa tài khoản -->
-    <div class="modal fade" id="deactivateModal " tabindex="-1" aria-labelledby="deactivateModalLabel" aria-hidden="true">
+    <div class="modal fade" id="deactivateModal" tabindex="-1" aria-labelledby="deactivateModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

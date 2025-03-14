@@ -125,7 +125,7 @@
                     </p>
                 </div>
                 <c:if test="${not empty listCart}">
-                    <form action="checkOutServlet" method="POST" class="pay">
+                    <form action="CheckOutServlet" method="POST" class="pay">
                         <button type="submit">Thanh Toán</button>
                     </form>
                 </c:if>

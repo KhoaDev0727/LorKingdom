@@ -1,0 +1,200 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Feb 25, 2025, 11:59:55 PM
+    Author     : le minh khoa
+*/
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 20px auto;
+    gap: 20px;
+}
+
+.order-form, .order-summary {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}
+
+.logo-box-order-detailts {
+    display: flex;
+    justify-content: center;
+}
+
+.logo-order-details {
+    width: 220px;
+    height: auto;
+}
+
+.title-ordersumary {
+    font-weight: 500;
+}
+
+.order-form {
+    flex: 1;
+}
+
+.order-summary {
+    width: 350px;
+}
+
+.title-order {
+    font-weight: 500;
+    text-align: center;
+}
+
+h2, h3 {
+    color: #333;
+    margin-top: 0;
+}
+
+h2 {
+    font-size: 14px;
+    color: #666;
+}
+
+h3 {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    padding: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+input, select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.product {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+}
+
+.product img {
+    width: 55px;
+    height: auto;
+    margin-right: 10px;
+}
+
+.discount {
+    margin-bottom: 15px;
+}
+
+.discount input {
+    width: 70%;
+    margin-right: 10px;
+}
+
+.discount button {
+    width: 25%;
+    padding: 8px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.total {
+    margin-top: 20px;
+}
+
+.total p {
+    margin: 5px 0;
+    color: #333;
+}
+
+.total span {
+    color: #28a745;
+}
+
+.payment-methods {
+    margin-top: 20px;
+}
+
+.payment-button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.payment-button:hover {
+    background-color: #0056b3;
+}
+
+.payment-icon {
+    width: 50px;
+    height: auto;
+    margin-right: 8px;
+}
+.payment-icons {
+    width: 100px;
+    height: auto;
+}
+.zalopay {
+    background-color: #1245cf;
+}
+.zalopay:hover {
+    background-color: #0a0092;
+}
+
+.vnpay {
+    background-color: #00a1e9;
+}
+
+.vnpay:hover {
+    background-color: #0088cc;
+}
+
+.momo {
+    background-color: #dd0389; 
+}
+
+.momo:hover {
+    background-color: #880154; 
+}
+
+.cash {
+    background-color: #2d3a41; 
+}
+
+.cash:hover {
+    background-color: #000000; 
+}
