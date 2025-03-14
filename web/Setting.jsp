@@ -104,7 +104,8 @@
                             <span class="tab" data-status="Delivered">Hoàn thành</span>
                             <span class="tab" data-status="Cancelled">Đã hủy</span>
                         </div>
-                        <div id="pagination-container" class="d-flex justify-content-center gap-2 my-4"></div>
+                        <div id="pagination-container" class="d-flex justify-content-center gap-2 my-4"> 
+                            <h3>KLhang</h3></div>
                         <div class="order-content">
                             <img src="./assets/img/notifi-order.png" alt="Chưa có đơn hàng" class="no-order-img">
                             <p>Chưa có đơn hàng</p>
@@ -173,7 +174,6 @@
         </div>
 
         <%@include file="assets/Component/footer.jsp" %>
-
         <script src="assets/js/fowrard.js">
         </script>
     </body>

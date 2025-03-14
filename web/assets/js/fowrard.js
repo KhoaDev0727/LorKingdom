@@ -66,58 +66,59 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-   function renderPagination(total, pageSize) {
-    const paginationContainer = document.getElementById("pagination-container");
-    totalPages = Math.ceil(total / pageSize);
-    
-    let html = '';
-    for (let i = 1; i <= totalPages; i++) {
-        html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
-    }
-    paginationContainer.innerHTML = html;
+    function renderPagination(total, pageSize) {
+        const paginationContainer = document.getElementById("pagination-container");
+        totalPages = Math.ceil(total / pageSize);
 
-    // Thêm event listener cho các nút trang
-    document.querySelectorAll('.page-btn').forEach(btn => {
-        btn.addEventListener('click', async () => {
-            currentPage = parseInt(btn.dataset.page);
-            await loadOrders(currentStatus, currentPage);
+        let html = '';
+        for (let i = 1; i <= totalPages; i++) {
+            html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+        }
+        paginationContainer.innerHTML = html;
+
+        // Thêm event listener cho các nút trang
+        document.querySelectorAll('.page-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                currentPage = parseInt(btn.dataset.page);
+                await loadOrders(currentStatus, currentPage);
+            });
         });
-    });
-}
+    }
 
 // Sửa hàm loadOrders
-async function loadOrders(status, page = 1) {
-    try {
-        currentPage = page;
-        currentStatus = status; // Lưu trạng thái hiện tại
-        
-        const response = await fetch(`purchase?status=${status}&page=${page}`);
-        if (!response.ok) throw new Error(`Lỗi HTTP: ${response.status}`);
-        
-        const data = await response.json(); // Nhận cả orders và total
-        console.log("Dữ liệu nhận được:", data);
-        
-        if (data.error) {
-            showNoOrders();
-            return;
-        }
+    async function loadOrders(status, page = 1) {
+        try {
+            currentPage = page;
+            currentStatus = status; // Lưu trạng thái hiện tại
 
-        renderOrders(data.orders);
-        renderPagination(data.total, 3); // pageSize = 3
-    } catch (error) {
-        console.error("Lỗi khi tải đơn hàng:", error);
-        showNoOrders();
+            const response = await fetch(`purchase?status=${status}&page=${page}`);
+            if (!response.ok)
+                throw new Error(`Lỗi HTTP: ${response.status}`);
+
+            const data = await response.json(); // Nhận cả orders và total
+            console.log("Dữ liệu nhận được:", data);
+
+            if (data.error) {
+                showNoOrders();
+                return;
+            }
+
+            renderOrders(data.orders);
+            renderPagination(data.total, 3); // pageSize = 3
+        } catch (error) {
+            console.error("Lỗi khi tải đơn hàng:", error);
+            showNoOrders();
     }
-}
+    }
 
 // Sửa hàm renderOrders (sửa thuộc tính chi tiết)
-function renderOrders(orders) {
-    const orderContent = document.querySelector(".order-content");
-    // ... phần đầu giữ nguyên
-    
-    orderContent.innerHTML = orders.map(order => `
+    function renderOrders(orders) {
+        const orderContent = document.querySelector(".order-content");
+        // ... phần đầu giữ nguyên
+
+        orderContent.innerHTML = orders.map(order => `
         <div class="order-item">
-            <h3>Đơn hàng ${order.orderId}</h3>
+          <h3 style="display: inline-block; margin-right: 10px;">Đơn hàng ${order.orderId}</h3>
             ${order.orderDetails.map(detail => `
                 <div class="d-flex mb-3 align-items-center">
                     <img src="${detail.productImage || './assets/img/default-product.png'}" 
@@ -126,15 +127,16 @@ function renderOrders(orders) {
                         <div class="fw-bold">${detail.productName}</div>
                         <div class="text-muted">Phân loại: ${detail.categoryName}</div>
                         <div class="text-muted">Số lượng: x${detail.quantity}</div>
-                    </div>
+                    </div> 
                     <div class="text-end">
                         <div class="text-danger fw-bold">${formatCurrency(detail.price)}</div> <!-- Sửa Price -> price -->
                         ${order.status === 'Delivered' ? `
                             <button class="btn btn-warning mt-2" 
                                     data-bs-toggle="modal" 
                                     data-bs-target="#reviewModal"
-                                    data-product-id="${detail.productId}" 
-                                    data-order-id="${order.orderId}"
+                                    data-product-id="${detail.productID}" 
+                                    data-order-id="${order.orderId}" 
+                                    data-category-name="${detail.categoryName}"
                                     data-product-name="${detail.productName}"
                                     data-product-img="${detail.productImage}">
                                 Đánh giá
@@ -148,7 +150,7 @@ function renderOrders(orders) {
             </div>
         </div>
     `).join('');
-}
+    }
 
     // Xử lý khi modal đánh giá được mở
     if (reviewModal) {
@@ -162,13 +164,19 @@ function renderOrders(orders) {
             const productId = button.getAttribute('data-product-id') || '';
             const orderId = button.getAttribute('data-order-id') || '';
             const productName = button.getAttribute('data-product-name') || '';
+            const categoryName = button.getAttribute('data-category-name') || '';
             const productImg = button.getAttribute('data-product-img') || './assets/img/default-product.png';
 
             const modalProductId = document.getElementById('modal-productId');
             const modalOrderId = document.getElementById('modal-orderId');
+            const modalCategoryName = document.getElementById('modal-productCategory');
             const modalProductName = document.getElementById('modal-productName');
             const modalProductImg = document.getElementById('modal-productImg');
-
+            console.log("Product ID:", productId);
+            console.log("Order ID:", orderId);
+            console.log("Product Name:", productName);
+            console.log("Category Name:", categoryName);
+            console.log("Product Image:", productImg);
             if (modalProductId)
                 modalProductId.value = productId;
             if (modalOrderId)
@@ -177,6 +185,9 @@ function renderOrders(orders) {
                 modalProductName.textContent = productName;
             if (modalProductImg)
                 modalProductImg.src = productImg;
+            if (modalCategoryName)
+                modalCategoryName.textContent = categoryName;
+
         });
     } else {
         console.error("Không tìm thấy #reviewModal");

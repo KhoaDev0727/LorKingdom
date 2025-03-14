@@ -25,14 +25,14 @@
                     </div>
                     <div class="d-flex flex-wrap">
                         <!-- Truyền vào keyword tương ứng với bộ lọc -->
-                        <button class="btn btn-danger mr-2 mb-2" onclick="filterReviews(6)">Tất Cả</button>
-                        <button class="btn btn-outline-secondary mr-2 mb-2" onclick="filterReviews(5)">5 Sao (${rating5 != null ? rating5 : 0})</button>
-                        <button class="btn btn-outline-secondary mr-2 mb-2" onclick="filterReviews(4)">4 Sao (${rating4 != null ? rating4 : 0})</button>
-                        <button class="btn btn-outline-secondary mr-2 mb-2" onclick="filterReviews(3)">3 Sao (${rating3 != null ? rating3 : 0})</button>
-                        <button class="btn btn-outline-secondary mr-2 mb-2" onclick="filterReviews(2)">2 Sao (${rating2 != null ? rating2 : 0})</button>
-                        <button class="btn btn-outline-secondary mr-2 mb-2" onclick="filterReviews(1)">1 Sao (${rating1 != null ? rating1 : 0})</button>
-                        <button class="btn btn-outline-secondary mr-2 mb-2" onclick="filterReviews(0)">Có Bình Luận (${totalComment != null ? totalComment : 0})</button>
-                        <button class="btn btn-outline-secondary mr-2 mb-2" onclick="filterReviews(-1)">Có Hình Ảnh (${totalImage != null ? totalImage : 0})</button>
+                        <button class="btn btn-danger mr-2 mb-2" onclick="filterReviews(event, 6)">Tất Cả</button>
+                        <button class="btn btn-outline-secondary mr-2 mb-2" onclick="filterReviews(event, 5)">5 Sao (${rating5 != null ? rating5 : 0})</button>
+                        <button class="btn btn-outline-secondary mr-2 mb-2" onclick="filterReviews(event, 4)">4 Sao (${rating4 != null ? rating4 : 0})</button>
+                        <button class="btn btn-outline-secondary mr-2 mb-2" onclick="filterReviews(event, 3)">3 Sao (${rating3 != null ? rating3 : 0})</button>
+                        <button class="btn btn-outline-secondary mr-2 mb-2" onclick="filterReviews(event, 2)">2 Sao (${rating2 != null ? rating2 : 0})</button>
+                        <button class="btn btn-outline-secondary mr-2 mb-2" onclick="filterReviews(event, 1)">1 Sao (${rating1 != null ? rating1 : 0})</button>
+                        <button class="btn btn-outline-secondary mr-2 mb-2" onclick="filterReviews(event, 0)">Có Bình Luận (${totalComment != null ? totalComment : 0})</button>
+                        <button class="btn btn-outline-secondary mr-2 mb-2" onclick="filterReviews(event, -1)">Có Hình Ảnh (${totalImage != null ? totalImage : 0})</button>
                     </div>
                 </div>
 
@@ -79,15 +79,28 @@
                             <p class="text-center text-muted">Chưa có đánh giá nào.</p>
                         </c:otherwise>
                     </c:choose>
-                </div>
+                </div> 
+                <div id="pagination-container" class="d-flex justify-content-center gap-2 my-4"></div>
             </div>
         </div>
 
         <script>
-            // Sử dụng biểu thức EL để lấy productID (đảm bảo product đã được đặt trong request)
             var productId = '${product.productID}';
-            // Hàm gửi yêu cầu AJAX đến Servlet để lọc đánh giá
-            function filterReviews(star) {
+            function filterReviews(event, star) {
+                // Xóa class 'btn-danger' khỏi tất cả các nút
+                document.querySelectorAll('.d-flex .btn').forEach(button => {
+                    button.classList.remove('btn-danger');
+                    button.classList.add('btn-outline-secondary');
+                });
+
+                // Tìm nút được nhấp và thêm 'btn-danger' vào nó
+                event.target.classList.remove('btn-outline-secondary');
+                event.target.classList.add('btn-danger');
+
+                // Debug kiểm tra giá trị star
+                console.log("Filtering reviews with rating:", star);
+
+                // Gửi yêu cầu AJAX
                 $.ajax({
                     url: 'ReviewManagementServlet', // Đường dẫn Servlet
                     method: 'POST',

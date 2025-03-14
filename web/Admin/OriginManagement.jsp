@@ -226,7 +226,7 @@
                         <form method="POST" action="OriginServlet">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="originID" id="softDeleteOriginID">
-                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                            <button type="submit" class="btn btn-danger">Xóa</button>
                         </form>
                     </div>
                 </div>
@@ -249,7 +249,7 @@
                         <form method="POST" action="OriginServlet">
                             <input type="hidden" name="action" value="hardDelete">
                             <input type="hidden" name="originID" id="hardDeleteOriginID">
-                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                            <button type="submit" class="btn btn-danger">Xóa</button>
                         </form>
                     </div>
                 </div>

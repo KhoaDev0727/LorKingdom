@@ -26,7 +26,7 @@ public class ReviewDAO {
 
     private static String SELECT_TRASH = "SELECT * FROM Reviews WHERE IsDeleted = 1 ORDER BY ReviewID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
     private static String SELECT_REVIEW = "SELECT * FROM Reviews WHERE IsDeleted = 0 ORDER BY ReviewID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
-    private static String SELECT_REVIEW_FOR_CUSTOMER = "SELECT AccountID, ProductID, ImgReview,Rating, Comment,ReviewedAt FROM Reviews WHERE ProductID = ? AND Status = 0";
+    private static String SELECT_REVIEW_FOR_CUSTOMER = "SELECT AccountID, ProductID, ImgReview,Rating, Comment,ReviewedAt FROM Reviews WHERE ProductID = ? AND Status = 0 AND IsDeleted = 0 ";
     private static String UPDATE_STATUS = "UPDATE Reviews SET Status = ? WHERE ReviewID = ?;";
     private static String UPDATE_ISDELETED = "UPDATE Reviews SET IsDeleted = ? WHERE ReviewID = ?;";
     private static String DELETE_REVIEW_BY_ID = "DELETE FROM Reviews WHERE ReviewID = ?;";
@@ -230,7 +230,7 @@ public class ReviewDAO {
             StringBuilder sql = new StringBuilder(
                     "SELECT r.*, a.AccountName, a.Image "
                     + "FROM Reviews r JOIN Account a ON r.AccountID = a.AccountID "
-                    + "WHERE r.ProductID = ?"
+                    + "WHERE r.ProductID = ? AND r.Status = 0 AND r.IsDeleted = 0"
             );
 
             // Áp dụng bộ lọc
@@ -239,7 +239,7 @@ public class ReviewDAO {
             } else if ("-1".equals(keyword)) {
                 sql.append(" AND r.ImgReview IS NOT NULL AND r.ImgReview <> ''");
             } else if (!"6".equals(keyword)) {
-                sql.append(" AND r.Rating = ?");
+                sql.append(" AND r.Rating = ?"); 
             }
 
             stm = conn.prepareStatement(sql.toString());

@@ -240,10 +240,10 @@ public class ReviewManagementServlet extends HttpServlet {
             int status = Integer.parseInt(request.getParameter("status"));
             boolean updated = ReviewDAO.UpdateStatusReview(reviewID, status);
 
-            if (!updated) {
-                session.setAttribute("errorMessage", "Đánh giá của bạn đã được cập nhật thành công.");
+            if (updated) {
+                session.setAttribute("successMessage", "Đánh giá của bạn đã được cập nhật thành công.");
             } else {
-                session.setAttribute("successMessage", "Đánh giá của bạn  câp nhật thất bại.");
+                session.setAttribute("errorMessage", "Đánh giá của bạn  câp nhật thất bại.");
             }
             showReview(request, response);
         } catch (Exception e) {
@@ -258,6 +258,7 @@ public class ReviewManagementServlet extends HttpServlet {
         HttpSession session = request.getSession();
         try {
             String uploadPath = request.getServletContext().getRealPath("/") + File.separator + UPLOAD_DIR;
+            System.out.println(request.getParameter("productId"));
             int productId = Integer.parseInt(request.getParameter("productId"));
             int accountId = (Integer) session.getAttribute("userID");
             int rating = Integer.parseInt(request.getParameter("rating"));
@@ -275,7 +276,6 @@ public class ReviewManagementServlet extends HttpServlet {
             e.printStackTrace();
             session.setAttribute("message", "Có lỗi xảy ra khi bạn đánh giá sản phẩm");
             session.setAttribute("messageType", "danger");
-            showReview(request, response);
         }
     }
 
@@ -303,7 +303,7 @@ public class ReviewManagementServlet extends HttpServlet {
     protected void getListReviewForCustomer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
         String keyword = request.getParameter("keyWord");
-        String productIdStr = request.getParameter("productID");
+        String productIdStr = request.getParameter("productID"); 
 
         if (keyword == null || keyword.isEmpty()) {
             keyword = "6"; // Mặc định là "Tất Cả"
@@ -315,6 +315,7 @@ public class ReviewManagementServlet extends HttpServlet {
                 .setDateFormat("yyyy-MM-dd HH:mm:ss")
                 .create();
         String json = gson.toJson(listReviews);
+        System.out.println(json);
         // Thiết lập response
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
