@@ -226,7 +226,7 @@
                                             <div class="upload-prompt">
                                                 <i class="fas fa-cloud-upload-alt"></i>
                                                 <p>Drag & drop images here or click to upload</p>
-                                                <small class="text-muted">(Maximum 8 images, JPEG/PNG only)</small>
+                                                <small class="text-muted">(Maximum 8 images, JPEG/PNG/WEBP only)</small>
                                             </div>
                                         </div>
                                         <!-- Preview grid -->

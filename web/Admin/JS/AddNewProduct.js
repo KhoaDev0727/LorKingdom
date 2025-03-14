@@ -97,7 +97,7 @@ function handleDrop(event) {
 function processFiles(files) {
     const validFiles = Array.from(files).filter(file => {
         return file.type.startsWith('image/') &&
-                ['image/jpeg', 'image/png'].includes(file.type);
+                ['image/jpeg', 'image/png', 'image/webp'].includes(file.type);
     });
 
     if (validFiles.length === 0) {
