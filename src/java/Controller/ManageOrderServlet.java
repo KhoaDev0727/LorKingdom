@@ -75,7 +75,7 @@ public class ManageOrderServlet extends HttpServlet {
 
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit this template.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -143,7 +143,27 @@ public class ManageOrderServlet extends HttpServlet {
             request.getRequestDispatcher("OrderManagement.jsp").forward(request, response);
         }
         }
+        if (action != null && action.equals("updateStatus")) {
+    int orderId = Integer.parseInt(request.getParameter("orderId"));
+    String status = request.getParameter("status"); // "Pending", "Shipped", "Delivered"
 
+    try {
+        OrderDAO dao = new OrderDAO();
+        int statusId = dao.getStatusIdByName(status); // Lấy StatusID từ bảng StatusOrder
+
+        if (statusId == -1) {
+            throw new Exception("Không tìm thấy StatusID cho trạng thái: " + status);
+        }
+
+        dao.updateOrderStatus(orderId, statusId); // Truyền StatusID thay vì String
+        response.sendRedirect("OrderServlet");
+    } catch (Exception e) {
+        e.printStackTrace();
+        request.setAttribute("message", "Error: " + e.getMessage());
+        request.setAttribute("messageType", "danger");
+        request.getRequestDispatcher("OrderManagement.jsp").forward(request, response);
+    }
+}
     }
 
     /**

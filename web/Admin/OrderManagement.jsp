@@ -135,6 +135,10 @@
                                                                 <a href="${pageContext.request.contextPath}/Admin/OrderView?action=view&orderId=${o.orderId}" class="btn btn-sm btn-info">
                                                                     <i class="fas fa-eye"></i>
                                                                 </a>
+                                                                <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#updateStatusModal" 
+                                                                        onclick="setUpdateOrderID(${o.orderId}, '${o.status}')">
+                                                                    <i class="fas fa-edit"></i>
+                                                                </button>
                                                             </td>
                                                         </tr>
                                                     </c:forEach>
@@ -184,13 +188,52 @@
                 </div>
             </div>
         </div>
+        <!-- Update Status Modal -->
+        <div class="modal fade" id="updateStatusModal" tabindex="-1" aria-labelledby="updateStatusModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="updateStatusModalLabel">Update Order Status</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="updateStatusForm" action="${pageContext.request.contextPath}/Admin/OrderServlet" method="POST">
+                            <input type="hidden" name="action" value="updateStatus">
+                            <input type="hidden" name="orderId" id="updateOrderID">
 
+                            <div class="mb-3">
+                                <label for="newStatus" class="form-label">Select New Status</label>
+                                <select class="form-select" name="status" id="newStatus" required>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Shipped">Shipped</option>
+                                    <option value="Delivered">Delivered</option>
+                                    <option value="Cancelled">Cancelled</option>
+                                </select>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Script to Set Order ID for Deletion -->
         <script>
             function setDeleteOrderID(orderID) {
                 document.getElementById('deleteOrderID').value = orderID;
             }
         </script>
+        <script>
+            function setUpdateOrderID(orderID, currentStatus) {
+                console.log("Order ID set for update:", orderID);  // Debug xem orderId có đúng không
+                document.getElementById('updateOrderID').value = orderID;
+                document.getElementById('newStatus').value = currentStatus;
+            }
+        </script>
+
     </body>
 </html>
 

@@ -358,4 +358,34 @@ public class OrderDAO extends DBConnect.DBConnection {
         }
         return result;
     }
+
+    public void updateOrderStatus(int orderId, int statusId) throws SQLException, ClassNotFoundException {
+        String query = "UPDATE Orders SET StatusID = ? WHERE OrderID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, statusId);
+            ps.setInt(2, orderId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException("Lỗi khi cập nhật trạng thái đơn hàng: " + e.getMessage());
+        }
+    }
+
+    public int getStatusIdByName(String statusName) throws SQLException, ClassNotFoundException {
+        int statusId = -1;
+        String query = "SELECT StatusID FROM StatusOrder WHERE Status = ?";
+
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, statusName);
+            try ( ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    statusId = rs.getInt("StatusID");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new SQLException("Lỗi khi lấy StatusID: " + e.getMessage());
+        }
+        return statusId;
+    }
+
 }
