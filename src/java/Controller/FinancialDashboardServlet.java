@@ -75,20 +75,9 @@ public class FinancialDashboardServlet extends HttpServlet {
             List<CategorySales> categorySales = getCategorySales();
             String categorySalesJson = gson.toJson(categorySales);
             String revenueDataJson = gson.toJson(revenueData);
-//            List<CategorySales> dummyCategorySales = new ArrayList<>();
-//            dummyCategorySales.add(new CategorySales("Electronics", 1000));
-//            dummyCategorySales.add(new CategorySales("Clothing", 500));
-//            String categorySalesJson = gson.toJson(dummyCategorySales);
             request.setAttribute("categorySalesJson", categorySalesJson);
-
-//            List<RevenueData> dummyRevenueData = new ArrayList<>();
-//            dummyRevenueData.add(new RevenueData("2023-01", 5000));
-//            dummyRevenueData.add(new RevenueData("2023-02", 6000));
-//            String revenueDataJson = gson.toJson(dummyRevenueData);
             request.setAttribute("revenueDataJson", revenueDataJson);
-//
-//            request.setAttribute("categorySalesJson", categorySalesJson);
-//            request.setAttribute("categorySales", categorySales);
+
             request.getRequestDispatcher("DashBoard.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();

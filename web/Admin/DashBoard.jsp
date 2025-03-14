@@ -38,12 +38,11 @@
                     <div class="col-md-4">
                         <div class="card text-center p-4 shadow">
                             <i class="fas fa-chart-line icon text-primary fs-1"></i>
-                            <h5 class="card-header">TOTAL SOLD</h5>
+                            <h5 class="card-header">Tổng Sản Phẩm Bán Ra</h5>
                             <div class="card-body">
                                 <h3 id="totalSold">
                                     <fmt:formatNumber value="${totalsolds}" type="number" groupingUsed="true" />
                                 </h3>
-                                <span class="text-muted">+12% so với tháng trước</span>
                             </div>
                         </div>
                     </div>
@@ -51,12 +50,11 @@
                     <div class="col-md-4">
                         <div class="card text-center p-4 shadow">
                             <i class="fas fa-wallet icon text-success fs-1"></i>
-                            <h5 class="card-header">TOTAL REVENUE</h5>
+                            <h5 class="card-header">Tổng Doanh Thu</h5>
                             <div class="card-body">
                                 <h3 id="totalRevenue">
-                                    <fmt:formatNumber value="${totalrevenues}" type="currency" currencySymbol="$" />
+                                    <fmt:formatNumber value="${totalrevenues}" type="currency" currencyCode="VND" />
                                 </h3>
-                                <span class="text-success">▲ 8.5% tăng trưởng</span>
                             </div>
                         </div>
                     </div>
@@ -64,12 +62,11 @@
                     <div class="col-md-4">
                         <div class="card text-center p-4 shadow">
                             <i class="fas fa-users icon text-info fs-1"></i>
-                            <h5 class="card-header">TOTAL CUSTOMER</h5>
+                            <h5 class="card-header">Tổng Số Khách Hàng</h5>
                             <div class="card-body">
                                 <h3 id="totalUsers">
                                     <fmt:formatNumber value="${totalcustomers}" type="number" groupingUsed="true" />
                                 </h3>
-                                <span class="text-primary">5% tỷ lệ hoạt động</span>
                             </div>
                         </div>
                     </div>

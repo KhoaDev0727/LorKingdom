@@ -112,7 +112,7 @@
                             <div class="card-header">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <i class="fas fa-truck me-1"></i> Promotion List
+                                        <i class="fas fa fa-gift me-1"></i> Promotion List
                                     </div>
                                     <div>
                                         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addPromotionModal">

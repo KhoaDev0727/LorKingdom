@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", function () {
           <h3 style="display: inline-block; margin-right: 10px;">Đơn hàng ${order.orderId}</h3>
             ${order.orderDetails.map(detail => `
                 <div class="d-flex mb-3 align-items-center">
-                    <img src="${detail.productImage || './assets/img/default-product.png'}" 
+                    <img src="http://localhost:8080/LorKingdom${detail.productImage || './assets/img/default-product.png'}" 
                          class="me-3" style="width: 100px; height: 100px;" alt="Hình sản phẩm">
                     <div class="flex-grow-1">
                         <div class="fw-bold">${detail.productName}</div>
@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <div class="text-muted">Số lượng: x${detail.quantity}</div>
                     </div> 
                     <div class="text-end">
-                        <div class="text-danger fw-bold">${formatCurrency(detail.price)}</div> <!-- Sửa Price -> price -->
+                        <div class="text-danger fw-bold">${formatCurrency(detail.Price)}</div> <!-- Sửa Price -> price -->
                         ${order.status === 'Delivered' ? `
                             <button class="btn btn-warning mt-2" 
                                     data-bs-toggle="modal" 
@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                     data-order-id="${order.orderId}" 
                                     data-category-name="${detail.categoryName}"
                                     data-product-name="${detail.productName}"
-                                    data-product-img="${detail.productImage}">
+                                    data-product-img="http://localhost:8080/LorKingdom${detail.productImage}">
                                 Đánh giá
                             </button>
                         ` : ''}

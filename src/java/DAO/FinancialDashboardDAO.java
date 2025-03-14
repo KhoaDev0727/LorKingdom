@@ -25,7 +25,7 @@ public class FinancialDashboardDAO {
     protected static Connection conn = null;
 
     private static String SELECT_TOTALSOLD = "SELECT SUM(Quantity) AS TotalSold FROM OrderDetails;";
-    private static String  SELECET_TOTALREVENUE= "SELECT SUM(Total) AS TotalRevenue FROM OrderDetails;";
+    private static String  SELECET_TOTALREVENUE= "SELECT SUM(Total) AS TotalRevenue FROM OrderDetails ;";
     private static String SELECT_TOTAL_CUSTOMER = "SELECT COUNT(*) AS TotalCustomers FROM Account WHERE RoleID = 3;";
     private static final String SELECT_REVENUE_DATA = "SELECT FORMAT(OrderDate, 'MM/yyyy') AS MonthYear, "
             + "SUM(TotalAmount) AS Revenue FROM Orders WHERE IsDeleted = 0 "

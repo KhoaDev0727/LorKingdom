@@ -36,7 +36,7 @@
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <i class="fas fa-table me-1"></i> Review List
+                                            <i class="fas fa-commenting me-1"></i> Review List
                                         </div>
                                     </div>
                                 </div>
