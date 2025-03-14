@@ -207,6 +207,10 @@
         <servlet-name>DeactivateAccountServlet</servlet-name>
         <servlet-class>Controller.DeactivateAccountServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CheckOutServlet</servlet-name>
+        <servlet-class>Controller.CheckOutServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>VerifyCodeServlet</servlet-name>
         <url-pattern>/VerifyCodeServlet</url-pattern>
@@ -409,6 +413,10 @@
     <servlet-mapping>
         <servlet-name>DeactivateAccountServlet</servlet-name>
         <url-pattern>/DeactivateAccountServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CheckOutServlet</servlet-name>
+        <url-pattern>/CheckOutServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>
