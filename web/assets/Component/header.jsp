@@ -130,7 +130,7 @@
             }
         </style>
     </head>
-    <body>
+    <body> z
         <!-- Header Section -->
         <header class="header">
             <div class="header_first">
@@ -143,7 +143,7 @@
                             <button class="input-group-text bg-white border-end-0" type="submit">
                                 <i class="fa fa-search"></i>
                             </button>
-                           <input type="text" name="search" class="form-control border-start-0" placeholder="Tìm sản phẩm">
+                            <input type="text" name="search" class="form-control border-start-0" placeholder="Tìm sản phẩm">
                         </div>
                     </form>
 

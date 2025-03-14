@@ -21,6 +21,9 @@ public class CartDAO {
     protected static String ADD_ITEM = "INSERT INTO Cart (AccountID, ProductID, Quantity) VALUES (?, ?, ?)";
     protected static String UPDATE_ITEM = "UPDATE Cart SET Quantity = ? WHERE AccountID = ? AND ProductID = ?";
     protected static String DELETE_ALL_ITEM = "DELETE FROM Cart WHERE AccountID = ?";
+    protected static String SELECT_REVIEW_FOR_CUS = "SELECT c.ProductID, c.Quantity, p.Price, p.Name " +
+                      "FROM Cart c JOIN Product p ON c.ProductID = p.ProductID " +
+                      "WHERE c.AccountID = ? AND p.IsDeleted = 0";
 
     public static boolean addItem(int userId, int productId, int quantity) throws SQLException, ClassNotFoundException {
         boolean rowUpdate = false;
@@ -100,12 +103,10 @@ public class CartDAO {
 
     public List<CartItems> getCartItems(int userId) throws SQLException, ClassNotFoundException {
         List<CartItems> items = new ArrayList<>();
-        String query = "SELECT c.ProductID, c.Quantity, p.Price, p.Name " +
-                      "FROM Cart c JOIN Product p ON c.ProductID = p.ProductID " +
-                      "WHERE c.AccountID = ?";
+      
         try {
             conn = DBConnection.getConnection();
-            stm = conn.prepareStatement(query);
+            stm = conn.prepareStatement(SELECT_REVIEW_FOR_CUS);
             stm.setInt(1, userId);
             rs = stm.executeQuery();
             while (rs.next()) {
