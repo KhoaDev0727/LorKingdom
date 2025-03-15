@@ -281,6 +281,35 @@ public class PromotionDAO extends DBConnect.DBConnection {
         return false;
     }
 
+    public List<Promotion> getPromotionsByProductId(int productId) throws SQLException, ClassNotFoundException {
+        List<Promotion> list = new ArrayList<>();
+        String query = "SELECT * FROM [dbo].[Promotions] WHERE ProductID = ? AND Status = 'Active' AND EndDate >= GETDATE()";
+
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, productId);
+            try ( ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(new Promotion(
+                            rs.getInt("PromotionID"),
+                            rs.getInt("ProductID"),
+                            rs.getString("Name"),
+                            rs.getString("Description"),
+                            rs.getDouble("DiscountPercent"),
+                            rs.getDate("StartDate"),
+                            rs.getDate("EndDate"),
+                            rs.getString("Status"),
+                            rs.getDate("CreatedAt"),
+                            rs.getDate("UpdatedAt"),
+                            rs.getString("PromotionCode")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 //      public static void main(String[] args) {
 //        PromotionDAO promotionDAO = new PromotionDAO(); // Tạo đối tượng DAO
 //

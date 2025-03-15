@@ -223,6 +223,14 @@
         <servlet-name>UpdatePromotion</servlet-name>
         <servlet-class>Controller.UpdatePromotion</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ApplyVoucherServlet</servlet-name>
+        <servlet-class>Controller.ApplyVoucherServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>OrderServlet</servlet-name>
+        <servlet-class>Controller.OrderServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>VerifyCodeServlet</servlet-name>
         <url-pattern>/VerifyCodeServlet</url-pattern>
@@ -441,6 +449,14 @@
     <servlet-mapping>
         <servlet-name>UpdatePromotion</servlet-name>
         <url-pattern>/Admin/UpdatePromotion</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ApplyVoucherServlet</servlet-name>
+        <url-pattern>/ApplyVoucherServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OrderServlet</servlet-name>
+        <url-pattern>/OrderServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

@@ -7,6 +7,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <title>MyKingdom - Đặt Hàng</title>
         <link rel="stylesheet" href="assets/styleUser/styleOrder.css">
     </head>
@@ -89,16 +90,83 @@
                         </div>
                     </div>
                 </c:forEach>
+
+                <!-- Voucher Section -->
                 <div class="discount">
-                    <input type="text" placeholder="Mã giảm giá hoặc quà tặng">
-                    <button>Áp dụng</button>
+                    <label>Mã giảm giá:</label>
+                    <input type="text" id="voucherCode" placeholder="Nhập mã giảm giá">
+                    <button onclick="applyVoucher()">Áp dụng</button>
+                    <c:if test="${not empty availableVouchers}">
+                        <p>Các mã giảm giá có sẵn:</p>
+                        <select id="voucherSelect" onchange="fillVoucherCode()">
+                            <option value="">Chọn mã</option>
+                            <c:forEach items="${availableVouchers}" var="voucher">
+                                <option value="${voucher.promotionCode}" data-discount="${voucher.discountPercent}">
+                                    ${voucher.name} - Giảm ${voucher.discountPercent}%
+                                </option>
+                            </c:forEach>
+                        </select>
+                    </c:if>
+                    <p id="discountApplied" style="color: green;">
+                        <c:if test="${not empty discount && discount > 0}">
+                            Đã áp dụng giảm giá: <fmt:formatNumber value="${discount}" pattern="#,###" /> VND
+                        </c:if>
+                    </p>
                 </div>
+
                 <div class="total">
                     <p>Phí vận chuyển: <span>MIỄN PHÍ</span></p>
                     <p>Tổng ${size} mặt hàng</p>
-                    <p>Tổng: <fmt:formatNumber value="${totalMoney}" pattern="#,###" /> VND</p>
+                    <p>Tổng tạm tính: <fmt:formatNumber value="${totalMoney}" pattern="#,###" /> VND</p>
+                    <p style="font-weight: 550;">Tổng sau giảm giá: 
+                        <span id="finalTotal">
+                            <fmt:formatNumber value="${totalMoney - (discount != null ? discount : 0)}" pattern="#,###" /> VND
+                        </span>
+                    </p>
                 </div>
             </div>
+
         </div>
+
+        <script>
+            function fillVoucherCode() {
+                const select = document.getElementById("voucherSelect");
+                const selectedCode = select.value;
+                document.getElementById("voucherCode").value = selectedCode;
+            }
+
+            function applyVoucher() {
+                const voucherCode = document.getElementById("voucherCode").value;
+                if (!voucherCode) {
+                    alert("Vui lòng nhập mã giảm giá!");
+                    return;
+                }
+
+                $.ajax({
+                    url: "ApplyVoucherServlet",
+                    type: "POST",
+                    data: {voucherCode: voucherCode},
+                    success: function (response) {
+                        if (response.success) {
+                            const discount = response.discount;
+                            const totalMoney = ${totalMoney};
+                            const finalTotal = totalMoney - discount;
+
+                            $("#discountApplied").text("Đã áp dụng giảm giá: " + formatNumber(discount) + " VND");
+                            $("#finalTotal").text(formatNumber(finalTotal) + " VND");
+                        } else {
+                            alert(response.message || "Mã giảm giá không hợp lệ!");
+                        }
+                    },
+                    error: function () {
+                        alert("Có lỗi xảy ra khi áp dụng mã giảm giá!");
+                    }
+                });
+            }
+
+            function formatNumber(num) {
+                return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+        </script>
     </body>
 </html>
