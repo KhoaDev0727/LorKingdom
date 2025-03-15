@@ -63,10 +63,10 @@ public class ShippingMethodServlet extends HttpServlet {
                     case "update":
                         updateShippingMethod(request, response);
                         break;
-                    case "delete": 
+                    case "delete":
                         softDeleteShippingMethod(request, response);
                         break;
-                    case "hardDelete": 
+                    case "hardDelete":
                         hardDeleteShippingMethod(request, response);
                         break;
                     case "restore":
@@ -96,7 +96,7 @@ public class ShippingMethodServlet extends HttpServlet {
 
     private void listDeletedShippingMethods(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
-        ShippingDAO shippingDAO = new ShippingDAO(); 
+        ShippingDAO shippingDAO = new ShippingDAO();
         List<Shipping> shippingMethods = shippingDAO.getDeletedShippingMethod();
         request.setAttribute("shippingMethods", shippingMethods);
         request.getRequestDispatcher("ShippingMethodManagement.jsp").forward(request, response);
@@ -120,13 +120,11 @@ public class ShippingMethodServlet extends HttpServlet {
             return;
         }
 
-
-        if (shippingDAO.isShippingMethodExists(methodName)) {
+        if (shippingDAO.isShippingMethodExists(methodName, 0)) {
             request.getSession().setAttribute("errorMessage", "Phương thức vận chuyển đã tồn tại.");
             response.sendRedirect("ShippingMethodServlet?action=list&showErrorModal=true");
             return;
         }
-
         Shipping newShippingMethod = new Shipping(0, methodName, description, 0);
         shippingDAO.addShippingMethod(methodName, description);
         request.getSession().setAttribute("successMessage", "Đã thêm phương thức vận chuyển thành công.");
@@ -152,13 +150,11 @@ public class ShippingMethodServlet extends HttpServlet {
             return;
         }
 
-
-        if (shippingDAO.isShippingMethodExists(methodName)) {
+        if (shippingDAO.isShippingMethodExists(methodName, id)) {
             request.getSession().setAttribute("errorMessage", "Phương thức vận chuyển đã tồn tại.");
             response.sendRedirect("ShippingMethodServlet?action=list&showErrorModal=true");
             return;
         }
-        
         shippingDAO.updateShippingMethod(id, methodName, description);
         request.getSession().setAttribute("successMessage", "Đã cập nhật phương thức vận chuyển thành công.");
         response.sendRedirect("ShippingMethodServlet?action=list&showSuccessModal=true");

@@ -170,8 +170,8 @@ public class updateProductServlet extends HttpServlet {
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
-            if (productName.length() > 30) {
-                session.setAttribute("errorMessage", "Tên sản phẩm chỉ không được dài quá 30 kí tự");
+            if (productName.length() > 250) {
+                session.setAttribute("errorMessage", "Tên sản phẩm chỉ không được dài quá 250 kí tự");
                 UpdateProductDataLoader.loadDataForUpdate(request, productID);
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
@@ -183,9 +183,9 @@ public class updateProductServlet extends HttpServlet {
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
-            String namePattern = "^[\\p{L}\\s]+$";
+            String namePattern = "^[\\p{L}\\d\\s]+$";
             if (!productName.matches(namePattern)) {
-                session.setAttribute("errorMessage", "Tên sản phẩm chỉ được chứa chữ cái (có dấu) và khoảng trắng!");
+                session.setAttribute("errorMessage", "Tên sản phẩm chỉ được chứa chữ cái (có dấu) và khoảng trắng và số.");
                 UpdateProductDataLoader.loadDataForUpdate(request, productID);
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;

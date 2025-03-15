@@ -138,8 +138,12 @@ public class getList extends HttpServlet {
             }
             // Cắt danh sách cho trang hiện tại
             List<Product> productsPerPage = allProducts.subList(offset, endIndex);
-            // Gán dữ liệu vào request
-            //Phaanf cua Khang 
+            for (Product product : productsPerPage) {
+                String name = product.getName();
+                if (name != null && name.length() > 20) {
+                    product.setName(name.substring(0, 20) + "...");
+                }
+            }
             Map<Integer, Double> mediumRatingMap = new HashMap<>();
             for (Product product : productsPerPage) { // Duyệt từng sản phẩm
                 List<Review> listReviews = ReviewDAO.showReviewForCustomer(product.getProductID());

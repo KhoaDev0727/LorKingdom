@@ -219,9 +219,10 @@ public class ProductManagementServlet extends HttpServlet {
                 request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
                 return;
             }
-            String namePattern = "^[\\p{L}\\s]+$";
+            String namePattern = "^[\\p{L}\\d\\s]+$";
+
             if (!productName.matches(namePattern)) {
-                session.setAttribute("errorMessage", "Tên sản phẩm chỉ được chứa chữ cái (có dấu) và khoảng trắng.");
+                session.setAttribute("errorMessage", "Tên sản phẩm chỉ được chứa chữ cái (có dấu) và khoảng trắng và số.");
                 request.setAttribute("enteredProductName", productName);
                 request.setAttribute("enteredPrice", priceStartStr);
                 request.setAttribute("enteredQuantity", quantityStr);
@@ -235,7 +236,7 @@ public class ProductManagementServlet extends HttpServlet {
                 request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
                 return;
             }
-            if (productName.length() > 50) {
+            if (productName.length() > 30) {
                 session.setAttribute("errorMessage", "Tên sản phẩm chỉ không được dài quá 50 kí tự");
                 request.setAttribute("enteredProductName", productName);
                 request.setAttribute("enteredPrice", priceStartStr);

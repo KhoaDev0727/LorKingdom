@@ -265,109 +265,116 @@ public class ProductDAO {
 //        products = executeQuery(query.toString(), params);
 //        return products;
 //    }
-    
+
     public List<Product> getFilteredProducts(Integer categoryID, Integer ageID, Integer sexID,
-        Integer priceRangeID, Integer brandID) throws ClassNotFoundException {
-    List<Product> products = new ArrayList<>();
-    // Xác định số lượng tiêu chí không null
-    int filterCount = 0;
-    if (categoryID != null) filterCount++;
-    if (ageID != null) filterCount++;
-    if (sexID != null) filterCount++;
-    if (priceRangeID != null) filterCount++;
-    if (brandID != null) filterCount++;
-    
-    // Đặt ngưỡng: nếu chọn ít hơn 3 thuộc tính thì dùng OR, từ 3 trở lên dùng AND
-    boolean useOr = filterCount < 3;
-    
-    StringBuilder query = new StringBuilder("SELECT * FROM Product WHERE IsDeleted = 0");
-    List<Object> params = new ArrayList<>();
-    
-    if (filterCount > 0) {
-        query.append(" AND (");
-        boolean firstCondition = true;
-        
+            Integer priceRangeID, Integer brandID) throws ClassNotFoundException {
+        List<Product> products = new ArrayList<>();
+        // Xác định số lượng tiêu chí không null
+        int filterCount = 0;
         if (categoryID != null) {
-            if (!firstCondition) {
-                query.append(useOr ? " OR " : " AND ");
-            }
-            query.append("CategoryID = ?");
-            params.add(categoryID);
-            firstCondition = false;
+            filterCount++;
         }
         if (ageID != null) {
-            if (!firstCondition) {
-                query.append(useOr ? " OR " : " AND ");
-            }
-            query.append("AgeID = ?");
-            params.add(ageID);
-            firstCondition = false;
+            filterCount++;
         }
         if (sexID != null) {
-            if (!firstCondition) {
-                query.append(useOr ? " OR " : " AND ");
-            }
-            query.append("SexID = ?");
-            params.add(sexID);
-            firstCondition = false;
+            filterCount++;
         }
         if (priceRangeID != null) {
-            if (!firstCondition) {
-                query.append(useOr ? " OR " : " AND ");
-            }
-            query.append("PriceRangeID = ?");
-            params.add(priceRangeID);
-            firstCondition = false;
+            filterCount++;
         }
         if (brandID != null) {
-            if (!firstCondition) {
-                query.append(useOr ? " OR " : " AND ");
+            filterCount++;
+        }
+
+        // Đặt ngưỡng: nếu chọn ít hơn 3 thuộc tính thì dùng OR, từ 3 trở lên dùng AND
+        boolean useOr = filterCount < 3;
+
+        StringBuilder query = new StringBuilder("SELECT * FROM Product WHERE IsDeleted = 0");
+        List<Object> params = new ArrayList<>();
+
+        if (filterCount > 0) {
+            query.append(" AND (");
+            boolean firstCondition = true;
+
+            if (categoryID != null) {
+                if (!firstCondition) {
+                    query.append(useOr ? " OR " : " AND ");
+                }
+                query.append("CategoryID = ?");
+                params.add(categoryID);
+                firstCondition = false;
             }
-            query.append("BrandID = ?");
-            params.add(brandID);
-        }
-        query.append(")");
-    }
-    
-    products = executeQuery(query.toString(), params);
-    return products;
-}
-
-
-private List<Product> executeQuery(String query, List<Object> params) throws ClassNotFoundException {
-    List<Product> products = new ArrayList<>();
-    try (Connection conn = DBConnection.getConnection();
-         PreparedStatement stm = conn.prepareStatement(query)) {
-
-        for (int i = 0; i < params.size(); i++) {
-            stm.setObject(i + 1, params.get(i));
-        }
-        try (ResultSet rs = stm.executeQuery()) {
-            while (rs.next()) {
-                Product p = new Product(
-                        rs.getString("SKU"),
-                        rs.getInt("CategoryID"),
-                        rs.getInt("MaterialID"),
-                        rs.getInt("AgeID"),
-                        rs.getInt("SexID"),
-                        rs.getInt("PriceRangeID"),
-                        rs.getInt("BrandID"),
-                        rs.getInt("OriginID"),
-                        rs.getString("Name"),
-                        rs.getDouble("Price"),
-                        rs.getInt("Quantity"),
-                        rs.getString("Description")
-                );
-                p.setProductID(rs.getInt("ProductID"));
-                products.add(p);
+            if (ageID != null) {
+                if (!firstCondition) {
+                    query.append(useOr ? " OR " : " AND ");
+                }
+                query.append("AgeID = ?");
+                params.add(ageID);
+                firstCondition = false;
             }
+            if (sexID != null) {
+                if (!firstCondition) {
+                    query.append(useOr ? " OR " : " AND ");
+                }
+                query.append("SexID = ?");
+                params.add(sexID);
+                firstCondition = false;
+            }
+            if (priceRangeID != null) {
+                if (!firstCondition) {
+                    query.append(useOr ? " OR " : " AND ");
+                }
+                query.append("PriceRangeID = ?");
+                params.add(priceRangeID);
+                firstCondition = false;
+            }
+            if (brandID != null) {
+                if (!firstCondition) {
+                    query.append(useOr ? " OR " : " AND ");
+                }
+                query.append("BrandID = ?");
+                params.add(brandID);
+            }
+            query.append(")");
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-    return products;
-}
 
+        products = executeQuery(query.toString(), params);
+        return products;
+    }
+
+    private List<Product> executeQuery(String query, List<Object> params) throws ClassNotFoundException {
+        List<Product> products = new ArrayList<>();
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement stm = conn.prepareStatement(query)) {
+
+            for (int i = 0; i < params.size(); i++) {
+                stm.setObject(i + 1, params.get(i));
+            }
+            try ( ResultSet rs = stm.executeQuery()) {
+                while (rs.next()) {
+                    Product p = new Product(
+                            rs.getString("SKU"),
+                            rs.getInt("CategoryID"),
+                            rs.getInt("MaterialID"),
+                            rs.getInt("AgeID"),
+                            rs.getInt("SexID"),
+                            rs.getInt("PriceRangeID"),
+                            rs.getInt("BrandID"),
+                            rs.getInt("OriginID"),
+                            rs.getString("Name"),
+                            rs.getDouble("Price"),
+                            rs.getInt("Quantity"),
+                            rs.getString("Description")
+                    );
+                    p.setProductID(rs.getInt("ProductID"));
+                    products.add(p);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return products;
+    }
 
     public Product getProduct(int id) {
         Product p = null;
@@ -430,9 +437,12 @@ private List<Product> executeQuery(String query, List<Object> params) throws Cla
 // (Tùy chọn) Tìm kiếm sản phẩm theo từ khóa
     public List<Product> searchProducts(String keyword) throws SQLException, ClassNotFoundException {
         List<Product> products = new ArrayList<>();
-        String query = "SELECT * FROM Product WHERE Name LIKE ?";
+        // Sử dụng hàm LOWER() để chuyển đổi cả cột Name và SKU về chữ thường, đảm bảo so sánh không phân biệt chữ hoa chữ thường
+        String query = "SELECT * FROM Product WHERE LOWER(Name) LIKE ? OR LOWER(SKU) LIKE ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setString(1, "%" + keyword + "%");
+            // Chuyển từ khóa thành chữ thường (nếu chưa chuyển) và thêm ký tự % cho truy vấn LIKE
+            ps.setString(1, "%" + keyword.toLowerCase() + "%");
+            ps.setString(2, "%" + keyword.toLowerCase() + "%");
             try ( ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Product product = new Product();
