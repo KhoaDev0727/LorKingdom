@@ -112,18 +112,21 @@ public class Order {
         this.updatedAt = updatedAt;
     }
 
-    @Override
-    public String toString() {
-        return "Order{" + "orderId=" + orderId + ", accountName=" + accountName + ", payMentMethodName=" + payMentMethodName + ", shipingMethodName=" + shipingMethodName + ", orderDate=" + orderDate + ", status=" + status + ", totalAmount=" + totalAmount + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + '}';
-    }
-
     public List<OrderDetail> getOrderDetails() {
         return orderDetails;
+    }
+
+    public void setOrderDetails(List<OrderDetail> orderDetails) {
+        this.orderDetails = orderDetails;
     }
 
     public void addOrderDetail(OrderDetail detail) {
         this.orderDetails.add(detail);
     }
 
+    @Override
+    public String toString() {
+        return "Order{" + "orderId=" + orderId + ", accountName=" + accountName + ", payMentMethodName=" + payMentMethodName + ", shipingMethodName=" + shipingMethodName + ", orderDate=" + orderDate + ", status=" + status + ", totalAmount=" + totalAmount + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + '}';
+    }
 
 }

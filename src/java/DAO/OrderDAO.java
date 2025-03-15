@@ -4,6 +4,7 @@
  */
 package DAO;
 
+import static DAO.AccountDAO.conn;
 import DBConnect.DBConnection;
 import Model.Order;
 import Model.OrderDetail;
@@ -16,6 +17,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -388,4 +391,75 @@ public class OrderDAO extends DBConnect.DBConnection {
         return statusId;
     }
 
+    public boolean saveOrder(Order order, int userId, String address, String phone, String email, String city, String district, String ward) {
+        String insertOrderSQL = "INSERT INTO Orders (AccountID, StatusID, PaymentMethodID, ShippingMethodID, OrderDate, TotalAmount, CreatedAt) "
+                + "VALUES (?, (SELECT StatusID FROM StatusOrder WHERE Status = ?), "
+                + "(SELECT PaymentMethodID FROM PaymentMethods WHERE MethodName = ?), "
+                + "(SELECT ShippingMethodID FROM ShippingMethods WHERE MethodName = ?), ?, ?, ?)";
+
+        String insertOrderDetailSQL = "INSERT INTO OrderDetails (OrderID, ProductID, Quantity, UnitPrice, Discount) "
+                + "VALUES (?, ?, ?, ?, ?)";
+
+        Connection conn = null;
+        try {
+            conn = DBConnection.getConnection();
+            if (conn == null) {
+                Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, "Không thể kết nối đến cơ sở dữ liệu!");
+                return false;
+            }
+            conn.setAutoCommit(false); // Bắt đầu transaction
+
+            // Lưu vào bảng Orders
+            PreparedStatement psOrder = conn.prepareStatement(insertOrderSQL, Statement.RETURN_GENERATED_KEYS);
+            psOrder.setInt(1, userId);
+            psOrder.setString(2, order.getStatus());
+            psOrder.setString(3, order.getPayMentMethodName());
+            psOrder.setString(4, order.getShipingMethodName());
+            psOrder.setTimestamp(5, new java.sql.Timestamp(order.getOrderDate().getTime()));
+            psOrder.setDouble(6, order.getTotalAmount());
+            psOrder.setTimestamp(7, new java.sql.Timestamp(order.getCreatedAt().getTime()));
+            psOrder.executeUpdate();
+
+            // Lấy OrderID vừa tạo
+            ResultSet rs = psOrder.getGeneratedKeys();
+            int orderId = 0;
+            if (rs.next()) {
+                orderId = rs.getInt(1);
+            }
+
+            // Lưu vào bảng OrderDetails
+            for (OrderDetail detail : order.getOrderDetails()) {
+                PreparedStatement psDetail = conn.prepareStatement(insertOrderDetailSQL);
+                psDetail.setInt(1, orderId);
+                psDetail.setInt(2, detail.getProductID());
+                psDetail.setInt(3, detail.getQuantity());
+                psDetail.setFloat(4, detail.getUnitPrice());
+                psDetail.setFloat(5, detail.getDiscount());
+                psDetail.executeUpdate();
+            }
+
+            conn.commit(); // Commit transaction
+            return true;
+
+        } catch (SQLException | ClassNotFoundException ex) {
+            try {
+                if (conn != null) {
+                    conn.rollback(); // Rollback nếu có lỗi
+                }
+            } catch (SQLException rollbackEx) {
+                Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, "Rollback failed", rollbackEx);
+            }
+            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, "Error saving order", ex);
+            return false;
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.setAutoCommit(true);
+                    conn.close(); // Đóng kết nối
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, "Error closing connection", ex);
+            }
+        }
+    }
 }
