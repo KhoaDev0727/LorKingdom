@@ -72,12 +72,32 @@
                         </div>
 
                         <!-- Thông tin sản phẩm -->
+                        <!-- Phan gia cua loc -->
                         <div>
                             <h1 class="text-2xl font-bold mb-2">${product.name}</h1>
                             <p class="text-gray-500 text-sm">Mã sản phẩm: ${product.SKU}</p>
-                            <div class="flex items-center space-x-2 mt-2 text-red-600 font-bold text-xl">
-                                <fmt:formatNumber value="${product.price}" pattern="#,###" /> VND
-                            </div>
+                            <c:if test="${hasPromotion}">
+                                <div class="flex items-center space-x-2 mt-2 text-red-600 font-bold text-xl">
+                                    <!-- Hiển thị giá gốc có gạch ngang -->
+                                    <span style="text-decoration: line-through;">
+                                        <fmt:formatNumber value="${originalPrice}" pattern="#,###" /> VND
+                                    </span>
+                                    <!-- Hiển thị giá sau giảm -->
+                                    <span>
+                                        <fmt:formatNumber value="${discountPrice}" pattern="#,###" /> VND
+                                    </span>
+                                </div>
+                            </c:if>
+                            <!-- Phan gia cua loc -->
+
+                            <c:if test="${!hasPromotion}">
+                                <div class="flex items-center space-x-2 mt-2 text-black font-bold text-xl">
+                                    <!-- Chỉ hiển thị giá sau giảm nếu không có khuyến mãi, không có gạch đỏ -->
+                                    <span>
+                                        <fmt:formatNumber value="${discountPrice}" pattern="#,###" /> VND
+                                    </span>
+                                </div>
+                            </c:if>
 
                             <ul class="text-gray-800" style="padding-left:0;">
                                 <li class="flex items-start">

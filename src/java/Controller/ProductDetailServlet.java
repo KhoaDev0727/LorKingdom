@@ -18,6 +18,7 @@ import DAO.ReviewDAO;
 import Model.Account;
 import Model.Product;
 import Model.ProductImage;
+import Model.Promotion;
 import Model.Review;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -97,7 +98,7 @@ public class ProductDetailServlet extends HttpServlet {
             SexDAO sexDAO = new SexDAO();
             ProductImageDAO productImageDAO = new ProductImageDAO();
             ProductDAO productDAO = new ProductDAO();
-            PromotionDAO promotion = new PromotionDAO();// nếu cần dùng để gọi hàm lấy sản phẩm liên quan
+            PromotionDAO promotion = new PromotionDAO();
 
             // ===== GIỮ NGUYÊN CODE LIÊN QUAN TỚI REVIEW =====
             // Xử lý đánh giá
@@ -142,7 +143,21 @@ public class ProductDetailServlet extends HttpServlet {
                     ? (double) (rating5 * 5 + rating4 * 4 + rating3 * 3 + rating2 * 2 + rating1 * 1) / totalReview
                     : 0;
             // ===== KẾT THÚC PHẦN CODE REVIEW =====
+            // LOC CODE KHONG LOI DAU
+            List<Promotion> promotions = promotion.getPromotionsByProductId(productId);
+            double discountPrice = product.getPrice();  // Giá gốc
+            boolean hasPromotion = false;
 
+            if (promotions != null && !promotions.isEmpty()) {
+                // Nếu có khuyến mãi, tính giá sau giảm
+                discountPrice = calculateDiscountedPrice(product.getPrice(), promotions);
+                hasPromotion = true;
+            }
+
+            request.setAttribute("hasPromotion", hasPromotion);  // Cập nhật thông tin có khuyến mãi hay không
+            request.setAttribute("originalPrice", product.getPrice());
+            request.setAttribute("discountPrice", discountPrice);
+            // LOC CODE KHONG LOI DAU
             // Set các attribute cho sản phẩm
             request.setAttribute("product", product);
             request.setAttribute("category", categoryDAO.getCategoryNameByProductId(productId));
@@ -184,6 +199,21 @@ public class ProductDetailServlet extends HttpServlet {
             e.printStackTrace();
             request.getRequestDispatcher("error.jsp").forward(request, response);
         }
+    }
+
+    private double calculateDiscountedPrice(double originalPrice, List<Promotion> promotions) {
+        double discountPrice = originalPrice;  // Giá gốc
+
+        if (promotions != null && !promotions.isEmpty()) {
+            // Giả sử lấy tỷ lệ giảm của khuyến mãi đầu tiên
+            double discountRate = promotions.get(0).getDiscountPercent();  // Lấy tỷ lệ giảm (giả sử từ Promotion)
+            if (discountRate > 0) {
+                discountPrice = originalPrice * (1 - discountRate / 100);  // Tính giá sau giảm
+                return discountPrice;
+            }
+        }
+
+        return originalPrice;
     }
 
     /**

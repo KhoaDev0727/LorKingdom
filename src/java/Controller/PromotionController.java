@@ -84,8 +84,7 @@ public class PromotionController extends HttpServlet {
                 // In your promotionController.java
                 List<Promotion> promotions = dao.getAllPromotions();  // Assuming you have a method to fetch all promotions
                 request.setAttribute("listAll", promotions);  // Set the list to the request
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/path/to/setting.jsp");
-                dispatcher.forward(request, response);
+               request.getRequestDispatcher("PromotionCustomer.jsp").forward(request, response);
             }
 
             // Tìm kiếm khuyến mãi theo tên

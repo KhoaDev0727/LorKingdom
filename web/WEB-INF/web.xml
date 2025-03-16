@@ -231,6 +231,14 @@
         <servlet-name>OrderServlet</servlet-name>
         <servlet-class>Controller.OrderServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>PromotionCustomer</servlet-name>
+        <servlet-class>Controller.PromotionCustomer</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>test1111122</servlet-name>
+        <servlet-class>Controller.test</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>VerifyCodeServlet</servlet-name>
         <url-pattern>/VerifyCodeServlet</url-pattern>
@@ -457,6 +465,14 @@
     <servlet-mapping>
         <servlet-name>OrderServlet</servlet-name>
         <url-pattern>/OrderServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PromotionCustomer</servlet-name>
+        <url-pattern>/PromotionCustomer</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>test1111122</servlet-name>
+        <url-pattern>/test</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

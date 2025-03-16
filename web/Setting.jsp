@@ -114,7 +114,7 @@
                 </div>
                 
                 <div id="promotion-section" class="hidden">
-                    <%@ include file="promotionGetAll.jsp" %>
+                    <%@ include file="PromotionCustomer.jsp"%>
                 </div>
             </div>     
         </div>
@@ -159,7 +159,7 @@
                             <div class="mb-3">
                                 <textarea class="form-control" name="description" rows="5" placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..."></textarea>
                             </div>
-                            <div class="mb-3">
+                            <div class="mb-3"> 
                                 <div class="btn btn-outline-danger position-relative">
                                     <i class="fas fa-camera me-1"></i>
                                     <span id="file-name">Thêm hình ảnh</span>

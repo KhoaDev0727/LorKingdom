@@ -55,6 +55,18 @@ public class PromotionDAO extends DBConnect.DBConnection {
         return list;
     }
 
+//    public static void main(String[] args) {
+//        try {
+//            PromotionDAO dao = new PromotionDAO();
+//            List<Promotion> list = dao.getAllPromotions();
+//            for (Promotion promotion : list) {
+//                System.out.println(promotion);
+//            }
+//        } catch (Exception e) {
+//        }
+//
+//    }
+
     public int getTotalPromotion() throws SQLException, ClassNotFoundException {
         int total = 0;
         String query = "select count(*) from [dbo].[Promotions]";
@@ -281,34 +293,43 @@ public class PromotionDAO extends DBConnect.DBConnection {
         return false;
     }
 
-    public List<Promotion> getPromotionsByProductId(int productId) throws SQLException, ClassNotFoundException {
-        List<Promotion> list = new ArrayList<>();
-        String query = "SELECT * FROM [dbo].[Promotions] WHERE ProductID = ? AND Status = 'Active'";
+   public List<Promotion> getPromotionsByProductId(int productId) throws SQLException, ClassNotFoundException {
+    List<Promotion> list = new ArrayList<>();
+    String query = "SELECT * FROM [dbo].[Promotions] WHERE ProductID = ? AND Status = 'Active'";
 
-        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setInt(1, productId);
-            try ( ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    list.add(new Promotion(
-                            rs.getInt("PromotionID"),
-                            rs.getInt("ProductID"),
-                            rs.getString("Name"),
-                            rs.getString("Description"),
-                            rs.getDouble("DiscountPercent"),
-                            rs.getDate("StartDate"),
-                            rs.getDate("EndDate"),
-                            rs.getString("Status"),
-                            rs.getDate("CreatedAt"),
-                            rs.getDate("UpdatedAt"),
-                            rs.getString("PromotionCode")
-                    ));
+    try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+        ps.setInt(1, productId);
+        try ( ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                // Kiểm tra khuyến mãi và nếu không có, hiển thị giá trị gốc (DiscountPercent = 0)
+                double discount = rs.getDouble("DiscountPercent");
+                if (discount == 0) {
+                    // Nếu không có khuyến mãi, giá trị giảm giá sẽ là 0
+                    discount = 0;
                 }
+
+                // Thêm vào danh sách khuyến mãi
+                list.add(new Promotion(
+                        rs.getInt("PromotionID"),
+                        rs.getInt("ProductID"),
+                        rs.getString("Name"),
+                        rs.getString("Description"),
+                        discount,  // Sử dụng giá trị giảm giá hoặc 0 nếu không có khuyến mãi
+                        rs.getDate("StartDate"),
+                        rs.getDate("EndDate"),
+                        rs.getString("Status"),
+                        rs.getDate("CreatedAt"),
+                        rs.getDate("UpdatedAt"),
+                        rs.getString("PromotionCode")
+                ));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return list;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+    return list;
+}
+
 
     public List<Promotion> getAllPromotions() throws SQLException, ClassNotFoundException {
         List<Promotion> list = new ArrayList<>();
@@ -349,7 +370,6 @@ public class PromotionDAO extends DBConnect.DBConnection {
 //        }
 //
 //    }
-
 //      public static void main(String[] args) {
 //        PromotionDAO promotionDAO = new PromotionDAO(); // Tạo đối tượng DAO
 //
