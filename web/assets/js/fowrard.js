@@ -7,9 +7,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const profileLink = document.getElementById("profile-link");
     const ordersLink = document.getElementById("orders-link");
     const reviewModal = document.getElementById("reviewModal");
+    const promotionLink = document.getElementById("promotion-link");
+    const promotionSection = document.getElementById("promotion-section");
 
     // Kiểm tra các phần tử chính có tồn tại không
-    if (!profileSection || !ordersSection || !profileLink || !ordersLink) {
+    if (!profileSection || !ordersSection || !profileLink || !ordersLink || !promotionLink) {
         console.error("Không tìm thấy các phần tử profile hoặc orders trong DOM");
         return;
     }
@@ -19,12 +21,20 @@ document.addEventListener("DOMContentLoaded", function () {
         e.preventDefault();
         profileSection.classList.remove("hidden");
         ordersSection.classList.add("hidden");
+        promotionSection.classList.add("hidden");
     });
 
     ordersLink.addEventListener("click", (e) => {
         e.preventDefault();
         profileSection.classList.add("hidden");
         ordersSection.classList.remove("hidden");
+        promotionSection.classList.add("hidden");
+    });
+    promotionLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        profileSection.classList.add("hidden");
+        ordersSection.classList.add("hidden");
+        promotionSection.classList.remove("hidden");
     });
 
     // Xử lý tabs đơn hàng
@@ -240,3 +250,4 @@ document.addEventListener("DOMContentLoaded", function () {
         loadOrders('Shipping');
     }
 });
+

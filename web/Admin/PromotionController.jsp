@@ -53,54 +53,45 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="addPromotion" id="addPromotionForm" method="post">
-                                                <div class="mb-3">
-                                                    <label for="productID" class="form-label">Select Product</label>
-                                                    <select name="productID" id="productID" class="form-select" required>
-                                                        <option value="">-- Select Product --</option>
-                                                        <c:forEach var="product" items="${productList}">
-                                                            <option value="${product.productID}">${product.productID} - ${product.name}</option>
-                                                        </c:forEach>
-                                                    </select>
-                                                </div>
+                                             <form action="addPromotion" id="addPromotionForm" method="post">
+                                            <div class="mb-3">
+                                                <label for="productID" class="form-label">Select Product</label>
+                                                <select name="productID" id="productID" class="form-select" required>
+                                                    <option value="">-- Select Product --</option>
+                                                    <c:forEach var="product" items="${productList}">
+                                                        <option value="${product.productID}">${product.productID} - ${product.name}</option>
+                                                    </c:forEach>
+                                                </select>
+                                            </div>
 
-                                                <div class="mb-3">
-                                                    <label for="name" class="form-label">Promotion Name</label>
-                                                    <input type="text" name="name" class="form-control" required>
-                                                </div>
+                                            <div class="mb-3">
+                                                <label for="name" class="form-label">Promotion Name</label>
+                                                <input type="text" name="name" class="form-control" required>
+                                            </div>
 
-                                                <div class="mb-3">
-                                                    <label for="description" class="form-label">Description</label>
-                                                    <textarea name="description" class="form-control" required></textarea>
-                                                </div>
+                                            <div class="mb-3">
+                                                <label for="description" class="form-label">Description</label>
+                                                <textarea name="description" class="form-control" required></textarea>
+                                            </div>
 
-                                                <div class="mb-3">
-                                                    <label for="discountPercent" class="form-label">Discount Percent</label>
-                                                    <input type="number" step="0.01" name="discountPercent" class="form-control" required>
-                                                </div>
+                                            <div class="mb-3">
+                                                <label for="discountPercent" class="form-label">Discount Percent</label>
+                                                <input type="number" step="0.01" name="discountPercent" class="form-control" required>
+                                            </div>
 
-                                                <div class="mb-3">
-                                                    <label for="startDate" class="form-label">Start Date</label>
-                                                    <input type="date" name="startDate" class="form-control" required>
-                                                </div>
+                                            <div class="mb-3">
+                                                <label for="startDate" class="form-label">Start Date</label>
+                                                <input type="date" name="startDate" class="form-control" required>
+                                            </div>
 
-                                                <div class="mb-3">
-                                                    <label for="endDate" class="form-label">End Date</label>
-                                                    <input type="date" name="endDate" class="form-control" required>
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <label for="status" class="form-label">Status</label>
-                                                    <select name="status" class="form-select">
-                                                        <option value="Active">Active</option>
-                                                        <option value="Expired">Expired</option>
-                                                    </select>
-                                                </div>
-
-                                                <div class="d-grid">
-                                                    <button type="submit" class="btn btn-success">Add Promotion</button>
-                                                </div>
-                                            </form>
+                                            <div class="mb-3">
+                                                <label for="endDate" class="form-label">End Date</label>
+                                                <input type="date" name="endDate" class="form-control" required>
+                                            </div>
+                                            <div class="d-grid">
+                                                <button type="submit" class="btn btn-success">Add Promotion</button>
+                                            </div>
+                                        </form>
                                         </div>
                                     </div>
                                 </div>

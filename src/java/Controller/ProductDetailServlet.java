@@ -13,6 +13,7 @@ import DAO.AgeDAO;
 import DAO.CategoryDAO;
 import DAO.ProductDAO;
 import DAO.ProductImageDAO;
+import DAO.PromotionDAO;
 import DAO.ReviewDAO;
 import Model.Account;
 import Model.Product;
@@ -95,7 +96,8 @@ public class ProductDetailServlet extends HttpServlet {
             MaterialDAO materialDAO = new MaterialDAO();
             SexDAO sexDAO = new SexDAO();
             ProductImageDAO productImageDAO = new ProductImageDAO();
-            ProductDAO productDAO = new ProductDAO(); // nếu cần dùng để gọi hàm lấy sản phẩm liên quan
+            ProductDAO productDAO = new ProductDAO();
+            PromotionDAO promotion = new PromotionDAO();// nếu cần dùng để gọi hàm lấy sản phẩm liên quan
 
             // ===== GIỮ NGUYÊN CODE LIÊN QUAN TỚI REVIEW =====
             // Xử lý đánh giá
@@ -151,6 +153,7 @@ public class ProductDetailServlet extends HttpServlet {
             request.setAttribute("origin", originName);
 
             request.setAttribute("age", ageDAO.getAgeRangeByProductId(productId));
+            request.setAttribute("promotion", promotion.getPromotionsByProductId(productId));
             request.setAttribute("brand", brandDAO.getBrandNameByProductId(productId));
             request.setAttribute("materail", materialDAO.getMaterialNameByProductId(productId));
             request.setAttribute("sex", sexDAO.getSexNameByProductId(productId));

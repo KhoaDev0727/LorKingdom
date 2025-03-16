@@ -34,11 +34,11 @@ public class AddPromotionServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-
             PromotionDAO dao = new PromotionDAO();
             List<Product> productList = dao.getAllProducts(); // Lấy danh sách sản phẩm
             request.setAttribute("productList", productList);
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
         request.getRequestDispatcher("PromotionController.jsp").forward(request, response);
@@ -55,12 +55,14 @@ public class AddPromotionServlet extends HttpServlet {
             double discountPercent = Double.parseDouble(request.getParameter("discountPercent"));
             Date startDate = Date.valueOf(request.getParameter("startDate"));
             Date endDate = Date.valueOf(request.getParameter("endDate"));
-            String status = request.getParameter("status");
             Date createdAt = new Date(System.currentTimeMillis());
             Date updatedAt = new Date(System.currentTimeMillis());
 
             // **Tạo mã khuyến mãi ngẫu nhiên**
             String promotionCode = generatePromotionCode();
+
+            // Đặt trạng thái mặc định là "Active"
+            String status = "Active";
 
             // Tạo đối tượng Promotion
             Promotion pro = new Promotion();
@@ -79,57 +81,42 @@ public class AddPromotionServlet extends HttpServlet {
             PromotionDAO promotionDAO = new PromotionDAO();
 
             if (promotionDAO.isPromotionExist(name, discountPercent)) {
-                // Nếu promotion với cùng tên và cùng % giảm giá đã tồn tại, không thêm vào
                 request.getSession().setAttribute("errorModal", "Khuyến mãi đã tồn tại với cùng tên và phần trăm giảm giá!");
                 response.sendRedirect("promotionController");
                 return;
-            } else if (promotionDAO.isPromotionWithNameExist(name)) {
-                // Nếu đã có promotion với tên này nhưng khác % giảm giá, vẫn cho phép thêm
-                promotionDAO.addPromotion(pro);
-                request.getSession().setAttribute("successModal", "Thêm khuyến mãi thành công!");
-                response.sendRedirect("promotionController");
-                return;
             } else {
-                // Nếu chưa có promotion nào trùng tên, thêm bình thường
                 promotionDAO.addPromotion(pro);
                 request.getSession().setAttribute("successModal", "Thêm khuyến mãi thành công!");
                 response.sendRedirect("promotionController");
             }
-
         } catch (SQLException | ClassNotFoundException | NumberFormatException e) {
             e.printStackTrace();
-            request.setAttribute("errorModal", "Khuyến mãi đã tồn tại với cùng tên và phần trăm giảm giá!");
+            request.setAttribute("errorModal", "Có lỗi xảy ra khi thêm khuyến mãi!");
             request.getRequestDispatcher("PromotionController.jsp").forward(request, response);
         }
-
     }
+
     private String generatePromotionCode() {
-    SecureRandom random = new SecureRandom();
-    StringBuilder code = new StringBuilder();
+        SecureRandom random = new SecureRandom();
+        StringBuilder code = new StringBuilder();
 
-    // 6 chữ cái viết hoa
-    for (int i = 0; i < 6; i++) {
-        char letter = (char) ('A' + random.nextInt(26));
-        code.append(letter);
+        // 6 chữ cái viết hoa
+        for (int i = 0; i < 6; i++) {
+            char letter = (char) ('A' + random.nextInt(26));
+            code.append(letter);
+        }
+
+        // 2 số
+        for (int i = 0; i < 2; i++) {
+            char digit = (char) ('0' + random.nextInt(10));
+            code.append(digit);
+        }
+
+        return code.toString();
     }
 
-    // 2 số
-    for (int i = 0; i < 2; i++) {
-        char digit = (char) ('0' + random.nextInt(10));
-        code.append(digit);
-    }
-
-    return code.toString();
-}
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
-
+    }
 }

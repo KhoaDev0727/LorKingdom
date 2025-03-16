@@ -4,6 +4,7 @@ import DAO.PromotionDAO;
 import DAO.RoleDAO;
 import Model.Product;
 import Model.Promotion;
+import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -77,6 +78,14 @@ public class PromotionController extends HttpServlet {
                 dao.deleteOrder(proId);
                 response.sendRedirect("promotionController");
                 return;
+            }
+            if ("getAll".equals(action)) {
+
+                // In your promotionController.java
+                List<Promotion> promotions = dao.getAllPromotions();  // Assuming you have a method to fetch all promotions
+                request.setAttribute("listAll", promotions);  // Set the list to the request
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/path/to/setting.jsp");
+                dispatcher.forward(request, response);
             }
 
             // Tìm kiếm khuyến mãi theo tên

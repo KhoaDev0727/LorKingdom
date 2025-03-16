@@ -87,7 +87,7 @@
                     <ul>
                         <li><a href="#" id="profile-link"><i class="fas fa-user"></i> Quản lý hồ sơ</a></li>
                         <li><a href="#" id="orders-link"><i class="fas fa-box"></i> Đơn hàng</a></li>
-                        <li><a href="#"><i class="fas fa-gift"></i> Mã ưu đãi</a></li>
+                        <li><a href="#" id="promotion-link"><i class="fas fa-gift"></i> Mã ưu đãi</a></li> <!-- Link to Promotions -->
                         <li><a href="#"><i class="fas fa-heart"></i> Yêu thích</a></li>
                     </ul>
                 </nav>
@@ -112,8 +112,13 @@
                         </div>
                     </div>
                 </div>
-            </div>
+                
+                <div id="promotion-section" class="hidden">
+                    <%@ include file="promotionGetAll.jsp" %>
+                </div>
+            </div>     
         </div>
+
 
         <!-- Modal Đánh giá -->
         <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">

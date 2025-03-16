@@ -283,7 +283,7 @@ public class PromotionDAO extends DBConnect.DBConnection {
 
     public List<Promotion> getPromotionsByProductId(int productId) throws SQLException, ClassNotFoundException {
         List<Promotion> list = new ArrayList<>();
-        String query = "SELECT * FROM [dbo].[Promotions] WHERE ProductID = ? AND Status = 'Active' AND EndDate >= GETDATE()";
+        String query = "SELECT * FROM [dbo].[Promotions] WHERE ProductID = ? AND Status = 'Active'";
 
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, productId);
@@ -309,6 +309,46 @@ public class PromotionDAO extends DBConnect.DBConnection {
         }
         return list;
     }
+
+    public List<Promotion> getAllPromotions() throws SQLException, ClassNotFoundException {
+        List<Promotion> list = new ArrayList<>();
+        String query = "SELECT * FROM [dbo].[Promotions] ORDER BY PromotionID";
+
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement pstmt = conn.prepareStatement(query);  ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                list.add(new Promotion(
+                        rs.getInt("PromotionID"),
+                        rs.getInt("ProductID"),
+                        rs.getString("Name"),
+                        rs.getString("Description"),
+                        rs.getDouble("DiscountPercent"),
+                        rs.getDate("StartDate"),
+                        rs.getDate("EndDate"),
+                        rs.getString("Status"),
+                        rs.getDate("CreatedAt"),
+                        rs.getDate("UpdatedAt"),
+                        rs.getString("PromotionCode")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new SQLException("Lỗi khi lấy danh sách khuyến mãi: " + e.getMessage());
+        }
+        return list;
+    }
+
+//    public static void main(String[] args) {
+//        try {
+//            PromotionDAO dao = new PromotionDAO();
+//            List<Promotion> list = dao.getAllPromotions();
+//            for (Promotion o : list) {
+//                System.out.println(o);
+//            }
+//        } catch (Exception e) {
+//        }
+//
+//    }
 
 //      public static void main(String[] args) {
 //        PromotionDAO promotionDAO = new PromotionDAO(); // Tạo đối tượng DAO
@@ -336,17 +376,17 @@ public class PromotionDAO extends DBConnect.DBConnection {
 //            e.printStackTrace();
 //        }
 //    }
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        try {
-            PromotionDAO dao = new PromotionDAO();
-            List<Promotion> list = dao.getAllPromotionsPerPage(0, 5);
-            for (Promotion P : list) {
-                System.out.println(P);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void main(String[] args) {
+//        try {
+//            PromotionDAO dao = new PromotionDAO();
+//            List<Promotion> list = dao.getAllPromotions();
+//            for (Promotion promo : list) {
+//                System.out.println(promo);
+//            }
+//        } catch (SQLException | ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//    }
 //    public static void main(String[] args) {
 //        try {
 //            // Tạo đối tượng Promotion với dữ liệu mẫu
