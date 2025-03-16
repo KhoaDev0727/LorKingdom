@@ -111,11 +111,7 @@
                             <p>Chưa có đơn hàng</p>
                         </div>
                     </div>
-                </div>
-                
-                <div id="promotion-section" class="hidden">
-                    <%@ include file="PromotionCustomer.jsp"%>
-                </div>
+                </div>      
             </div>     
         </div>
 
