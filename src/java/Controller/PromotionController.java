@@ -79,14 +79,6 @@ public class PromotionController extends HttpServlet {
                 response.sendRedirect("promotionController");
                 return;
             }
-            if ("getAll".equals(action)) {
-
-                // In your promotionController.java
-                List<Promotion> promotions = dao.getAllPromotions();  // Assuming you have a method to fetch all promotions
-                request.setAttribute("listAll", promotions);  // Set the list to the request
-               request.getRequestDispatcher("PromotionCustomer.jsp").forward(request, response);
-            }
-
             // Tìm kiếm khuyến mãi theo tên
             if ("search".equals(action)) {
                 String proName = request.getParameter("promotionName");

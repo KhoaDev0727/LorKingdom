@@ -91,9 +91,9 @@ public class PromotionDAO extends DBConnect.DBConnection {
             int rowsAffected = pstmt.executeUpdate();
 
             if (rowsAffected > 0) {
-                System.out.println("Order deleted successfully.");
+                System.out.println("Promotion deleted successfully.");
             } else {
-                System.out.println("No order found with the provided ID.");
+                System.out.println("No Promotion found with the provided ID.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
