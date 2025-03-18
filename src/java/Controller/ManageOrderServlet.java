@@ -20,7 +20,6 @@ import java.util.Map;
 
 /**
  *
- * @author Acer
  */
 
 public class ManageOrderServlet extends HttpServlet {
