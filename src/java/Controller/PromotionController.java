@@ -75,7 +75,7 @@ public class PromotionController extends HttpServlet {
             // Xóa khuyến mãi
             if ("delete".equals(action)) {
                 int proId = Integer.parseInt(request.getParameter("promotionID"));
-                dao.deleteOrder(proId);
+                dao.deletePromotion(proId);
                 response.sendRedirect("promotionController");
                 return;
             }

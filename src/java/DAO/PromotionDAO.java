@@ -80,7 +80,7 @@ public class PromotionDAO extends DBConnect.DBConnection {
         return total;
     }
 
-    public void deleteOrder(int proId) throws SQLException, ClassNotFoundException {
+    public void deletePromotion(int proId) throws SQLException, ClassNotFoundException {
         String query = "DELETE FROM [dbo].[Promotions]\n"
                 + "WHERE PromotionID = ?;";
 
