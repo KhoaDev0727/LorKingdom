@@ -191,7 +191,7 @@ public class getList extends HttpServlet {
             request.setAttribute("forward", request.getContextPath() + "/getList");
 
             request.setAttribute("superCategories", superCategoryDAO.getActiveSuperCategories());
-            request.setAttribute("categories", categoryDAO.getAcctiveCategories());
+            request.setAttribute("categories", categoryDAO.getAllCategories());
             request.setAttribute("ages", ageDAO.getAllAges());
             request.setAttribute("listS", sexDAO.getAllSexes());
             request.setAttribute("listB", brandDAO.getActiveBrand());

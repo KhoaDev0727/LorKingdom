@@ -93,9 +93,11 @@
                             Giúp bé phát triển trí tuệ, rèn luyện kỹ năng và thỏa sức vui chơi mỗi ngày!  
                         </p>
                     </div>
-                    <div class="col-xl-3 cta-btn-container text-center">
-                        <a class="cta-btn align-middle" href="#">Mua Ngay</a>
+                    <div class="col-xl-3 cta-btn-container text-center d-flex flex-column align-items-center">
+                        <img src="./assets/img/fbLorKingDom.png" class="img-fluid" style="max-width: 50%;" alt="alt">
+                        <p class="playful-text mt-2">Trang của chúng tôi</p>
                     </div>
+
                 </div>
 
 
@@ -188,7 +190,7 @@
                                 </ul>
                             </div>
                         </div>
-                       
+
                         <!-- Sex -->
                         <div class="mb-4">
                             <h3 class="font-semibold mb-2 text-orange-500">Giới Tính</h3>

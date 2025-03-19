@@ -35,7 +35,7 @@
                                         <img 
                                             src="${pageContext.request.contextPath}/${img.imageUrl}"
                                             alt="Ảnh sản phẩm chính"
-                                            class="w-full object-cover rounded shadow duration-300" style="height: 480px;"/>
+                                            class="w-full object-cover rounded shadow duration-300" style="height: 600px;"/>
                                     </c:if>
                                 </c:forEach>
                             </div>
