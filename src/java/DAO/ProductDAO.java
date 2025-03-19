@@ -24,6 +24,7 @@ public class ProductDAO {
     protected static ResultSet rs = null;
     protected static Connection conn = null;
 
+    private static String SHOW_QUANTITY_STOCK = "SELECT Quantity  FROM Product WHERE ProductID = ?";
     private static String SELECT_PRODUCT = "SELECT * FROM Review";
     private static String ADD_PRODUCT = "INSERT INTO Product ( SKU, CategoryID, MaterialID, AgeID, SexID, "
             + "PriceRangeID, BrandID, OriginID, Name, Price, Quantity, "
@@ -50,6 +51,22 @@ public class ProductDAO {
             + "    Quantity = ?, "
             + "    Description = ? "
             + "WHERE ProductID = ?";
+
+    public static int getStockQuantity(int productId) throws SQLException, ClassNotFoundException {
+        int stockQuantity = 0;
+        conn = DBConnection.getConnection();
+        try {
+            stm = conn.prepareStatement(SHOW_QUANTITY_STOCK);
+            stm.setInt(1, productId);
+            rs = stm.executeQuery();
+            if (rs.next()) {
+                stockQuantity = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return stockQuantity;
+    }
 
     public static boolean addProduct(Product p, List<String> imagePaths, int isMain) throws ClassNotFoundException {
         boolean addRowProduct = false;

@@ -2,150 +2,126 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<!DOCTYPE html>
-<html lang="vi">
-    <head>
-        <meta charset="UTF-8">
-        <title>Đánh Giá Sản Phẩm</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    </head>
-    <body>
-        <div class=" bg-white rounded-md shadow p-4 mt-10" style="width: 1360px; margin:0 auto;">
-            <div class="container my-4 ">
-                <h1 class="mb-4">ĐÁNH GIÁ SẢN PHẨM</h1>
-                <div class="bg-light p-4 rounded mb-4">
-                    <div class="d-flex align-items-center mb-3">
-                        <span class="display-4 font-weight-bold text-danger">
-                            <fmt:setLocale value="vi_VN" />
-                            <fmt:formatNumber value="${mediumRatings}" type="number" maxFractionDigits="1" />
-                            <span class="h4 ml-2">trên 5</span>
-                        </span>
-                    </div>
-                    <div class="d-flex flex-wrap">
-                        <!-- Truyền vào keyword tương ứng với bộ lọc -->
-                        <button class="btn btn-danger mr-2 mb-2" onclick="filterReviews(event, 6)">Tất Cả</button>
-                        <button class="btn btn-outline-secondary mr-2 mb-2" onclick="filterReviews(event, 5)">5 Sao (${rating5 != null ? rating5 : 0})</button>
-                        <button class="btn btn-outline-secondary mr-2 mb-2" onclick="filterReviews(event, 4)">4 Sao (${rating4 != null ? rating4 : 0})</button>
-                        <button class="btn btn-outline-secondary mr-2 mb-2" onclick="filterReviews(event, 3)">3 Sao (${rating3 != null ? rating3 : 0})</button>
-                        <button class="btn btn-outline-secondary mr-2 mb-2" onclick="filterReviews(event, 2)">2 Sao (${rating2 != null ? rating2 : 0})</button>
-                        <button class="btn btn-outline-secondary mr-2 mb-2" onclick="filterReviews(event, 1)">1 Sao (${rating1 != null ? rating1 : 0})</button>
-                        <button class="btn btn-outline-secondary mr-2 mb-2" onclick="filterReviews(event, 0)">Có Bình Luận (${totalComment != null ? totalComment : 0})</button>
-                        <button class="btn btn-outline-secondary mr-2 mb-2" onclick="filterReviews(event, -1)">Có Hình Ảnh (${totalImage != null ? totalImage : 0})</button>
-                    </div>
-                </div>
+<style>
+    /* Tăng chiều cao của container phân trang */
+    .pagination {
+        height: 50px; /* Điều chỉnh giá trị này theo nhu cầu */
+        display: flex;
+        align-items: center; /* Căn giữa các phần tử theo chiều dọc */
+    }
 
-                <!-- Container chứa danh sách đánh giá -->
-                <div id="reviews-container">
+    /* Tăng chiều cao của mỗi item phân trang */
+    .page-item {
+        height: 40px; /* Điều chỉnh giá trị này theo nhu cầu */
+        display: flex;
+        align-items: center; /* Căn giữa nội dung theo chiều dọc */
+        justify-content: center; /* Căn giữa nội dung theo chiều ngang */
+        margin: 0 5px; /* Khoảng cách giữa các item */
+    }
+
+    /* Tăng chiều cao của liên kết phân trang */
+    .page-link {
+        height: 100%; /* Chiếm toàn bộ chiều cao của .page-item */
+        padding: 10px 15px; /* Điều chỉnh padding để tăng kích thước */
+        display: flex;
+        align-items: center; /* Căn giữa nội dung theo chiều dọc */
+        justify-content: center; /* Căn giữa nội dung theo chiều ngang */
+        font-size: 16px; /* Tăng kích thước chữ nếu cần */
+        border-radius: 5px; /* Bo góc nếu muốn */
+    }
+    *.page-item.active .page-link {
+        z-index: 3;
+        color: #fff;
+        background-color: #BB2D3B;
+        border-color: white;
+
+    }
+    html, body {
+        scroll-behavior: auto !important;
+        overflow-x: hidden; /* Ngăn cuộn ngang */
+        overflow-y: auto; /* Cho phép cuộn dọc nhưng không gây hiệu ứng không mong muốn */
+        height: 100%; /* Đảm bảo chiều cao cố định */
+    }
+    *#reviews-container {
+        min-height: 400px; /* Điều chỉnh giá trị tùy theo giao diện */
+    }
+</style>
+
+<div class="bg-white rounded-md shadow p-4 mt-10" style="width: 1360px; margin: 0 auto;">
+    <div class="container my-4">
+        <h1 class="mb-4">ĐÁNH GIÁ SẢN PHẨM</h1>
+        <div class="bg-light p-4 rounded mb-4">
+            <div class="d-flex align-items-center mb-3">
+                <span class="display-4 font-weight-bold text-danger">
                     <c:choose>
-                        <c:when test="${not empty listReviews}">
-                            <c:forEach var="review" items="${listReviews}">
-                                <c:set var="customer" value="" />
-                                <c:forEach var="inforCustomer" items="${inforCustomers}">
-                                    <c:if test="${review.accountID eq inforCustomer.accountId}">
-                                        <c:set var="customer" value="${inforCustomer}" />
-                                    </c:if>
-                                </c:forEach>
-                                <div class="border-bottom pb-4 mb-4">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <img src="${customer.image}" alt="User avatar" class="rounded-circle mr-2" style="width:60px; height:60px">
-                                        <div>
-                                            <span class="font-weight-bold">${customer.userName}</span>
-                                            <div class="d-flex align-items-center">
-                                                <c:forEach begin="1" end="${review.rating}" var="i">
-                                                    <i class="fas fa-star text-danger"></i>
-                                                </c:forEach>
-                                                <!-- Sao rỗng (empty stars) -->
-                                                <c:forEach begin="${review.rating + 1}" end="5" var="i">
-                                                    <i class="far fa-star text-danger"></i>
-                                                </c:forEach>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="text-muted mb-2">
-                                        <fmt:formatDate value="${review.reviewAt}" pattern=" HH:mm:ss dd/MM/yyyy"/>
-                                    </div>
-                                    <p class="mb-2">${review.comment}</p>
-                                    <c:if test="${not empty review.imgReview}">
-                                        <div class="mb-2">
-                                            <img src="${review.imgReview}" alt="Product image" class="img-thumbnail" width="100" height="100">
-                                        </div>
-                                    </c:if>
-                                </div>
-                            </c:forEach>
+                        <c:when test="${not empty mediumRatings and mediumRatings > 0}">
+                            <fmt:formatNumber value="${mediumRatings}" pattern="#.0"/>
                         </c:when>
                         <c:otherwise>
-                            <p class="text-center text-muted">Chưa có đánh giá nào.</p>
+                            0
                         </c:otherwise>
                     </c:choose>
-                </div> 
-                <div id="pagination-container" class="d-flex justify-content-center gap-2 my-4"></div>
+
+                    <span class="h4 ml-2">trên 5</span>
+                </span>
+            </div>
+            <div class="d-flex flex-wrap">
+                <button class="btn btn-danger mr-2 mb-2" data-star="6" onclick="filterReviews(event, 6)">Tất Cả</button>
+                <button class="btn btn-outline-secondary mr-2 mb-2" data-star="5" onclick="filterReviews(event, 5)">5 Sao (${rating5})</button>
+                <button class="btn btn-outline-secondary mr-2 mb-2" data-star="4" onclick="filterReviews(event, 4)">4 Sao (${rating4})</button>
+                <button class="btn btn-outline-secondary mr-2 mb-2" data-star="3" onclick="filterReviews(event, 3)">3 Sao (${rating3})</button>
+                <button class="btn btn-outline-secondary mr-2 mb-2" data-star="2" onclick="filterReviews(event, 2)">2 Sao (${rating2})</button>
+                <button class="btn btn-outline-secondary mr-2 mb-2" data-star="1" onclick="filterReviews(event, 1)">1 Sao (${rating1})</button>
+                <button class="btn btn-outline-secondary mr-2 mb-2" data-star="0" onclick="filterReviews(event, 0)">Có Bình Luận (${totalComment})</button>
+                <button class="btn btn-outline-secondary mr-2 mb-2" data-star="-1" onclick="filterReviews(event, -1)">Có Hình Ảnh (${totalImage})</button>
             </div>
         </div>
 
-        <script>
-            var productId = '${product.productID}';
-            function filterReviews(event, star) {
-                // Xóa class 'btn-danger' khỏi tất cả các nút
-                document.querySelectorAll('.d-flex .btn').forEach(button => {
-                    button.classList.remove('btn-danger');
-                    button.classList.add('btn-outline-secondary');
-                });
+        <div id="reviews-container">
+            <!-- Nội dung đánh giá sẽ được load bằng AJAX ở đây -->
+        </div>
 
-                // Tìm nút được nhấp và thêm 'btn-danger' vào nó
-                event.target.classList.remove('btn-outline-secondary');
-                event.target.classList.add('btn-danger');
+        <div id="pagination-container" class="pagination justify-content-center">
+            <!-- Phân trang sẽ được tạo động ở đây -->
+        </div>
+    </div>
+</div>
 
-                // Debug kiểm tra giá trị star
-                console.log("Filtering reviews with rating:", star);
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="assets/js/reviews.js"></script> 
 
-                // Gửi yêu cầu AJAX
-                $.ajax({
-                    url: 'ReviewManagementServlet', // Đường dẫn Servlet
-                    method: 'POST',
-                    data: {
-                        action: "fillterCustomer",
-                        keyWord: star,
-                        productID: productId
-                    },
-                    dataType: 'json',
-                    success: function (data) {
-                        var html = "";
-                        if (data && data.length > 0) {
-                            $.each(data, function (index, review) {
-                                html += '<div class="border-bottom pb-4 mb-4">';
-                                html += '    <div class="d-flex align-items-center mb-2">';
-                                html += '        <img src= "' + review.account.image + '" alt="User avatar" class="rounded-circle mr-2" width="40" height="40">';
-                                html += '        <div>';
-                                html += '            <span class="font-weight-bold">' + review.account.userName + '</span>';
-                                html += '            <div class="d-flex align-items-center">';
-                                for (var i = 1; i <= Math.floor(review.Rating); i++) {
-                                    html += '<i class="fas fa-star text-danger"></i>';
-                                }
-                                for (var i = Math.ceil(review.Rating); i < 5; i++) {
-                                    html += '<i class="far fa-star text-danger"></i>';
-                                }
-                                html += '            </div>';
-                                html += '        </div>';
-                                html += '    </div>';
-                                html += '    <div class="text-muted mb-2">' + new Date(review.reviewAt).toLocaleString() + '</div>';
-                                html += '    <p class="mb-2">' + review.Comment + '</p>';
-                                if (review.imgReview && review.imgReview.trim() !== "") {
-                                    html += '<div class="mb-2"><img src="' + review.imgReview + '" alt="Product image" class="img-thumbnail" width="100" height="100"></div>';
-                                }
-                                html += '</div>';
-                            });
+
+<script>
+                    $(document).ready(function () {
+                        var productId = '${product.productID}';
+                        console.log("Product ID: ", productId);
+
+                        if (!productId) {
+                            console.error("Product ID is not defined!");
+                            $('#reviews-container').html('<p class="text-danger">Lỗi: Không tìm thấy ID sản phẩm.</p>');
                         } else {
-                            html = '<p class="text-center text-muted">Chưa có đánh giá nào.</p>';
+                            // Tải đánh giá mặc định (tất cả) khi trang vừa tải xong
+                            loadReviews(6, 1, productId);
                         }
-                        $("#reviews-container").html(html);
-                    },
-                    error: function () {
-                        alert("Có lỗi xảy ra khi tải dữ liệu đánh giá.");
+                    });
+
+                    var productId = '${product.productID}';
+                    console.log("Product ID: ", productId);
+
+                    if (!productId) {
+                        console.error("Product ID is not defined!");
+                        document.getElementById('reviews-container').innerHTML = '<p class="text-danger">Lỗi: Không tìm thấy ID sản phẩm.</p>';
+                    } else {
+                        function filterReviews(event, star) {
+                            // Xóa class 'btn-danger' khỏi tất cả các nút
+                            document.querySelectorAll('.d-flex .btn').forEach(button => {
+                                button.classList.remove('btn-danger');
+                                button.classList.add('btn-outline-secondary');
+                            });
+                            event.target.classList.add('btn-danger');
+                            event.target.classList.remove('btn-outline-secondary');
+
+                            loadReviews(star, 1, productId);
+                        }
                     }
-                });
-            }
-        </script>
-    </body>
-</html>
+</script>

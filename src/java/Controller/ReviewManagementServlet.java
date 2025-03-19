@@ -7,6 +7,7 @@ import Model.Account;
 import Model.Review;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
@@ -40,6 +41,7 @@ public class ReviewManagementServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             String action = request.getParameter("action");
+
             if (action != null) {
                 switch (action) {
                     case "delete":
@@ -300,26 +302,24 @@ public class ReviewManagementServlet extends HttpServlet {
         request.setAttribute("forward", forward);
     }
 
-    protected void getListReviewForCustomer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action");
-        String keyword = request.getParameter("keyWord");
-        String productIdStr = request.getParameter("productID"); 
+    protected void getListReviewForCustomer(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException, SQLException, ClassNotFoundException {
+        int productID = Integer.parseInt(request.getParameter("productID"));
+        int star = Integer.parseInt(request.getParameter("star"));
+        int page = Integer.parseInt(request.getParameter("page"));
+        int pageSize = 5;
+        int totalReviews = ReviewDAO.getTotalReviews(star, productID);
+        int totalPages = (int) Math.ceil((double) totalReviews / pageSize);
+ 
+ 
+        List<Review> reviews = ReviewDAO.getReviewsFromDatabase(star, productID, (page - 1) * pageSize, pageSize);
+        JsonObject jsonResponse = new JsonObject();
+        jsonResponse.add("reviews", new Gson().toJsonTree(reviews));
+        jsonResponse.addProperty("currentPage", page);
+          jsonResponse.addProperty("totalPages", totalPages);
 
-        if (keyword == null || keyword.isEmpty()) {
-            keyword = "6"; // Mặc định là "Tất Cả"
-        }
-        int productId = Integer.parseInt(productIdStr);
-        List<Review> listReviews = ReviewDAO.getReviewsFromDatabase(keyword, productId);
-        // Chuyển danh sách thành JSON
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd HH:mm:ss")
-                .create();
-        String json = gson.toJson(listReviews);
-        System.out.println(json);
-        // Thiết lập response
         response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(json);
+        response.getWriter().write(jsonResponse.toString());
     }
 
 }

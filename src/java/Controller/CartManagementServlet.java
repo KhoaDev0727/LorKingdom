@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.json.JSONObject;
 
 @WebServlet("/CartManagementServlet")
 public class CartManagementServlet extends HttpServlet {
@@ -151,7 +152,7 @@ public class CartManagementServlet extends HttpServlet {
                 }
             }
             if (currentItem == null) {
-                sendErrorResponse(response, "Item not found");
+                sendErrorResponse(response, "Sản Phẩm Bạn thêm không tồn tại.");
                 return;
             }
 
@@ -163,11 +164,23 @@ public class CartManagementServlet extends HttpServlet {
             }
 
             boolean success;
+            int stockQuantity = ProductDAO.getStockQuantity(productId);
+            System.out.println(stockQuantity);
             if (newQuantity < 1) {
                 success = cartDAO.removeItem(userId, productId);
                 newQuantity = 0;
-            } else {
+            } else if (newQuantity <= stockQuantity) {
                 success = cartDAO.updateItem(userId, productId, newQuantity);
+            } else {
+                // Nếu số lượng mới vượt quá hàng tồn kho, có thể đặt lại bằng stockQuantity hoặc báo lỗi
+                success = false;
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                JSONObject jsonResponse = new JSONObject();
+                jsonResponse.put("error", "Số lượng sản phẩm không đủ trong kho! Vui lòng chọn số lượng nhỏ hơn.");
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // Mã lỗi 400
+                response.getWriter().write(jsonResponse.toString());
+                return;
             }
 
             if (!success) {

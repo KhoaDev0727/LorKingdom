@@ -43,10 +43,7 @@ public class CartDAO {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("SQL Error: " + e.getMessage());
-        } finally {
-            if (stm != null) stm.close();
-            if (conn != null) conn.close();
-        }
+        } 
         return rowUpdate;
     }
 
@@ -61,10 +58,7 @@ public class CartDAO {
             updateRow = stm.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (stm != null) stm.close();
-            if (conn != null) conn.close();
-        }
+        } 
         return updateRow;
     }
 
@@ -78,12 +72,9 @@ public class CartDAO {
             updateRow = stm.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (stm != null) stm.close();
-            if (conn != null) conn.close();
-        }
+        } 
         return updateRow;
-    }
+    } 
 
     public static boolean removeAll(int userId) throws SQLException, ClassNotFoundException {
         boolean updateRow = false;
@@ -94,10 +85,7 @@ public class CartDAO {
             updateRow = stm.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (stm != null) stm.close();
-            if (conn != null) conn.close();
-        }
+        } 
         return updateRow;
     }
 

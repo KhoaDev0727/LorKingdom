@@ -255,7 +255,8 @@
                                     onclick="resetFilter()">
                                 Xoá bộ lọc
                             </button>
-
+<!-- Thêm phần tử mốc vào nơi bạn muốn cuộn đến -->
+<div class="your-class" id="scroll-marker"></div>
                         </div>
                         <div class="flex items-center text-xl">
                             <span class="mr-2">

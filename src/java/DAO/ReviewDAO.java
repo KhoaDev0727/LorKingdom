@@ -222,55 +222,101 @@ public class ReviewDAO {
         return list;
     }
 
-
-    public static List<Review> getReviewsFromDatabase(String keyword, int productId) {
-        List<Review> reviews = new ArrayList<>();
-        try {
-            conn = DBConnection.getConnection();
-            StringBuilder sql = new StringBuilder(
-                    "SELECT r.*, a.AccountName, a.Image "
-                    + "FROM Reviews r JOIN Account a ON r.AccountID = a.AccountID "
-                    + "WHERE r.ProductID = ? AND r.Status = 0 AND r.IsDeleted = 0"
-            );
-
-            // Áp dụng bộ lọc
-            if ("0".equals(keyword)) {
-                sql.append(" AND r.Comment IS NOT NULL AND r.Comment <> ''");
-            } else if ("-1".equals(keyword)) {
-                sql.append(" AND r.ImgReview IS NOT NULL AND r.ImgReview <> ''");
-            } else if (!"6".equals(keyword)) {
-                sql.append(" AND r.Rating = ?"); 
-            }
-
-            stm = conn.prepareStatement(sql.toString());
-            stm.setInt(1, productId); // Set productId cho tham số đầu tiên
-
-            if (!"6".equals(keyword) && !"0".equals(keyword) && !"-1".equals(keyword)) {
-                stm.setInt(2, Integer.parseInt(keyword)); // Set rating nếu có lọc
-            }
-
-            rs = stm.executeQuery();
-            while (rs.next()) {
-                Review r = new Review(
-                        rs.getInt("AccountID"),
-                        rs.getInt("ProductID"),
-                        rs.getString("ImgReview"),
-                        rs.getInt("IsDeleted"),
-                        rs.getInt("Rating"),
-                        rs.getString("Comment"),
-                        rs.getTimestamp("ReviewedAt") // Đổi kiểu thành java.sql.Timestamp
-                );
-
-                // Thêm UserName vào Review
-                Account acc = new Account();
-                    acc.setUserName(rs.getString("AccountName"));
-                    acc.setImage(rs.getString("Image"));
-                r.setAccount(acc);
-                reviews.add(r);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return reviews;
+   public static List<Review> getReviewsFromDatabase(int star, int productId, int offset, int limit) 
+        throws SQLException, ClassNotFoundException {
+    List<Review> reviews = new ArrayList<>();
+    String sql = "SELECT r.*, a.AccountName, a.Image " +
+                 "FROM Reviews r " +
+                 "JOIN Account a ON r.AccountID = a.AccountID " +
+                 "WHERE r.ProductID = ? AND r.Status = 0 ";
+    
+    // Thêm điều kiện filter
+    switch (star) {
+        case 0:
+            sql += "AND r.Comment IS NOT NULL AND r.Comment <> '' ";
+            break;
+        case -1:
+            sql += "AND r.ImgReview IS NOT NULL AND r.ImgReview <> '' ";
+            break;
+        case 6:
+            // Không thêm điều kiện
+            break;
+        default:
+            sql += "AND r.Rating = ? ";
     }
+    
+    sql += "ORDER BY r.ReviewedAt DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        
+        // Gán tham số theo thứ tự cố định
+        stmt.setInt(1, productId); // Tham số 1: ProductID
+        
+        // Nếu star từ 1-5, gán Rating vào tham số 2
+        if (star >= 1 && star <= 5) {
+            stmt.setInt(2, star);
+            stmt.setInt(3, offset);  // Tham số 3: OFFSET
+            stmt.setInt(4, limit);   // Tham số 4: FETCH NEXT
+        } else {
+            stmt.setInt(2, offset);  // Tham số 2: OFFSET
+            stmt.setInt(3, limit);   // Tham số 3: FETCH NEXT
+        }
+        
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            Review review = new Review(
+                rs.getInt("ReviewID"),
+                rs.getInt("AccountID"),
+                rs.getInt("ProductID"),
+                rs.getString("Comment"),
+                rs.getInt("Rating"),
+                rs.getString("ImgReview"),
+                rs.getInt("Status"),
+                rs.getTimestamp("ReviewedAt")
+            ); 
+            // Thêm UserName vào Review
+            Account acc = new Account();
+            acc.setUserName(rs.getString("AccountName"));
+            acc.setImage(rs.getString("Image"));
+            review.setAccount(acc);
+            reviews.add(review);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+  
+    return reviews;
+}
+public static int getTotalReviews(int star, int productId) throws SQLException, ClassNotFoundException {
+    String sql = "SELECT COUNT(*) FROM Reviews WHERE ProductID = ? AND Status = 0 ";
+    
+    switch (star) {
+        case 0:
+            sql += "AND Comment IS NOT NULL AND Comment <> ''";
+            break;
+        case -1:
+            sql += "AND ImgReview IS NOT NULL AND ImgReview <> ''";
+            break;
+        case 6:
+            break;
+        default:
+            sql += "AND Rating = ?";
+    }
+    
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        
+        stmt.setInt(1, productId);
+        if (star >= 1 && star <= 5) {
+            stmt.setInt(2, star);
+        }
+        
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) return rs.getInt(1);
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return 0;
+}
 }

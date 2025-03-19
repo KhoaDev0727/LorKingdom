@@ -133,60 +133,6 @@
         </div>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="assets/js/cartJs.js"></script>
-        <script>
-                                function updateQuantity(productId, action, operation) {
-                                    console.log(operation);
-                                    console.log(productId);
-                                    $.ajax({
-                                        url: 'Cart',
-                                        type: 'POST',
-                                        data: {
-                                            productID: productId,
-                                            action: action,
-                                            operation: operation
-                                        },
-                                        dataType: "json",
-                                        success: function (response) {
-                                            if (response && response.newQuantity !== undefined && response.itemTotal !== undefined) {
-                                                var row = $('button[onclick*="' + productId + '"]').closest('tr');
-
-                                                // If quantity is 0, remove the row from the table
-                                                if (response.newQuantity === 0) {
-                                                    row.remove();
-                                                    // Check if cart is empty after removal
-                                                    if (response.cartSize === 0) {
-                                                        $('.cart-table tbody').html('<tr><td colspan="7" class="empty-cart">Giỏ hàng của bạn đang trống</td></tr>');
-                                                        $('.delete-all').remove(); // Remove "Delete All" button
-                                                        $('.pay').remove(); // Remove "Thanh Toán" button
-                                                        $('.total-product').text('0');
-                                                    }
-                                                } else {
-                                                    // Update quantity and total price for the item
-                                                    row.find('.quantity-input').val(response.newQuantity);
-                                                    row.find('.total-price').text(formatNumber(response.itemTotal) + ' VND');
-                                                }
-
-                                                // Update total money and cart size
-                                                if (response.totalMoney !== undefined) {
-                                                    $('.total-amount').text(formatNumber(response.totalMoney) + ' VND');
-                                                }
-                                                $('.cart-header span:last').text(response.cartSize !== undefined ? response.cartSize : 0);
-                                            } else {
-                                                console.error("Lỗi dữ liệu từ server:", response);
-                                            }
-                                        },
-                                        error: function (xhr, status, error) {
-                                            console.error("AJAX Error:", status, error);
-                                            console.error("Server Response:", xhr.responseText);
-                                            alert("Lỗi: " + xhr.status + " - " + xhr.statusText + "\nChi tiết: " + xhr.responseText);
-                                        }
-                                    });
-                                }
-
-                                // Utility function to format numbers
-                                function formatNumber(num) {
-                                    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                }
-        </script>
+    
     </body>
 </html>
