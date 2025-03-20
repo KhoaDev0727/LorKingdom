@@ -10,6 +10,13 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <title>MyKingdom - Đặt Hàng</title>
         <link rel="stylesheet" href="assets/styleUser/styleOrder.css">
+        <style>
+            .error-message {
+                color: red;
+                font-size: 0.9em;
+                margin-top: 5px;
+            }
+        </style>
     </head>
     <body>
         <div class="container">
@@ -19,42 +26,51 @@
                     <img src="./assets/img/logo-login.png" alt="logo" class="logo-order-details">
                 </div>
 
-                <form action="OrderServlet" method="POST">
+                <form action="OrderServlet" method="POST" id="orderForm">
                     <div class="form-group">
                         <p class="fs-4 fw-bold">Liên hệ</p>
-                        <input type="email" name="email" placeholder="Email của bạn" value="${sessionScope.email}" required>
+                        <input type="email" name="email" id="email" placeholder="Email của bạn" 
+                               value="${sessionScope.formDataJson != null ? '' : sessionScope.email}">
+                        <div class="error-message">${sessionScope.validationErrors.email}</div>
                     </div>
 
                     <div class="form-group">
                         <p class="fs-4 fw-bold">Địa chỉ giao hàng</p> 
                         <label>Họ và Tên</label>
-                        <input type="text" name="fullName" required>
+                        <input type="text" name="fullName" id="fullName">
+                        <div class="error-message">${sessionScope.validationErrors.fullName}</div>
                     </div>
                     <div class="form-group">
                         <label>Điện thoại</label>
-                        <input type="tel" name="phone" required>                   
+                        <input type="tel" name="phone" id="phone">  
+                        <div class="error-message">${sessionScope.validationErrors.phone}</div>                
                     </div>
                     <div class="form-group">
                         <label>Địa chỉ</label>
-                        <input type="text" name="address" required>            
+                        <input type="text" name="address" id="address">  
+                        <div class="error-message">${sessionScope.validationErrors.address}</div>          
                     </div>           
                     <div class="form-group">
-                        <label>Tỉnh / Thành phố</label>
+                        <label>Tỉnh / Thành phố *</label>
                         <select name="province" id="province">
+                            <option value="">Chọn tỉnh/thành phố</option>
                         </select>
+                        <div class="error-message">${sessionScope.validationErrors.province}</div>
                     </div>
                     <div class="form-group row">
                         <div class="col-6">
-                            <label>Quận / Huyện</label>
+                            <label>Quận / Huyện *</label>
                             <select name="district" id="district">
-                                <option value="">chọn quận</option>
+                                <option value="">Chọn quận/huyện</option>
                             </select>
+                            <div class="error-message">${sessionScope.validationErrors.district}</div>
                         </div>
                         <div class="col-6">
-                            <label>Phường / Xã</label>
+                            <label>Phường / Xã *</label>
                             <select name="ward" id="ward">
-                                <option value="">chọn phường</option>
+                                <option value="">Chọn phường/xã</option>
                             </select>
+                            <div class="error-message">${sessionScope.validationErrors.ward}</div>
                         </div>
                     </div>
 
@@ -101,6 +117,7 @@
                     <label>Mã giảm giá:</label>
                     <input type="text" id="voucherCode" placeholder="Nhập mã giảm giá">
                     <button onclick="applyVoucher()">Áp dụng</button>
+                    <div id="voucherError" class="error-message"></div>
                     <c:if test="${not empty availableVouchers}">
                         <p>Các mã giảm giá có sẵn:</p>
                         <select id="voucherSelect" onchange="fillVoucherCode()">
@@ -130,10 +147,38 @@
                     </p>
                 </div>
             </div>
-
         </div>
 
         <script>
+            // Điền lại giá trị từ formDataJson
+            window.onload = function () {
+                const formDataJson = '${sessionScope.formDataJson != null ? sessionScope.formDataJson : "{}"}';
+                const formData = JSON.parse(formDataJson);
+
+                // Điền giá trị cho các input
+                if (formData.email) document.getElementById("email").value = formData.email;
+                if (formData.fullName) document.getElementById("fullName").value = formData.fullName;
+                if (formData.phone) document.getElementById("phone").value = formData.phone;
+                if (formData.address) document.getElementById("address").value = formData.address;
+
+                // Điền giá trị cho các select (sẽ được cập nhật sau khi location.js tải xong)
+                if (formData.province) {
+                    setTimeout(() => {
+                        document.getElementById("province").value = formData.province;
+                    }, 1000); // Delay để chờ location.js tải
+                }
+                if (formData.district) {
+                    setTimeout(() => {
+                        document.getElementById("district").value = formData.district;
+                    }, 1000);
+                }
+                if (formData.ward) {
+                    setTimeout(() => {
+                        document.getElementById("ward").value = formData.ward;
+                    }, 1000);
+                }
+            };
+
             function fillVoucherCode() {
                 const select = document.getElementById("voucherSelect");
                 const selectedCode = select.value;
@@ -141,16 +186,19 @@
             }
 
             function applyVoucher() {
-                const voucherCode = document.getElementById("voucherCode").value;
+                const voucherCode = document.getElementById("voucherCode").value.trim();
+                const voucherError = document.getElementById("voucherError");
+
                 if (!voucherCode) {
-                    alert("Vui lòng nhập mã giảm giá!");
+                    voucherError.textContent = "Vui lòng nhập mã giảm giá!";
+                    voucherError.style.display = "block";
                     return;
                 }
 
                 $.ajax({
                     url: "ApplyVoucherServlet",
                     type: "POST",
-                    data: {voucherCode: voucherCode},
+                    data: { voucherCode: voucherCode },
                     success: function (response) {
                         if (response.success) {
                             const discount = response.discount;
@@ -159,12 +207,15 @@
 
                             $("#discountApplied").text("Đã áp dụng giảm giá: " + formatNumber(discount) + " VND");
                             $("#finalTotal").text(formatNumber(finalTotal) + " VND");
+                            voucherError.style.display = "none";
                         } else {
-                            alert(response.message || "Mã giảm giá không hợp lệ!");
+                            voucherError.textContent = "Mã giảm giá không tồn tại!";
+                            voucherError.style.display = "block";
                         }
                     },
                     error: function () {
-                        alert("Có lỗi xảy ra khi áp dụng mã giảm giá!");
+                        voucherError.textContent = "Có lỗi xảy ra khi áp dụng mã giảm giá!";
+                        voucherError.style.display = "block";
                     }
                 });
             }
@@ -174,9 +225,6 @@
             }
         </script>
         
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
-                integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"
                 integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>

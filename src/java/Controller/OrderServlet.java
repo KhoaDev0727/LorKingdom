@@ -14,13 +14,16 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
+import java.util.logging.Level;
+import java.util.regex.Pattern;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.json.JSONObject;
-import java.util.logging.Logger;
-import java.util.logging.Level;
 
 public class OrderServlet extends HttpServlet {
 
@@ -28,6 +31,11 @@ public class OrderServlet extends HttpServlet {
     private OrderDAO orderDAO;
     private CartDAO cartDAO;
     private final OkHttpClient client = new OkHttpClient();
+
+    // Regex patterns for validation
+    private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zA-Z\\sÀ-ỹ]+$");
+    private static final Pattern PHONE_PATTERN = Pattern.compile("^[0-9]{10}$");
+    private static final Pattern ADDRESS_PATTERN = Pattern.compile("^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9\\s,/]+$");
 
     @Override
     public void init() throws ServletException {
@@ -78,12 +86,30 @@ public class OrderServlet extends HttpServlet {
         String districtCode = request.getParameter("district");
         String wardCode = request.getParameter("ward");
 
+        // Backend validation
+        Map<String, String> errors = validateInput(email, fullName, phone, address, provinceCode, districtCode, wardCode);
+        if (!errors.isEmpty()) {
+            session.setAttribute("validationErrors", errors);
+            // Chuyển formData thành chuỗi JSON
+            Map<String, String> formData = new HashMap<>();
+            formData.put("email", email != null ? email : "");
+            formData.put("fullName", fullName != null ? fullName : "");
+            formData.put("phone", phone != null ? phone : "");
+            formData.put("address", address != null ? address : "");
+            formData.put("province", provinceCode != null ? provinceCode : "");
+            formData.put("district", districtCode != null ? districtCode : "");
+            formData.put("ward", wardCode != null ? wardCode : "");
+            session.setAttribute("formDataJson", new JSONObject(formData).toString());
+            response.sendRedirect("order.jsp");
+            return;
+        }
+
         // Lấy tên từ API
         String provinceName = getLocationName("p", provinceCode);
         String districtName = getLocationName("d", districtCode);
         String wardName = getLocationName("w", wardCode);
 
-        // Tạo chuỗi địa chỉ đầy đủ, tránh dấu phẩy thừa
+        // Tạo chuỗi địa chỉ đầy đủ
         StringBuilder fullAddress = new StringBuilder(address);
         if (!wardName.isEmpty() && !wardName.startsWith("Unknown_") && !wardName.startsWith("Error_")) {
             fullAddress.append(", ").append(wardName);
@@ -94,6 +120,7 @@ public class OrderServlet extends HttpServlet {
         if (!provinceName.isEmpty() && !provinceName.startsWith("Unknown_") && !provinceName.startsWith("Error_")) {
             fullAddress.append(", ").append(provinceName);
         }
+        String finalAddress = fullAddress.toString().replaceAll(",\\s*$", "");
 
         // Xử lý các phương thức thanh toán
         if ("zalopay".equals(paymentMethod)) {
@@ -124,17 +151,17 @@ public class OrderServlet extends HttpServlet {
             }
             order.setOrderDetails(orderDetails);
 
-            boolean success = orderDAO.saveOrder(order, userId, fullAddress.toString(), phone, email, 
+            boolean success = orderDAO.saveOrder(order, userId, finalAddress, phone, email, 
                                                provinceCode, districtCode, wardCode);
             if (success) {
                 session.setAttribute("successMessage", "Đặt hàng thành công! Đơn hàng sẽ được giao sớm nhất.");
                 session.setAttribute("order", order);
-                session.setAttribute("address", fullAddress.toString());
-                session.setAttribute("provinceCode", provinceCode);
-                session.setAttribute("districtCode", districtCode);
-                session.setAttribute("wardCode", wardCode);
+                session.setAttribute("address", finalAddress);
                 session.setAttribute("phone", phone);
                 session.setAttribute("email", email);
+                session.setAttribute("wardName", wardName);
+                session.setAttribute("districtName", districtName);
+                session.setAttribute("provinceName", provinceName);
 
                 try {
                     cartDAO.removeAll(userId);
@@ -148,6 +175,8 @@ public class OrderServlet extends HttpServlet {
                 session.removeAttribute("listCart");
                 session.removeAttribute("totalMoney");
                 session.removeAttribute("discount");
+                session.removeAttribute("validationErrors");
+                session.removeAttribute("formDataJson");
                 response.sendRedirect("orderCash-success.jsp");
             } else {
                 session.setAttribute("errorMessage", "Có lỗi xảy ra khi đặt hàng!");
@@ -157,6 +186,50 @@ public class OrderServlet extends HttpServlet {
             session.setAttribute("errorMessage", "Phương thức thanh toán không hợp lệ!");
             response.sendRedirect("order.jsp");
         }
+    }
+
+    private Map<String, String> validateInput(String email, String fullName, String phone, 
+                                             String address, String provinceCode, String districtCode, String wardCode) {
+        Map<String, String> errors = new HashMap<>();
+
+        // Validate email
+        if (email == null || email.trim().isEmpty()) {
+            errors.put("email", "Email không được để trống!");
+        }
+
+        // Validate fullName
+        if (fullName == null || fullName.trim().isEmpty()) {
+            errors.put("fullName", "Họ và tên không được để trống!");
+        } else if (!NAME_PATTERN.matcher(fullName).matches()) {
+            errors.put("fullName", "Họ và tên không được chứa kí tự đặc biệt hoặc số!");
+        }
+
+        // Validate phone
+        if (phone == null || phone.trim().isEmpty()) {
+            errors.put("phone", "Số điện thoại không được để trống!");
+        } else if (!PHONE_PATTERN.matcher(phone).matches()) {
+            errors.put("phone", "Số điện thoại chỉ được chứa số, dài 10 chữ số!");
+        }
+
+        // Validate address
+        if (address == null || address.trim().isEmpty()) {
+            errors.put("address", "Địa chỉ không được để trống!");
+        } else if (!ADDRESS_PATTERN.matcher(address).matches()) {
+            errors.put("address", "Địa chỉ phải chứa chữ và số, không chứa kí tự đặc biệt!");
+        }
+
+        // Validate province, district, ward
+        if (provinceCode == null || provinceCode.trim().isEmpty()) {
+            errors.put("province", "Vui lòng chọn tỉnh/thành phố!");
+        }
+        if (districtCode == null || districtCode.trim().isEmpty()) {
+            errors.put("district", "Vui lòng chọn quận/huyện!");
+        }
+        if (wardCode == null || wardCode.trim().isEmpty()) {
+            errors.put("ward", "Vui lòng chọn phường/xã!");
+        }
+
+        return errors;
     }
 
     private String getLocationName(String type, String code) {

@@ -105,7 +105,7 @@
         <!-- Header thông báo thành công -->
         <div class="success-header">
             <h1><i class="fas fa-check-circle"></i> Đặt Hàng Thành Công!</h1>
-            <p>Cảm ơn bạn đã mua sắm tại MyKingdom. Đơn hàng của bạn đã được ghi nhận.</p>
+            <p>Cảm ơn bạn đã mua sắm tại LorKingdom. Đơn hàng của bạn đã được ghi nhận.</p>
         </div>
 
         <!-- Thông tin khách hàng -->
@@ -114,7 +114,7 @@
             <p><span class="info-label">Họ và Tên:</span> ${sessionScope.order.accountName}</p>
             <p><span class="info-label">Số Điện Thoại:</span> ${sessionScope.phone}</p>
             <p><span class="info-label">Email:</span> ${sessionScope.email}</p>
-            <p><span class="info-label">Địa Chỉ:</span> ${sessionScope.address}, ${sessionScope.ward}, ${sessionScope.district}, ${sessionScope.city}</p>
+            <p><span class="info-label">Địa Chỉ:</span> ${sessionScope.address}</p>
             <p><span class="info-label">Phương Thức Thanh Toán:</span> ${sessionScope.order.payMentMethodName}</p>
             <p><span class="info-label">Phương Thức Giao Hàng:</span> ${sessionScope.order.shipingMethodName}</p>
         </div>
