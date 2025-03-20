@@ -16,6 +16,37 @@
         <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="./assets/js/script.js"></script>
+        <style>
+            /* Back to Top Button */
+            .shopee-back-to-top {
+                background: #EE4D2D;
+                color: white;
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                transition: all 0.3s ease;
+                border: none;
+                outline: none;
+                opacity: 0.8;
+                right: 20px;
+                bottom: 90px;
+            }
+
+            .shopee-back-to-top:hover {
+                background: #f05d40;
+                transform: scale(1.1);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+                opacity: 1;
+            }
+
+            .shopee-back-to-top i {
+                font-size: 20px;
+            }
+        </style>
         <title>LorKingdom</title>
     </head>
 
@@ -247,6 +278,11 @@
             </div>
         </div>
 
+        <!-- Back to Top Button -->
+        <button id="back-to-top" class="hidden fixed bottom-35 right-5 shopee-back-to-top">
+            <i class="bi bi-arrow-up"></i>
+        </button>
+
         <!-- Vendor JS Files -->
         <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
@@ -357,6 +393,29 @@
                                             submitFilter();
                                         }
 
+        </script>
+        <script>
+            // Back to Top Button
+            document.addEventListener("DOMContentLoaded", function () {
+                const backToTopBtn = document.getElementById("back-to-top");
+
+                window.addEventListener("scroll", function () {
+                    if (window.scrollY > 300) {
+                        backToTopBtn.classList.remove("hidden");
+                        backToTopBtn.classList.add("block");
+                    } else {
+                        backToTopBtn.classList.add("hidden");
+                        backToTopBtn.classList.remove("block");
+                    }
+                });
+
+                backToTopBtn.addEventListener("click", function () {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: "smooth"
+                    });
+                });
+            });
         </script>
 
     </body>

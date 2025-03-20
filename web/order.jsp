@@ -40,17 +40,22 @@
                     </div>           
                     <div class="form-group">
                         <label>Tỉnh / Thành phố</label>
-                        <input type="text" name="city" required>                   
+                        <select name="province" id="province">
+                        </select>
                     </div>
                     <div class="form-group row">
                         <div class="col-6">
                             <label>Quận / Huyện</label>
-                            <input type="text" name="district" required>
+                            <select name="district" id="district">
+                                <option value="">chọn quận</option>
+                            </select>
                         </div>
                         <div class="col-6">
                             <label>Phường / Xã</label>
-                            <input type="text" name="ward" required>
-                        </div>   
+                            <select name="ward" id="ward">
+                                <option value="">chọn phường</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="payment-methods row">
@@ -168,5 +173,13 @@
                 return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
         </script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+                integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"
+                integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="assets/js/location.js"></script>
     </body>
 </html>
