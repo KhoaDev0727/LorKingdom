@@ -16,7 +16,18 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <style>
+        <style> */* Preview ảnh upload */
+            #image-preview {
+                max-width: 200px;
+                margin-top: 10px;
+                display: none;
+            }
+
+            #image-preview img {
+                width: 100%;
+                height: auto;
+                border-radius: 5px;
+            }
             .text-muted {
                 text-align: left;
             }
@@ -105,7 +116,7 @@
                             <span class="tab" data-status="Cancelled">Đã hủy</span>
                         </div>
                         <div id="pagination-container" class="d-flex justify-content-center gap-2 my-4"> 
-                            <h3>KLhang</h3></div>
+                        </div>
                         <div class="order-content">
                             <img src="./assets/img/notifi-order.png" alt="Chưa có đơn hàng" class="no-order-img">
                             <p>Chưa có đơn hàng</p>
@@ -123,56 +134,48 @@
                         <h5 class="modal-title" id="reviewModalLabel">Đánh giá sản phẩm</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        <form action="ReviewManagementServlet" method="POST" enctype="multipart/form-data">
-                            <input type="hidden" name="action" value="add">
-                            <input type="hidden" name="productId" id="modal-productId">
-                            <input type="hidden" name="orderId" id="modal-orderId">
+                    <form id="reviewForm" enctype="multipart/form-data">
+                        <div class="modal-body"> 
+                            <input type="hidden" id="modal-OrderDetail-Id" name="orderDetailID">
+                            <input type="hidden" id="modal-productId">
+                            <input type="hidden" id="modal-orderId">
+                            <input type="hidden" id="modal-action" value="add">
                             <div class="mb-3">
-                                <div class="d-flex align-items-center">
-                                    <img id="modal-productImg" alt="Product image" class="me-3" height="60" width="60"/>
-                                    <div>
-                                        <p id="modal-productName" class="fw-bold mb-1"></p>
-                                        <p class="text-muted mb-0">Danh mục: <span id="modal-productCategory">Không xác định</span></p>
-                                    </div>
+                                <img id="modal-productImg" src="" alt="Product" class="img-fluid" style="max-height: 100px;">
+                                <h6 id="modal-productName"></h6>
+                                <small class="text-muted" id="modal-productCategory"></small>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Đánh giá của bạn:</label>
+                                <div id="star-rating">
+                                    <i class="fa fa-star" data-rating="1"></i>
+                                    <i class="fa fa-star" data-rating="2"></i>
+                                    <i class="fa fa-star" data-rating="3"></i>
+                                    <i class="fa fa-star" data-rating="4"></i>
+                                    <i class="fa fa-star" data-rating="5"></i>
                                 </div>
+                                <span id="rating-text">Tuyệt vời</span>
+                                <input type="hidden" id="rating-input" value="5">
                             </div>
                             <div class="mb-3">
-                                <label class="fw-bold">Chất lượng sản phẩm</label>
-                                <div class="d-flex align-items-center">
-                                    <input type="hidden" name="rating" id="rating-input" value="5">
-                                    <div class="text-warning me-2" id="star-rating">
-                                        <i class="fas fa-star" data-rating="1"></i>
-                                        <i class="fas fa-star" data-rating="2"></i>
-                                        <i class="fas fa-star" data-rating="3"></i>
-                                        <i class="fas fa-star" data-rating="4"></i>
-                                        <i class="fas fa-star" data-rating="5"></i>
-                                    </div>
-                                    <span id="rating-text" class="text-warning">Tuyệt vời</span>
-                                </div>
+                                <label for="review-comment" class="form-label">Nhận xét:</label>
+                                <textarea class="form-control" id="review-comment" rows="3" required></textarea>
                             </div>
+                            <!-- Thêm trường upload ảnh -->
                             <div class="mb-3">
-                                <textarea class="form-control" name="description" rows="5" placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..."></textarea>
+                                <label for="review-image" class="form-label">Tải lên ảnh đánh giá:</label>
+                                <input type="file" class="form-control" id="review-image" accept="image/*">
+                                <small class="text-muted">(Tối đa 1 ảnh, định dạng JPG/PNG)</small>
                             </div>
-                            <div class="mb-3">
-                                <div class="btn btn-outline-danger position-relative">
-                                    <i class="fas fa-camera me-1"></i>
-                                    <span id="file-name">Thêm hình ảnh</span>
-                                    <input type="file" name="image" accept="image/*" class="form-control position-absolute" 
-                                           style="opacity: 0; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer;" 
-                                           onchange="document.getElementById('file-name').textContent = this.files[0].name || 'Thêm hình ảnh'">
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-end">
-                                <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Quay lại</button>
-                                <button type="submit" class="btn btn-danger">Gửi đánh giá</button>
-                            </div>
-                        </form>
-                    </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                            <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-
         <%@include file="assets/Component/footer.jsp" %>
         <script src="assets/js/fowrard.js">
         </script>

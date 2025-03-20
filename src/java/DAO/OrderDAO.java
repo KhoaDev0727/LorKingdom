@@ -280,33 +280,35 @@ public class OrderDAO extends DBConnect.DBConnection {
         Map<String, Object> result = new HashMap<>();
         List<Order> orders = new ArrayList<>();
         Map<Integer, Order> orderMap = new HashMap<>();
-        String sql = "    WITH OrderCTE AS (\n"
-                + "        SELECT o.OrderID, o.OrderDate, o.TotalAmount, s.Status,\n"
-                + "               ROW_NUMBER() OVER (ORDER BY o.OrderDate DESC) AS RowNum\n"
-                + "        FROM Orders o\n"
-                + "        JOIN StatusOrder s ON o.StatusID = s.StatusID\n"
-                + "        WHERE o.AccountID = ? AND s.StatusID = ?\n"
-                + "    ),\n"
-                + "    PagedOrders AS (\n"
-                + "        SELECT OrderID, OrderDate, TotalAmount, Status\n"
-                + "        FROM OrderCTE\n"
-                + "        WHERE RowNum BETWEEN ? AND ?\n"
-                + "    )\n"
-                + "    SELECT po.OrderID, po.OrderDate, po.TotalAmount, po.Status,\n"
-                + "           d.ProductID, p.Name AS ProductName, d.Quantity, d.UnitPrice,\n"
-                + "           (SELECT TOP 1 Image FROM ProductImages \n"
-                + "            WHERE ProductID = d.ProductID AND IsMain = 1) AS ProductImage,\n"
-                + "           c.Name AS CategoryName\n"
-                + "    FROM PagedOrders po\n"
-                + "    JOIN OrderDetails d ON po.OrderID = d.OrderID\n"
-                + "    JOIN Product p ON d.ProductID = p.ProductID\n"
-                + "    LEFT JOIN Category c ON p.CategoryID = c.CategoryID\n"
-                + "    ORDER BY po.OrderDate DESC;";
+
+        // Sửa lỗi cú pháp SQL
+        String sql = "WITH OrderCTE AS (\n"
+                + "    SELECT o.OrderID, o.OrderDate, o.TotalAmount, s.Status,\n" // Thêm dấu phẩy sau s.Status
+                + "           ROW_NUMBER() OVER (ORDER BY o.OrderDate DESC) AS RowNum\n"
+                + "    FROM Orders o\n"
+                + "    JOIN StatusOrder s ON o.StatusID = s.StatusID\n"
+                + "    WHERE o.AccountID = ? AND s.StatusID = ?\n"
+                + "),\n"
+                + "PagedOrders AS (\n"
+                + "    SELECT OrderID, OrderDate, TotalAmount, Status \n"
+                + "    FROM OrderCTE\n"
+                + "    WHERE RowNum BETWEEN ? AND ?\n"
+                + ")\n"
+                + "SELECT po.OrderID, po.OrderDate, po.TotalAmount, po.Status,\n" // Thêm dấu phẩy sau po.Status
+                + "       d.ProductID, p.Name AS ProductName, d.Quantity, d.UnitPrice, d.Reviewed,d.OrderDetailID, d.OrderID,\n"
+                + "       (SELECT TOP 1 Image FROM ProductImages \n"
+                + "        WHERE ProductID = d.ProductID AND IsMain = 1) AS ProductImage,\n"
+                + "       c.Name AS CategoryName\n"
+                + "FROM PagedOrders po\n"
+                + "JOIN OrderDetails d ON po.OrderID = d.OrderID\n"
+                + "JOIN Product p ON d.ProductID = p.ProductID\n"
+                + "LEFT JOIN Category c ON p.CategoryID = c.CategoryID\n"
+                + "ORDER BY po.OrderDate DESC;";
 
         String countSql = "SELECT COUNT(DISTINCT o.OrderID) AS TotalOrders "
                 + "FROM Orders o "
                 + "JOIN StatusOrder s ON o.StatusID = s.StatusID "
-                + "WHERE o.AccountID = ? AND s.StatusID = ? ";
+                + "WHERE o.AccountID = ? AND s.StatusID = ?";
 
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(sql);  PreparedStatement countPs = conn.prepareStatement(countSql)) {
 
@@ -322,42 +324,50 @@ public class OrderDAO extends DBConnect.DBConnection {
             int total = countRs.next() ? countRs.getInt("TotalOrders") : 0;
             result.put("total", total);
 
-            // Lấy dữ liệu đơn hàng
-            ps.setInt(1, accountId);
-            ps.setInt(2, status);
-            ps.setInt(3, startRow);
-            ps.setInt(4, endRow);
+            // Chỉ thực hiện truy vấn chính nếu có đơn hàng
+            if (total > 0) {
+                // Lấy dữ liệu đơn hàng
+                ps.setInt(1, accountId);
+                ps.setInt(2, status);
+                ps.setInt(3, startRow);
+                ps.setInt(4, endRow);
 
-            ResultSet rs = ps.executeQuery();
+                ResultSet rs = ps.executeQuery();
 
-            while (rs.next()) {
-                int orderId = rs.getInt("OrderID");
-                Order order = orderMap.get(orderId);
+                while (rs.next()) {
+                    int orderId = rs.getInt("OrderID");
+                    Order order = orderMap.get(orderId);
 
-                if (order == null) {
-                    order = new Order();
-                    order.setOrderId(orderId);
-                    order.setOrderDate(rs.getDate("OrderDate"));
-                    order.setTotalAmount(rs.getDouble("TotalAmount"));
-                    order.setStatus(rs.getString("Status"));
-                    orderMap.put(orderId, order);
-                    orders.add(order);
+                    if (order == null) {
+                        order = new Order();
+                        order.setOrderId(orderId);
+                        order.setOrderDate(rs.getTimestamp("OrderDate")); // Sử dụng Timestamp để giữ thời gian
+                        order.setTotalAmount(rs.getDouble("TotalAmount"));
+                        order.setStatus(rs.getString("Status"));
+                        orderMap.put(orderId, order);
+                        orders.add(order);
+                    }
+
+                    OrderDetail detail = new OrderDetail();
+
+                    detail.setOrderDetailID(rs.getInt("orderDetailID"));
+                    detail.setOrderID(rs.getInt("OrderID"));
+                    detail.setProductID(rs.getInt("ProductID"));
+                    detail.setProductName(rs.getString("ProductName"));
+                    detail.setQuantity(rs.getInt("Quantity"));
+                    detail.setPrice(rs.getDouble("UnitPrice"));
+                    detail.setProductImage(rs.getString("ProductImage"));
+                    detail.setCategoryName(rs.getString("CategoryName"));
+                    detail.setReviewed(rs.getInt("Reviewed")); // Giả sử Reviewed là BIT trong SQL
+                    order.addOrderDetail(detail);
                 }
-
-                OrderDetail detail = new OrderDetail();
-                detail.setProductID(rs.getInt("ProductID"));
-                detail.setProductName(rs.getString("ProductName"));
-                detail.setQuantity(rs.getInt("Quantity"));
-                detail.setPrice(rs.getDouble("UnitPrice"));
-                detail.setProductImage(rs.getString("ProductImage"));
-                detail.setCategoryName(rs.getString("CategoryName"));
-                order.addOrderDetail(detail);
-
             }
 
             result.put("orders", orders);
         } catch (Exception e) {
             e.printStackTrace();
+            // Xử lý exception phù hợp ở đây
+            result.put("error", "An error occurred while fetching orders");
         }
         return result;
     }
@@ -451,15 +461,6 @@ public class OrderDAO extends DBConnect.DBConnection {
             }
             Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, "Error saving order", ex);
             return false;
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.setAutoCommit(true);
-                    conn.close(); // Đóng kết nối
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, "Error closing connection", ex);
-            }
         }
     }
 }

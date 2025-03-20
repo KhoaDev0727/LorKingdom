@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 public class ReviewManagementServlet extends HttpServlet {
 
     private static final String UPLOAD_DIR = "reviews";
-    private static final String FOLDER = "imageReviews";
+    private static final String FOLDER = "reviews";
     private static int PAGE = 1;
     private static final int PAGE_SIZE = 10;
     private static final MyUntilsDAO myUntilsDAO = new MyUntilsDAO();
@@ -256,29 +256,46 @@ public class ReviewManagementServlet extends HttpServlet {
         }
     }
 
-    private void addReview(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException, ClassNotFoundException {
+    private void addReview(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException, SQLException, ClassNotFoundException {
         HttpSession session = request.getSession();
+        response.setContentType("application/json"); // Set response type to JSON
+        response.setCharacterEncoding("UTF-8");      // Ensure proper encoding
+
         try {
             String uploadPath = request.getServletContext().getRealPath("/") + File.separator + UPLOAD_DIR;
-            System.out.println(request.getParameter("productId"));
             int productId = Integer.parseInt(request.getParameter("productId"));
+            int orderId = Integer.parseInt(request.getParameter("orderId"));
             int accountId = (Integer) session.getAttribute("userID");
+            int orderDetailID = Integer.parseInt(request.getParameter("orderDetailID"));
+            System.out.println(orderDetailID);
+             System.out.println(orderId);
+              System.out.println(productId);
             int rating = Integer.parseInt(request.getParameter("rating"));
-            String comment = request.getParameter("description");
+            String comment = request.getParameter("comment"); // Note: JavaScript sends "comment", not "description"
 
             Part filePart = request.getPart("image");
             String image = null;
             if (filePart != null && filePart.getSize() > 0) {
                 image = UploadImage.uploadFile(filePart, uploadPath, FOLDER);
             }
+
             Review review = new Review(accountId, productId, image, rating, comment);
             boolean added = ReviewDAO.addReview(review);
-            request.getRequestDispatcher("Setting.jsp").forward(request, response);
+
+            if (added) {
+                int reviewed = 1; 
+                boolean uploadRviewed = ReviewDAO.UpdateStatusReviewed(orderDetailID, reviewed, productId, orderId );
+                if (uploadRviewed) {
+                    response.getWriter().write("{\"success\": true}");
+                }
+            } else {
+                response.getWriter().write("{\"success\": false, \"message\": \"Không thể thêm đánh giá\"}");
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            session.setAttribute("message", "Có lỗi xảy ra khi bạn đánh giá sản phẩm");
-            session.setAttribute("messageType", "danger");
-        }
+            response.getWriter().write("{\"success\": false, \"message\": \"Có lỗi xảy ra khi bạn đánh giá sản phẩm\"}");
+        }   
     }
 
     // Helper methods
@@ -310,14 +327,13 @@ public class ReviewManagementServlet extends HttpServlet {
         int pageSize = 5;
         int totalReviews = ReviewDAO.getTotalReviews(star, productID);
         int totalPages = (int) Math.ceil((double) totalReviews / pageSize);
- 
- 
+
         List<Review> reviews = ReviewDAO.getReviewsFromDatabase(star, productID, (page - 1) * pageSize, pageSize);
         JsonObject jsonResponse = new JsonObject();
         jsonResponse.add("reviews", new Gson().toJsonTree(reviews));
         jsonResponse.addProperty("currentPage", page);
-          jsonResponse.addProperty("totalPages", totalPages);
-
+        jsonResponse.addProperty("totalPages", totalPages);
+        System.out.println(new Gson().toJsonTree(reviews));
         response.setContentType("application/json");
         response.getWriter().write(jsonResponse.toString());
     }

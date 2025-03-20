@@ -41,16 +41,5 @@ public class OrderDetailDAO extends DBConnect.DBConnection {
         return list;
     }
 
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        try {
-            OrderDetailDAO dao = new OrderDetailDAO();
-            List<OrderDetail> list = dao.getOrderDetailById(4);
-            for (OrderDetail orderDetail : list) {
-                System.out.println(orderDetail);
-            }
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
-    }
 
 }

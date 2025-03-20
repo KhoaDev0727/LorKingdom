@@ -28,11 +28,30 @@ public class ReviewDAO {
     private static String SELECT_REVIEW = "SELECT * FROM Reviews WHERE IsDeleted = 0 ORDER BY ReviewID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
     private static String SELECT_REVIEW_FOR_CUSTOMER = "SELECT AccountID, ProductID, ImgReview,Rating, Comment,ReviewedAt FROM Reviews WHERE ProductID = ? AND Status = 0 AND IsDeleted = 0 ";
     private static String UPDATE_STATUS = "UPDATE Reviews SET Status = ? WHERE ReviewID = ?;";
+       private static String UPDATE_REVIEWED = "UPDATE OrderDetails SET Reviewed = ? WHERE OrderDetailID = ? AND ProductID = ? AND OrderID = ?;";
     private static String UPDATE_ISDELETED = "UPDATE Reviews SET IsDeleted = ? WHERE ReviewID = ?;";
     private static String DELETE_REVIEW_BY_ID = "DELETE FROM Reviews WHERE ReviewID = ?;";
     private static String SELECT_FILLTER = "SELECT * FROM Reviews WHERE ";
     private static String ADD_PREVIEW = "INSERT INTO Reviews (AccountID, ProductID, ImgReview, Rating, Comment) VALUES (?, ?, ?, ?, ?);";
+ 
+    
+       public static boolean UpdateStatusReviewed(int orderDetailID, int statusReview, int productID, int OrderID) {
+        boolean updateRow = false;
+        try {
+            conn = DBConnection.getConnection();
+            stm = conn.prepareStatement(UPDATE_REVIEWED);
+            stm.setInt(1, statusReview);
+            stm.setInt(2, orderDetailID); 
+             stm.setInt(3, productID);
+              stm.setInt(4, OrderID);
+            updateRow = stm.executeUpdate() > 0;
+        } catch (ClassNotFoundException | SQLException e) {
+            System.out.println(e);
+        }
+        return updateRow;
+    }
 
+    
     public static List<Review> showReviewTrash(int page, int pageSize) {
         List<Review> list = new ArrayList<>();
         try {

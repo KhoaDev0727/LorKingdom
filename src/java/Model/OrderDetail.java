@@ -20,7 +20,16 @@ public class OrderDetail {
     private String productImage;
     private int productID;
     private double Price;
-     private String categoryName; 
+     private String categoryName;  
+     private int Reviewed;
+
+    public int getReviewed() {
+        return Reviewed;
+    }
+
+    public void setReviewed(int Reviewed) {
+        this.Reviewed = Reviewed;
+    }
 
         public String getCategoryName() {
         return categoryName;

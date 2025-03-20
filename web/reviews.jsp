@@ -44,7 +44,38 @@
     }
     *#reviews-container {
         min-height: 400px; /* Điều chỉnh giá trị tùy theo giao diện */
-    }
+    } *.review-content {
+    flex: 1; /* Cho phép phần nội dung đánh giá chiếm không gian còn lại */
+}
+
+.d-flex {
+    display: flex; /* Sử dụng Flexbox */
+}
+
+.mb-2 {
+    margin-bottom: 0.5rem; /* Khoảng cách dưới */
+}
+
+.text-muted {
+    color: #6c757d; /* Màu sắc cho văn bản nhạt */
+}
+
+.img-thumbnail {
+    max-width: 150px; /* Kích thước tối đa cho hình ảnh */
+    max-height: 150px; /* Kích thước tối đa cho hình ảnh */
+    width: auto; /* Tự động điều chỉnh chiều rộng */
+    height: auto; /* Tự động điều chỉnh chiều cao */
+} 
+*.review-image {
+    border: 1px solid #ddd; /* Thêm viền cho hình ảnh */
+    border-radius: 4px; /* Bo góc hình ảnh */
+    padding: 5px; /* Thêm padding xung quanh hình ảnh */
+    transition: transform 0.2s; /* Hiệu ứng phóng to khi hover */
+}
+
+.review-image:hover {
+    transform: scale(1.1); /* Phóng to hình ảnh khi hover */
+}
 </style>
 
 <div class="bg-white rounded-md shadow p-4 mt-10" style="width: 1360px; margin: 0 auto;">
