@@ -188,7 +188,25 @@ public class ProductDAO {
     // Phương thức lấy danh sách tất cả các sản phẩm
     public List<Product> getAllProducts() throws SQLException, ClassNotFoundException {
         List<Product> products = new ArrayList<>();
-        String query = "SELECT * FROM Product WHERE IsDeleted = 0";
+        String query = "SELECT p.* " +
+               "FROM Product p " +
+               "JOIN Category c ON p.CategoryID = c.CategoryID " +
+               "JOIN SuperCategory sc ON c.SuperCategoryID = sc.SuperCategoryID " +
+               "JOIN Age a ON p.AgeID = a.AgeID " +
+               "JOIN Brand b ON p.BrandID = b.BrandID " +
+               "JOIN Material m ON p.MaterialID = m.MaterialID " +
+               "JOIN PriceRange pr ON p.PriceRangeID = pr.PriceRangeID " +
+               "JOIN Sex s ON p.SexID = s.SexID " +
+               "WHERE p.IsDeleted = 0 " +
+               "  AND c.IsDeleted = 0 " +
+               "  AND sc.IsDeleted = 0 " +    // lọc superCategory active
+               "  AND a.IsDeleted = 0 " +
+               "  AND b.IsDeleted = 0 " +
+               "  AND m.IsDeleted = 0 " +
+               "  AND pr.IsDeleted = 0 " +
+               "  AND s.IsDeleted = 0 " +
+               "  AND p.Quantity > 0";       // sản phẩm phải có số lượng > 0
+        ;
         try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
                 Product product = new Product();
@@ -247,6 +265,7 @@ public class ProductDAO {
         return products;
     }
 //
+
     public List<Product> getFilteredProducts(
             Integer categoryID,
             Integer ageID,
@@ -359,7 +378,6 @@ public class ProductDAO {
 //        products = executeQuery(query.toString(), params);
 //        return products;
 //    }
-
     private List<Product> executeQuery(String query, List<Object> params) throws ClassNotFoundException {
         List<Product> products = new ArrayList<>();
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement stm = conn.prepareStatement(query)) {
