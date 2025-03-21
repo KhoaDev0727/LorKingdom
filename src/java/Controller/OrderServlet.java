@@ -35,7 +35,7 @@ public class OrderServlet extends HttpServlet {
     // Regex patterns for validation
     private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zA-Z\\sÀ-ỹ]+$");
     private static final Pattern PHONE_PATTERN = Pattern.compile("^[0-9]{10}$");
-    private static final Pattern ADDRESS_PATTERN = Pattern.compile("^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9\\s,/]+$");
+    private static final Pattern ADDRESS_PATTERN = Pattern.compile("^[a-zA-Z0-9\\sÀ-ỹ,/]+$");
 
     @Override
     public void init() throws ServletException {
@@ -215,7 +215,7 @@ public class OrderServlet extends HttpServlet {
         if (address == null || address.trim().isEmpty()) {
             errors.put("address", "Địa chỉ không được để trống!");
         } else if (!ADDRESS_PATTERN.matcher(address).matches()) {
-            errors.put("address", "Địa chỉ phải chứa chữ và số, không chứa kí tự đặc biệt!");
+            errors.put("address", "Địa chỉ chỉ được chứa chữ, số, dấu cách, dấu phẩy hoặc dấu gạch chéo!");
         }
 
         // Validate province, district, ward
