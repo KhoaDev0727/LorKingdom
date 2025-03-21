@@ -18,11 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import java.util.logging.Level;
 import java.util.regex.Pattern;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import org.json.JSONObject;
 
 public class OrderServlet extends HttpServlet {
@@ -30,7 +26,6 @@ public class OrderServlet extends HttpServlet {
     private static final Logger LOGGER = Logger.getLogger(OrderServlet.class.getName());
     private OrderDAO orderDAO;
     private CartDAO cartDAO;
-    private final OkHttpClient client = new OkHttpClient();
 
     // Regex patterns for validation
     private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zA-Z\\sÀ-ỹ]+$");
@@ -85,6 +80,9 @@ public class OrderServlet extends HttpServlet {
         String provinceCode = request.getParameter("province");
         String districtCode = request.getParameter("district");
         String wardCode = request.getParameter("ward");
+        String provinceName = request.getParameter("provinceName");
+        String districtName = request.getParameter("districtName");
+        String wardName = request.getParameter("wardName");
 
         // Backend validation
         Map<String, String> errors = validateInput(email, fullName, phone, address, provinceCode, districtCode, wardCode);
@@ -99,25 +97,23 @@ public class OrderServlet extends HttpServlet {
             formData.put("province", provinceCode != null ? provinceCode : "");
             formData.put("district", districtCode != null ? districtCode : "");
             formData.put("ward", wardCode != null ? wardCode : "");
+            formData.put("provinceName", provinceName != null ? provinceName : "");
+            formData.put("districtName", districtName != null ? districtName : "");
+            formData.put("wardName", wardName != null ? wardName : "");
             session.setAttribute("formDataJson", new JSONObject(formData).toString());
             response.sendRedirect("order.jsp");
             return;
         }
 
-        // Lấy tên từ API
-        String provinceName = getLocationName("p", provinceCode);
-        String districtName = getLocationName("d", districtCode);
-        String wardName = getLocationName("w", wardCode);
-
-        // Tạo chuỗi địa chỉ đầy đủ
-        StringBuilder fullAddress = new StringBuilder(address);
-        if (!wardName.isEmpty() && !wardName.startsWith("Unknown_") && !wardName.startsWith("Error_")) {
+        // Tạo chuỗi địa chỉ đầy đủ từ dữ liệu form
+        StringBuilder fullAddress = new StringBuilder(address.trim());
+        if (wardName != null && !wardName.isEmpty()) {
             fullAddress.append(", ").append(wardName);
         }
-        if (!districtName.isEmpty() && !districtName.startsWith("Unknown_") && !districtName.startsWith("Error_")) {
+        if (districtName != null && !districtName.isEmpty()) {
             fullAddress.append(", ").append(districtName);
         }
-        if (!provinceName.isEmpty() && !provinceName.startsWith("Unknown_") && !provinceName.startsWith("Error_")) {
+        if (provinceName != null && !provinceName.isEmpty()) {
             fullAddress.append(", ").append(provinceName);
         }
         String finalAddress = fullAddress.toString().replaceAll(",\\s*$", "");
@@ -151,8 +147,8 @@ public class OrderServlet extends HttpServlet {
             }
             order.setOrderDetails(orderDetails);
 
-            boolean success = orderDAO.saveOrder(order, userId, finalAddress, phone, email, 
-                                               provinceCode, districtCode, wardCode);
+            boolean success = orderDAO.saveOrder(order, userId, finalAddress, phone, email,
+                    provinceCode, districtCode, wardCode);
             if (success) {
                 session.setAttribute("successMessage", "Đặt hàng thành công! Đơn hàng sẽ được giao sớm nhất.");
                 session.setAttribute("order", order);
@@ -188,8 +184,8 @@ public class OrderServlet extends HttpServlet {
         }
     }
 
-    private Map<String, String> validateInput(String email, String fullName, String phone, 
-                                             String address, String provinceCode, String districtCode, String wardCode) {
+    private Map<String, String> validateInput(String email, String fullName, String phone,
+            String address, String provinceCode, String districtCode, String wardCode) {
         Map<String, String> errors = new HashMap<>();
 
         // Validate email
@@ -232,34 +228,5 @@ public class OrderServlet extends HttpServlet {
         return errors;
     }
 
-    private String getLocationName(String type, String code) {
-        if (code == null || code.isEmpty()) {
-            LOGGER.warning("Location code is null or empty for type: " + type);
-            return "";
-        }
-
-        String apiUrl = "https://provinces.open-api.vn/api/" + type + "/" + code;
-        Request request = new Request.Builder()
-                .url(apiUrl)
-                .build();
-
-        try (Response apiResponse = client.newCall(request).execute()) {
-            if (!apiResponse.isSuccessful()) {
-                LOGGER.warning("API call failed for " + type + "/" + code + ": " + apiResponse.code());
-                return "Unknown_" + code;
-            }
-
-            String jsonData = apiResponse.body().string();
-            JSONObject jsonObject = new JSONObject(jsonData);
-            if (jsonObject.has("name")) {
-                return jsonObject.getString("name");
-            } else {
-                LOGGER.warning("No 'name' field in API response for " + type + "/" + code + ": " + jsonData);
-                return "Unknown_" + code;
-            }
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error calling API for " + type + "/" + code, e);
-            return "Error_" + code;
-        }
-    }
+    // Hàm getLocationName() đã bị xóa vì không cần thiết nữa
 }

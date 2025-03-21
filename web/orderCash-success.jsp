@@ -141,7 +141,7 @@
         </div>
 
         <!-- Nút tiếp tục mua sắm -->
-        <a href="home.jsp" class="btn-continue">Tiếp Tục Mua Sắm</a>
+        <a href="cart.jsp" class="btn-continue">Tiếp Tục Mua Sắm</a>
     </div>
 
     <!-- Bootstrap JS -->

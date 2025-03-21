@@ -1,57 +1,58 @@
-/* 
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/JavaScript.js to edit this template
- */
-
-
+/* location.js */
 const host = "https://provinces.open-api.vn/api/";
+
 var callAPI = (api) => {
     return axios.get(api)
-            .then((response) => {
-                renderData(response.data, "province");
-            });
+        .then((response) => {
+            renderData(response.data, "province");
+        });
 }
 callAPI('https://provinces.open-api.vn/api/?depth=1');
+
 var callApiDistrict = (api) => {
     return axios.get(api)
-            .then((response) => {
-                renderData(response.data.districts, "district");
-            });
+        .then((response) => {
+            renderData(response.data.districts, "district");
+        });
 }
+
 var callApiWard = (api) => {
     return axios.get(api)
-            .then((response) => {
-                renderData(response.data.wards, "ward");
-            });
+        .then((response) => {
+            renderData(response.data.wards, "ward");
+        });
 }
 
 var renderData = (array, select) => {
-    let row = ' <option disable value="">chọn</option>';
+    let row = '<option disable value="">chọn</option>';
     array.forEach(element => {
-        row += `<option value="${element.code}">${element.name}</option>`
+        row += `<option value="${element.code}">${element.name}</option>`;
     });
-    document.querySelector("#" + select).innerHTML = row
+    document.querySelector("#" + select).innerHTML = row;
 }
 
 $("#province").change(() => {
     callApiDistrict(host + "p/" + $("#province").val() + "?depth=2");
     printResult();
+    $("#provinceName").val($("#province option:selected").text()); // Lưu tên tỉnh
 });
+
 $("#district").change(() => {
     callApiWard(host + "d/" + $("#district").val() + "?depth=2");
     printResult();
+    $("#districtName").val($("#district option:selected").text()); // Lưu tên quận
 });
+
 $("#ward").change(() => {
     printResult();
-})
+    $("#wardName").val($("#ward option:selected").text()); // Lưu tên phường
+});
 
 var printResult = () => {
-    if ($("#district").val() != "" && $("#province").val() != "" &&
-            $("#ward").val() != "") {
+    if ($("#district").val() != "" && $("#province").val() != "" && $("#ward").val() != "") {
         let result = $("#province option:selected").text() +
-                " | " + $("#district option:selected").text() + " | " +
-                $("#ward option:selected").text();
-        $("#result").text(result)
+            " | " + $("#district option:selected").text() + " | " +
+            $("#ward option:selected").text();
+        $("#result").text(result);
     }
-
-}
+};

@@ -55,6 +55,7 @@
                         <select name="province" id="province">
                             <option value="">Chọn tỉnh/thành phố</option>
                         </select>
+                        <input type="hidden" name="provinceName" id="provinceName">
                         <div class="error-message">${sessionScope.validationErrors.province}</div>
                     </div>
                     <div class="form-group row">
@@ -63,6 +64,7 @@
                             <select name="district" id="district">
                                 <option value="">Chọn quận/huyện</option>
                             </select>
+                            <input type="hidden" name="districtName" id="districtName">
                             <div class="error-message">${sessionScope.validationErrors.district}</div>
                         </div>
                         <div class="col-6">
@@ -70,6 +72,7 @@
                             <select name="ward" id="ward">
                                 <option value="">Chọn phường/xã</option>
                             </select>
+                            <input type="hidden" name="wardName" id="wardName">
                             <div class="error-message">${sessionScope.validationErrors.ward}</div>
                         </div>
                     </div>
@@ -156,10 +159,14 @@
                 const formData = JSON.parse(formDataJson);
 
                 // Điền giá trị cho các input
-                if (formData.email) document.getElementById("email").value = formData.email;
-                if (formData.fullName) document.getElementById("fullName").value = formData.fullName;
-                if (formData.phone) document.getElementById("phone").value = formData.phone;
-                if (formData.address) document.getElementById("address").value = formData.address;
+                if (formData.email)
+                    document.getElementById("email").value = formData.email;
+                if (formData.fullName)
+                    document.getElementById("fullName").value = formData.fullName;
+                if (formData.phone)
+                    document.getElementById("phone").value = formData.phone;
+                if (formData.address)
+                    document.getElementById("address").value = formData.address;
 
                 // Điền giá trị cho các select (sẽ được cập nhật sau khi location.js tải xong)
                 if (formData.province) {
@@ -198,7 +205,7 @@
                 $.ajax({
                     url: "ApplyVoucherServlet",
                     type: "POST",
-                    data: { voucherCode: voucherCode },
+                    data: {voucherCode: voucherCode},
                     success: function (response) {
                         if (response.success) {
                             const discount = response.discount;
@@ -224,7 +231,7 @@
                 return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
         </script>
-        
+
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"
                 integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
