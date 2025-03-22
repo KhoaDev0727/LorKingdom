@@ -102,14 +102,20 @@
             </c:if>
 
             <!-- Các trang giữa -->
-            <c:forEach begin="${Math.max(2, currentPage - 1)}" 
-                       end="${Math.min(totalPages - 1, currentPage + 1)}" 
-                       var="page">
-                <a href="javascript:void(0)" 
-                   onclick="goToPage(${page})"
-                   class="${currentPage == page ? 'current' : ''}"
-                   data-page="${page}">${page}</a>
-            </c:forEach>
+            <c:if test="${not empty currentPage and not empty totalPages and totalPages > 1}">
+                <c:set var="startPage" value="${Math.max(2, currentPage - 1)}" />
+                <c:set var="endPage" value="${Math.min(totalPages - 1, currentPage + 1)}" />
+
+                <!-- Ensure startPage <= endPage -->
+                <c:if test="${startPage <= endPage}">
+                    <c:forEach begin="${startPage}" end="${endPage}" var="page">
+                        <a href="javascript:void(0)"
+                           onclick="event.preventDefault(); goToPage(${page})"
+                           class="${currentPage == page ? 'current' : ''}"
+                           data-page="${page}">${page}</a>
+                    </c:forEach>
+                </c:if>
+            </c:if>
 
             <!-- Ellipsis sau -->
             <c:if test="${currentPage < totalPages - 2}">
@@ -135,31 +141,31 @@
             </c:if>
         </div>
 
-         <script>
-    function goToPage(page) {
-        // Lưu thông tin cần scroll vào sessionStorage
-        sessionStorage.setItem('shouldScroll', 'true');
-        
-        // Chuyển trang
-        const url = new URL(window.location.href);
-        url.searchParams.set('page', page);
-        window.location.href = url.toString();
-    }
-
-    // Tự động cuộn khi trang tải xong
-    window.addEventListener('load', () => {
-        // Kiểm tra nếu cần scroll
-        if (sessionStorage.getItem('shouldScroll') === 'true') {
-            const marker = document.querySelector('.your-class'); // Thay bằng class của bạn
-            if (marker) {
-                marker.scrollIntoView({
-                    behavior: 'smooth', // Cuộn mượt
-                    block: 'start'      // Căn đầu phần tử vào đầu viewport
-                });
+        <script>
+            function goToPage(page) {
+                // Lưu thông tin cần scroll vào sessionStorage
+                sessionStorage.setItem('shouldScroll', 'true');
+                
+                // Chuyển trang
+                const url = new URL(window.location.href);
+                url.searchParams.set('page', page);
+                window.location.href = url.toString();
             }
-            sessionStorage.removeItem('shouldScroll');
-        }
-    });
-</script>
+
+            // Tự động cuộn khi trang tải xong
+            window.addEventListener('load', () => {
+                // Kiểm tra nếu cần scroll
+                if (sessionStorage.getItem('shouldScroll') === 'true') {
+                    const marker = document.querySelector('.your-class'); // Thay bằng class của bạn
+                    if (marker) {
+                        marker.scrollIntoView({
+                            behavior: 'smooth', // Cuộn mượt
+                            block: 'start'      // Căn đầu phần tử vào đầu viewport
+                        });
+                    }
+                    sessionStorage.removeItem('shouldScroll');
+                }
+            });
+        </script>
     </body>
 </html>
