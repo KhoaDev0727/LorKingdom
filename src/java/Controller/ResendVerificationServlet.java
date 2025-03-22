@@ -41,26 +41,30 @@ public class ResendVerificationServlet extends HttpServlet {
 
         String subject = "Xác minh email - LorKingdom";
         String bannerImageURL = "https://i.imgur.com/Jy8NzTM.jpeg";
-        String logoImageURL = "https://i.imgur.com/BRMPjnk.png";
+        String logoImageURL = "https://i.imgur.com/QdfnXvW.png";
 
         String body = "<html>"
-                + "<body style='font-family: Arial, sans-serif; text-align: center;'>"
-                + "<div style='padding: 10px;'>"
-                + "<img src='" + bannerImageURL + "' alt='LorKingdom Banner' style='width: 100%; max-width: 950px; border-bottom: 1px solid grey;'>"
+                + "<body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4;'>"
+                + "<div style='max-width: 600px; margin: 20px auto; background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 5px; overflow: hidden;'>"
+                + "<div style='background-color: #1f2a44; padding: 15px; text-align: center;'>"
+                + "<img src='" + logoImageURL + "' alt='LorKingdom Logo' style='width: 100px; display: inline-block;'>"
                 + "</div>"
-                + "<div style='padding: 10px;'>"
-                + "<img src='" + logoImageURL + "' alt='LorKingdom Logo' style='width: 50px;'>"
+                + "<div style='padding: 30px; text-align: center;'>"
+                + "<p style='color: #333333; font-size: 14px; margin: 20px 0 10px 0;'>Kính gửi " + username + ",</p>"
+                + "<p style='color: #666666; font-size: 14px; margin: 0 0 20px 0;'>Bạn đã yêu cầu mã xác minh mới để đăng ký tài khoản của mình tại LorKingdom. Vui lòng sử dụng mã xác minh bên dưới để hoàn tất quy trình đăng ký của bạn:</p>"
+                + "<div style='margin: 20px 0;'>"
+                + "<p style='color: #666666; font-size: 14px; margin: 0 0 5px 0;'>Mã xác minh mới của bạn:</p>"
+                + "<h1 style='color: #000000; font-size: 36px; font-weight: bold; margin: 0;'>" + verificationCode + "</h1>"
+                + "<p style='color: #666666; font-size: 12px; margin: 5px 0 0 0;'>Vui lòng nhập mã này vào trang đăng ký để xác nhận tài khoản của bạn. Lưu ý rằng mã xác minh này sẽ hết hạn sau 2 phút.</p>"
                 + "</div>"
-                + "<p>Kính gửi " + username + ",</p>"
-                + "<p>Bạn đã yêu cầu mã xác minh mới để đăng ký tài khoản của mình tại LorKingdom. Vui lòng sử dụng mã xác minh bên dưới để hoàn tất quy trình đăng ký của bạn:</p>"
-                + "<h2>Mã xác minh mới của bạn: " + verificationCode + "</h2>"
-                + "<p>Vui lòng nhập mã này vào trang đăng ký để xác nhận tài khoản của bạn. Lưu ý rằng mã xác minh này sẽ hết hạn sau 2 phút.</p>"
-                + "<p>Nếu bạn không yêu cầu mã xác minh này, vui lòng bỏ qua email này.</p>"
+                + "<p style='color: #666666; font-size: 14px; margin: 20px 0 0 0;'>Nếu bạn không yêu cầu mã xác minh này, vui lòng bỏ qua email này.</p>"
                 + "<br>"
-                + "<p>Trân trọng,</p>"
-                + "<p>LorKingdom Support Team</p>"
-                + "<p>lorkingdom99@gmail.com | 09123456789</p>"
-                + "<p>LorKingdom.com.vn</p>"
+                + "<p style='color: #333333; font-size: 14px; margin: 10px 0 0 0;'>Trân trọng,</p>"
+                + "<p style='color: #333333; font-size: 14px; margin: 5px 0 0 0;'>LorKingdom Support Team</p>"
+                + "<p style='color: #666666; font-size: 12px; margin: 5px 0 0 0;'>lorkingdom99@gmail.com | 09123456789</p>"
+                + "<p style='color: #666666; font-size: 12px; margin: 5px 0 0 0;'>LorKingdom.com.vn</p>"
+                + "</div>"
+                + "</div>"
                 + "</body>"
                 + "</html>";
 
