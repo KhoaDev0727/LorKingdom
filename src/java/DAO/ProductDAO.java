@@ -664,4 +664,33 @@ public class ProductDAO {
         return products;
     }
 
+    public boolean updateProductQuantity(int productId, int quantityToSubtract) throws SQLException, ClassNotFoundException {
+        String sql = "UPDATE Product SET Quantity = Quantity - ? WHERE ProductID = ? AND Quantity >= ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, quantityToSubtract);
+            ps.setInt(2, productId);
+            ps.setInt(3, quantityToSubtract); // Đảm bảo số lượng còn lại không âm
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        }
+    }
+
+    // Phương thức lấy thông tin sản phẩm (nếu cần kiểm tra trước khi trừ)
+    public Product getProductByID(int productId) throws SQLException, ClassNotFoundException {
+        String sql = "SELECT * FROM Product WHERE ProductID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, productId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Product product = new Product();
+                product.setProductID(rs.getInt("ProductID"));
+                product.setName(rs.getString("Name"));
+                product.setQuantity(rs.getInt("Quantity")); // Giả sử có cột Quantity
+                // Các thuộc tính khác của Product nếu cần
+                return product;
+            }
+        }
+        return null;
+    }
+
 }

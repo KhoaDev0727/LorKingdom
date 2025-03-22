@@ -2,6 +2,7 @@ package Controller;
 
 import DAO.OrderDAO;
 import DAO.CartDAO;
+import DAO.ProductDAO; // Thêm import cho ProductDAO
 import Model.CartItems;
 import Model.Order;
 import Model.OrderDetail;
@@ -26,6 +27,7 @@ public class OrderServlet extends HttpServlet {
     private static final Logger LOGGER = Logger.getLogger(OrderServlet.class.getName());
     private OrderDAO orderDAO;
     private CartDAO cartDAO;
+    private ProductDAO productDAO; // Thêm ProductDAO
 
     // Regex patterns for validation
     private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zA-Z\\sÀ-ỹ]+$");
@@ -36,6 +38,7 @@ public class OrderServlet extends HttpServlet {
     public void init() throws ServletException {
         orderDAO = new OrderDAO();
         cartDAO = new CartDAO();
+        productDAO = new ProductDAO(); // Khởi tạo ProductDAO
     }
 
     @Override
@@ -88,7 +91,6 @@ public class OrderServlet extends HttpServlet {
         Map<String, String> errors = validateInput(email, fullName, phone, address, provinceCode, districtCode, wardCode);
         if (!errors.isEmpty()) {
             session.setAttribute("validationErrors", errors);
-            // Chuyển formData thành chuỗi JSON
             Map<String, String> formData = new HashMap<>();
             formData.put("email", email != null ? email : "");
             formData.put("fullName", fullName != null ? fullName : "");
@@ -105,7 +107,6 @@ public class OrderServlet extends HttpServlet {
             return;
         }
 
-        // Tạo chuỗi địa chỉ đầy đủ từ dữ liệu form
         StringBuilder fullAddress = new StringBuilder(address.trim());
         if (wardName != null && !wardName.isEmpty()) {
             fullAddress.append(", ").append(wardName);
@@ -150,6 +151,25 @@ public class OrderServlet extends HttpServlet {
             boolean success = orderDAO.saveOrder(order, userId, finalAddress, phone, email,
                     provinceCode, districtCode, wardCode);
             if (success) {
+                // Trừ số lượng sản phẩm trong bảng Product
+                try {
+                    for (CartItems item : listCart) {
+                        int productId = item.getProduct().getProductID();
+                        int quantity = item.getQuantity();
+                        boolean updated = productDAO.updateProductQuantity(productId, quantity);
+                        if (!updated) {
+                            session.setAttribute("errorMessage", "Không đủ số lượng sản phẩm trong kho!");
+                            response.sendRedirect("order.jsp");
+                            return;
+                        }
+                    }
+                } catch (SQLException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                    session.setAttribute("errorMessage", "Có lỗi xảy ra khi cập nhật số lượng sản phẩm!");
+                    response.sendRedirect("order.jsp");
+                    return;
+                }
+
                 session.setAttribute("successMessage", "Đặt hàng thành công! Đơn hàng sẽ được giao sớm nhất.");
                 session.setAttribute("order", order);
                 session.setAttribute("address", finalAddress);
@@ -188,33 +208,28 @@ public class OrderServlet extends HttpServlet {
             String address, String provinceCode, String districtCode, String wardCode) {
         Map<String, String> errors = new HashMap<>();
 
-        // Validate email
         if (email == null || email.trim().isEmpty()) {
             errors.put("email", "Email không được để trống!");
         }
 
-        // Validate fullName
         if (fullName == null || fullName.trim().isEmpty()) {
             errors.put("fullName", "Họ và tên không được để trống!");
         } else if (!NAME_PATTERN.matcher(fullName).matches()) {
             errors.put("fullName", "Họ và tên không được chứa kí tự đặc biệt hoặc số!");
         }
 
-        // Validate phone
         if (phone == null || phone.trim().isEmpty()) {
             errors.put("phone", "Số điện thoại không được để trống!");
         } else if (!PHONE_PATTERN.matcher(phone).matches()) {
             errors.put("phone", "Số điện thoại chỉ được chứa số, dài 10 chữ số!");
         }
 
-        // Validate address
         if (address == null || address.trim().isEmpty()) {
             errors.put("address", "Địa chỉ không được để trống!");
         } else if (!ADDRESS_PATTERN.matcher(address).matches()) {
             errors.put("address", "Địa chỉ chỉ được chứa chữ, số, dấu cách, dấu phẩy hoặc dấu gạch chéo!");
         }
 
-        // Validate province, district, ward
         if (provinceCode == null || provinceCode.trim().isEmpty()) {
             errors.put("province", "Vui lòng chọn tỉnh/thành phố!");
         }
@@ -227,6 +242,4 @@ public class OrderServlet extends HttpServlet {
 
         return errors;
     }
-
-    // Hàm getLocationName() đã bị xóa vì không cần thiết nữa
 }
