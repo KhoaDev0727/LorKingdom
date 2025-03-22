@@ -16,9 +16,50 @@
                 font-size: 0.9em;
                 margin-top: 5px;
             }
+            .voucher-container {
+                position: relative;
+                display: flex;
+                align-items: center;
+                margin-top: 10px;
+            }
+            .voucher-image {
+                width: 60px;
+                height: 40px;
+                margin-right: 10px;
+                object-fit: cover;
+            }
+            .voucher-applied {
+                display: flex;
+                align-items: center;
+                background: #f8f9fa;
+                padding: 8px;
+                border-radius: 5px;
+                position: relative;
+            }
+            .remove-voucher {
+                position: absolute;
+                right: 5px;
+                top: 50%;
+                transform: translateY(-50%);
+                border: none;
+                background: transparent;
+                color: red;
+                font-size: 18px;
+                width: 25px !important;
+                height: 80%;
+                cursor: pointer;
+            }
+            .remove-voucher:hover {
+                color: darkred;
+            }
         </style>
     </head>
     <body>
+        <!-- Reset discount trong session khi không có voucher được áp dụng -->
+        <c:if test="${empty param.voucherCode}">
+            <% session.removeAttribute("discount"); %>
+        </c:if>
+
         <div class="container">
             <!-- Left content -->
             <div class="order-form">
@@ -118,9 +159,21 @@
                 <!-- Voucher Section -->
                 <div class="discount">
                     <label>Mã giảm giá:</label>
-                    <input type="text" id="voucherCode" placeholder="Nhập mã giảm giá">
-                    <button onclick="applyVoucher()">Áp dụng</button>
+                    <div class="voucher-container">
+                        <input type="text" id="voucherCode" placeholder="Nhập mã giảm giá">
+                        <button onclick="applyVoucher()">Áp dụng</button>
+                    </div>
                     <div id="voucherError" class="error-message"></div>
+
+                    <!-- Hiển thị voucher đã áp dụng -->
+                    <div id="voucherAppliedContainer" style="display: none;">
+                        <div class="voucher-applied">
+                            <img src="assets/img/vourcher.jpg" class="voucher-image" alt="Voucher">
+                            <span id="voucherAppliedText"></span>
+                            <button class="remove-voucher" onclick="removeVoucher()">×</button>
+                        </div>
+                    </div>
+
                     <c:if test="${not empty availableVouchers}">
                         <p>Các mã giảm giá có sẵn:</p>
                         <select id="voucherSelect" onchange="fillVoucherCode()">
@@ -132,11 +185,7 @@
                             </c:forEach>
                         </select>
                     </c:if>
-                    <p id="discountApplied" style="color: green;">
-                        <c:if test="${not empty discount && discount > 0}">
-                            Đã áp dụng giảm giá: <fmt:formatNumber value="${discount}" pattern="#,###" /> VND
-                        </c:if>
-                    </p>
+                    <p id="discountApplied" style="color: green;"></p>
                 </div>
 
                 <div class="total">
@@ -145,7 +194,7 @@
                     <p>Tổng tạm tính: <fmt:formatNumber value="${totalMoney}" pattern="#,###" /> VND</p>
                     <p style="font-weight: 550;">Tổng sau giảm giá: 
                         <span id="finalTotal">
-                            <fmt:formatNumber value="${totalMoney - (discount != null ? discount : 0)}" pattern="#,###" /> VND
+                            <fmt:formatNumber value="${totalMoney}" pattern="#,###" /> VND
                         </span>
                     </p>
                 </div>
@@ -186,6 +235,9 @@
                 }
             };
 
+            let originalTotal = ${totalMoney}; // Lưu giá trị gốc
+            let currentDiscount = 0;
+
             function fillVoucherCode() {
                 const select = document.getElementById("voucherSelect");
                 const selectedCode = select.value;
@@ -208,13 +260,18 @@
                     data: {voucherCode: voucherCode},
                     success: function (response) {
                         if (response.success) {
-                            const discount = response.discount;
-                            const totalMoney = ${totalMoney};
-                            const finalTotal = totalMoney - discount;
+                            currentDiscount = response.discount;
+                            const finalTotal = originalTotal - currentDiscount;
 
-                            $("#discountApplied").text("Đã áp dụng giảm giá: " + formatNumber(discount) + " VND");
+                            // Hiển thị voucher đã áp dụng
+                            $("#voucherAppliedContainer").show();
+                            $("#voucherAppliedText").text("Đã áp dụng: " + voucherCode + " - Giảm " + formatNumber(currentDiscount) + " VND");
+                            $("#discountApplied").text("Đã áp dụng giảm giá: " + formatNumber(currentDiscount) + " VND");
                             $("#finalTotal").text(formatNumber(finalTotal) + " VND");
                             voucherError.style.display = "none";
+
+                            // Reset input
+                            document.getElementById("voucherCode").value = "";
                         } else {
                             voucherError.textContent = "Mã giảm giá không tồn tại!";
                             voucherError.style.display = "block";
@@ -227,9 +284,21 @@
                 });
             }
 
+            function removeVoucher() {
+                $("#voucherAppliedContainer").hide();
+                currentDiscount = 0;
+                $("#discountApplied").text("");
+                $("#finalTotal").text(formatNumber(originalTotal) + " VND");
+            }
+
             function formatNumber(num) {
                 return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
+
+            // Reset voucher UI khi tải lại trang
+            $("#voucherAppliedContainer").hide();
+            $("#discountApplied").text("");
+            $("#finalTotal").text(formatNumber(originalTotal) + " VND");
         </script>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"
