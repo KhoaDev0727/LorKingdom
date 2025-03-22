@@ -186,28 +186,84 @@ public class ProductDAO {
     }
 
     // Phương thức lấy danh sách tất cả các sản phẩm
+//    public List<Product> getAllProducts() throws SQLException, ClassNotFoundException {
+//        List<Product> products = new ArrayList<>();
+//        String query = "SELECT p.* " +
+//               "FROM Product p " +
+//               "JOIN Category c ON p.CategoryID = c.CategoryID " +
+//               "JOIN SuperCategory sc ON c.SuperCategoryID = sc.SuperCategoryID " +
+//               "JOIN Age a ON p.AgeID = a.AgeID " +
+//               "JOIN Brand b ON p.BrandID = b.BrandID " +
+//               "JOIN Material m ON p.MaterialID = m.MaterialID " +
+//               "JOIN PriceRange pr ON p.PriceRangeID = pr.PriceRangeID " +
+//               "JOIN Sex s ON p.SexID = s.SexID " +
+//               "WHERE p.IsDeleted = 0 " +
+//               "  AND c.IsDeleted = 0 " +
+//               "  AND sc.IsDeleted = 0 " +    // lọc superCategory active
+//               "  AND a.IsDeleted = 0 " +
+//               "  AND b.IsDeleted = 0 " +
+//               "  AND m.IsDeleted = 0 " +
+//               "  AND pr.IsDeleted = 0 " +
+//               "  AND s.IsDeleted = 0 " +
+//               "  AND p.Quantity > 0";       // sản phẩm phải có số lượng > 0
+//        ;
+//        try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
+//            while (rs.next()) {
+//                Product product = new Product();
+//                product.setProductID(rs.getInt("ProductID"));
+//                product.setSKU(rs.getString("SKU"));
+//                product.setCategoryID(rs.getObject("CategoryID") != null ? rs.getInt("CategoryID") : null);
+//                product.setMaterialID(rs.getObject("MaterialID") != null ? rs.getInt("MaterialID") : null);
+//                product.setAgeID(rs.getObject("AgeID") != null ? rs.getInt("AgeID") : null);
+//                product.setSexID(rs.getObject("SexID") != null ? rs.getInt("SexID") : null);
+//                product.setPriceRangeID(rs.getObject("PriceRangeID") != null ? rs.getInt("PriceRangeID") : null);
+//                product.setBrandID(rs.getObject("BrandID") != null ? rs.getInt("BrandID") : null);
+//                product.setOriginID(rs.getObject("OriginID") != null ? rs.getInt("OriginID") : null);
+//                product.setName(rs.getString("Name"));
+//                product.setPrice(rs.getDouble("Price"));
+//                product.setQuantity(rs.getInt("Quantity"));
+//                product.setStatus(rs.getString("Status"));
+//                product.setDescription(rs.getString("Description"));
+//                product.setCreatedAt(rs.getTimestamp("CreatedAt"));
+//                product.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
+//                product.setIsDeleted(rs.getInt("IsDeleted"));
+//
+//                // Nếu có cột mainImageUrl, có thể set thêm tại đây
+//                products.add(product);
+//            }
+//        }
+//        return products;
+//    }
     public List<Product> getAllProducts() throws SQLException, ClassNotFoundException {
         List<Product> products = new ArrayList<>();
-        String query = "SELECT p.* " +
-               "FROM Product p " +
-               "JOIN Category c ON p.CategoryID = c.CategoryID " +
-               "JOIN SuperCategory sc ON c.SuperCategoryID = sc.SuperCategoryID " +
-               "JOIN Age a ON p.AgeID = a.AgeID " +
-               "JOIN Brand b ON p.BrandID = b.BrandID " +
-               "JOIN Material m ON p.MaterialID = m.MaterialID " +
-               "JOIN PriceRange pr ON p.PriceRangeID = pr.PriceRangeID " +
-               "JOIN Sex s ON p.SexID = s.SexID " +
-               "WHERE p.IsDeleted = 0 " +
-               "  AND c.IsDeleted = 0 " +
-               "  AND sc.IsDeleted = 0 " +    // lọc superCategory active
-               "  AND a.IsDeleted = 0 " +
-               "  AND b.IsDeleted = 0 " +
-               "  AND m.IsDeleted = 0 " +
-               "  AND pr.IsDeleted = 0 " +
-               "  AND s.IsDeleted = 0 " +
-               "  AND p.Quantity > 0";       // sản phẩm phải có số lượng > 0
-        ;
-        try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
+
+        // JOIN tất cả các bảng liên quan, 
+        // đồng thời kiểm tra IsDeleted = 0 ở mọi bảng + p.Quantity > 0
+        String query = "SELECT p.* "
+                + "FROM Product p "
+                + "JOIN Category c ON p.CategoryID = c.CategoryID "
+                + "JOIN SuperCategory sc ON c.SuperCategoryID = sc.SuperCategoryID "
+                + "JOIN Age a ON p.AgeID = a.AgeID "
+                + "JOIN Brand b ON p.BrandID = b.BrandID "
+                + "JOIN Material m ON p.MaterialID = m.MaterialID "
+                + "JOIN PriceRange pr ON p.PriceRangeID = pr.PriceRangeID "
+                + "JOIN Sex s ON p.SexID = s.SexID "
+                + "JOIN Origin o ON p.OriginID = o.OriginID "
+                + // Thêm JOIN Origin
+                "WHERE p.IsDeleted = 0 "
+                + "  AND c.IsDeleted = 0 "
+                + "  AND sc.IsDeleted = 0 "
+                + "  AND a.IsDeleted = 0 "
+                + "  AND b.IsDeleted = 0 "
+                + "  AND m.IsDeleted = 0 "
+                + "  AND pr.IsDeleted = 0 "
+                + "  AND s.IsDeleted = 0 "
+                + "  AND o.IsDeleted = 0 "
+                + // Lọc Origin chưa bị xóa
+                "  AND p.Quantity > 0";    // Chỉ hiển thị sản phẩm có số lượng > 0
+
+        try (
+                 Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
                 Product product = new Product();
                 product.setProductID(rs.getInt("ProductID"));
@@ -228,7 +284,8 @@ public class ProductDAO {
                 product.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
                 product.setIsDeleted(rs.getInt("IsDeleted"));
 
-                // Nếu có cột mainImageUrl, có thể set thêm tại đây
+                // Nếu bạn có thêm cột mainImageUrl trong bảng Product
+                // product.setMainImageUrl(rs.getString("mainImageUrl"));
                 products.add(product);
             }
         }

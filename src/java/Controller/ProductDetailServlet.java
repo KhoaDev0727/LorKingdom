@@ -128,7 +128,10 @@ public class ProductDetailServlet extends HttpServlet {
             request.setAttribute("brand", brandDAO.getBrandNameByProductId(productId));
             request.setAttribute("material", materialDAO.getMaterialNameByProductId(productId)); // Fix typo
             request.setAttribute("sex", sexDAO.getSexNameByProductId(productId));
+            String originName = materialDAO.getMaterialNameByProductId(productId);
 
+// In ra console để kiểm tra
+            System.out.println("Material name: " + originName);
             // Lấy ảnh sản phẩm
             request.setAttribute("mainImages", productImageDAO.getMainProductImages());
             request.setAttribute("listImages", productImageDAO.getSecondaryProductImagesByProductId(productId));
@@ -178,8 +181,8 @@ public class ProductDetailServlet extends HttpServlet {
             request.setAttribute("rating4", rating4);
             request.setAttribute("rating3", rating3);
             request.setAttribute("rating2", rating2);
-            request.setAttribute("rating1", rating1); 
-              request.setAttribute("listReviews", listReviews);
+            request.setAttribute("rating1", rating1);
+            request.setAttribute("listReviews", listReviews);
             request.setAttribute("totalComment", totalComment);
             request.setAttribute("totalImage", totalImage);
 

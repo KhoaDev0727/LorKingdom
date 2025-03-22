@@ -157,7 +157,7 @@
                                             </tr>
                                             <tr class="border-b border-gray-200">
                                                 <td class="border-r border-gray-200 px-4 py-2 font-semibold">Chất liệu</td>
-                                                <td class="px-4 py-2">${materail}</td>
+                                                <td class="px-4 py-2">${material}</td>
                                             </tr>
                                             <tr class="border-b border-gray-200">
                                                 <td class="border-r border-gray-200 px-4 py-2 font-semibold">Tuổi</td>
