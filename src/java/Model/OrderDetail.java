@@ -4,24 +4,23 @@
  */
 package Model;
 
-
-
 /**
  *
  * @author Acer
  */
 public class OrderDetail {
+
     private int orderDetailID;
     private int orderID;
     private String productName;
     private int quantity;
-    float unitPrice;
+    private double unitPrice;
     float discount;
     private String productImage;
     private int productID;
-    private double Price;
-     private String categoryName;  
-     private int Reviewed;
+    private double TotalPrice;
+    private String categoryName;
+    private int Reviewed;
 
     public int getReviewed() {
         return Reviewed;
@@ -31,13 +30,22 @@ public class OrderDetail {
         this.Reviewed = Reviewed;
     }
 
-        public String getCategoryName() {
+    public double getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(double unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public String getCategoryName() {
         return categoryName;
     }
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
     }
+
     public String getProductImage() {
         return productImage;
     }
@@ -54,13 +62,15 @@ public class OrderDetail {
         this.productID = productID;
     }
 
-    public double getPrice() {
-        return Price;
+    public double getTotalPrice() {
+        return TotalPrice;
     }
 
-    public void setPrice(double Price) {
-        this.Price = Price;
+    public void setTotalPrice(double TotalPrice) {
+        this.TotalPrice = TotalPrice;
     }
+
+
 
     public OrderDetail() {
     }
@@ -106,14 +116,6 @@ public class OrderDetail {
         this.quantity = quantity;
     }
 
-    public float getUnitPrice() {
-        return unitPrice;
-    }
-
-    public void setUnitPrice(float unitPrice) {
-        this.unitPrice = unitPrice;
-    }
-
     public float getDiscount() {
         return discount;
     }
@@ -127,8 +129,4 @@ public class OrderDetail {
         return "OrderDetail{" + "orderDetailID=" + orderDetailID + ", orderID=" + orderID + ", productName=" + productName + ", quantity=" + quantity + ", unitPrice=" + unitPrice + ", discount=" + discount + '}';
     }
 
-
-    
-    
-    
 }

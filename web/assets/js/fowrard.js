@@ -170,7 +170,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div> 
                         <div class="text-end"> 
         
-                            <div class="text-danger fw-bold">${formatCurrency(detail.price)}</div>
+                            <div class="text-danger fw-bold">${formatCurrency(detail.unitPrice)}</div>
                             ${order.status === 'Delivered'
                         ? detail.Reviewed === 0
                         ? `
@@ -191,12 +191,13 @@ document.addEventListener("DOMContentLoaded", function () {
                         : ''
                         : ''}
                         </div>
-                    </div>
-                `).join('')}
-                <div class="border-top pt-3 text-end">
-                    <div class="h4 text-danger fw-bold">Tổng: ${formatCurrency(order.totalAmount)}</div>
+                    </div> 
+          <div class="border-top pt-3 text-end">
+                    <div class="h4 text-danger fw-bold">Tổng: ${formatCurrency(detail.TotalPrice)}</div>
                 </div>
             </div>
+                `).join('')}
+              
         `).join('');
     }
 

@@ -276,7 +276,7 @@ public class OrderDAO extends DBConnect.DBConnection {
     }
 
 //    Cua Khang 
-    public static Map<String, Object> getOrdersByUser(int accountId, int status, int page, int pageSize) {
+   public static Map<String, Object> getOrdersByUser(int accountId, int status, int page, int pageSize) {
         Map<String, Object> result = new HashMap<>();
         List<Order> orders = new ArrayList<>();
         Map<Integer, Order> orderMap = new HashMap<>();
@@ -295,7 +295,7 @@ public class OrderDAO extends DBConnect.DBConnection {
                 + "    WHERE RowNum BETWEEN ? AND ?\n"
                 + ")\n"
                 + "SELECT po.OrderID, po.OrderDate, po.TotalAmount, po.Status,\n" // Thêm dấu phẩy sau po.Status
-                + "       d.ProductID, p.Name AS ProductName, d.Quantity, d.UnitPrice, d.Reviewed,d.OrderDetailID, d.OrderID,\n"
+                + "       d.ProductID, p.Name AS ProductName, d.Quantity, d.UnitPrice,d.Total , d.Reviewed,d.OrderDetailID, d.OrderID,\n"
                 + "       (SELECT TOP 1 Image FROM ProductImages \n"
                 + "        WHERE ProductID = d.ProductID AND IsMain = 1) AS ProductImage,\n"
                 + "       c.Name AS CategoryName\n"
@@ -354,10 +354,11 @@ public class OrderDAO extends DBConnect.DBConnection {
                     detail.setOrderID(rs.getInt("OrderID"));
                     detail.setProductID(rs.getInt("ProductID"));
                     detail.setProductName(rs.getString("ProductName"));
-                    detail.setQuantity(rs.getInt("Quantity"));
-                    detail.setPrice(rs.getDouble("UnitPrice"));
+                    detail.setQuantity(rs.getInt("Quantity")); 
+                    detail.setUnitPrice(rs.getDouble("UnitPrice"));
                     detail.setProductImage(rs.getString("ProductImage"));
-                    detail.setCategoryName(rs.getString("CategoryName"));
+                    detail.setCategoryName(rs.getString("CategoryName")); 
+                    detail.setTotalPrice(rs.getDouble("Total"));
                     detail.setReviewed(rs.getInt("Reviewed")); // Giả sử Reviewed là BIT trong SQL
                     order.addOrderDetail(detail);
                 }
@@ -371,7 +372,7 @@ public class OrderDAO extends DBConnect.DBConnection {
         }
         return result;
     }
-
+   
     public void updateOrderStatus(int orderId, int statusId) throws SQLException, ClassNotFoundException {
         String query = "UPDATE Orders SET StatusID = ? WHERE OrderID = ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
@@ -443,7 +444,7 @@ public class OrderDAO extends DBConnect.DBConnection {
                 psDetail.setInt(1, orderId);
                 psDetail.setInt(2, detail.getProductID());
                 psDetail.setInt(3, detail.getQuantity());
-                psDetail.setFloat(4, detail.getUnitPrice());
+                psDetail.setDouble(4, detail.getUnitPrice());
                 psDetail.setFloat(5, detail.getDiscount());
                 psDetail.executeUpdate();
             }
