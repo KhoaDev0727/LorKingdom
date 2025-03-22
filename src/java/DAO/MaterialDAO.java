@@ -119,7 +119,7 @@ public class MaterialDAO {
 
     public String getMaterialNameByProductId(int productId) throws SQLException, ClassNotFoundException {
         String materialName = null;
-        String sql = "SELECT m.Name FROM Product p JOIN Material m ON p.MaterialID = m.MaterialID WHERE p.ProductID = ?";
+        String sql = "SELECT m.Name FROM Product p JOIN Material m ON p.MaterialID = m.MaterialID WHERE p.ProductID = ? ";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, productId);
             try ( ResultSet rs = ps.executeQuery()) {
