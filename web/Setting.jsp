@@ -15,6 +15,10 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
+        <!-- SweetAlert2 CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+        <!-- SweetAlert2 JS -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <style> */* Preview ảnh upload */
             #image-preview {
@@ -118,9 +122,25 @@
                         <div id="pagination-container" class="d-flex justify-content-center gap-2 my-4"> 
                         </div>
                         <div class="order-content">
-                            <img src="./assets/img/notifi-order.png" alt="Chưa có đơn hàng" class="no-order-img">
-                            <p>Chưa có đơn hàng</p>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+                
+                
+        <div class="modal fade" id="orderDetailModal" tabindex="-1" aria-labelledby="orderDetailModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="orderDetailModalLabel">Chi tiết đơn hàng</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="order-detail-content">
+                        <!-- Nội dung chi tiết đơn hàng sẽ được hiển thị ở đây -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                     </div>
                 </div>
             </div>
@@ -175,7 +195,12 @@
                     </form>
                 </div>
             </div>
-        </div>
+        </div> 
+
+
+
+
+
         <%@include file="assets/Component/footer.jsp" %>
         <script src="assets/js/fowrard.js">
         </script>

@@ -21,16 +21,8 @@
     </head>
 
     <body>
-        <c:choose>
-            <c:when test="${empty sessionScope.roleID}">
-                <c:redirect url="/login.jsp"/>
-            </c:when>
-            <c:when test="${sessionScope.roleID eq 2 || sessionScope.roleID eq 4 ||  sessionScope.roleID eq 1}">
-                <c:redirect url="/Admin/loginPage.jsp"/>
-            </c:when>
-        </c:choose>
         <!-- Header Section -->
-        <jsp:include page="assets/Component/header.jsp"/>
+              <jsp:include page="assets/Component/header.jsp"/>
         <!-- end Header Section -->
 
         <div class="image-banner">

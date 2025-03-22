@@ -4,7 +4,6 @@
  */
 package DAO;
 
-import static DAO.AccountDAO.conn;
 import DBConnect.DBConnection;
 import Model.Order;
 import Model.OrderDetail;
@@ -275,8 +274,8 @@ public class OrderDAO extends DBConnect.DBConnection {
         return list;
     }
 
-//    Cua Khang 
-   public static Map<String, Object> getOrdersByUser(int accountId, int status, int page, int pageSize) {
+//    Creator by Khang
+    public static Map<String, Object> getOrdersByUser(int accountId, int status, int page, int pageSize) {
         Map<String, Object> result = new HashMap<>();
         List<Order> orders = new ArrayList<>();
         Map<Integer, Order> orderMap = new HashMap<>();
@@ -354,10 +353,10 @@ public class OrderDAO extends DBConnect.DBConnection {
                     detail.setOrderID(rs.getInt("OrderID"));
                     detail.setProductID(rs.getInt("ProductID"));
                     detail.setProductName(rs.getString("ProductName"));
-                    detail.setQuantity(rs.getInt("Quantity")); 
+                    detail.setQuantity(rs.getInt("Quantity"));
                     detail.setUnitPrice(rs.getDouble("UnitPrice"));
                     detail.setProductImage(rs.getString("ProductImage"));
-                    detail.setCategoryName(rs.getString("CategoryName")); 
+                    detail.setCategoryName(rs.getString("CategoryName"));
                     detail.setTotalPrice(rs.getDouble("Total"));
                     detail.setReviewed(rs.getInt("Reviewed")); // Giả sử Reviewed là BIT trong SQL
                     order.addOrderDetail(detail);
@@ -372,16 +371,94 @@ public class OrderDAO extends DBConnect.DBConnection {
         }
         return result;
     }
-   
-    public void updateOrderStatus(int orderId, int statusId) throws SQLException, ClassNotFoundException {
+
+    public HashMap<String, Object> getOrderDetails(int orderId) throws SQLException, ClassNotFoundException {
+        String sql = "SELECT \n"
+                + "    o.OrderID, \n"
+                + "    s.Status, \n"
+                + "    o.OrderDate, \n"
+                + "    pm.MethodName AS PaymentMethodName, \n"
+                + "    sm.MethodName AS ShippingMethodName, \n"
+                + "    p.Name AS ProductName, \n"
+                + "    d.Quantity, \n"
+                + "    d.UnitPrice, \n"
+                + "    d.Discount, \n"
+                + "    d.Total, \n"
+                + "    d.Reviewed, \n"
+                + "    (SELECT TOP 1 Image FROM ProductImages WHERE ProductID = d.ProductID AND IsMain = 1) AS ProductImage, \n"
+                + "    c.Name AS CategoryName \n"
+                + "FROM Orders o \n"
+                + "JOIN OrderDetails d ON o.OrderID = d.OrderID \n"
+                + "JOIN PaymentMethods pm ON o.PaymentMethodID = pm.PaymentMethodID \n"
+                + "JOIN ShippingMethods sm ON o.ShippingMethodID = sm.ShippingMethodID \n"
+                + "JOIN StatusOrder s ON o.StatusID = s.StatusID \n"
+                + "JOIN Product p ON d.ProductID = p.ProductID \n"
+                + "LEFT JOIN Category c ON p.CategoryID = c.CategoryID \n"
+                + "WHERE o.OrderID = ?;";
+
+        HashMap<String, Object> result = new HashMap<>();
+        Order order = null;
+
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, orderId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                order = new Order();
+                order.setOrderId(rs.getInt("OrderID"));
+
+                String status = rs.getString("Status");
+                String statusOrder;
+                if (status.equals("Pending")) {
+                    statusOrder = "Đang Xử Lí";
+                } else if (status.equals("Shipped")) {
+                    statusOrder = "Đang Vận Chuyển";
+                } else if (status.equals("Delivered")) {
+                    statusOrder = "Đã Nhận Hàng";
+                } else {
+                    statusOrder = "Đã Hủy";
+                }
+                order.setStatus(statusOrder);
+                order.setOrderDate(rs.getTimestamp("OrderDate"));
+                order.setPayMentMethodName(rs.getString("PaymentMethodName"));
+                order.setShipingMethodName(rs.getString("ShippingMethodName"));
+
+                List<OrderDetail> orderDetails = new ArrayList<>();
+                do {
+                    OrderDetail detail = new OrderDetail();
+                    detail.setProductName(rs.getString("ProductName"));
+                    detail.setQuantity(rs.getInt("Quantity"));
+                    detail.setUnitPrice(rs.getDouble("UnitPrice"));
+                    detail.setDiscount(rs.getFloat("Discount"));
+                    detail.setTotalPrice(rs.getDouble("Total"));
+                    detail.setReviewed(rs.getInt("Reviewed"));
+                    detail.setProductImage(rs.getString("ProductImage"));
+                    detail.setCategoryName(rs.getString("CategoryName"));
+                    orderDetails.add(detail);
+                } while (rs.next());
+
+                result.put("order", order);
+                result.put("orderDetails", orderDetails);
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Lỗi khi lấy thông tin chi tiết đơn hàng: " + e.getMessage());
+        }
+        return result;
+    }
+
+    //Create by Khoa
+    public boolean updateOrderStatus(int orderId, int statusId) throws SQLException, ClassNotFoundException {
         String query = "UPDATE Orders SET StatusID = ? WHERE OrderID = ?";
+        boolean rowUpdate = false;
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, statusId);
             ps.setInt(2, orderId);
-            ps.executeUpdate();
+            rowUpdate = ps.executeUpdate() > 0;
         } catch (SQLException e) {
             throw new SQLException("Lỗi khi cập nhật trạng thái đơn hàng: " + e.getMessage());
         }
+        return rowUpdate;
     }
 
     public int getStatusIdByName(String statusName) throws SQLException, ClassNotFoundException {
@@ -414,8 +491,10 @@ public class OrderDAO extends DBConnect.DBConnection {
         Connection conn = null;
         try {
             conn = DBConnection.getConnection();
+
             if (conn == null) {
-                Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, "Không thể kết nối đến cơ sở dữ liệu!");
+                Logger.getLogger(OrderDAO.class
+                        .getName()).log(Level.SEVERE, "Không thể kết nối đến cơ sở dữ liệu!");
                 return false;
             }
             conn.setAutoCommit(false); // Bắt đầu transaction
@@ -456,11 +535,15 @@ public class OrderDAO extends DBConnect.DBConnection {
             try {
                 if (conn != null) {
                     conn.rollback(); // Rollback nếu có lỗi
+
                 }
             } catch (SQLException rollbackEx) {
-                Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, "Rollback failed", rollbackEx);
+                Logger.getLogger(OrderDAO.class
+                        .getName()).log(Level.SEVERE, "Rollback failed", rollbackEx);
+
             }
-            Logger.getLogger(OrderDAO.class.getName()).log(Level.SEVERE, "Error saving order", ex);
+            Logger.getLogger(OrderDAO.class
+                    .getName()).log(Level.SEVERE, "Error saving order", ex);
             return false;
         }
     }

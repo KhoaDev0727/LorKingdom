@@ -1,9 +1,11 @@
+/* global Swal, $, fetch */
+
 document.addEventListener("DOMContentLoaded", function () {
     let currentPage = 1;
     let totalPages = 1;
     let currentStatus = '';
 
-    // Lấy các phần tử DOM chính 
+    // Lấy các phần tử DOM chính
     const profileSection = document.getElementById("profile-section");
     const ordersSection = document.getElementById("orders-section");
     const profileLink = document.getElementById("profile-link");
@@ -68,24 +70,29 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // Hàm hiển thị phân trang
     function renderPagination(total, pageSize) {
         const paginationContainer = document.getElementById("pagination-container");
+        if (!paginationContainer) {
+            console.error("Không tìm thấy #pagination-container");
+            return;
+        }
+
         const totalPages = Math.ceil(total / pageSize);
-        const maxPagesToShow = 5; // Số lượng trang tối đa hiển thị
         let html = '';
 
         // Nút "Previous"
         if (currentPage > 1) {
-            html += `<button class="page-btn" data-page="${currentPage - 1}"> <i class="fas fa-chevron-left"></i></button>`;
+            html += `<button class="page-btn" data-page="${currentPage - 1}"><i class="fas fa-chevron-left"></i></button>`;
         }
 
         // Tính toán trang bắt đầu và kết thúc
-        let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
-        let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+        let startPage = Math.max(1, currentPage - Math.floor(5 / 2));
+        let endPage = Math.min(totalPages, startPage + 5 - 1);
 
-        // Đảm bảo rằng chúng ta luôn hiển thị đủ maxPagesToShow nút trang
-        if (endPage - startPage + 1 < maxPagesToShow) {
-            startPage = Math.max(1, endPage - maxPagesToShow + 1);
+        // Đảm bảo hiển thị đủ 5 trang
+        if (endPage - startPage + 1 < 5) {
+            startPage = Math.max(1, endPage - 5 + 1);
         }
 
         // Thêm dấu "..." nếu cần
@@ -129,13 +136,14 @@ document.addEventListener("DOMContentLoaded", function () {
     async function loadOrders(status, page = 1) {
         try {
             currentPage = page;
-            currentStatus = status; // Lưu trạng thái hiện tại
+            currentStatus = status;
 
             const response = await fetch(`purchase?status=${status}&page=${page}`);
             if (!response.ok)
                 throw new Error(`Lỗi HTTP: ${response.status}`);
-            const data = await response.json(); // Nhận cả orders và total
-            if (data.error) {
+            const data = await response.json();
+
+            if (data.error || !data.orders || data.orders.length === 0) {
                 showNoOrders();
                 return;
             }
@@ -156,49 +164,52 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        orderContent.innerHTML = orders.map(order => ` 
-            <div class="order-item">
-                <h3 style="display: inline-block; margin-right: 10px;">Đơn hàng ${order.orderId}</h3>
-                ${order.orderDetails.map(detail => `
-                    <div class="d-flex mb-3 align-items-center">
-                        <img src="http://localhost:8080/LorKingdom${detail.productImage || './assets/img/default-product.png'}" 
-                             class="me-3" style="width: 100px; height: 100px;" alt="Hình sản phẩm">
-                        <div class="flex-grow-1">
-                            <div class="fw-bold">${detail.productName}</div>
-                            <div class="text-muted">Phân loại: ${detail.categoryName}</div>
-                            <div class="text-muted">Số lượng: x${detail.quantity}</div>
-                        </div> 
-                        <div class="text-end"> 
-        
-                            <div class="text-danger fw-bold">${formatCurrency(detail.unitPrice)}</div>
-                            ${order.status === 'Delivered'
+        orderContent.innerHTML = orders.map(order => `
+        <div class="order-item">
+            <h3 style="display: inline-block; margin-right: 10px;">Đơn hàng ${order.orderId}</h3>
+            <button class="btn btn-info btn-sm" onclick="showOrderDetail(${order.orderId})">Xem chi tiết</button>
+            ${order.orderDetails.map(detail => `
+                <div class="d-flex mb-3 align-items-center">
+                    <img src="http://localhost:8080/LorKingdom${detail.productImage || './assets/img/default-product.png'}" 
+                         class="me-3" style="width: 100px; height: 100px;" alt="Hình sản phẩm">
+                    <div class="flex-grow-1">
+                        <div class="fw-bold">${detail.productName}</div>
+                        <div class="text-muted">Phân loại: ${detail.categoryName}</div>
+                        <div class="text-muted">Số lượng: x${detail.quantity}</div>
+                    </div> 
+                    <div class="text-end"> 
+                        <div class="text-danger fw-bold">${formatCurrency(detail.unitPrice)}</div>
+                        ${order.status === 'Delivered'
                         ? detail.Reviewed === 0
                         ? `
-      <button class="btn btn-warning mt-2" 
-              data-bs-toggle="modal" 
-              data-bs-target="#reviewModal"
-              data-product-id="${detail.productID}" 
-              data-order-id="${detail.orderID}" 
-      modal-OrderDetail-Id="${detail.orderDetailID}" 
-              data-category-name="${detail.categoryName}"
-              data-product-name="${detail.productName}"
-              data-product-img="http://localhost:8080/LorKingdom${detail.productImage}">
-          Đánh giá
-      </button>
-    `
-                        : detail.Reviewed === 1
-                        ? `<span class="text-muted mt-2">Bạn đã đánh giá</span>`
+                            <button class="btn btn-warning mt-2" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#reviewModal"
+                                    data-product-id="${detail.productID}" 
+                                    data-order-id="${detail.orderID}" 
+                                    modal-OrderDetail-Id="${detail.orderDetailID}" 
+                                    data-category-name="${detail.categoryName}"
+                                    data-product-name="${detail.productName}"
+                                    data-product-img="http://localhost:8080/LorKingdom${detail.productImage}">
+                                Đánh giá
+                            </button>`
+                        : `<span class="text-muted mt-2">Bạn đã đánh giá</span>`
+                        : order.status === 'Pending'
+                        ? `
+                            <button class="btn btn-danger mt-2" 
+                                    onclick="cancelOrder(${detail.orderID})">
+                                Hủy đơn hàng
+                            </button>`
                         : ''
-                        : ''}
-                        </div>
-                    </div> 
-          <div class="border-top pt-3 text-end">
+                        }
+                    </div>
+                </div> 
+                <div class="border-top pt-3 text-end">
                     <div class="h4 text-danger fw-bold">Tổng: ${formatCurrency(detail.TotalPrice)}</div>
                 </div>
-            </div>
-                `).join('')}
-              
-        `).join('');
+            `).join('')}
+        </div>
+    `).join('');
     }
 
     // Xử lý khi modal đánh giá được mở
@@ -210,21 +221,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-
             const orderDetailId = button.getAttribute('modal-OrderDetail-Id') || '';
             const productId = button.getAttribute('data-product-id') || '';
             const orderId = button.getAttribute('data-order-id') || '';
             const productName = button.getAttribute('data-product-name') || '';
             const categoryName = button.getAttribute('data-category-name') || '';
             const productImg = button.getAttribute('data-product-img') || './assets/img/default-product.png';
+
             const modalOrderDetail = document.getElementById('modal-OrderDetail-Id');
             const modalProductId = document.getElementById('modal-productId');
             const modalOrderId = document.getElementById('modal-orderId');
             const modalCategoryName = document.getElementById('modal-productCategory');
             const modalProductName = document.getElementById('modal-productName');
             const modalProductImg = document.getElementById('modal-productImg');
-            console.log("orderID khi modal mở:", orderId);
-            console.log("orderDetailID khi modal mở:", orderDetailId); // Kiểm tra giá trị
+
             if (modalProductId)
                 modalProductId.value = productId;
             if (modalOrderId)
@@ -248,10 +258,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const starContainer = document.getElementById("star-rating");
 
     if (starContainer && ratingText && ratingInput) {
-        // Khởi tạo trạng thái mặc định 5 sao
-        updateRating(5);
+        updateRating(5); // Khởi tạo mặc định 5 sao
 
-        // Sử dụng event delegation để xử lý click trên các sao
         starContainer.addEventListener("click", function (e) {
             const star = e.target.closest(".fa-star");
             if (star) {
@@ -268,7 +276,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 star.classList.toggle("active", starRating <= rating);
             });
 
-            // Cập nhật văn bản đánh giá
             const ratingMessages = {
                 1: "Kém",
                 2: "Tạm được",
@@ -278,7 +285,6 @@ document.addEventListener("DOMContentLoaded", function () {
             };
             ratingText.textContent = ratingMessages[rating] || "Tuyệt vời";
         }
-
     } else {
         console.error("Không tìm thấy các phần tử rating");
     }
@@ -304,8 +310,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const imageInput = document.getElementById('review-image');
         const action = document.getElementById('modal-action').value;
         const imageFile = imageInput.files[0];
-        console.log("orderID khi submit form:", orderId); // Kiểm tra giá trị
-        console.log("orderDetailID khi submit form:", orderDetailID); // Kiểm tra giá trị
+
         const formData = new FormData();
         formData.append('productId', productId);
         formData.append('orderId', orderId);
@@ -313,9 +318,8 @@ document.addEventListener("DOMContentLoaded", function () {
         formData.append('comment', comment);
         formData.append('action', action);
         formData.append('orderDetailID', orderDetailID);
-        if (imageFile) {
+        if (imageFile)
             formData.append('image', imageFile);
-        }
 
         try {
             const response = await fetch('ReviewManagementServlet', {
@@ -323,11 +327,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 body: formData
             });
 
-            // Kiểm tra phản hồi từ server
             const responseText = await response.text();
-            console.log("Phản hồi từ server:", responseText);
-
-            // Cố gắng phân tích JSON
             let result;
             try {
                 result = JSON.parse(responseText);
@@ -345,10 +345,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     timer: 2000
                 });
 
-                // Đóng modal và reset form
                 $('#reviewModal').modal('hide');
                 document.getElementById('reviewForm').reset();
-                imageInput.value = ''; // Reset input file 
+                imageInput.value = '';
                 await loadOrders(currentStatus, currentPage);
             } else {
                 throw new Error(result.message || 'Lỗi khi gửi đánh giá');
@@ -362,3 +361,160 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+// Hàm hủy đơn hàng
+function cancelOrder(orderID) {
+    Swal.fire({
+        title: 'Bạn có chắc chắn muốn hủy đơn hàng này không?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Đồng ý',
+        cancelButtonText: 'Hủy bỏ',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/CancelOrder?orderID=${orderID}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thành công!',
+                                text: 'Đơn hàng đã được hủy thành công.',
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Lỗi!',
+                                text: 'Có lỗi xảy ra khi hủy đơn hàng.',
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi!',
+                            text: 'Có lỗi xảy ra khi kết nối đến máy chủ.',
+                        });
+                    });
+        }
+    });
+}
+
+
+//Form show review chi tieet
+async function showOrderDetail(orderId) {
+    console.log(orderId);
+    try {
+        const response = await fetch(`http://localhost:8080/LorKingdom/CancelOrder?orderId=${orderId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Lỗi HTTP: ${response.status}`);
+        }
+
+        const data = await response.json(); // Lấy toàn bộ dữ liệu trả về
+        const order = data.order; // Truy cập đối tượng order
+        const orderDetails = data.orderDetails; // Truy cập danh sách orderDetails
+
+        const orderDetailContent = document.getElementById('order-detail-content');
+        if (orderDetailContent) {
+            orderDetailContent.innerHTML = `
+                <div class="order-detail">
+                    <h4>Đơn hàng #${order.orderId}</h4>
+                    <p><strong>Trạng thái:</strong> ${order.status}</p>
+                    <p><strong>Ngày đặt hàng:</strong> ${new Date(order.orderDate).toLocaleDateString()}</p>
+                    <p><strong>Phương thức thanh toán:</strong> ${order.payMentMethodName}</p>
+                    <p><strong>Phương thức vận chuyển:</strong> ${order.shipingMethodName}</p>
+                    <hr>
+                    <h5>Chi tiết sản phẩm:</h5>
+                    <div class="product-list">
+                        ${orderDetails.map(detail => `
+                            <div class="product-item">
+                                <div class="row align-items-center">
+                                    <div class="col-3">
+                                        <img src="http://localhost:8080/LorKingdom${detail.productImage}" alt="${detail.productName}" class="img-fluid product-image">
+                                    </div>
+                                    <div class="col-9">
+                                        <h6>${detail.productName}</h6>
+                                        <small>Phân loại: ${detail.categoryName}</small>
+                                        <div class="mt-2">
+                                            <span>Số lượng: ${detail.quantity}</span>
+                                            <span class="ms-3">Đơn giá: ${formatCurrency(detail.unitPrice)}</span>
+                                        </div>
+                                        <div class="mt-2">
+                                            <span>Giảm giá: ${detail.discount}%</span>
+                                            <span class="ms-3">Thành tiền: ${formatCurrency(detail.TotalPrice)}</span>
+                                        </div>
+                                   
+                                   
+                            ${detail.Reviewed === 0 && order.status === 'Pending'
+    ? `
+        <button class="btn btn-danger mt-2" onclick="cancelOrder(${detail.orderID})">
+            Hủy đơn hàng
+        </button>
+    `
+    : order.status === 'Delivered' && detail.Reviewed === 0
+        ? `
+            <button class="btn btn-warning mt-2" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#reviewModal"
+                    data-product-id="${detail.productID}" 
+                    data-order-id="${detail.orderID}" 
+                    modal-OrderDetail-Id="${detail.orderDetailID}" 
+                    data-category-name="${detail.categoryName}"
+                    data-product-name="${detail.productName}"
+                    data-product-img="http://localhost:8080/LorKingdom${detail.productImage}">
+                Đánh giá
+            </button>
+        `
+        : detail.Reviewed === 1
+            ? `
+                <p class="text-success mt-2"><small>Đã đánh giá</small></p>
+            `
+            : ''
+}
+                                       
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Hiển thị modal
+        const orderDetailModalElement = document.getElementById('orderDetailModal');
+        if (orderDetailModalElement) {
+            const orderDetailModal = new bootstrap.Modal(orderDetailModalElement);
+            orderDetailModal.show();
+        } else {
+            console.error("Không tìm thấy phần tử modal với ID 'orderDetailModal'");
+        }
+    } catch (error) {
+        console.error("Lỗi khi tải chi tiết đơn hàng:", error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Lỗi',
+            text: 'Có lỗi xảy ra khi tải chi tiết đơn hàng'
+        });
+    }
+}
+
+// Hàm định dạng tiền tệ (giả định)
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(amount);
+}

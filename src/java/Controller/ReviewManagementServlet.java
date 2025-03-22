@@ -106,7 +106,7 @@ public class ReviewManagementServlet extends HttpServlet {
                         break;
                     case "hardDelete":
                         hardDeleteReview(request, response);
-                        break;
+                        break;      
                     case "fillterCustomer":
                         getListReviewForCustomer(request, response);
                         break;
@@ -337,5 +337,7 @@ public class ReviewManagementServlet extends HttpServlet {
         response.setContentType("application/json");
         response.getWriter().write(jsonResponse.toString());
     }
+
+
 
 }

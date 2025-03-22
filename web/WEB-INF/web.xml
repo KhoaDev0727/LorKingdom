@@ -231,6 +231,10 @@
         <servlet-name>OrderServlet</servlet-name>
         <servlet-class>Controller.OrderServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>HandleStatusOrderOfCustomer</servlet-name>
+        <servlet-class>Controller.HandleStatusOrderOfCustomer</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>VerifyCodeServlet</servlet-name>
         <url-pattern>/VerifyCodeServlet</url-pattern>
@@ -457,6 +461,10 @@
     <servlet-mapping>
         <servlet-name>OrderServlet</servlet-name>
         <url-pattern>/OrderServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>HandleStatusOrderOfCustomer</servlet-name>
+        <url-pattern>/CancelOrder</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

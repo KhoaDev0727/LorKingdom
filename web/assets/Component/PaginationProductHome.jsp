@@ -156,7 +156,7 @@
             window.addEventListener('load', () => {
                 // Kiểm tra nếu cần scroll
                 if (sessionStorage.getItem('shouldScroll') === 'true') {
-                    const marker = document.querySelector('.your-class'); // Thay bằng class của bạn
+                    const marker = document.querySelector('Home.jsp'); // Thay bằng class của bạn
                     if (marker) {
                         marker.scrollIntoView({
                             behavior: 'smooth', // Cuộn mượt
