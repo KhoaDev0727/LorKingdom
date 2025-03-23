@@ -16,6 +16,38 @@ import java.util.List;
 
 public class BrandDAO {
 
+    public List<Brand> getAllBrandsWithProducts() throws SQLException, ClassNotFoundException {
+        List<Brand> brands = new ArrayList<>();
+        // Lọc Brand chưa xóa (IsDeleted=0) 
+        // và tồn tại ít nhất 1 sản phẩm (p) tham chiếu BrandID này, 
+        // p.IsDeleted=0 và p.Quantity > 0
+        String query
+                = "SELECT b.BrandID, b.Name, b.IsDeleted, b.CreatedAt "
+                + "FROM Brand b "
+                + "WHERE b.IsDeleted = 0 "
+                + "  AND EXISTS ( "
+                + "      SELECT 1 "
+                + "      FROM Product p "
+                + "      WHERE p.BrandID = b.BrandID "
+                + "        AND p.IsDeleted = 0 "
+                + "        AND p.Quantity > 0 "
+                + "  )";
+
+        try (
+                 Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                Brand brand = new Brand(
+                        rs.getInt("BrandID"),
+                        rs.getString("Name"),
+                        rs.getInt("IsDeleted"),
+                        rs.getDate("CreatedAt")
+                );
+                brands.add(brand);
+            }
+        }
+        return brands;
+    }
+
     // 1) Lấy tất cả brand đang active (isDeleted=0)
     public List<Brand> getAllBrands() throws SQLException, ClassNotFoundException {
         List<Brand> brands = new ArrayList<>();

@@ -21,6 +21,10 @@ import java.util.List;
  */
 public class CategoryDAO {
 
+    
+    
+    
+    
     public List<Category> getAllCategories() throws SQLException, ClassNotFoundException {
         List<Category> categories = new ArrayList<>();
         String query = "SELECT CategoryID, SuperCategoryID, Name, CreatedAt, IsDeleted FROM Category Where IsDeleted = 0 ";

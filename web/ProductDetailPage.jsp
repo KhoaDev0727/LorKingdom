@@ -9,18 +9,20 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <!-- Link Tailwind CSS -->
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.2.7/dist/tailwind.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <script src="https://cdn.tailwindcss.com"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-        <!-- Thêm jQuery -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <title>Chi Tiết Sản Phẩm</title>
     </head> 
     <style>
-    html, body {
-    scroll-behavior: auto !important;
-}
-</style>
+        html, body {
+            scroll-behavior: auto !important;
+        }
+    </style>
     <body>
         <section class="p-0 ">
             <main class=" mx-auto px-4 py-6"  style="width: 1400px; margin: 0 auto;">
@@ -116,24 +118,19 @@
                                     <!-- Nhãn số lượng -->
                                     <label for="quantity" class="font-medium">Số lượng:</label>
 
-                                    <!-- Khối ô nhập số lượng + nút +/- -->
+                                    <!-- Khối ô nhập số lượng -->
                                     <div class="flex items-center border rounded">
-                                        <button class="px-2 py-1 text-gray-700 hover:bg-gray-100" 
-                                                type="button" 
-                                                onclick="decrementQuantity()">
-                                            -
-                                        </button>
-                                        <input id="quantity" 
-                                               name="quantity" 
-                                               type="number" 
-                                               class="w-16 text-center outline-none border-0" 
-                                               value="1" 
-                                               min="1"/>
-                                        <button class="px-2 py-1 text-gray-700 hover:bg-gray-100" 
-                                                type="button" 
-                                                onclick="incrementQuantity()">
-                                            +
-                                        </button>
+                                        <input
+                                            id="quantity"
+                                            name="quantity"
+                                            type="number"
+                                            value="1"
+                                            min="1"
+                                            max="${stock}"
+                                            onkeydown="return onlyAllowArrowsAndTab(event)"
+                                            class="w-16 text-center outline-none border-0"
+                                            />
+
                                     </div>
 
                                     <!-- Nút Thêm Vào Giỏ Hàng -->
@@ -184,7 +181,10 @@
                 <p class="text-gray-700 mb-4">${product.description}</p>
             </div>
 
+            <!-- Review -->
             <jsp:include page="reviews.jsp" />
+
+            <!-- Danh sách sản phẩm (có thể là gợi ý) -->
             <div class="grid grid-cols-3 gap-4 mb-8">
                 <c:forEach var="product" items="${listP}">
                     <a href="ProductDetailServlet?productID=${product.productID}"
@@ -220,16 +220,16 @@
                 </c:forEach>
             </div>
 
+            <!-- Sản phẩm liên quan -->
             <div class="mb-8" style="width: 1360px; margin:0 auto;">
                 <h2 class="text-xl font-bold mb-4">Sản phẩm liên quan</h2>
-                <!-- Sử dụng grid 4 cột, gap 4 -->
                 <div class="grid grid-cols-4 gap-4">
                     <c:forEach var="rp" items="${relatedProducts}">
                         <a href="ProductDetailServlet?productID=${rp.productID}"
                            class="border border-gray-400 rounded p-4 no-underline transform transition duration-200 hover:scale-105"
                            style="display: flex; flex-direction: column;">
 
-                            <!-- Thử hiển thị ảnh chính nếu có -->
+                            <!-- Ảnh liên quan -->
                             <div class="mb-2">
                                 <c:set var="foundImage" value="false" />
                                 <c:forEach var="img" items="${mainImages}">
@@ -240,8 +240,6 @@
                                         <c:set var="foundImage" value="true" />
                                     </c:if>
                                 </c:forEach>
-
-                                <!-- Nếu không tìm thấy ảnh chính, hiển thị noimage.png -->
                                 <c:if test="${not foundImage}">
                                     <img src="${pageContext.request.contextPath}/assets/img/noimage.png"
                                          alt="Ảnh liên quan"
@@ -258,57 +256,109 @@
                 </div>
             </div>
 
-
             <footer class="bg-white shadow-sm mt-10">
                 <div class="mx-auto px-4 py-4" style="width: 1380px; margin: 50 auto;">
                     <p class="text-sm text-gray-500">© 2023 - Cửa Hàng Đồ Chơi</p>
                 </div>
             </footer>
+            <!-- Modal Error -->
+            <!-- Modal Lỗi -->
+            <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <!-- Tiêu đề modal -->
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <!-- Nội dung modal -->
+                        <div class="modal-body">
+                            <p id="errorModalMessage"></p>
+                        </div>
+                        <!-- Footer modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 
         </section>
 
-        <!-- Bootstrap JS -->
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-        
+        <!-- Script carousel -->
         <script>
-                                                    function incrementQuantity() {
-                                                        const quantityInput = document.getElementById('quantity');
-                                                        let currentValue = parseInt(quantityInput.value) || 1;
-                                                        quantityInput.value = currentValue + 1;
+                                                // Khi carousel tạo xong, ta clone ảnh tiếp theo vào slide hiện tại
+                                                $('#multiItemCarousel .carousel-item').each(function () {
+                                                    var nextItem = $(this).next();
+                                                    if (!nextItem.length) {
+                                                        nextItem = $(this).siblings(':first');
                                                     }
+                                                    nextItem.children(':first-child').clone().appendTo($(this));
 
-                                                    function decrementQuantity() {
-                                                        const quantityInput = document.getElementById('quantity');
-                                                        let currentValue = parseInt(quantityInput.value) || 1;
-                                                        if (currentValue > 1) {
-                                                            quantityInput.value = currentValue - 1;
-                                                        }
-                                                    }
-
-                                                    // Khi carousel tạo xong, ta clone ảnh tiếp theo vào slide hiện tại
-                                                    $('#multiItemCarousel .carousel-item').each(function () {
-                                                        // nextItem: trỏ tới slide kế
-                                                        var nextItem = $(this).next();
+                                                    // Clone thêm 2 ảnh nữa để hiển thị đủ 4 ảnh
+                                                    for (var i = 0; i < 2; i++) {
+                                                        nextItem = nextItem.next();
                                                         if (!nextItem.length) {
-                                                            // nếu hết slide thì quay vòng lại slide đầu
                                                             nextItem = $(this).siblings(':first');
                                                         }
-                                                        // Clone phần tử con đầu tiên của slide kế (tức 1 ảnh) rồi append vào slide hiện tại
                                                         nextItem.children(':first-child').clone().appendTo($(this));
+                                                    }
+                                                });
+        </script>
 
-                                                        // Muốn hiển thị 4 ảnh => ta clone tiếp 2 ảnh nữa
-                                                        // (vì slide gốc đã có 1 ảnh + clone 1 ảnh => mới có 2, cần 2 ảnh nữa)
-                                                        for (var i = 0; i < 2; i++) {
-                                                            nextItem = nextItem.next();
-                                                            if (!nextItem.length) {
-                                                                nextItem = $(this).siblings(':first');
-                                                            }
-                                                            nextItem.children(':first-child').clone().appendTo($(this));
-                                                        }
-                                                    });
+        <!-- Kiểm tra số lượng phía client (tránh nhập vượt tồn kho) -->
+        <script>
+            $(document).ready(function () {
+                var maxStock = parseInt('${stock}');
+                // Khi giá trị ô input thay đổi, kiểm tra nếu vượt quá số tồn kho
+                $("#quantity").on('input', function () {
+                    var currentQty = parseInt($(this).val());
+                    if (currentQty > maxStock) {
+                        alert("Số lượng vượt quá số lượng sản phẩm hiện có: " + maxStock);
+                        $(this).val(maxStock);
+                    }
+                });
+            });
+        </script>
+
+        <!-- AJAX kiểm tra lại số lượng với server -->
+        <script>
+            $(document).ready(function () {
+                $("#quantity").on('change', function () {
+                    var quantity = parseInt($(this).val());
+                    var productID = parseInt('${product.productID}'); // Lấy ID sản phẩm hiện tại
+
+                    $.ajax({
+                        url: '${pageContext.request.contextPath}/ValidateQuantityServlet',
+                        type: 'POST',
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8',
+                        data: JSON.stringify({
+                            quantity: quantity,
+                            productID: productID
+                        }),
+                        error: function (xhr) {
+                            var res = JSON.parse(xhr.responseText);
+                            // Thay alert(res.error) bằng showErrorModal(res.error)
+                            showErrorModal(res.error);
+                            $("#quantity").val(res.validQuantity); // Đặt lại số lượng tối đa
+                        }
+
+                    });
+                });
+            });
+        </script>
+        <script>
+            function showErrorModal(errorMsg) {
+                // Đặt nội dung thông báo lỗi
+                document.getElementById('errorModalMessage').textContent = errorMsg;
+
+                // Tạo instance modal và hiển thị
+                var myModal = new bootstrap.Modal(document.getElementById('errorModal'), {});
+                myModal.show();
+            }
         </script>
 
     </body>

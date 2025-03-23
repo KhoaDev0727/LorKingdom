@@ -23,13 +23,16 @@ import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.JSONObject;
 
 /**
  *
@@ -224,6 +227,45 @@ public class ProductDetailServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+    }
+
+    @WebServlet("/ValidateQuantityServlet")
+    public static class ValidateQuantityServlet extends HttpServlet {
+
+        @Override
+        protected void doPost(HttpServletRequest request, HttpServletResponse response)
+                throws ServletException, IOException {
+            // Đọc JSON từ request
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = request.getReader().readLine()) != null) {
+                sb.append(line);
+            }
+            JSONObject jsonRequest = new JSONObject(sb.toString());
+
+            // Lấy số lượng & productID từ client
+            int quantity = jsonRequest.getInt("quantity");
+            int productID = jsonRequest.getInt("productID");
+
+            // Lấy số tồn kho thực từ DB
+            int stock = 0;
+            try {
+                stock = ProductDAO.getStockQuantity(productID);
+            } catch (ClassNotFoundException | SQLException ex) {
+                Logger.getLogger(ValidateQuantityServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            JSONObject jsonResponse = new JSONObject();
+
+            if (quantity > stock) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                jsonResponse.put("error", "Số lượng vượt quá số sản phẩm hiện có: " + stock);
+                jsonResponse.put("validQuantity", stock);
+            }
+            response.getWriter().write(jsonResponse.toString());
+        }
     }
 
     /**

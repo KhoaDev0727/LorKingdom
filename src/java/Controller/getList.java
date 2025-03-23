@@ -120,6 +120,7 @@ public class getList extends HttpServlet {
             }
             // Tính tổng số sản phẩm
             int totalProducts = allProducts.size();
+            System.out.println(totalProducts);
             // Tính tổng số trang
             int totalPages = (int) Math.ceil((double) totalProducts / itemsPerPage);
 
@@ -190,13 +191,13 @@ public class getList extends HttpServlet {
             request.setAttribute("totalPages", totalPages);
             request.setAttribute("forward", request.getContextPath() + "/getList");
 
-            request.setAttribute("superCategories", superCategoryDAO.getActiveSuperCategories());
+            request.setAttribute("superCategories", superCategoryDAO.getActiveSuperCategoriesWithCategoriesAndProducts());
             request.setAttribute("categories", categoryDAO.getAllCategories());
             request.setAttribute("ages", ageDAO.getAllAges());
             request.setAttribute("listS", sexDAO.getAllSexes());
-            request.setAttribute("listB", brandDAO.getActiveBrand());
+            request.setAttribute("listB", brandDAO.getAllBrandsWithProducts());
             request.setAttribute("listM", materialDAO.getAllActiveMaterials());
-            request.setAttribute("listPriceRanges", priceRangeDAO.getAllActivePriceRanges());
+            request.setAttribute("listPriceRanges", priceRangeDAO.getAllActivePriceRangesWithProducts());
             request.setAttribute("mainImages", ProductImageDAO.getMainProductImages());
 
             String partial = request.getParameter("partial");

@@ -281,7 +281,26 @@ public class ProductDAO {
             Integer brandID
     ) throws ClassNotFoundException {
         List<Product> products = new ArrayList<>();
-        StringBuilder query = new StringBuilder("SELECT * FROM Product WHERE IsDeleted = 0");
+        StringBuilder query = new StringBuilder("SELECT p.* "
+                + "FROM Product p "
+                + "JOIN Category c ON p.CategoryID = c.CategoryID "
+                + "JOIN SuperCategory sc ON c.SuperCategoryID = sc.SuperCategoryID "
+                + "JOIN Age a ON p.AgeID = a.AgeID "
+                + "JOIN Brand b ON p.BrandID = b.BrandID "
+                + "JOIN Material m ON p.MaterialID = m.MaterialID "
+                + "JOIN PriceRange pr ON p.PriceRangeID = pr.PriceRangeID "
+                + "JOIN Sex s ON p.SexID = s.SexID "
+                + "JOIN Origin o ON p.OriginID = o.OriginID "
+                + "WHERE p.IsDeleted = 0 "
+                + "  AND c.IsDeleted = 0 "
+                + "  AND sc.IsDeleted = 0 "
+                + "  AND a.IsDeleted = 0 "
+                + "  AND b.IsDeleted = 0 "
+                + "  AND m.IsDeleted = 0 "
+                + "  AND pr.IsDeleted = 0 "
+                + "  AND s.IsDeleted = 0 "
+                + "  AND o.IsDeleted = 0 "
+                + "  AND p.Quantity > 0 ");
         List<Object> params = new ArrayList<>();
 
         if (categoryID != null) {

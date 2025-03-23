@@ -16,6 +16,38 @@ import java.util.List;
  */
 public class PriceRangeDAO {
 
+    public List<PriceRange> getAllActivePriceRangesWithProducts() throws SQLException, ClassNotFoundException {
+        List<PriceRange> list = new ArrayList<>();
+        // Truy vấn: lấy PriceRange đang active (IsDeleted = 0)
+        // và có ít nhất một sản phẩm (Product) tương ứng còn active
+        // (p.IsDeleted=0) và còn hàng (p.Quantity>0).
+        String query
+                = "SELECT pr.PriceRangeID, pr.PriceRange, pr.CreatedAt, pr.IsDeleted "
+                + "FROM PriceRange pr "
+                + "WHERE pr.IsDeleted = 0 "
+                + "  AND EXISTS ( "
+                + "      SELECT 1 "
+                + "      FROM Product p "
+                + "      WHERE p.PriceRangeID = pr.PriceRangeID "
+                + "        AND p.IsDeleted = 0 "
+                + "        AND p.Quantity > 0 "
+                + "  )";
+
+        try (
+                 Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                PriceRange priceRange = new PriceRange(
+                        rs.getInt("PriceRangeID"),
+                        rs.getString("PriceRange"),
+                        rs.getDate("CreatedAt"),
+                        rs.getInt("IsDeleted")
+                );
+                list.add(priceRange);
+            }
+        }
+        return list;
+    }
+
     public List<PriceRange> getAllActivePriceRanges() throws SQLException, ClassNotFoundException {
         List<PriceRange> list = new ArrayList<>();
         String query = "SELECT PriceRangeID, PriceRange, CreatedAt, IsDeleted "

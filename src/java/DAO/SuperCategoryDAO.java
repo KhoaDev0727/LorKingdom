@@ -17,6 +17,43 @@ import java.util.List;
  */
 public class SuperCategoryDAO {
 
+    public List<SuperCategory> getActiveSuperCategoriesWithCategoriesAndProducts()
+            throws SQLException, ClassNotFoundException {
+        List<SuperCategory> categories = new ArrayList<>();
+
+        String query
+                = "SELECT sc.SuperCategoryID, sc.Name, sc.CreatedAt, sc.IsDeleted "
+                + "FROM SuperCategory sc "
+                + "WHERE sc.IsDeleted = 0 "
+                + "  AND EXISTS ( "
+                + "       SELECT 1 "
+                + "       FROM Category c "
+                + "       WHERE c.SuperCategoryID = sc.SuperCategoryID "
+                + "         AND c.IsDeleted = 0 "
+                + "         AND EXISTS ("
+                + "             SELECT 1 "
+                + "             FROM Product p "
+                + "             WHERE p.CategoryID = c.CategoryID "
+                + "               AND p.IsDeleted = 0 "
+                + "               AND p.Quantity > 0 "
+                + "         )"
+                + "  )";
+
+        try (
+                 Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                SuperCategory sc = new SuperCategory(
+                        rs.getInt("SuperCategoryID"),
+                        rs.getString("Name"),
+                        rs.getTimestamp("CreatedAt"),
+                        rs.getInt("IsDeleted")
+                );
+                categories.add(sc);
+            }
+        }
+        return categories;
+    }
+
     public List<SuperCategory> getAllSuperCategories() throws SQLException, ClassNotFoundException {
         List<SuperCategory> categories = new ArrayList<>();
         String query = "SELECT SuperCategoryID, Name, CreatedAt, IsDeleted FROM SuperCategory";
@@ -51,23 +88,23 @@ public class SuperCategoryDAO {
         return categories;
     }
 
-        public List<SuperCategory> getDeletedSuperCategories() throws SQLException, ClassNotFoundException {
-            List<SuperCategory> categories = new ArrayList<>();
-            String query = "SELECT SuperCategoryID, Name, CreatedAt, IsDeleted "
-                    + "FROM SuperCategory WHERE IsDeleted = 1";
+    public List<SuperCategory> getDeletedSuperCategories() throws SQLException, ClassNotFoundException {
+        List<SuperCategory> categories = new ArrayList<>();
+        String query = "SELECT SuperCategoryID, Name, CreatedAt, IsDeleted "
+                + "FROM SuperCategory WHERE IsDeleted = 1";
 
-            try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
-                while (rs.next()) {
-                    categories.add(new SuperCategory(
-                            rs.getInt("SuperCategoryID"),
-                            rs.getString("Name"),
-                            rs.getTimestamp("CreatedAt"),
-                            rs.getInt("IsDeleted")
-                    ));
-                }
+        try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                categories.add(new SuperCategory(
+                        rs.getInt("SuperCategoryID"),
+                        rs.getString("Name"),
+                        rs.getTimestamp("CreatedAt"),
+                        rs.getInt("IsDeleted")
+                ));
             }
-            return categories;
         }
+        return categories;
+    }
 
     public void addSuperCategory(SuperCategory category) throws SQLException, ClassNotFoundException {
         String query = "INSERT INTO SuperCategory (Name, CreatedAt) VALUES (?, GETDATE())";
