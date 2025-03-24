@@ -137,6 +137,7 @@
                                                 <th>DiscountPercent (%)</th>
                                                 <th>StartDate</th>
                                                 <th>EndDate</th>
+                                                <th>Date Create</th>
                                                 <th>Status</th>
                                                 <th>Action</th>
                                             </tr>
@@ -149,9 +150,10 @@
                                                     <td>${o.name}</td>
                                                     <td>${o.promotionCode}</td>
                                                     <td>${o.description}</td>
-                                                    <td>${o.discountPercent}%</td>
+                                                    <td>${o.discountPercent}%</td>                                                
                                                     <td>${o.startDate}</td>
                                                     <td>${o.endDate}</td>
+                                                    <td>${o.createdAt}</td>
                                                     <td><span class="badge ${o.status == 'Active' ? 'bg-success' : 'bg-danger'}">${o.status}</span></td>
                                                     <td class="text-center">
                                                         <button class="btn btn-sm btn-primary" onclick="openEditModal('${o.promotionID}', '${o.productID}', '${o.name}', '${o.description}', '${o.discountPercent}', '${o.startDate}', '${o.endDate}', '${o.status}','${o.promotionCode}')">
