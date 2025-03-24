@@ -21,6 +21,9 @@ public class PromotionController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try {
+            PromotionDAO dao = new PromotionDAO();
+            dao.updateExpiredPromotions();
+
             String indexString = request.getParameter("index");
             if (indexString == null) {
                 indexString = "1";
@@ -29,7 +32,6 @@ public class PromotionController extends HttpServlet {
             int index = Integer.parseInt(indexString);
             int promotionPerPage = 9;
 
-            PromotionDAO dao = new PromotionDAO();
             int totalPromotions = dao.getTotalPromotion();
             int endPage = totalPromotions / promotionPerPage;
             if (totalPromotions % promotionPerPage != 0) {
@@ -44,7 +46,7 @@ public class PromotionController extends HttpServlet {
             request.setAttribute("endPage", endPage);
             request.setAttribute("currentPage", index);
 
-            request.getRequestDispatcher("PromotionController.jsp").forward(request, response);
+            request.getRequestDispatcher("PromotionManagement.jsp").forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -74,7 +76,7 @@ public class PromotionController extends HttpServlet {
             // Xóa khuyến mãi
             if ("delete".equals(action)) {
                 int proId = Integer.parseInt(request.getParameter("promotionID"));
-                dao.deleteOrder(proId);
+                dao.deletePromotion(proId);
                 response.sendRedirect("promotionController");
                 return;
             }
@@ -84,7 +86,7 @@ public class PromotionController extends HttpServlet {
                 String proName = request.getParameter("promotionName");
                 List<Promotion> list = dao.searchProByName(proName);
                 request.setAttribute("listP", list);
-                request.getRequestDispatcher("PromotionController.jsp").forward(request, response);
+                request.getRequestDispatcher("PromotionManagement.jsp").forward(request, response);
                 return;
             }
 
@@ -101,7 +103,7 @@ public class PromotionController extends HttpServlet {
         } catch (SQLException | ClassNotFoundException | NumberFormatException e) {
             e.printStackTrace();
             request.setAttribute("errorMessage", "Có lỗi xảy ra, vui lòng thử lại!");
-            request.getRequestDispatcher("PromotionController.jsp").forward(request, response);
+            request.getRequestDispatcher("PromotionManagement.jsp").forward(request, response);
         }
     }
 

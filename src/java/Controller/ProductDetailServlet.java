@@ -13,10 +13,12 @@ import DAO.AgeDAO;
 import DAO.CategoryDAO;
 import DAO.ProductDAO;
 import DAO.ProductImageDAO;
+import DAO.PromotionDAO;
 import DAO.ReviewDAO;
 import Model.Account;
 import Model.Product;
 import Model.ProductImage;
+import Model.Promotion;
 import Model.Review;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -122,6 +124,7 @@ public class ProductDetailServlet extends HttpServlet {
             SexDAO sexDAO = new SexDAO();
             ProductImageDAO productImageDAO = new ProductImageDAO();
             ProductDAO productDAO = new ProductDAO();
+            PromotionDAO promotion = new PromotionDAO();
 
             // Set các thuộc tính sản phẩm
             request.setAttribute("product", product);
@@ -188,7 +191,19 @@ public class ProductDetailServlet extends HttpServlet {
             request.setAttribute("listReviews", listReviews);
             request.setAttribute("totalComment", totalComment);
             request.setAttribute("totalImage", totalImage);
-
+             // LOC CODE KHONG LOI DAU
+            List<Promotion> promotions = promotion.getPromotionsByProductId(productId);
+            double discountPrice = product.getPrice();  // Giá gốc
+            boolean hasPromotion = false;
+            if (promotions != null && !promotions.isEmpty()) {
+                // Nếu có khuyến mãi, tính giá sau giảm
+                discountPrice = calculateDiscountedPrice(product.getPrice(), promotions);
+                hasPromotion = true;
+            }
+            request.setAttribute("hasPromotion", hasPromotion);  // Cập nhật thông tin có khuyến mãi hay không
+            request.setAttribute("originalPrice", product.getPrice());
+            request.setAttribute("discountPrice", discountPrice);
+            // LOC CODE KHONG LOI DAU
             // Lấy sản phẩm liên quan
             int categoryID = product.getCategoryID();
             List<Product> relatedProducts = productDAO.getRelatedProductsByCategory(categoryID, productId, 8);
@@ -266,6 +281,20 @@ public class ProductDetailServlet extends HttpServlet {
             }
             response.getWriter().write(jsonResponse.toString());
         }
+    }
+        private double calculateDiscountedPrice(double originalPrice, List<Promotion> promotions) {
+        double discountPrice = originalPrice;  // Giá gốc
+
+        if (promotions != null && !promotions.isEmpty()) {
+            // Giả sử lấy tỷ lệ giảm của khuyến mãi đầu tiên
+            double discountRate = promotions.get(0).getDiscountPercent();  // Lấy tỷ lệ giảm (giả sử từ Promotion)
+            if (discountRate > 0) {
+                discountPrice = originalPrice * (1 - discountRate / 100);  // Tính giá sau giảm
+                return discountPrice;
+            }
+        }
+
+        return originalPrice;
     }
 
     /**

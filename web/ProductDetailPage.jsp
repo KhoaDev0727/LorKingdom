@@ -82,99 +82,119 @@
                         <div>
                             <h1 class="text-2xl font-bold mb-2">${product.name}</h1>
                             <p class="text-gray-500 text-sm">Mã sản phẩm: ${product.SKU}</p>
-                            <div class="flex items-center space-x-2 mt-2 text-red-600 font-bold text-xl">
-                                <fmt:formatNumber value="${product.price}" pattern="#,###" /> VND
-                            </div>
-
-                            <ul class="text-gray-800" style="padding-left:0;">
-                                <li class="flex items-start">
-                                    <svg class="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                    <span class="ml-2">Hàng chính hãng</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <svg class="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                    <span class="ml-2">Miễn phí giao hàng toàn quốc đơn trên 500k</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <svg class="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                    <span class="ml-2">Giao hàng hỏa tốc 4 tiếng</span>
-                                </li>
-                            </ul>
-                            <div class="mt-6">
-                                <form action="${pageContext.request.contextPath}/CartManagementServlet" 
-                                      method="POST"
-                                      class="flex items-center space-x-3">
-
-                                    <!-- Trường ẩn: productID và price -->
-                                    <input type="hidden" name="productID" value="${product.productID}">
-                                    <input type="hidden" name="price" value="${product.price}">
-
-                                    <!-- Nhãn số lượng -->
-                                    <label for="quantity" class="font-medium">Số lượng:</label>
-
-                                    <!-- Khối ô nhập số lượng -->
-                                    <div class="flex items-center border rounded">
-                                        <input
-                                            id="quantity"
-                                            name="quantity"
-                                            type="number"
-                                            value="1"
-                                            min="1"
-                                            max="${stock}"
-                                            onkeydown="return onlyAllowArrowsAndTab(event)"
-                                            class="w-16 text-center outline-none border-0"
-                                            />
-
+                            <!-- Phan gia cua loc -->
+                                <c:if test="${hasPromotion}">
+                                    <div class="flex items-center space-x-2 mt-2 text-red-600 font-bold text-xl">
+                                        <!-- Hiển thị giá gốc có gạch ngang -->
+                                        <span style="text-decoration: line-through;">
+                                            <fmt:formatNumber value="${originalPrice}" pattern="#,###" /> VND
+                                        </span>
+                                        <!-- Hiển thị giá sau giảm -->
+                                        <span>
+                                            <fmt:formatNumber value="${discountPrice}" pattern="#,###" /> VND
+                                        </span>
                                     </div>
+                                </c:if>
+                                <c:if test="${!hasPromotion}">
+                                    <div class="flex items-center space-x-2 mt-2 text-red-600 font-bold text-xl">
+                                        <!-- Chỉ hiển thị giá sau giảm nếu không có khuyến mãi, không có gạch đỏ -->
+                                        <span>
+                                            <fmt:formatNumber value="${discountPrice}" pattern="#,###" /> VND
+                                        </span>
+                                    </div>
+                                </c:if>
+                                <!-- Phan gia cua loc -->
 
-                                    <!-- Nút Thêm Vào Giỏ Hàng -->
-                                    <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-md">
-                                        Thêm Vào Giỏ Hàng
-                                    </button>
-                                </form>
-                            </div>
-                            <div>
-                                <h2 class="text-xl font-bold mb-4 mt-4">Thông tin sản phẩm</h2>
-                                <div class="overflow-x-auto">
-                                    <table class="w-full text-left border border-gray-200 border-collapse">
-                                        <tbody>
-                                            <tr class="border-b border-gray-200">
-                                                <td class="border-r border-gray-200 px-4 py-2 font-semibold w-1/3">Thể Loại</td>
-                                                <td class="px-4 py-2">${category}</td>
-                                            </tr>
-                                            <tr class="border-b border-gray-200">
-                                                <td class="border-r border-gray-200 px-4 py-2 font-semibold">Xuất xứ</td>
-                                                <td class="px-4 py-2">${origin}</td>
-                                            </tr>
-                                            <tr class="border-b border-gray-200">
-                                                <td class="border-r border-gray-200 px-4 py-2 font-semibold">Chất liệu</td>
-                                                <td class="px-4 py-2">${material}</td>
-                                            </tr>
-                                            <tr class="border-b border-gray-200">
-                                                <td class="border-r border-gray-200 px-4 py-2 font-semibold">Tuổi</td>
-                                                <td class="px-4 py-2">${age}</td>
-                                            </tr>
-                                            <tr class="border-b border-gray-200">
-                                                <td class="border-r border-gray-200 px-4 py-2 font-semibold">Thương hiệu</td>
-                                                <td class="px-4 py-2">${brand}</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="border-r border-gray-200 px-4 py-2 font-semibold">Giới tính</td>
-                                                <td class="px-4 py-2">${sex}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+
+                                <ul class="text-gray-800" style="padding-left:0;">
+                                    <li class="flex items-start">
+                                        <svg class="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        <span class="ml-2">Hàng chính hãng</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <svg class="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        <span class="ml-2">Miễn phí giao hàng toàn quốc đơn trên 500k</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <svg class="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        <span class="ml-2">Giao hàng hỏa tốc 4 tiếng</span>
+                                    </li>
+                                </ul>
+                                <div class="mt-6">
+                                    <form action="${pageContext.request.contextPath}/CartManagementServlet" 
+                                          method="POST"
+                                          class="flex items-center space-x-3">
+
+                                        <!-- Trường ẩn: productID và price -->
+                                        <input type="hidden" name="productID" value="${product.productID}">
+                                        <input type="hidden" name="price" value="${product.price}">
+
+                                        <!-- Nhãn số lượng -->
+                                        <label for="quantity" class="font-medium">Số lượng:</label>
+
+                                        <!-- Khối ô nhập số lượng -->
+                                        <div class="flex items-center border rounded">
+                                            <input
+                                                id="quantity"
+                                                name="quantity"
+                                                type="number"
+                                                value="1"
+                                                min="1"
+                                                max="${stock}"
+                                                onkeydown="return onlyAllowArrowsAndTab(event)"
+                                                class="w-16 text-center outline-none border-0"
+                                                />
+
+                                        </div>
+
+                                        <!-- Nút Thêm Vào Giỏ Hàng -->
+                                        <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-md">
+                                            Thêm Vào Giỏ Hàng
+                                        </button>
+                                    </form>
+                                </div>
+                                <div>
+                                    <h2 class="text-xl font-bold mb-4 mt-4">Thông tin sản phẩm</h2>
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full text-left border border-gray-200 border-collapse">
+                                            <tbody>
+                                                <tr class="border-b border-gray-200">
+                                                    <td class="border-r border-gray-200 px-4 py-2 font-semibold w-1/3">Thể Loại</td>
+                                                    <td class="px-4 py-2">${category}</td>
+                                                </tr>
+                                                <tr class="border-b border-gray-200">
+                                                    <td class="border-r border-gray-200 px-4 py-2 font-semibold">Xuất xứ</td>
+                                                    <td class="px-4 py-2">${origin}</td>
+                                                </tr>
+                                                <tr class="border-b border-gray-200">
+                                                    <td class="border-r border-gray-200 px-4 py-2 font-semibold">Chất liệu</td>
+                                                    <td class="px-4 py-2">${material}</td>
+                                                </tr>
+                                                <tr class="border-b border-gray-200">
+                                                    <td class="border-r border-gray-200 px-4 py-2 font-semibold">Tuổi</td>
+                                                    <td class="px-4 py-2">${age}</td>
+                                                </tr>
+                                                <tr class="border-b border-gray-200">
+                                                    <td class="border-r border-gray-200 px-4 py-2 font-semibold">Thương hiệu</td>
+                                                    <td class="px-4 py-2">${brand}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-r border-gray-200 px-4 py-2 font-semibold">Giới tính</td>
+                                                    <td class="px-4 py-2">${sex}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </c:if>
+                    </c:if>
             </main>
             <div class="mt-8 mb-5 bg-white rounded-md shadow p-4" style="width: 1360px; margin: 0 auto;">
                 <h2 class="text-xl font-bold mb-4">Mô tả sản phẩm</h2>
@@ -289,23 +309,23 @@
 
         <!-- Script carousel -->
         <script>
-                                                // Khi carousel tạo xong, ta clone ảnh tiếp theo vào slide hiện tại
-                                                $('#multiItemCarousel .carousel-item').each(function () {
-                                                    var nextItem = $(this).next();
-                                                    if (!nextItem.length) {
-                                                        nextItem = $(this).siblings(':first');
-                                                    }
-                                                    nextItem.children(':first-child').clone().appendTo($(this));
+            // Khi carousel tạo xong, ta clone ảnh tiếp theo vào slide hiện tại
+            $('#multiItemCarousel .carousel-item').each(function () {
+                var nextItem = $(this).next();
+                if (!nextItem.length) {
+                    nextItem = $(this).siblings(':first');
+                }
+                nextItem.children(':first-child').clone().appendTo($(this));
 
-                                                    // Clone thêm 2 ảnh nữa để hiển thị đủ 4 ảnh
-                                                    for (var i = 0; i < 2; i++) {
-                                                        nextItem = nextItem.next();
-                                                        if (!nextItem.length) {
-                                                            nextItem = $(this).siblings(':first');
-                                                        }
-                                                        nextItem.children(':first-child').clone().appendTo($(this));
-                                                    }
-                                                });
+                // Clone thêm 2 ảnh nữa để hiển thị đủ 4 ảnh
+                for (var i = 0; i < 2; i++) {
+                    nextItem = nextItem.next();
+                    if (!nextItem.length) {
+                        nextItem = $(this).siblings(':first');
+                    }
+                    nextItem.children(':first-child').clone().appendTo($(this));
+                }
+            });
         </script>
 
         <!-- Kiểm tra số lượng phía client (tránh nhập vượt tồn kho) -->

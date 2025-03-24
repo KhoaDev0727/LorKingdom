@@ -163,71 +163,89 @@ public class OriginServlet extends HttpServlet {
     private void addOrigin(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ClassNotFoundException, ServletException, IOException {
         String name = request.getParameter("name");
-        if (name == null || name.trim().isEmpty()) {
-            request.getSession().setAttribute("errorMessage", "Origin name cannot be empty.");
-            response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
-            return;
-        }
         if (name.length() > 255) {
-            request.getSession().setAttribute("errorMessage", "Origin name is too long. Maximum 255 characters allowed.");
+            request.getSession().setAttribute("errorMessage", "Tên xuất xứ quá dài. Tối đa 255 ký tự.");
             response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
             return;
         }
         if (!name.matches("^[\\p{L} _-]+$")) {
-            request.getSession().setAttribute("errorMessage", "Origin names must contain only letters and spaces.");
+            request.getSession().setAttribute("errorMessage", "Tên xuất xứ chỉ được chứa chữ cái và khoảng trắng.");
             response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
             return;
         }
         if (originDAO.isOriginExists(name.trim())) {
-            request.getSession().setAttribute("errorMessage", "Origin already exists.");
+            request.getSession().setAttribute("errorMessage", "Xuất xứ đã tồn tại.");
             response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
             return;
         }
         Origin origin = new Origin(0, name, null, 0);
         originDAO.addOrigin(origin);
-        request.getSession().setAttribute("successMessage", "Origin added successfully.");
+        request.getSession().setAttribute("successMessage", "Thêm xuất xứ thành công.");
         response.sendRedirect("OriginServlet?action=list&showSuccessModal=true");
     }
 
     // Cập nhật Origin
     private void updateOrigin(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, ClassNotFoundException, ServletException, IOException {
-        try {
-            int originID = Integer.parseInt(request.getParameter("originID"));
-            String name = request.getParameter("name");
-            if (name == null || name.trim().isEmpty()) {
-                request.getSession().setAttribute("errorMessage", "Origin name cannot be empty.");
-                response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
-                return;
-            }
-            if (name == null || name.trim().isEmpty()) {
-                request.getSession().setAttribute("errorMessage", "Origin name cannot be empty.");
-                response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
-                return;
-            }
-            if (name.length() > 255) {
-                request.getSession().setAttribute("errorMessage", "Origin name is too long. Maximum 255 characters allowed.");
-                response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
-                return;
-            }
-            if (!name.matches("^[\\p{L} _-]+$")) {
-                request.getSession().setAttribute("errorMessage", "Origin names must contain only letters and spaces.");
-                response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
-                return;
-            }
-            if (originDAO.isOriginExists(name.trim())) {
-                request.getSession().setAttribute("errorMessage", "Origin already exists.");
-                response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
-                return;
-            }
-            Origin origin = new Origin(0, name, null, 0);
-            originDAO.updateOrigin(origin);
-            request.getSession().setAttribute("successMessage", "Origin updated successfully.");
-        } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "Invalid Origin ID.");
+        throws SQLException, ClassNotFoundException, ServletException, IOException {
+    try {
+        // Kiểm tra và parse originID
+        String originIDStr = request.getParameter("originID");
+        if (originIDStr == null || originIDStr.isEmpty()) {
+            request.getSession().setAttribute("errorMessage", "Thiếu ID xuất xứ.");
+            response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
+            return;
         }
-        response.sendRedirect("OriginServlet?action=list");
+        int originID;
+        try {
+            originID = Integer.parseInt(originIDStr);
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "ID xuất xứ không hợp lệ.");
+            response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
+            return;
+        }
+
+        // Kiểm tra name
+        String name = request.getParameter("name");
+        if (name == null || name.trim().isEmpty()) {
+            request.getSession().setAttribute("errorMessage", "Tên xuất xứ không được để trống.");
+            response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
+            return;
+        }
+        if (name.length() > 255) {
+            request.getSession().setAttribute("errorMessage", "Tên xuất xứ quá dài. Tối đa 255 ký tự.");
+            response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
+            return;
+        }
+        if (!name.matches("^[\\p{L} _-]+$")) {
+            request.getSession().setAttribute("errorMessage", "Tên xuất xứ chỉ được chứa chữ cái và khoảng trắng.");
+            response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
+            return;
+        }
+
+        // Kiểm tra nếu originDAO có bị null không
+        if (originDAO == null) {
+            request.getSession().setAttribute("errorMessage", "Lỗi kết nối cơ sở dữ liệu.");
+            response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
+            return;
+        }
+
+        // Kiểm tra xem origin đã tồn tại chưa
+        if (originDAO.isOriginExists(name.trim())) {
+            request.getSession().setAttribute("errorMessage", "Xuất xứ đã tồn tại.");
+            response.sendRedirect("OriginServlet?action=list&showErrorModal=true");
+            return;
+        }
+
+        // Cập nhật Origin
+        Origin origin = new Origin(originID, name, null, 0);
+        originDAO.updateOrigin(origin);
+        request.getSession().setAttribute("successMessage", "Cập nhật xuất xứ thành công.");
+
+    } catch (Exception e) {
+        request.getSession().setAttribute("errorMessage", "Đã xảy ra lỗi không mong muốn: " + e.getMessage());
     }
+    response.sendRedirect("OriginServlet?action=list");
+}
 
     // Tìm kiếm Origin theo từ khóa
     private void searchOrigin(HttpServletRequest request, HttpServletResponse response)
