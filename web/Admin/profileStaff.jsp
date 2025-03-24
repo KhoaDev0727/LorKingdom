@@ -293,11 +293,11 @@
             function updatePassword() {
                 let newPassword = document.getElementById("newPassword").value;
                 if (newPassword.trim() !== "") {
-                    if (newPassword.length < 6) {
+                    if (newPassword.length < 8) {
                         Swal.fire({
                             icon: 'error',
                             title: 'Lỗi!',
-                            text: 'Mật khẩu phải có ít nhất 6 ký tự!'
+                            text: 'Mật khẩu phải có ít nhất 8 ký tự!'
                         });
                         return; // Dừng hàm nếu mật khẩu không đủ dài
                     }
