@@ -108,7 +108,7 @@ public class updateProductServlet extends HttpServlet {
             if (dotIndex != -1) {
                 priceStr = priceStr.substring(0, dotIndex);
             }
-            List<Category> listCategories = categoryDAO.getAllCategories();
+            List<Category> listCategories = categoryDAO.getActiveCategoriesWithActiveSuperCategory();
             List<Brand> listBrands = brandDAO.getActiveBrand();
             List<Age> listAges = ageDAO.getAllAges();
             List<Sex> listGenders = sexDAO.getActiveSex();

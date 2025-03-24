@@ -102,18 +102,18 @@ public class RoleServlet extends HttpServlet {
                 listRoles(request, response);
             } else {
                 switch (action) {
-                    case "add":
-                        addRole(request, response);
-                        break;
-                    case "update":
-                        updateRole(request, response);
-                        break;
-                    case "delete":
-                        deleteRole(request, response);
-                        break;
-                    case "search":
-                        searchRole(request, response);
-                        break;
+//                    case "add":
+//                        addRole(request, response);
+//                        break;
+//                    case "update":
+//                        updateRole(request, response);
+//                        break;
+//                    case "delete":
+//                        deleteRole(request, response);
+//                        break;
+//                    case "search":
+//                        searchRole(request, response);
+//                        break;
                     default:
                         listRoles(request, response);
                         break;
@@ -133,86 +133,86 @@ public class RoleServlet extends HttpServlet {
         request.getRequestDispatcher("RoleManagement.jsp").forward(request, response);
     }
 
-    private void addRole(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, ClassNotFoundException, ServletException, IOException {
-        String name = request.getParameter("name");
-        String description = request.getParameter("description");
-
-        if (name == null || name.trim().isEmpty()) {
-            request.getSession().setAttribute("errorMessage", "Tên vai trò không được để trống.");
-            response.sendRedirect("RoleServlet?action=list&showErrorModal=true");
-            return;
-        }
-        if (!name.matches("^[\\p{L} _-]+$")) {
-            request.getSession().setAttribute("errorMessage", "Tên vai trò chỉ được chứa chữ cái và khoảng trắng.");
-            response.sendRedirect("RoleServlet?action=list&showErrorModal=true");
-            return;
-        }
-        if (roleDAO.isRole(name.trim())) {
-            request.getSession().setAttribute("errorMessage", "Tên vai trò đã tồn tại. Vui lòng nhập tên khác.");
-            response.sendRedirect("RoleServlet?action=list&showErrorModal=true");
-            return;
-        }
-        Role role = new Role(0, name.trim(), description);
-        roleDAO.addRole(role);
-        request.getSession().setAttribute("successMessage", "Đã thêm vai trò thành công.");
-        response.sendRedirect("RoleServlet?action=list&showSuccessModal=true");
-    }
-
-    private void updateRole(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, ClassNotFoundException, ServletException, IOException {
-        try {
-            int roleID = Integer.parseInt(request.getParameter("roleID"));
-            String name = request.getParameter("name");
-            String description = request.getParameter("description");
-
-            if (name == null || name.trim().isEmpty()) {
-                request.getSession().setAttribute("errorMessage", "Tên vai trò không được để trống.");
-                response.sendRedirect("RoleServlet?action=list&showErrorModal=true");
-                return;
-            }
-            if (!name.matches("^[\\p{L} _-]+$")  ) {
-                request.getSession().setAttribute("errorMessage", "Tên vai trò chỉ được chứa chữ cái và khoảng trắng.");
-                response.sendRedirect("RoleServlet?action=list&showErrorModal=true");
-                return;
-            }
+//    private void addRole(HttpServletRequest request, HttpServletResponse response)
+//            throws SQLException, ClassNotFoundException, ServletException, IOException {
+//        String name = request.getParameter("name");
+//        String description = request.getParameter("description");
+//
+//        if (name == null || name.trim().isEmpty()) {
+//            request.getSession().setAttribute("errorMessage", "Tên vai trò không được để trống.");
+//            response.sendRedirect("RoleServlet?action=list&showErrorModal=true");
+//            return;
+//        }
+//        if (!name.matches("^[\\p{L} _-]+$")) {
+//            request.getSession().setAttribute("errorMessage", "Tên vai trò chỉ được chứa chữ cái và khoảng trắng.");
+//            response.sendRedirect("RoleServlet?action=list&showErrorModal=true");
+//            return;
+//        }
+//        if (roleDAO.isRole(name.trim())) {
+//            request.getSession().setAttribute("errorMessage", "Tên vai trò đã tồn tại. Vui lòng nhập tên khác.");
+//            response.sendRedirect("RoleServlet?action=list&showErrorModal=true");
+//            return;
+//        }
+//        Role role = new Role(0, name.trim(), description);
+//        roleDAO.addRole(role);
+//        request.getSession().setAttribute("successMessage", "Đã thêm vai trò thành công.");
+//        response.sendRedirect("RoleServlet?action=list&showSuccessModal=true");
+//    }
+//
+//    private void updateRole(HttpServletRequest request, HttpServletResponse response)
+//            throws SQLException, ClassNotFoundException, ServletException, IOException {
+//        try {
+//            int roleID = Integer.parseInt(request.getParameter("roleID"));
+//            String name = request.getParameter("name");
+//            String description = request.getParameter("description");
+//
+//            if (name == null || name.trim().isEmpty()) {
+//                request.getSession().setAttribute("errorMessage", "Tên vai trò không được để trống.");
+//                response.sendRedirect("RoleServlet?action=list&showErrorModal=true");
+//                return;
+//            }
+//            if (!name.matches("^[\\p{L} _-]+$")  ) {
+//                request.getSession().setAttribute("errorMessage", "Tên vai trò chỉ được chứa chữ cái và khoảng trắng.");
+//                response.sendRedirect("RoleServlet?action=list&showErrorModal=true");
+//                return;
+//            }
 //            if (roleDAO.isRole(name.trim())) {
 //                request.getSession().setAttribute("errorMessage", "Tên vai trò đã tồn tại. Vui lòng nhập tên khác.");
 //                response.sendRedirect("RoleServlet?action=list&showErrorModal=true");
 //                return;
 //            }
 
-            Role role = new Role(roleID, name.trim(), description);
-            roleDAO.updateRole(role);
-            request.getSession().setAttribute("successMessage", "Vai trò đã được cập nhật thành công.");
-        } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "ID không hợp lệ.");
-        }
-        response.sendRedirect("RoleServlet?action=list");
-    }
+//            Role role = new Role(roleID, name.trim(), description);
+//            roleDAO.updateRole(role);
+//            request.getSession().setAttribute("successMessage", "Vai trò đã được cập nhật thành công.");
+//        } catch (NumberFormatException e) {
+//            request.getSession().setAttribute("errorMessage", "ID không hợp lệ.");
+//        }
+//        response.sendRedirect("RoleServlet?action=list");
+//    }
 
-    private void deleteRole(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, ClassNotFoundException, ServletException, IOException {
-        try {
-            int roleID = Integer.parseInt(request.getParameter("roleID"));
-            roleDAO.deleteRole(roleID);
-            request.getSession().setAttribute("successMessage", "Đã xóa vai trò thành công.");
-        } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "ID không hợp lệ.");
-        }
-        response.sendRedirect("RoleServlet?action=list");
-    }
-
-    private void searchRole(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, ClassNotFoundException, ServletException, IOException {
-        String keyword = request.getParameter("search".toLowerCase());
-        if (keyword == null || keyword.trim().isEmpty()) {
-            listRoles(request, response);
-            return;
-        }
-
-        List<Role> filteredRoles = roleDAO.searchRoles(keyword.toLowerCase());
-        request.setAttribute("roles", filteredRoles);
-        request.getRequestDispatcher("RoleManagement.jsp").forward(request, response);
-    }
+//    private void deleteRole(HttpServletRequest request, HttpServletResponse response)
+//            throws SQLException, ClassNotFoundException, ServletException, IOException {
+//        try {
+//            int roleID = Integer.parseInt(request.getParameter("roleID"));
+//            roleDAO.deleteRole(roleID);
+//            request.getSession().setAttribute("successMessage", "Đã xóa vai trò thành công.");
+//        } catch (NumberFormatException e) {
+//            request.getSession().setAttribute("errorMessage", "ID không hợp lệ.");
+//        }
+//        response.sendRedirect("RoleServlet?action=list");
+//    }
+//
+//    private void searchRole(HttpServletRequest request, HttpServletResponse response)
+//            throws SQLException, ClassNotFoundException, ServletException, IOException {
+//        String keyword = request.getParameter("search".toLowerCase());
+//        if (keyword == null || keyword.trim().isEmpty()) {
+//            listRoles(request, response);
+//            return;
+//        }
+//
+//        List<Role> filteredRoles = roleDAO.searchRoles(keyword.toLowerCase());
+//        request.setAttribute("roles", filteredRoles);
+//        request.getRequestDispatcher("RoleManagement.jsp").forward(request, response);
+//    }
 }

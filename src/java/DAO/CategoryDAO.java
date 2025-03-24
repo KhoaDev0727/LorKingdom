@@ -21,10 +21,42 @@ import java.util.List;
  */
 public class CategoryDAO {
 
-    
-    
-    
-    
+    public List<Category> getActiveCategoriesWithProducts() throws SQLException, ClassNotFoundException {
+        List<Category> categories = new ArrayList<>();
+
+        // Truy vấn:
+        // 1) Lọc Category chưa xóa (c.IsDeleted=0)
+        // 2) Chỉ lấy Category có ít nhất 1 Product (p) thỏa mãn p.IsDeleted=0 (và p.Quantity>0 nếu cần)
+        String query
+                = "SELECT c.CategoryID, c.SuperCategoryID, c.Name, c.CreatedAt, c.IsDeleted "
+                + "FROM Category c "
+                + "WHERE c.IsDeleted = 0 "
+                + "  AND EXISTS ( "
+                + "      SELECT 1 "
+                + "      FROM Product p "
+                + "      WHERE p.CategoryID = c.CategoryID "
+                + "        AND p.IsDeleted = 0 "
+                + "        AND p.Quantity > 0 "
+                + // Bỏ dòng này nếu không muốn kiểm tra số lượng còn hàng
+                "  )";
+
+        try (
+                 Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                Category category = new Category(
+                        rs.getInt("CategoryID"),
+                        rs.getInt("SuperCategoryID"),
+                        rs.getString("Name"),
+                        rs.getDate("CreatedAt"),
+                        rs.getInt("IsDeleted")
+                );
+                categories.add(category);
+            }
+        }
+
+        return categories;
+    }
+
     public List<Category> getAllCategories() throws SQLException, ClassNotFoundException {
         List<Category> categories = new ArrayList<>();
         String query = "SELECT CategoryID, SuperCategoryID, Name, CreatedAt, IsDeleted FROM Category Where IsDeleted = 0 ";
@@ -194,6 +226,30 @@ public class CategoryDAO {
                 }
             }
         }
+        return categories;
+    }
+
+    public List<Category> getActiveCategoriesWithActiveSuperCategory() throws SQLException, ClassNotFoundException {
+        List<Category> categories = new ArrayList<>();
+        String query = "SELECT c.CategoryID, c.SuperCategoryID, c.Name, c.CreatedAt, c.IsDeleted "
+                + "FROM Category c "
+                + "JOIN SuperCategory sc ON c.SuperCategoryID = sc.SuperCategoryID "
+                + "WHERE c.IsDeleted = 0 AND sc.IsDeleted = 0";
+
+        try (
+                 Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                Category category = new Category(
+                        rs.getInt("CategoryID"),
+                        rs.getInt("SuperCategoryID"),
+                        rs.getString("Name"),
+                        rs.getDate("CreatedAt"),
+                        rs.getInt("IsDeleted")
+                );
+                categories.add(category);
+            }
+        }
+
         return categories;
     }
 

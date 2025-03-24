@@ -281,7 +281,8 @@ public class ProductDAO {
             Integer brandID
     ) throws ClassNotFoundException {
         List<Product> products = new ArrayList<>();
-        StringBuilder query = new StringBuilder("SELECT p.* "
+        StringBuilder query = new StringBuilder(
+                "SELECT p.* "
                 + "FROM Product p "
                 + "JOIN Category c ON p.CategoryID = c.CategoryID "
                 + "JOIN SuperCategory sc ON c.SuperCategoryID = sc.SuperCategoryID "
@@ -300,27 +301,28 @@ public class ProductDAO {
                 + "  AND pr.IsDeleted = 0 "
                 + "  AND s.IsDeleted = 0 "
                 + "  AND o.IsDeleted = 0 "
-                + "  AND p.Quantity > 0 ");
+                + "  AND p.Quantity > 0"
+        );
         List<Object> params = new ArrayList<>();
 
         if (categoryID != null) {
-            query.append(" AND CategoryID = ?");
+            query.append(" AND p.CategoryID = ?");
             params.add(categoryID);
         }
         if (priceRangeID != null) {
-            query.append(" AND PriceRangeID = ?");
+            query.append(" AND p.PriceRangeID = ?");
             params.add(priceRangeID);
         }
         if (ageID != null) {
-            query.append(" AND AgeID = ?");
+            query.append(" AND p.AgeID = ?");
             params.add(ageID);
         }
         if (brandID != null) {
-            query.append(" AND BrandID = ?");
+            query.append(" AND p.BrandID = ?");
             params.add(brandID);
         }
         if (sexID != null) {
-            query.append(" AND SexID = ?");
+            query.append(" AND p.SexID = ?");
             params.add(sexID);
         }
 
@@ -328,82 +330,6 @@ public class ProductDAO {
         return products;
     }
 
-//    public List<Product> getFilteredProducts(Integer categoryID, Integer ageID, Integer sexID,
-//            Integer priceRangeID, Integer brandID) throws ClassNotFoundException {
-//        List<Product> products = new ArrayList<>();
-//        // Xác định số lượng tiêu chí không null
-//        int filterCount = 0;
-//        if (categoryID != null) {
-//            filterCount++;
-//        }
-//        if (ageID != null) {
-//            filterCount++;
-//        }
-//        if (sexID != null) {
-//            filterCount++;
-//        }
-//        if (priceRangeID != null) {
-//            filterCount++;
-//        }
-//        if (brandID != null) {
-//            filterCount++;
-//        }
-//
-//        // Đặt ngưỡng: nếu chọn ít hơn 3 thuộc tính thì dùng OR, từ 3 trở lên dùng AND
-//        boolean useOr = filterCount < 3;
-//
-//        StringBuilder query = new StringBuilder("SELECT * FROM Product WHERE IsDeleted = 0");
-//        List<Object> params = new ArrayList<>();
-//
-//        if (filterCount > 0) {
-//            query.append(" AND (");
-//            boolean firstCondition = true;
-//
-//            if (categoryID != null) {
-//                if (!firstCondition) {
-//                    query.append(useOr ? " OR " : " AND ");
-//                }
-//                query.append("CategoryID = ?");
-//                params.add(categoryID);
-//                firstCondition = false;
-//            }
-//            if (ageID != null) {
-//                if (!firstCondition) {
-//                    query.append(useOr ? " OR " : " AND ");
-//                }
-//                query.append("AgeID = ?");
-//                params.add(ageID);
-//                firstCondition = false;
-//            }
-//            if (sexID != null) {
-//                if (!firstCondition) {
-//                    query.append(useOr ? " OR " : " AND ");
-//                }
-//                query.append("SexID = ?");
-//                params.add(sexID);
-//                firstCondition = false;
-//            }
-//            if (priceRangeID != null) {
-//                if (!firstCondition) {
-//                    query.append(useOr ? " OR " : " AND ");
-//                }
-//                query.append("PriceRangeID = ?");
-//                params.add(priceRangeID);
-//                firstCondition = false;
-//            }
-//            if (brandID != null) {
-//                if (!firstCondition) {
-//                    query.append(useOr ? " OR " : " AND ");
-//                }
-//                query.append("BrandID = ?");
-//                params.add(brandID);
-//            }
-//            query.append(")");
-//        }
-//
-//        products = executeQuery(query.toString(), params);
-//        return products;
-//    }
     private List<Product> executeQuery(String query, List<Object> params) throws ClassNotFoundException {
         List<Product> products = new ArrayList<>();
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement stm = conn.prepareStatement(query)) {
