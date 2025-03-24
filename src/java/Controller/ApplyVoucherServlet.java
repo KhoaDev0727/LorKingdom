@@ -1,6 +1,7 @@
 package Controller;
 
 import DAO.PromotionDAO;
+import Model.CartItems;
 import Model.Promotion;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -30,9 +31,9 @@ public class ApplyVoucherServlet extends HttpServlet {
 
         String voucherCode = request.getParameter("voucherCode");
         List<Promotion> availableVouchers = (List<Promotion>) session.getAttribute("availableVouchers");
-        Double totalMoney = (Double) session.getAttribute("totalMoney");
+        List<CartItems> listCart = (List<CartItems>) session.getAttribute("listCart");
 
-        if (voucherCode == null || availableVouchers == null || totalMoney == null) {
+        if (voucherCode == null || availableVouchers == null || listCart == null) {
             out.print("{\"success\": false, \"message\": \"Dữ liệu không hợp lệ!\"}");
             return;
         }
@@ -50,9 +51,23 @@ public class ApplyVoucherServlet extends HttpServlet {
             return;
         }
 
-        double discountPercent = appliedVoucher.getDiscountPercent();
-        double discount = totalMoney * (discountPercent / 100);
+        // Tìm sản phẩm trong giỏ hàng phù hợp với voucher
+        double discount = 0.0;
+        int productId = appliedVoucher.getProductID();
+        for (CartItems item : listCart) {
+            if (item.getProduct().getProductID() == productId) {
+                discount = item.getPrice() * item.getQuantity() * (appliedVoucher.getDiscountPercent() / 100);
+                break;
+            }
+        }
+
+        if (discount == 0.0) {
+            out.print("{\"success\": false, \"message\": \"Không có sản phẩm nào trong giỏ hàng phù hợp với mã giảm giá này!\"}");
+            return;
+        }
+
         session.setAttribute("discount", discount);
+        session.setAttribute("appliedVoucher", appliedVoucher); // Lưu voucher đã áp dụng để sử dụng sau
 
         out.print("{\"success\": true, \"discount\": " + discount + "}");
         out.flush();

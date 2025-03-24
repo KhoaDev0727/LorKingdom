@@ -2,10 +2,11 @@ package Controller;
 
 import DAO.OrderDAO;
 import DAO.CartDAO;
-import DAO.ProductDAO; // Thêm import cho ProductDAO
+import DAO.ProductDAO;
 import Model.CartItems;
 import Model.Order;
 import Model.OrderDetail;
+import Model.Promotion;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,9 +28,8 @@ public class OrderServlet extends HttpServlet {
     private static final Logger LOGGER = Logger.getLogger(OrderServlet.class.getName());
     private OrderDAO orderDAO;
     private CartDAO cartDAO;
-    private ProductDAO productDAO; // Thêm ProductDAO
+    private ProductDAO productDAO;
 
-    // Regex patterns for validation
     private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zA-Z\\sÀ-ỹ]+$");
     private static final Pattern PHONE_PATTERN = Pattern.compile("^[0-9]{10}$");
     private static final Pattern ADDRESS_PATTERN = Pattern.compile("^[a-zA-Z0-9\\sÀ-ỹ,/]+$");
@@ -38,7 +38,7 @@ public class OrderServlet extends HttpServlet {
     public void init() throws ServletException {
         orderDAO = new OrderDAO();
         cartDAO = new CartDAO();
-        productDAO = new ProductDAO(); // Khởi tạo ProductDAO
+        productDAO = new ProductDAO();
     }
 
     @Override
@@ -63,14 +63,16 @@ public class OrderServlet extends HttpServlet {
         List<CartItems> listCart = (List<CartItems>) session.getAttribute("listCart");
         Double totalMoney = (Double) session.getAttribute("totalMoney");
         Double discount = (Double) session.getAttribute("discount");
-        if (discount == null) {
-            discount = 0.0;
-        }
+        Promotion appliedVoucher = (Promotion) session.getAttribute("appliedVoucher");
 
         if (listCart == null || totalMoney == null) {
             session.setAttribute("errorMessage", "Dữ liệu giỏ hàng không hợp lệ!");
             response.sendRedirect("order.jsp");
             return;
+        }
+
+        if (discount == null) {
+            discount = 0.0;
         }
 
         double finalTotal = totalMoney - discount;
@@ -120,9 +122,7 @@ public class OrderServlet extends HttpServlet {
         String finalAddress = fullAddress.toString().replaceAll(",\\s*$", "");
 
         // Xử lý các phương thức thanh toán
-        if ("zalopay".equals(paymentMethod)) {
-            response.sendRedirect("ZaloPayPaymentServlet?totalMoney=" + finalTotal);
-        } else if ("vnpay".equals(paymentMethod)) {
+        if ("vnpay".equals(paymentMethod)) {
             response.sendRedirect("VNPayPaymentServlet?totalMoney=" + finalTotal);
         } else if ("momo".equals(paymentMethod)) {
             response.sendRedirect("MoMoPaymentServlet?totalMoney=" + finalTotal);
@@ -143,7 +143,14 @@ public class OrderServlet extends HttpServlet {
                 detail.setProductName(item.getProduct().getName());
                 detail.setQuantity(item.getQuantity());
                 detail.setUnitPrice((float) item.getPrice());
-                detail.setDiscount((float) (discount > 0 ? (discount / totalMoney) * 100 : 0));
+
+                // Áp dụng giảm giá chỉ cho sản phẩm phù hợp với voucher
+                float discountPercent = 0.0f;
+                if (appliedVoucher != null && item.getProduct().getProductID() == appliedVoucher.getProductID()) {
+                    discountPercent = appliedVoucher.getDiscountPercent().floatValue();
+                }
+                detail.setDiscount(discountPercent);
+
                 orderDetails.add(detail);
             }
             order.setOrderDetails(orderDetails);
@@ -191,6 +198,7 @@ public class OrderServlet extends HttpServlet {
                 session.removeAttribute("listCart");
                 session.removeAttribute("totalMoney");
                 session.removeAttribute("discount");
+                session.removeAttribute("appliedVoucher");
                 session.removeAttribute("validationErrors");
                 session.removeAttribute("formDataJson");
                 response.sendRedirect("orderCash-success.jsp");

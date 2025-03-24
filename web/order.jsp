@@ -118,12 +118,7 @@
                         </div>
                     </div>
 
-                    <div class="payment-methods row">
-                        <div class="col-6">
-                            <button type="submit" name="paymentMethod" value="zalopay" class="payment-button zalopay">
-                                <img src="assets/img/zalopay.png" alt="ZaloPay" class="payment-icons"> Thanh toán bằng ZaloPay
-                            </button>
-                        </div>
+                    <div class="payment-methods row">                       
                         <div class="col-6">
                             <button type="submit" name="paymentMethod" value="vnpay" class="payment-button vnpay">
                                 <img src="assets/img/vnpay.png" alt="VNPay" class="payment-icon"> Thanh toán bằng VNPay
@@ -152,6 +147,9 @@
                         <div>
                             <p>${item.product.name}</p>
                             <p><fmt:formatNumber value="${item.price * item.quantity}" pattern="#,###" /> VND</p>
+                            <c:if test="${sessionScope.appliedVoucher != null && sessionScope.appliedVoucher.productID == item.product.productID}">
+                                <p class="product-discount">Giảm: <fmt:formatNumber value="${item.price * item.quantity * (sessionScope.appliedVoucher.discountPercent / 100)}" pattern="#,###" /> VND</p>
+                            </c:if>
                         </div>
                     </div>
                 </c:forEach>
@@ -180,7 +178,7 @@
                             <option value="">Chọn mã</option>
                             <c:forEach items="${availableVouchers}" var="voucher">
                                 <option value="${voucher.promotionCode}" data-discount="${voucher.discountPercent}">
-                                    ${voucher.name} - Giảm ${voucher.discountPercent}%
+                                    ${voucher.name} - Giảm ${voucher.discountPercent}% (Sản phẩm ID: ${voucher.productID})
                                 </option>
                             </c:forEach>
                         </select>
@@ -194,7 +192,7 @@
                     <p>Tổng tạm tính: <fmt:formatNumber value="${totalMoney}" pattern="#,###" /> VND</p>
                     <p style="font-weight: 550;">Tổng sau giảm giá: 
                         <span id="finalTotal">
-                            <fmt:formatNumber value="${totalMoney}" pattern="#,###" /> VND
+                            <fmt:formatNumber value="${totalMoney - (sessionScope.discount != null ? sessionScope.discount : 0)}" pattern="#,###" /> VND
                         </span>
                     </p>
                 </div>
@@ -202,12 +200,11 @@
         </div>
 
         <script>
-            // Điền lại giá trị từ formDataJson
+// Điền lại giá trị từ formDataJson (không thay đổi)
             window.onload = function () {
                 const formDataJson = '${sessionScope.formDataJson != null ? sessionScope.formDataJson : "{}"}';
                 const formData = JSON.parse(formDataJson);
 
-                // Điền giá trị cho các input
                 if (formData.email)
                     document.getElementById("email").value = formData.email;
                 if (formData.fullName)
@@ -217,11 +214,10 @@
                 if (formData.address)
                     document.getElementById("address").value = formData.address;
 
-                // Điền giá trị cho các select (sẽ được cập nhật sau khi location.js tải xong)
                 if (formData.province) {
                     setTimeout(() => {
                         document.getElementById("province").value = formData.province;
-                    }, 1000); // Delay để chờ location.js tải
+                    }, 1000);
                 }
                 if (formData.district) {
                     setTimeout(() => {
@@ -233,10 +229,18 @@
                         document.getElementById("ward").value = formData.ward;
                     }, 1000);
                 }
+
+                // Hiển thị voucher đã áp dụng từ session
+            <c:if test="${sessionScope.discount != null}">
+                $("#voucherAppliedContainer").show();
+                $("#voucherAppliedText").text("Đã áp dụng: ${sessionScope.appliedVoucher.promotionCode} - Giảm ${sessionScope.discount} VND");
+                $("#discountApplied").text("Đã áp dụng giảm giá: ${sessionScope.discount} VND");
+                $("#finalTotal").text(formatNumber(${totalMoney - sessionScope.discount}) + " VND");
+            </c:if>
             };
 
             let originalTotal = ${totalMoney}; // Lưu giá trị gốc
-            let currentDiscount = 0;
+            let currentDiscount = ${sessionScope.discount != null ? sessionScope.discount : 0};
 
             function fillVoucherCode() {
                 const select = document.getElementById("voucherSelect");
@@ -273,7 +277,7 @@
                             // Reset input
                             document.getElementById("voucherCode").value = "";
                         } else {
-                            voucherError.textContent = "Mã giảm giá không tồn tại!";
+                            voucherError.textContent = response.message || "Mã giảm giá không hợp lệ!";
                             voucherError.style.display = "block";
                         }
                     },
@@ -289,16 +293,21 @@
                 currentDiscount = 0;
                 $("#discountApplied").text("");
                 $("#finalTotal").text(formatNumber(originalTotal) + " VND");
+
+                // Xóa discount khỏi session bằng Ajax
+                $.ajax({
+                    url: "ApplyVoucherServlet",
+                    type: "POST",
+                    data: {voucherCode: ""}, // Gửi yêu cầu trống để reset
+                    success: function () {
+                        console.log("Voucher removed from session");
+                    }
+                });
             }
 
             function formatNumber(num) {
                 return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
-
-            // Reset voucher UI khi tải lại trang
-            $("#voucherAppliedContainer").hide();
-            $("#discountApplied").text("");
-            $("#finalTotal").text(formatNumber(originalTotal) + " VND");
         </script>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"
