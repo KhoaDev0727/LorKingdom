@@ -39,8 +39,8 @@
                             <!-- Search by Customer Name -->
                             <div class="search-box mb-3">
                                 <form action="${pageContext.request.contextPath}/Admin/promotionController" method="POST" class="input-group">
-                                    <input type="hidden" name="action" value="search">
-                                    <input type="text" name="promotionName" class="form-control" placeholder="Enter Name" required>
+                                    <input type="hidden" name="action" value="searchByDiscount">
+                                    <input type="number" step="0.1" name="minDiscount" class="form-control" placeholder="Enter minimum discount %" required>
                                     <button class="btn btn-outline-primary" type="submit"><i class="fas fa-search"></i></button>
                                 </form>
                             </div>
@@ -88,15 +88,6 @@
                                                     <label for="endDate" class="form-label">End Date</label>
                                                     <input type="date" name="endDate" class="form-control" required>
                                                 </div>
-
-                                                <div class="mb-3">
-                                                    <label for="status" class="form-label">Status</label>
-                                                    <select name="status" class="form-select">
-                                                        <option value="Active">Active</option>
-                                                        <option value="Expired">Expired</option>
-                                                    </select>
-                                                </div>
-
                                                 <div class="d-grid">
                                                     <button type="submit" class="btn btn-success">Add Promotion</button>
                                                 </div>
@@ -122,14 +113,16 @@
                                 </div>
                             </div>
                             <div class="card-body">
+                                <div class="search-box mb-3">
                                 <form action="${pageContext.request.contextPath}/Admin/promotionController" method="POST" class="input-group">
-                                    <input type="hidden" name="action" value="searchByDiscount">
-                                    <input type="number" step="0.1" name="minDiscount" class="form-control" placeholder="Enter minimum discount %" required>
+                                    <input type="hidden" name="action" value="search">
+                                    <input type="text" name="promotionName" class="form-control" placeholder="Enter Name" required>
                                     <button class="btn btn-outline-primary" type="submit"><i class="fas fa-search"></i></button>
                                     <a href="${pageContext.request.contextPath}/Admin/promotionController" class="btn btn-outline-danger">
                                         <i class="fas fa-sync"></i>
                                     </a>
                                 </form>
+                            </div>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">

@@ -68,7 +68,7 @@ public class PromotionDAO extends DBConnect.DBConnection {
         return total;
     }
 
-    public void deleteOrder(int proId) throws SQLException, ClassNotFoundException {
+    public void deletePromotion(int proId) throws SQLException, ClassNotFoundException {
         String query = "DELETE FROM [dbo].[Promotions]\n"
                 + "WHERE PromotionID = ?;";
 
@@ -309,6 +309,26 @@ public class PromotionDAO extends DBConnect.DBConnection {
         }
         return list;
     }
+    public void updateExpiredPromotions() throws SQLException, ClassNotFoundException {
+    String query = "UPDATE [dbo].[Promotions] SET Status = 'Expired' WHERE Status = 'Active' AND EndDate < ?";
+
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+        // Lấy ngày hiện tại
+        java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
+
+        // Đặt giá trị cho tham số
+        pstmt.setDate(1, currentDate);
+
+        // Thực thi câu lệnh UPDATE
+        int rowsUpdated = pstmt.executeUpdate();
+        System.out.println("Rows updated to Expired: " + rowsUpdated);
+    } catch (SQLException e) {
+        e.printStackTrace();
+        throw new SQLException("Lỗi khi cập nhật trạng thái khuyến mãi: " + e.getMessage());
+    }
+}
 
 //      public static void main(String[] args) {
 //        PromotionDAO promotionDAO = new PromotionDAO(); // Tạo đối tượng DAO

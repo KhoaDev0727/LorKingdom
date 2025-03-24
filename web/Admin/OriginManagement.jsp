@@ -37,14 +37,9 @@
         </style>
     </head>
     <body class="sb-nav-fixed">
-        <c:choose>
-            <c:when test="${empty sessionScope.roleID || sessionScope.roleID eq 2}">
-                <c:redirect url="/Admin/loginPage.jsp"/>
-            </c:when>
-            <c:when test="${sessionScope.roleID eq 3}">
-                <c:redirect url="/LogoutServlet"/>
-            </c:when>
-        </c:choose>
+        <c:if test="${empty sessionScope.roleID}">
+            <c:redirect url="/Admin/loginPage.jsp"/>
+        </c:if>
         <div id="layoutSidenav">
             <div id="layoutSidenav_content">
                 <%@ include file="Component/SideBar.jsp" %>
@@ -166,7 +161,7 @@
                                                                             <input type="hidden" name="originID" value="${origin.originID}">
                                                                             <div class="mb-3">
                                                                                 <label class="form-label">Origin Name</label>
-                                                                                <input type="text" class="form-control" name="originName" value="${origin.name}" required>
+                                                                                <input type="text" class="form-control" name="name" value="${origin.name}" required>
                                                                             </div>
                                                                         </div>
                                                                         <div class="modal-footer">
@@ -226,7 +221,7 @@
                         <form method="POST" action="OriginServlet">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="originID" id="softDeleteOriginID">
-                            <button type="submit" class="btn btn-danger">Xóa</button>
+                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
                         </form>
                     </div>
                 </div>
@@ -249,7 +244,7 @@
                         <form method="POST" action="OriginServlet">
                             <input type="hidden" name="action" value="hardDelete">
                             <input type="hidden" name="originID" id="hardDeleteOriginID">
-                            <button type="submit" class="btn btn-danger">Xóa</button>
+                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
                         </form>
                     </div>
                 </div>
