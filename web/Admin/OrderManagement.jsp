@@ -104,6 +104,7 @@
                                                 <th>Order ID</th>
                                                 <th>Customer Name</th>
                                                 <th>Payment Method</th>
+                                                <th>Shipping Method</th>
                                                 <th>Order Date</th>
                                                 <th>Status</th>
                                                 <th>Total Amount</th>
@@ -124,6 +125,7 @@
                                                             <td>${o.orderId}</td>
                                                             <td>${o.accountName}</td>
                                                             <td>${o.payMentMethodName}</td>
+                                                            <td>${o.shipingMethodName}</td>
                                                             <td>${o.orderDate}</td>
                                                             <td>${o.status}</td>
                                                             <td>${o.totalAmount}</td>

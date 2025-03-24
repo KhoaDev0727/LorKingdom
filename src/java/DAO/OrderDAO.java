@@ -28,7 +28,11 @@ public class OrderDAO extends DBConnect.DBConnection {
     public List<Order> getAllOrders() throws SQLException, ClassNotFoundException {
         List<Order> list = new ArrayList<>();
         String query = "SELECT \n"
-                + "                    o.*, a.AccountName, p.MethodName, s.MethodName, k.Status\n"
+                + "    o.*, \n"
+                + "    a.AccountName, \n"
+                + "    p.MethodName AS PaymentMethodName, \n"
+                + "    s.MethodName AS ShippingMethodName, \n"
+                + "    k.Status\n"
                 + "FROM \n"
                 + "    [dbo].[Orders] o\n"
                 + "INNER JOIN \n"
@@ -43,19 +47,15 @@ public class OrderDAO extends DBConnect.DBConnection {
         try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
 
             while (rs.next()) {
-                String accountName = rs.getString("AccountName");
-                String payMentMethodName = rs.getString("MethodName");
-                String shipingMethodName = rs.getString("MethodName");
                 list.add(new Order(rs.getInt("OrderID"),
-                        accountName,
-                        payMentMethodName,
-                        shipingMethodName,
+                        rs.getString("AccountName"),
+                        rs.getString("PaymentMethodName"),
+                        rs.getString("ShippingMethodName"),
                         rs.getDate("OrderDate"),
                         rs.getString("Status"),
                         rs.getFloat("TotalAmount"),
                         rs.getDate("CreatedAt"),
                         rs.getDate("UpdatedAt")));
-
             }
         }
         return list;
@@ -80,11 +80,14 @@ public class OrderDAO extends DBConnect.DBConnection {
         }
     }
 
-    // phan trang
     public List<Order> getOrdersByPage(int page, int ordersPerPage) throws SQLException, ClassNotFoundException {
         List<Order> list = new ArrayList<>();
         String query = "SELECT \n"
-                + "                    o.*, a.AccountName, p.MethodName, s.MethodName, k.Status\n"
+                + "    o.*, \n"
+                + "    a.AccountName, \n"
+                + "    p.MethodName AS PaymentMethodName, \n"
+                + "    s.MethodName AS ShippingMethodName, \n"
+                + "    k.Status\n"
                 + "FROM \n"
                 + "    [dbo].[Orders] o\n"
                 + "INNER JOIN \n"
@@ -99,17 +102,13 @@ public class OrderDAO extends DBConnect.DBConnection {
                 + "OFFSET " + ((page - 1) * ordersPerPage) + " ROWS "
                 + "FETCH NEXT " + ordersPerPage + " ROWS ONLY;";
 
-        try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {  // Thực thi câu lệnh SQL trực tiếp
-            // Lấy tên khách hàng (AccountName) từ bảng Account
+        try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
 
             while (rs.next()) {
-                String accountName = rs.getString("AccountName");
-                String payMentMethodName = rs.getString("MethodName");
-                String shipingMethodName = rs.getString("MethodName");
                 list.add(new Order(rs.getInt("OrderID"),
-                        accountName,
-                        payMentMethodName,
-                        shipingMethodName,
+                        rs.getString("AccountName"),
+                        rs.getString("PaymentMethodName"),
+                        rs.getString("ShippingMethodName"),
                         rs.getDate("OrderDate"),
                         rs.getString("Status"),
                         rs.getFloat("TotalAmount"),
@@ -120,7 +119,6 @@ public class OrderDAO extends DBConnect.DBConnection {
         return list;
     }
 
-    //phan trang
     public int getTotalOrders() throws SQLException, ClassNotFoundException {
         int total = 0;
         String query = "select count(*) from [dbo].[Orders]";
@@ -137,7 +135,11 @@ public class OrderDAO extends DBConnect.DBConnection {
     public List<Order> searchByCustomerName(String customerName) throws SQLException, ClassNotFoundException {
         List<Order> list = new ArrayList<>();
         String query = "SELECT \n"
-                + "                    o.*, a.AccountName, p.MethodName, s.MethodName, k.Status\n"
+                + "    o.*, \n"
+                + "    a.AccountName, \n"
+                + "    p.MethodName AS PaymentMethodName, \n"
+                + "    s.MethodName AS ShippingMethodName, \n"
+                + "    k.Status\n"
                 + "FROM \n"
                 + "    [dbo].[Orders] o\n"
                 + "INNER JOIN \n"
@@ -153,19 +155,14 @@ public class OrderDAO extends DBConnect.DBConnection {
 
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement pstmt = conn.prepareStatement(query)) {
 
-            // Đặt giá trị cho tham số tìm kiếm (customerName)
             pstmt.setString(1, "%" + customerName + "%");
 
             try ( ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    String accountName = rs.getString("AccountName");
-                    String shipingMethodName = rs.getString("MethodName");
-                    String payMentMethodName = rs.getString("MethodName");
-
                     list.add(new Order(rs.getInt("OrderID"),
-                            accountName, // Thay vì AccountID, giờ là AccountName
-                            payMentMethodName,
-                            shipingMethodName,
+                            rs.getString("AccountName"),
+                            rs.getString("PaymentMethodName"),
+                            rs.getString("ShippingMethodName"),
                             rs.getDate("OrderDate"),
                             rs.getString("Status"),
                             rs.getFloat("TotalAmount"),
@@ -193,7 +190,11 @@ public class OrderDAO extends DBConnect.DBConnection {
     public List<Order> searchByMoney(Double minAmount) throws SQLException, ClassNotFoundException {
         List<Order> list = new ArrayList<>();
         String query = "SELECT \n"
-                + "                    o.*, a.AccountName, p.MethodName, s.MethodName, k.Status\n"
+                + "    o.*, \n"
+                + "    a.AccountName, \n"
+                + "    p.MethodName AS PaymentMethodName, \n"
+                + "    s.MethodName AS ShippingMethodName, \n"
+                + "    k.Status\n"
                 + "FROM \n"
                 + "    [dbo].[Orders] o\n"
                 + "INNER JOIN \n"
@@ -209,19 +210,14 @@ public class OrderDAO extends DBConnect.DBConnection {
 
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement pstmt = conn.prepareStatement(query)) {
 
-            // Đặt giá trị cho tham số tìm kiếm (minAmount)
             pstmt.setDouble(1, minAmount);
 
             try ( ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    String accountName = rs.getString("AccountName");
-                    String shippingMethodName = rs.getString("MethodName");
-                    String paymentMethodName = rs.getString("MethodName");
-
                     list.add(new Order(rs.getInt("OrderID"),
-                            accountName, // Thay vì AccountID, giờ là AccountName
-                            paymentMethodName,
-                            shippingMethodName,
+                            rs.getString("AccountName"),
+                            rs.getString("PaymentMethodName"),
+                            rs.getString("ShippingMethodName"),
                             rs.getDate("OrderDate"),
                             rs.getString("Status"),
                             rs.getFloat("TotalAmount"),
@@ -233,28 +229,26 @@ public class OrderDAO extends DBConnect.DBConnection {
         return list;
     }
 
-    // Phương thức tìm kiếm theo số tiền với sắp xếp theo ASC hoặc DESC
     public List<Order> sort(String sortOrder) throws SQLException, ClassNotFoundException {
         List<Order> list = new ArrayList<>();
-
-        // Kiểm tra và thiết lập thứ tự sắp xếp (ASC hoặc DESC)
-        String orderBy = "ASC"; // Mặc định là ASC
+        String orderBy = "ASC";
         if ("DESC".equalsIgnoreCase(sortOrder)) {
-            orderBy = "DESC"; // Sắp xếp theo thứ tự giảm dần nếu tham số là DESC
+            orderBy = "DESC";
         }
 
-        // Câu truy vấn SQL với sắp xếp theo TotalAmount
-        String query = "SELECT o.*, a.AccountName, p.MethodName AS PaymentMethodName, s.MethodName AS ShippingMethodName, g.Status "
+        String query = "SELECT o.*, a.AccountName, "
+                + "p.MethodName AS PaymentMethodName, "
+                + "s.MethodName AS ShippingMethodName, "
+                + "k.Status "
                 + "FROM [dbo].[Orders] o "
                 + "INNER JOIN [dbo].[Account] a ON o.AccountID = a.AccountID "
                 + "INNER JOIN [dbo].[PaymentMethods] p ON o.PaymentMethodID = p.PaymentMethodID "
                 + "INNER JOIN [dbo].[ShippingMethods] s ON o.ShippingMethodID = s.ShippingMethodID "
-                + "INNER JOIN [dbo].[StatusOrder] g ON o.StatusID = g.StatusID "
+                + "INNER JOIN [dbo].[StatusOrder] k ON o.StatusID = k.StatusID "
                 + "WHERE o.TotalAmount IS NOT NULL "
-                + "ORDER BY o.TotalAmount " + orderBy; // Sắp xếp theo TotalAmount với orderBy
+                + "ORDER BY o.TotalAmount " + orderBy;
 
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement pstmt = conn.prepareStatement(query)) {
-
             try ( ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     list.add(new Order(
