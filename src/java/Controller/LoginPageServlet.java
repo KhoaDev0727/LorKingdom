@@ -21,8 +21,8 @@ public class LoginPageServlet extends HttpServlet {
         }
         if (password == null || password.trim().isEmpty()) {
             request.setAttribute("passwordError", "Mật khẩu không được để trống!");
-        } else if (password.length() < 6) {
-            request.setAttribute("passwordError", "Mật khẩu phải dài ít nhất 6 ký tự!");
+        } else if (password.length() < 8) {
+            request.setAttribute("passwordError", "Mật khẩu phải dài ít nhất 8 ký tự!");
         }
 
         if (request.getAttribute("emailError") != null || request.getAttribute("passwordError") != null) {

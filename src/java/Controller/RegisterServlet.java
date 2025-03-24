@@ -33,13 +33,17 @@ public class RegisterServlet extends HttpServlet {
             emailError = "Định dạng email không hợp lệ.";
             hasError = true;
         }
+        
+        // Kiểm tra mật khẩu với regex
         if (password.isEmpty()) {
             passwordError = "Cần phải nhập mật khẩu.";
             hasError = true;
-        } else if (password.length() < 6) {
-            passwordError = "Mật khẩu phải dài ít nhất 6 ký tự.";
+        } else if (!isValidPassword(password)) {
+            passwordError = "Mật khẩu phải dài ít nhất 8 ký tự, chứa ít nhất 1 chữ cái in hoa, " +
+                          "1 chữ cái thường, 1 số và 1 ký tự đặc biệt.";
             hasError = true;
         }
+
         if (phoneNumber.isEmpty()) {
             phoneNumberError = "Bắt buộc phải nhập số điện thoại.";
             hasError = true;
@@ -96,5 +100,19 @@ public class RegisterServlet extends HttpServlet {
 
     private boolean isValidEmail(String email) {
         return email.matches("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
+    }
+
+    // Hàm kiểm tra mật khẩu với regex
+    private boolean isValidPassword(String password) {
+        // Regex: 
+        // ^                 : Bắt đầu chuỗi
+        // (?=.*[A-Z])       : Ít nhất 1 chữ cái in hoa
+        // (?=.*[a-z])       : Ít nhất 1 chữ cái thường
+        // (?=.*\\d)         : Ít nhất 1 số
+        // (?=.*[!@#$%^&*])  : Ít nhất 1 ký tự đặc biệt
+        // .{8,}             : Dài ít nhất 8 ký tự
+        // $                 : Kết thúc chuỗi
+        String passwordPattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,}$";
+        return password.matches(passwordPattern);
     }
 }
