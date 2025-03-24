@@ -10,17 +10,47 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Quản lý thông tin</title>
         <link rel="stylesheet" href="assets/styleUser/Setting.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+        <!-- Font Awesome (Chỉ giữ phiên bản mới nhất) -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <!-- Bootstrap CSS (Chỉ giữ phiên bản mới nhất) -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- jQuery (Giữ bản đầy đủ thay vì slim) -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <!-- Bootstrap JS (Bao gồm Popper.js) -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
-        <!-- SweetAlert2 CSS -->
+        <!-- SweetAlert2 CSS & JS (Chỉ giữ một bộ) -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-        <!-- SweetAlert2 JS -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <style> */* Preview ảnh upload */
+
+        <style>
+            .line-through {
+                text-decoration: line-through;
+            }
+
+            .text-red-500 {
+                color: #e3342f;
+            }
+
+            .text-blue-500 {
+                color: #3490dc;
+            }
+
+            .bg-red-500 {
+                background-color: #e3342f;
+            }
+
+            .bg-gray-200 {
+                background-color: #e2e8f0;
+            }
+
+            .text-gray-500 {
+                color: #6c757d;
+            }
+
+            .text-gray-700 {
+                color: #495057;
+            }
+
             #image-preview {
                 max-width: 200px;
                 margin-top: 10px;
@@ -75,6 +105,31 @@
                 color: white;
                 border-color: #dc3545;
             }
+            */* Custom style for the cancel button */
+            .btn-custom-cancel {
+                background-color: #8B0000; /* Red-brown color (dark red) */
+                color: #FFFFFF; /* White text */
+                border: none; /* Remove default border if needed */
+            }
+
+            /* Hover effect for the cancel button */
+            .btn-custom-cancel:hover {
+                background-color: #A52A2A; /* Slightly lighter red-brown for hover */
+                color: #FFFFFF;
+            }
+
+            .img-fixed-size {
+                width: 160px;
+                height: 100px;
+                object-fit: cover; /* Đảm bảo hình ảnh không bị méo */
+            }
+            .order-item {
+                padding: 20px;
+                margin-bottom: 20px;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
         </style>
     </head>
     <body>
@@ -127,8 +182,8 @@
                 </div>
             </div>
         </div> 
-                
-                
+
+
         <div class="modal fade" id="orderDetailModal" tabindex="-1" aria-labelledby="orderDetailModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -139,12 +194,11 @@
                     <div class="modal-body" id="order-detail-content">
                         <!-- Nội dung chi tiết đơn hàng sẽ được hiển thị ở đây -->
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    </div>
                 </div>
             </div>
         </div>
+
+
 
         <!-- Modal Đánh giá -->
         <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
@@ -196,10 +250,6 @@
                 </div>
             </div>
         </div> 
-
-
-
-
 
         <%@include file="assets/Component/footer.jsp" %>
         <script src="assets/js/fowrard.js">

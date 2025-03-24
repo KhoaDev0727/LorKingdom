@@ -3,7 +3,8 @@
 document.addEventListener("DOMContentLoaded", function () {
     let currentPage = 1;
     let totalPages = 1;
-    let currentStatus = '';
+    let currentStatus = ''; 
+    
 
     // Lấy các phần tử DOM chính
     const profileSection = document.getElementById("profile-section");
@@ -155,6 +156,11 @@ document.addEventListener("DOMContentLoaded", function () {
             showNoOrders();
     }
     }
+    // Hàm tính giá gốc từ giá đã giảm và phần trăm giảm giá
+    function calculateOriginalPrice(discountedPrice, discountPercentage) {
+        if (!discountPercentage || discountPercentage <= 0) return discountedPrice;
+        return discountedPrice / (1 - (discountPercentage / 100));
+    }
 
     // Hàm hiển thị đơn hàng
     function renderOrders(orders) {
@@ -164,52 +170,105 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        orderContent.innerHTML = orders.map(order => `
-        <div class="order-item">
-            <h3 style="display: inline-block; margin-right: 10px;">Đơn hàng ${order.orderId}</h3>
-            <button class="btn btn-info btn-sm" onclick="showOrderDetail(${order.orderId})">Xem chi tiết</button>
-            ${order.orderDetails.map(detail => `
-                <div class="d-flex mb-3 align-items-center">
-                    <img src="http://localhost:8080/LorKingdom${detail.productImage || './assets/img/default-product.png'}" 
-                         class="me-3" style="width: 100px; height: 100px;" alt="Hình sản phẩm">
-                    <div class="flex-grow-1">
-                        <div class="fw-bold">${detail.productName}</div>
-                        <div class="text-muted">Phân loại: ${detail.categoryName}</div>
-                        <div class="text-muted">Số lượng: x${detail.quantity}</div>
-                    </div> 
-                    <div class="text-end"> 
-                        <div class="text-danger fw-bold">${formatCurrency(detail.unitPrice)}</div>
-                        ${order.status === 'Delivered'
-                        ? detail.Reviewed === 0
-                        ? `
-                            <button class="btn btn-warning mt-2" 
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#reviewModal"
-                                    data-product-id="${detail.productID}" 
-                                    data-order-id="${detail.orderID}" 
-                                    modal-OrderDetail-Id="${detail.orderDetailID}" 
-                                    data-category-name="${detail.categoryName}"
-                                    data-product-name="${detail.productName}"
-                                    data-product-img="http://localhost:8080/LorKingdom${detail.productImage}">
-                                Đánh giá
-                            </button>`
-                        : `<span class="text-muted mt-2">Bạn đã đánh giá</span>`
-                        : order.status === 'Pending'
-                        ? `
-                            <button class="btn btn-danger mt-2" 
-                                    onclick="cancelOrder(${detail.orderID})">
-                                Hủy đơn hàng
-                            </button>`
-                        : ''
-                        }
+        orderContent.innerHTML = orders.map(order => {
+            return `     
+        <div class="order-item card mb-4">
+            <div class="card-header">
+                <h3 class="d-inline-block me-3">Đơn hàng ${order.orderId}</h3>
+            </div>
+            <div class="card-body p-0">
+                ${order.orderDetails.map(detail => {
+                    // Tính giá gốc nếu có discount
+                    const hasDiscount = detail.discount && detail.discount > 0;
+                    const originalPrice = detail.originalPrice || (hasDiscount ? calculateOriginalPrice(detail.unitPrice, detail.discount) : null);
+                    
+                    return `
+                    <div class="border-bottom p-3">
+                        <div class="row align-items-center mb-3">
+                            <div class="col-12 col-md-3 mb-3 mb-md-0">
+                                <img alt="${detail.productName}" 
+                                    class="img-fluid img-thumbnail img-fixed-size" 
+                                    src="http://localhost:8080/LorKingdom${detail.productImage || './assets/img/default-product.png'}" />
+                            </div>
+                            <div class="col-12 col-md-6 mb-3 mb-md-0">
+                                <h5 class="mb-2 text-start">${detail.productName}</h5>
+                                <p class="text-muted mb-1 text-start" style="padding-left: 0;">Phân loại hàng: ${detail.categoryName}</p>
+                                <p class="text-muted mb-0 text-start" style="padding-left: 0;">Số lượng x${detail.quantity}</p>
+                            </div>
+                            <div class="col-12 col-md-3 text-md-end">
+                                ${originalPrice && originalPrice > detail.unitPrice ?
+                                    `<p class="text-decoration-line-through text-muted mb-0 text-end">
+                                         ${formatCurrency(detail.unitPrice)} 
+                                    </p>
+                                    <p class="text-success mb-0">
+                                        <small>Giảm ${detail.discount || Math.round((1 - detail.unitPrice/originalPrice) * 100)}%</small>
+                                    </p>` : ''
+                                }
+                                <p class="text-danger fw-bold mb-0">
+                                  
+                                     ${formatCurrency(detail.TotalPrice)}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 d-flex justify-content-end">
+                                ${order.status === 'Delivered' && detail.Reviewed === 0
+                                ? `
+                                    <button 
+                                        class="btn btn-danger"
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#reviewModal"
+                                        data-product-id="${detail.productID}" 
+                                        data-order-id="${detail.orderID}"
+                                        modal-OrderDetail-Id="${detail.orderDetailID}" 
+                                        data-category-name="${detail.categoryName}"
+                                        data-product-name="${detail.productName}"
+                                        data-product-img="http://localhost:8080/LorKingdom${detail.productImage}">
+                                        Đánh Giá
+                                    </button>
+                                    `
+                                : order.status === 'Delivered' && detail.Reviewed !== 0
+                                ? `
+                                        <span class="text-muted mt-2">
+                                            Bạn đã đánh giá
+                                        </span>
+                                        `
+                                : ''
+                                }
+                            </div>
+                        </div>
                     </div>
-                </div> 
-                <div class="border-top pt-3 text-end">
-                    <div class="h4 text-danger fw-bold">Tổng: ${formatCurrency(detail.TotalPrice)}</div>
+                    `;
+                }).join('')}
+                <div class="p-3">
+                    <div class="row align-items-center">
+                        <div class="col-12 col-md-6 mb-3 mb-md-0">
+                            <p class="h5 fw-bold mb-0">
+                                Thành tiền:
+                                <span class="text-danger text-start">
+                                    ${formatCurrency(order.totalAmount)}
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-12 col-md-6 text-md-end">
+                            <button class="btn btn-outline-secondary me-2" onclick="showOrderDetail(${order.orderId})">
+                                Xem Chi Tiết Đơn Hàng
+                            </button>
+                            ${order.status === 'Pending'
+                            ? `
+                                <button class="btn btn-outline-danger" onclick="cancelOrder(${order.orderId})"> 
+                                    Hủy Đơn Hàng
+                                </button>
+                                `
+                            : ''
+                            }
+                        </div>
+                    </div>
                 </div>
-            `).join('')}
+            </div>
         </div>
-    `).join('');
+        `;
+        }).join('');
     }
 
     // Xử lý khi modal đánh giá được mở
@@ -362,8 +421,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// Hàm hủy đơn hàng
+// Hàm hủy đơn hàng// Hàm hủy đơn hàng
 function cancelOrder(orderID) {
+    console.log(orderID)
     Swal.fire({
         title: 'Bạn có chắc chắn muốn hủy đơn hàng này không?',
         icon: 'warning',
@@ -372,13 +432,18 @@ function cancelOrder(orderID) {
         cancelButtonText: 'Hủy bỏ',
     }).then((result) => {
         if (result.isConfirmed) {
-            fetch(`/CancelOrder?orderID=${orderID}`, {
+            fetch(`http://localhost:8080/LorKingdom/CancelOrder?orderID=${orderID}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
             })
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Lỗi HTTP: ${response.status}`);
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         if (data.success) {
                             Swal.fire({
@@ -386,13 +451,13 @@ function cancelOrder(orderID) {
                                 title: 'Thành công!',
                                 text: 'Đơn hàng đã được hủy thành công.',
                             }).then(() => {
-                                location.reload();
+                                location.reload(); // Tải lại trang để cập nhật danh sách đơn hàng
                             });
                         } else {
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Lỗi!',
-                                text: 'Có lỗi xảy ra khi hủy đơn hàng.',
+                                text: data.message || 'Có lỗi xảy ra khi hủy đơn hàng.',
                             });
                         }
                     })
@@ -407,7 +472,6 @@ function cancelOrder(orderID) {
         }
     });
 }
-
 
 //Form show review chi tieet
 async function showOrderDetail(orderId) {
@@ -424,73 +488,95 @@ async function showOrderDetail(orderId) {
             throw new Error(`Lỗi HTTP: ${response.status}`);
         }
 
-        const data = await response.json(); // Lấy toàn bộ dữ liệu trả về
-        const order = data.order; // Truy cập đối tượng order
-        const orderDetails = data.orderDetails; // Truy cập danh sách orderDetails
+        const data = await response.json();
+        const order = data.order;
+        const orderDetails = data.orderDetails;
 
         const orderDetailContent = document.getElementById('order-detail-content');
         if (orderDetailContent) {
             orderDetailContent.innerHTML = `
-                <div class="order-detail">
-                    <h4>Đơn hàng #${order.orderId}</h4>
-                    <p><strong>Trạng thái:</strong> ${order.status}</p>
-                    <p><strong>Ngày đặt hàng:</strong> ${new Date(order.orderDate).toLocaleDateString()}</p>
-                    <p><strong>Phương thức thanh toán:</strong> ${order.payMentMethodName}</p>
-                    <p><strong>Phương thức vận chuyển:</strong> ${order.shipingMethodName}</p>
-                    <hr>
-                    <h5>Chi tiết sản phẩm:</h5>
-                    <div class="product-list">
-                        ${orderDetails.map(detail => `
-                            <div class="product-item">
-                                <div class="row align-items-center">
-                                    <div class="col-3">
-                                        <img src="http://localhost:8080/LorKingdom${detail.productImage}" alt="${detail.productName}" class="img-fluid product-image">
-                                    </div>
-                                    <div class="col-9">
-                                        <h6>${detail.productName}</h6>
-                                        <small>Phân loại: ${detail.categoryName}</small>
-                                        <div class="mt-2">
-                                            <span>Số lượng: ${detail.quantity}</span>
-                                            <span class="ms-3">Đơn giá: ${formatCurrency(detail.unitPrice)}</span>
+                <div class="order-detail card">
+                    <div class="card-header bg-light">
+                        <h4 class="mb-0">Đơn hàng #${order.orderId}</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <p class="mb-2"><strong>Trạng thái:</strong> <span class="badge ${getStatusBadgeClass(order.status)}">${order.status}</span></p>
+                                <p class="mb-2"><strong>Ngày đặt hàng:</strong> ${new Date(order.orderDate).toLocaleDateString()}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-2"><strong>Phương thức thanh toán:</strong> <span class="text-primary">${order.payMentMethodName}</span></p>
+                                <p class="mb-2"><strong>Phương thức vận chuyển:</strong> ${order.shipingMethodName}</p>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        <h5 class="mb-3">Chi tiết sản phẩm:</h5>
+                        <div class="product-list">
+                            ${orderDetails.map(detail => `
+                                <div class="product-item card mb-3">
+                                    <div class="card-body p-3">
+                                        <div class="row align-items-center">
+                                            <div class="col-12 col-md-3 mb-3 mb-md-0">
+                                                <img src="http://localhost:8080/LorKingdom${detail.productImage}" 
+                                                     alt="${detail.productName}" 
+                                                     class="img-fluid img-thumbnail product-image">
+                                            </div>
+                                            <div class="col-12 col-md-9">
+                                                <h6 class="fw-bold text-start mb-2">${detail.productName}</h6>
+                                                <div class="text-start mb-2">
+                                                    <span class="text-muted">Phân loại: ${detail.categoryName}</span>
+                                                </div>
+                                                <div class="row mb-2">
+                                                    <div class="col-6 text-start">
+                                                        <span>Số lượng: ${detail.quantity}</span>
+                                                    </div>
+                                                    <div class="col-6 text-start text-md-end">
+                                                        <span>Đơn giá: ${formatCurrency(detail.unitPrice)}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div class="col-6 text-start">
+                                                        <span>Giảm giá: ${detail.discount}%</span>
+                                                    </div>
+                                                    <div class="col-6 text-start text-md-end">
+                                                        <span class="fw-bold">Thành tiền: ${formatCurrency(detail.TotalPrice)}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex ${detail.Reviewed === 0 ? 'justify-content-between' : 'justify-content-end'}">
+                                                    ${detail.Reviewed === 0 && order.status === 'Pending'
+                                                        ? `<button class="btn btn-danger" onclick="cancelOrder(${detail.orderID})">
+                                                            <i class="bi bi-x-circle me-1"></i>Hủy đơn hàng
+                                                           </button>`
+                                                        : ''
+                                                    }
+                                                    ${order.status === 'Delivered' && detail.Reviewed === 0
+                                                        ? `<button class="btn btn-primary" 
+                                                                 data-bs-toggle="modal" 
+                                                                 data-bs-target="#reviewModal" 
+                                                                 data-product-id="${detail.productID}" 
+                                                                 data-order-id="${detail.orderID}" 
+                                                                 modal-OrderDetail-Id="${detail.orderDetailID}" 
+                                                                 data-category-name="${detail.categoryName}" 
+                                                                 data-product-name="${detail.productName}" 
+                                                                 data-product-img="http://localhost:8080/LorKingdom${detail.productImage}">
+                                                            <i class="bi bi-star me-1"></i>Đánh giá
+                                                           </button>`
+                                                        : detail.Reviewed === 1
+                                                            ? `<span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Đã đánh giá</span>`
+                                                            : ''
+                                                    }
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="mt-2">
-                                            <span>Giảm giá: ${detail.discount}%</span>
-                                            <span class="ms-3">Thành tiền: ${formatCurrency(detail.TotalPrice)}</span>
-                                        </div>
-                                   
-                                   
-                            ${detail.Reviewed === 0 && order.status === 'Pending'
-    ? `
-        <button class="btn btn-danger mt-2" onclick="cancelOrder(${detail.orderID})">
-            Hủy đơn hàng
-        </button>
-    `
-    : order.status === 'Delivered' && detail.Reviewed === 0
-        ? `
-            <button class="btn btn-warning mt-2" 
-                    data-bs-toggle="modal" 
-                    data-bs-target="#reviewModal"
-                    data-product-id="${detail.productID}" 
-                    data-order-id="${detail.orderID}" 
-                    modal-OrderDetail-Id="${detail.orderDetailID}" 
-                    data-category-name="${detail.categoryName}"
-                    data-product-name="${detail.productName}"
-                    data-product-img="http://localhost:8080/LorKingdom${detail.productImage}">
-                Đánh giá
-            </button>
-        `
-        : detail.Reviewed === 1
-            ? `
-                <p class="text-success mt-2"><small>Đã đánh giá</small></p>
-            `
-            : ''
-}
-                                       
-                                       
                                     </div>
                                 </div>
-                            </div>
-                        `).join('')}
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="card-footer bg-light d-flex justify-content-end">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                     </div>
                 </div>
             `;
@@ -501,6 +587,14 @@ async function showOrderDetail(orderId) {
         if (orderDetailModalElement) {
             const orderDetailModal = new bootstrap.Modal(orderDetailModalElement);
             orderDetailModal.show();
+
+            // Thêm sự kiện click để đóng modal
+            const closeButton = document.querySelector('.btn-close');
+            if (closeButton) {
+                closeButton.addEventListener('click', function () {
+                    orderDetailModal.hide();
+                });
+            }
         } else {
             console.error("Không tìm thấy phần tử modal với ID 'orderDetailModal'");
         }
@@ -511,6 +605,18 @@ async function showOrderDetail(orderId) {
             title: 'Lỗi',
             text: 'Có lỗi xảy ra khi tải chi tiết đơn hàng'
         });
+    }
+}
+
+// Hàm hỗ trợ để lấy class cho trạng thái đơn hàng
+function getStatusBadgeClass(status) {
+    switch(status) {
+        case 'Pending': return 'bg-warning text-dark';
+        case 'Processing': return 'bg-info text-dark';
+        case 'Shipped': return 'bg-primary';
+        case 'Delivered': return 'bg-success';
+        case 'Cancelled': return 'bg-danger';
+        default: return 'bg-secondary';
     }
 }
 

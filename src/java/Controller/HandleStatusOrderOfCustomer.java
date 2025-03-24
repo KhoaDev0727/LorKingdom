@@ -5,6 +5,7 @@
 package Controller;
 
 import DAO.OrderDAO;
+import DAO.ProductDAO;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,6 +14,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -65,8 +68,7 @@ public class HandleStatusOrderOfCustomer extends HttpServlet {
         OrderDAO order = new OrderDAO();
         try {
             java.util.HashMap<String, Object> orderData = order.getOrderDetails(orderId);
-            System.out.println("khanglo");
-            System.out.println(new Gson().toJson(orderData));
+
             // Chuyển đổi đối tượng order thành JSON và gửi về client
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
@@ -88,35 +90,73 @@ public class HandleStatusOrderOfCustomer extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("application/json"); // Đặt kiểu phản hồi là JSON
-        response.setCharacterEncoding("UTF-8");
+   protected void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    response.setContentType("application/json");
+    response.setCharacterEncoding("UTF-8");
 
-        try {
-            // Lấy orderID từ request
-            int orderID = Integer.parseInt(request.getParameter("orderID"));
-            System.out.println("Received orderID: " + orderID);
-            // Gọi service hoặc DAO để hủy đơn hàng
-            boolean isCancelled = cancelOrder(orderID);
+    PrintWriter out = response.getWriter(); // Khởi tạo PrintWriter sớm
+    boolean isStockReverted = true; // Biến kiểm tra cập nhật stock
+    OrderDAO order = new OrderDAO();
+    try {
+        // Lấy orderID từ request
+        int orderID = Integer.parseInt(request.getParameter("orderID"));
+        System.out.println("Received orderID: " + orderID);
 
-            // Trả về kết quả dưới dạng JSON
-            PrintWriter out = response.getWriter();
-            out.print("{\"success\": " + isCancelled + "}");
-            out.flush();
-        } catch (Exception e) {
-            e.printStackTrace();
-            // Trả về thông báo lỗi nếu có ngoại lệ
-            PrintWriter out = response.getWriter();
-            out.print("{\"success\": false}");
-            out.flush();
+    
+        HashMap<Integer, Integer> rawRestoreProduct = order.getAllProductInOrder(orderID);
+
+ 
+        // Hủy đơn hàng
+        boolean isCancelled = cancelOrder(orderID);
+        if (isCancelled) {
+            ProductDAO product = new ProductDAO();
+            boolean allSuccess = true; // Kiểm tra tất cả sản phẩm có cập nhật thành công không
+
+            for (Map.Entry<Integer, Integer> entry : rawRestoreProduct.entrySet()) {
+                int productID = entry.getKey();
+                int quantity = entry.getValue();
+                isStockReverted = product.revertStockOnCancel(productID, quantity);
+                if (!isStockReverted) {
+                    System.out.println("Không thể cập nhật số lượng cho sản phẩm ID: " + productID);
+                    allSuccess = false;
+                    break; // Thoát vòng lặp nếu gặp lỗi
+                }
+            }
+            // Nếu có lỗi, rollback các sản phẩm đã cập nhật trước đó
+            if (!allSuccess) {
+                System.out.println("Có lỗi xảy ra! Cần thực hiện rollback.");
+                isStockReverted = false; // Đánh dấu thất bại
+            }
+        } else {
+            isStockReverted = false; // Hủy đơn hàng thất bại
         }
+        // Trả về kết quả dưới dạng JSON
+        if (isStockReverted) {
+            out.print("{\"success\": true, \"message\": \"Đơn hàng đã được hủy thành công.\"}");
+        } else {
+            out.print("{\"success\": false, \"message\": \"Không thể cập nhật số lượng sản phẩm hoặc hủy đơn hàng.\"}");
+        }
+    } catch (NumberFormatException e) {
+        e.printStackTrace();
+        out.print("{\"success\": false, \"message\": \"orderID hoặc quantity không hợp lệ.\"}");
+    } catch (IllegalArgumentException e) {
+        e.printStackTrace();
+        out.print("{\"success\": false, \"message\": \"" + e.getMessage() + "\"}");
+    } catch (Exception e) {
+        e.printStackTrace();
+        out.print("{\"success\": false, \"message\": \"Có lỗi xảy ra khi xử lý yêu cầu.\"}");
+    } finally {
+        out.flush();
+        out.close(); // Đóng PrintWriter
     }
+}
+
 
     public boolean cancelOrder(int orderID) throws SQLException, ClassNotFoundException {
         // Giả sử bạn có một phương thức trong OrderDAO để cập nhật trạng thái đơn hàng
         OrderDAO orderDAO = new OrderDAO();
-        return orderDAO.updateOrderStatus(orderID, 3);
+        return orderDAO.updateOrderStatus(orderID, 4);
     }
 
     /**
@@ -128,5 +168,7 @@ public class HandleStatusOrderOfCustomer extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+ 
 
 }

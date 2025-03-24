@@ -143,7 +143,7 @@
                 <h3 class="title-order">Đơn hàng</h3>
                 <c:forEach items="${listCart}" var="item">
                     <div class="product">
-                        <img src="${item.product.mainImageUrl}" alt="${item.product.name}">
+                        <img src="http://localhost:8080/LorKingdom/${item.product.mainImageUrl}" alt="${item.product.name}">
                         <div>
                             <p>${item.product.name}</p>
                             <p><fmt:formatNumber value="${item.price * item.quantity}" pattern="#,###" /> VND</p>
