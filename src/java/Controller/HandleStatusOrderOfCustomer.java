@@ -102,12 +102,11 @@ public class HandleStatusOrderOfCustomer extends HttpServlet {
         // Lấy orderID từ request
         int orderID = Integer.parseInt(request.getParameter("orderID"));
         System.out.println("Received orderID: " + orderID);
-
-    
         HashMap<Integer, Integer> rawRestoreProduct = order.getAllProductInOrder(orderID);
-
- 
         // Hủy đơn hàng
+        if (rawRestoreProduct.isEmpty()) {
+             out.print("{\"success\": false, \"message\": \"Có Lỗi Xảy Ra. Vui Lòng Thử Lại Hoặc Liên Hệ Với Chúng Tôi Để Được Hỗ Trợ.\"}");
+        }
         boolean isCancelled = cancelOrder(orderID);
         if (isCancelled) {
             ProductDAO product = new ProductDAO();

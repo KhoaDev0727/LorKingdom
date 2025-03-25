@@ -552,7 +552,7 @@ public class ProductDAO {
     }
 
     public boolean updateProductQuantity(int productId, int quantityToSubtract) throws SQLException, ClassNotFoundException {
-        String sql = "UPDATE Product SET Quantity = Quantity - ? WHERE ProductID = ? AND Quantity >= ?";
+            String sql = "UPDATE Product SET Quantity = Quantity - ? WHERE ProductID = ? AND Quantity >= ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, quantityToSubtract);
             ps.setInt(2, productId);
