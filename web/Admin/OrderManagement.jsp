@@ -31,23 +31,23 @@
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-5">
-                        <h1 class="mt-4">Order Management</h1>
+                        <h1 class="mt-4">Quản lý đơn hàng</h1>
 
-                        <!-- Success/Error Messages -->
+                        <!-- Thông báo Thành công/Lỗi -->
                         <c:if test="${not empty message}">
                             <div class="alert alert-${messageType} alert-dismissible fade show" role="alert">
                                 ${message}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
                             </div>
                         </c:if>
 
-                        <!-- Search Forms in a single row -->
+                        <!-- Biểu mẫu tìm kiếm trong một hàng -->
                         <div class="row mb-4">
-                            <!-- Search by Customer Name -->
+                            <!-- Tìm kiếm theo tên khách hàng -->
                             <div class="col-md-4">
                                 <form action="${pageContext.request.contextPath}/Admin/OrderServlet" method="POST" class="d-flex">
                                     <input type="hidden" name="action" value="search">
-                                    <input type="text" name="customerName" class="form-control" placeholder="Enter Customer Name" required>
+                                    <input type="text" name="customerName" class="form-control" placeholder="Nhập tên khách hàng" required>
                                     <button class="btn btn-outline-secondary" type="submit">
                                         <i class="fas fa-search"></i>
                                     </button>
@@ -57,11 +57,11 @@
                                 </form>
                             </div>
 
-                            <!-- Search by Minimum Amount -->
+                            <!-- Tìm kiếm theo số tiền tối thiểu -->
                             <div class="col-md-4">
                                 <form action="${pageContext.request.contextPath}/Admin/OrderView" method="POST" class="d-flex">
                                     <input type="hidden" name="action" value="money">
-                                    <input type="text" name="minAmount" class="form-control" placeholder="Enter Minimum Amount" required>
+                                    <input type="text" name="minAmount" class="form-control" placeholder="Nhập số tiền tối thiểu" required>
                                     <button class="btn btn-outline-secondary" type="submit">
                                         <i class="fas fa-search"></i> 
                                     </button>
@@ -71,13 +71,13 @@
                                 </form>
                             </div>
 
-                            <!-- Sort Orders -->
+                            <!-- Sắp xếp đơn hàng -->
                             <div class="col-md-4">
                                 <form action="${pageContext.request.contextPath}/Admin/OrderServlet" method="POST" class="d-flex">
                                     <input type="hidden" name="action" value="sort">
                                     <select name="sortOrder" class="form-control">
-                                        <option value="ASC">Sort by Amount (Ascending)</option>
-                                        <option value="DESC">Sort by Amount (Descending)</option>
+                                        <option value="ASC">Sắp xếp theo số tiền (Tăng dần)</option>
+                                        <option value="DESC">Sắp xếp theo số tiền (Giảm dần)</option>
                                     </select>
                                     <button class="btn btn-outline-secondary" type="submit">
                                         <i class="fas fa-sort"></i> 
@@ -93,7 +93,7 @@
                         <div class="card mb-4">
                             <div class="card-header">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <i class="fas fa-truck me-1"></i> Order List
+                                    <i class="fas fa-truck me-1"></i> Danh sách đơn hàng
                                 </div>
                             </div>
                             <div class="card-body">
@@ -101,15 +101,15 @@
                                     <table class="table table-bordered table-striped table-hover">
                                         <thead class="table-dark text-center">
                                             <tr>
-                                                <th>Order ID</th>
-                                                <th>Customer Name</th>
-                                                <th>Payment Method</th>
-                                                <th>Shipping Method</th>
-                                                <th>Order Date</th>
-                                                <th>Status</th>
-                                                <th>Total Amount</th>
-                                                <th>Update</th>
-                                                <th>Action</th>
+                                                <th>Mã đơn hàng</th>
+                                                <th>Tên khách hàng</th>
+                                                <th>Phương thức thanh toán</th>
+                                                <th>Phương thức vận chuyển</th>
+                                                <th>Ngày đặt hàng</th>
+                                                <th>Trạng thái</th>
+                                                <th>Tổng tiền</th>
+                                                <th>Cập nhật</th>
+                                                <th>Hành động</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -127,7 +127,16 @@
                                                             <td>${o.payMentMethodName}</td>
                                                             <td>${o.shipingMethodName}</td>
                                                             <td>${o.orderDate}</td>
-                                                            <td>${o.status}</td>
+                                                            <td>
+                                                                <c:choose>
+                                                                    <c:when test='${o.status == "Pending"}'>Chờ xử lý</c:when>
+                                                                    <c:when test='${o.status == "Shipped"}'>Đã giao</c:when>
+                                                                    <c:when test='${o.status == "Delivered"}'>Đã nhận hàng</c:when>
+                                                                    <c:when test='${o.status == "Cancelled"}'>Đã hủy</c:when>
+                                                                    <c:otherwise>${o.status}</c:otherwise> 
+                                                                </c:choose>
+                                                            </td>
+
                                                             <td>${o.totalAmount}</td>
                                                             <td>${o.updatedAt}</td>
                                                             <td>
@@ -195,8 +204,8 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="updateStatusModalLabel">Update Order Status</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h5 class="modal-title" id="updateStatusModalLabel">Cập nhật trạng thái đơn hàng</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                     </div>
                     <div class="modal-body">
                         <form id="updateStatusForm" action="${pageContext.request.contextPath}/Admin/OrderServlet" method="POST">
@@ -204,27 +213,28 @@
                             <input type="hidden" name="orderId" id="updateOrderID">
 
                             <div class="mb-3">
-                                <label for="newStatus" class="form-label">Select New Status</label>
+                                <label for="newStatus" class="form-label">Chọn trạng thái mới</label>
                                 <select class="form-select" name="status" id="newStatus" required>
-                                    <option value="Pending">Pending</option>
-                                    <option value="Shipped">Shipped</option>
-                                    <option value="Delivered">Delivered</option>
-                                    <option value="Cancelled">Cancelled</option>
+                                    <option value="Pending">Chờ xử lý</option>
+                                    <option value="Shipped">Đã giao</option>
+                                    <option value="Delivered">Đã nhận hàng</option>
+                                    <option value="Cancelled">Đã hủy</option>
                                 </select>
                             </div>
 
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-primary">Update</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                <button type="submit" class="btn btn-primary">Cập nhật</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
+
         <% 
-String successMessage = (String) session.getAttribute("successModal");
-String errorMessage = (String) session.getAttribute("errorModal");
+                 String successMessage = (String) session.getAttribute("successModal");
+                 String errorMessage = (String) session.getAttribute("errorModal");
         %>
         <!-- Bootstrap Modal -->
         <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
@@ -232,7 +242,7 @@ String errorMessage = (String) session.getAttribute("errorModal");
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title text-center" id="notificationModalLabel">
-                            <%= (successMessage != null) ? "Success" : "Error" %>
+                            <%= (successMessage != null) ? "Thành công" : "Lỗi" %>
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>

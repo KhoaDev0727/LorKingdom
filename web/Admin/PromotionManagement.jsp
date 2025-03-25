@@ -129,7 +129,7 @@
                                         <table class="table table-bordered table-striped table-hover">
                                             <thead class="table-dark text-center">
                                                 <tr>
-                                                    <th>ID</th>
+                                                    <th>Mã</th>
                                                     <th>Mã sản phẩm</th>
                                                     <th>Tên</th>
                                                     <th>Mã khuyến mãi</th>
@@ -290,7 +290,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title text-center" id="notificationModalLabel">
-                            <%= (successMessage != null) ? "Success" : "Error" %>
+                            <%= (successMessage != null) ? "Thành công" : "Lỗi" %>
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
