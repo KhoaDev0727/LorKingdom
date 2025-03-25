@@ -474,7 +474,7 @@ public class ProductDAO {
             if (rs.next()) {
                 exists = rs.getInt(1) > 1; // true nếu đếm được > 0 dòng
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return exists;
@@ -554,7 +554,7 @@ public class ProductDAO {
     }
 
     public boolean updateProductQuantity(int productId, int quantityToSubtract) throws SQLException, ClassNotFoundException {
-            String sql = "UPDATE Product SET Quantity = Quantity - ? WHERE ProductID = ? AND Quantity >= ?";
+        String sql = "UPDATE Product SET Quantity = Quantity - ? WHERE ProductID = ? AND Quantity >= ?";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, quantityToSubtract);
             ps.setInt(2, productId);
@@ -563,7 +563,6 @@ public class ProductDAO {
             return rowsAffected > 0;
         }
     }
-    
 
     public boolean revertStockOnCancel(int productId, int quantityToAdd) throws SQLException, ClassNotFoundException {
         String sql = "UPDATE Product SET Quantity = Quantity + ? WHERE ProductID = ?";
