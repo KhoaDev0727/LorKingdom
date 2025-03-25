@@ -136,8 +136,22 @@
                                                                 <td><fmt:formatNumber value="${prod.price}" pattern="#,###" /></td>
                                                                 <td>${prod.quantity}</td>
                                                                 <td>
-                                                                    
+                                                                    <c:choose>
+                                                                        <c:when test="${prod.isDeleted == 1}">
+                                                                            <span class="badge bg-danger">Ngừng bán</span>
+                                                                        </c:when>
+
+                                                                        <c:when test="${prod.quantity <= 0}">
+                                                                            <span class="badge bg-warning text-dark">Hết hàng</span>
+                                                                        </c:when>
+
+                                                                        <c:otherwise>
+                                                                            <span class="badge bg-success">Còn hàng</span>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
                                                                 </td>
+
+
 
                                                                 <td>
                                                                     <c:if test="${prod.isDeleted == 0}">
