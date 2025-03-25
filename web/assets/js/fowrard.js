@@ -610,12 +610,12 @@ async function showOrderDetail(orderId) {
 
 // Hàm hỗ trợ để lấy class cho trạng thái đơn hàng
 function getStatusBadgeClass(status) {
+    console.log(status)
     switch(status) {
-        case 'Pending': return 'bg-warning text-dark';
-        case 'Processing': return 'bg-info text-dark';
-        case 'Shipped': return 'bg-primary';
-        case 'Delivered': return 'bg-success';
-        case 'Cancelled': return 'bg-danger';
+        case 'Đang Xử Lí': return 'bg-warning text-dark';
+        case 'Đang Vận Chuyển': return 'bg-primary';    
+        case 'Đã Nhận Hàng': return 'bg-success';
+        case 'Đã Hủy': return 'bg-danger';
         default: return 'bg-secondary';
     }
 }
