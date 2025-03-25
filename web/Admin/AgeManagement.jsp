@@ -47,14 +47,14 @@
                 <div class="dashboard-container">
                     <main>
                         <div class="container-fluid px-5">
-                            <h1 class="mt-4">Age Management</h1>
+                            <h1 class="mt-4">Quản Lý Khoảng Tuổi</h1>
 
 
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <i class="fas fa-table me-1"></i> Age List
+                                            <i class="fas fa-table me-1"></i> Danh Sách Khoảng Tuổi
                                         </div>
 <!--                                        <div>
                                              Nút mở modal Add Notification 
@@ -82,10 +82,10 @@
                                         <table class="table table-bordered table-striped table-hover">
                                             <thead class="table-dark">
                                                 <tr>
-                                                    <th>Age ID</th>
-                                                    <th>Age Range</th>
-                                                    <th>Date Created</th>
-                                                    <th>Status</th>
+                                                    <th>Mã</th>
+                                                    <th>Khoảng Tuổi</th>
+                                                    <th>Ngày Tạo</th>
+                                                    <th>Trạng Thái</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -93,7 +93,7 @@
                                                     <c:when test="${empty ages}">
                                                         <!-- Display message if the list is empty -->
                                                         <tr>
-                                                            <td colspan="4" class="text-center text-muted">No Age available.</td>
+                                                            <td colspan="4" class="text-center text-muted">Khoảng tuổi không có sẵn.</td>
                                                         </tr>
                                                     </c:when>
                                                     <c:otherwise>
@@ -111,7 +111,7 @@
                                                                             <span class="badge bg-secondary">Deleted</span>
                                                                         </c:when>
                                                                         <c:otherwise>
-                                                                            <span class="badge bg-success">Active</span>
+                                                                            <span class="badge bg-success">Hoạt Động</span>
                                                                         </c:otherwise>
                                                                     </c:choose>
                                                                 </td>

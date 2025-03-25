@@ -47,17 +47,17 @@
                 <div class="dashboard-container">
                     <main>
                         <div class="container-fluid px-5">
-                            <h1 class="mt-4">Product Management</h1>
+                            <h1 class="mt-4">Quản Lý Sản Phẩm</h1>
 
                             <div class="card mb-4 mt-3">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <i class="fas fa-table me-1"></i> Product List
+                                            <i class="fas fa-table me-1"></i> Danh Sách Sản Phẩm 
                                         </div>
                                         <div>
                                             <button class="btn btn-primary btn-sm" data-bs-toggle="modal" onclick="location.href = 'ProductManagementServlet'">
-                                                <i class="fas fa-plus"></i> Add Product
+                                                <i class="fas fa-plus"></i> Thêm Sản Phẩm
                                             </button>
                                         </div>
                                     </div>
@@ -68,7 +68,7 @@
                                     <form action="ProductServlet" method="GET" class="mb-4 mt-3">
                                         <div class="input-group">
                                             <input type="hidden" name="action" value="search">
-                                            <input type="text" name="search" class="form-control" placeholder="Search Product Name..." aria-label="Search">
+                                            <input type="text" name="search" class="form-control" placeholder="Tìm Kiếm Sản Phẩm Theo Tên Và SKU..." aria-label="Search">
                                             <button type="submit" class="btn btn-outline-secondary">
                                                 <i class="fas fa-search"></i>
                                             </button>
@@ -87,21 +87,21 @@
                                         <table class="table table-bordered table-striped table-hover">
                                             <thead class="table-dark">
                                                 <tr>
-                                                    <th>Product ID</th>
+                                                    <th>Mã</th>
                                                     <th>SKU</th>
-                                                    <th>Image</th>
-                                                    <th>Name</th>
-                                                    <th>Price</th>
-                                                    <th>Quantity</th>
-                                                    <th>Status</th>
-                                                    <th>Actions</th>
+                                                    <th>Hình Ảnh</th>
+                                                    <th>Tên Sản Phẩm</th>
+                                                    <th>Giá</th>
+                                                    <th>Số Lượng</th>
+                                                    <th>Trạng Thái</th>
+                                                    <th>Hành Động</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <c:choose>
                                                     <c:when test="${empty products}">
                                                         <tr>
-                                                            <td colspan="7" class="text-center text-muted">No products available.</td>
+                                                            <td colspan="7" class="text-center text-muted">Không có sản phẩm.</td>
                                                         </tr>
                                                     </c:when>
                                                     <c:otherwise>
@@ -196,55 +196,7 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="updateNotificationModal">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <form action="NotificationServlet" method="POST">
-                        <input type="hidden" name="action" value="update">
-                        <!-- Hidden input chứa ID của notification cần cập nhật -->
-                        <input type="hidden" id="notificationID" name="notificationID" value="${notification.notificationID}">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Update Notification</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="updateTitle" class="form-label">Title</label>
-                                <input type="text" class="form-control" id="updateTitle" name="title" required maxlength="255" value="${notification.title}">
-                            </div>
-
-                            <!-- Phần content dùng Quill -->
-                            <div class="mb-3">
-                                <label class="form-label">Content</label>
-
-                                <!-- Quill container với nội dung hiện có -->
-                                <div id="editor-container-update" style="height: 200px; background-color: #fff;">
-                                    ${notification.content}
-                                </div>
-
-                                <!-- Input ẩn để lưu nội dung cập nhật từ Quill -->
-                                <input type="hidden" id="updateContent" name="content" value="${notification.content}">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="updateType" class="form-label">Type</label>
-                                <select class="form-control" id="updateType" name="type" required>
-                                    <option value="System" ${notification.type == 'System' ? 'selected' : ''}>System</option>
-                                    <option value="Promotional" ${notification.type == 'Promotional' ? 'selected' : ''}>Promotional</option>
-                                    <option value="User" ${notification.type == 'User' ? 'selected' : ''}>User</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Update Notification</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-
+        
         <!-- Modal Error -->
         <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
             <div class="modal-dialog">

@@ -46,7 +46,7 @@
                 <div class="dashboard-container">
                     <main>
                         <div class="container-fluid px-5">
-                            <h1 class="mt-4">Price Range Management</h1>
+                            <h1 class="mt-4">Quản Lý Khoảng Giá</h1>
 
                             <div class="card mb-4">
                                 <div class="card-header">
@@ -57,11 +57,11 @@
                                                                         </div>-->
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <i class="fas fa-table me-1"></i> Price Range List
+                                            <i class="fas fa-table me-1"></i> Danh Sách Khoảng Giá
                                         </div>
                                         <div>
                                             <button class="btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#addPriceRangeModal">
-                                                <i class="fas fa-plus"></i> Add Price Range 
+                                                <i class="fas fa-plus"></i> Thêm Khoảng Giá 
                                             </button>
                                         </div>
                                     </div>
@@ -72,7 +72,7 @@
                                     <form action="PriceRangeServlet" method="GET" class="mb-4">
                                         <div class="input-group">
                                             <input type="hidden" name="action" value="search">
-                                            <input type="text" name="search" class="form-control" placeholder="Find Price Range..." aria-label="Search">
+                                            <input type="text" name="search" class="form-control" placeholder="Tìm Kiếm Khoảng Giá..." aria-label="Search">
                                             <button class="btn btn-outline-secondary" type="submit">
                                                 <i class="fas fa-search"></i>
                                             </button>
@@ -91,18 +91,18 @@
                                         <table class="table table-bordered table-striped table-hover">
                                             <thead class="table-dark">
                                                 <tr>
-                                                    <th>Price Range ID</th>
-                                                    <th>Price Range</th>
-                                                    <th>Date Created</th>
-                                                    <th>Status</th>
-                                                    <th>Actions</th>
+                                                    <th>Mã</th>
+                                                    <th>Khoảng Giá</th>
+                                                    <th>Ngày Tạo</th>
+                                                    <th>Trạng Thái</th>
+                                                    <th>Hành Động</th>
                                                 </tr>
                                             </thead>
 
                                             <c:choose>
                                                 <c:when test="${empty priceRanges}">
                                                     <tr>
-                                                        <td colspan="5" class="text-center text-muted">No Price Range available.</td>
+                                                        <td colspan="5" class="text-center text-muted">Không Có Khoảng Giá Khả Dụng</td>
                                                     </tr>
                                                 </c:when>
                                                 <c:otherwise>
@@ -116,10 +116,10 @@
                                                             <td>
                                                                 <c:choose>
                                                                     <c:when test="${pr.isDeleted == 1}">
-                                                                        <span class="badge bg-secondary">Deleted</span>
+                                                                        <span class="badge bg-danger">Đã Xóa</span>
                                                                     </c:when>
                                                                     <c:otherwise>
-                                                                        <span class="badge bg-success">Active</span>
+                                                                        <span class="badge bg-success">Hoạt Động</span>
                                                                     </c:otherwise>
                                                                 </c:choose>
                                                             </td>
@@ -142,7 +142,7 @@
                                                                 <c:if test="${pr.isDeleted == 1}">
                                                                     <button class="btn btn-sm btn-success"
                                                                             onclick="location.href = 'PriceRangeServlet?action=restore&priceRangeID=${pr.priceRangeID}'">
-                                                                        Restore
+                                                                        Khôi Phục
                                                                     </button>
                                                                     <button type="button" class="btn btn-sm btn-danger"
                                                                             data-bs-toggle="modal"
@@ -165,7 +165,7 @@
                                                                 <div class="modal-content">
                                                                     <form method="POST" action="PriceRangeServlet">
                                                                         <div class="modal-header">
-                                                                            <h5 class="modal-title" id="editPriceRangeModalLabel-${pr.priceRangeID}">Edit Price Range</h5>
+                                                                            <h5 class="modal-title" id="editPriceRangeModalLabel-${pr.priceRangeID}">Cập Nhật Khoảng Giá</h5>
                                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                                         </div>
                                                                         <div class="modal-body">
@@ -173,7 +173,7 @@
                                                                             <input type="hidden" name="priceRangeID" value="${pr.priceRangeID}">
 
                                                                             <div class="mb-3">
-                                                                                <label class="form-label">Start Price</label>
+                                                                                <label class="form-label">Khoảng Bắt Đầu</label>
                                                                                 <input type="number" 
                                                                                        class="form-control" 
                                                                                        name="priceStart" 
@@ -183,7 +183,7 @@
                                                                             </div>
 
                                                                             <div class="mb-3">
-                                                                                <label class="form-label">End Price</label>
+                                                                                <label class="form-label">Khoảng Kết Thúc</label>
                                                                                 <input type="number" 
                                                                                        class="form-control" 
                                                                                        name="priceEnd" 
@@ -193,8 +193,8 @@
                                                                             </div>
 
                                                                             <div class="modal-footer">
-                                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                                <button type="submit" class="btn btn-primary">Save changes</button>
+                                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ðóng</button>
+                                                                                <button type="submit" class="btn btn-primary">Lưu Thay Ðổi</button>
                                                                             </div>
                                                                     </form>
                                                                 </div>
@@ -220,23 +220,23 @@
                 <div class="modal-content">
                     <form method="POST" action="PriceRangeServlet">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="addPriceRangeModalLabel">Add Price Range</h5>
+                            <h5 class="modal-title" id="addPriceRangeModalLabel">Thêm Khoảng Giá</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <input type="hidden" name="action" value="add">
                             <div class="mb-3">
-                                <label class="form-label">Start Price</label>
+                                <label class="form-label">Khoảng Bắt Đầu</label>
                                 <input type="text" class="form-control" name="priceStart" id="priceStart" required>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">End Price</label>
+                                <label class="form-label">Khoảng Kết Thúc</label>
                                 <input type="text" class="form-control" name="priceEnd" id="priceStart" required>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Add Price Range</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                            <button type="submit" class="btn btn-primary">Thêm Khoảng Giá</button>
                         </div>
                     </form>
                 </div>

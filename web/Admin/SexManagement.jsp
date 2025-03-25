@@ -34,12 +34,12 @@
                 <div class="dashboard-container mt-10 ml-5">
                     <main>
                         <div class="container-fluid px-5">
-                            <h1 style="font-size: calc(1.375rem + 1.5vw); font-weight: 600">Sex Management</h1>
+                            <h1 style="font-size: calc(1.375rem + 1.5vw); font-weight: 600">Quản Lý Giới Tính</h1>
                             <div class="card mt-4">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <i class="fas fa-table me-1"></i> Sex List
+                                            <i class="fas fa-table me-1"></i> Danh Sách Giới Tính
                                         </div>
                                     </div>
                                 </div>
@@ -49,8 +49,8 @@
                                         <table class="table table-bordered table-striped table-hover">
                                             <thead class="table-dark">
                                                 <tr>
-                                                    <th>Sex ID</th>
-                                                    <th>Sex Name</th>
+                                                    <th>Mã</th>
+                                                    <th>Giới Tính</th>
                                                 </tr>
                                             </thead>
                                             <tbody>

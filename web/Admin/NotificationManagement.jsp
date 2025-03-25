@@ -39,18 +39,18 @@
                 <div class="dashboard-container">
                     <main>
                         <div class="container-fluid px-5">
-                            <h1 class="mt-4">Notification Management</h1>
+                            <h1 class="mt-4">Quản Lý Thông Báo</h1>
 
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <i class="fas fa-bell me-1"></i> Notifications List
+                                            <i class="fas fa-bell me-1"></i> Danh Sách Thông Báo
                                         </div>
                                         <div>
                                             <!-- Nút mở modal Add Notification -->
                                             <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addNotificationModal">
-                                                <i class="fas fa-plus"></i> Add Notification
+                                                <i class="fas fa-plus"></i> Thêm Thông Báo
                                             </button>
                                         </div>
                                     </div>
@@ -61,7 +61,7 @@
                                     <form action="NotificationServlet" method="GET" class="mb-4">
                                         <div class="input-group">
                                             <input type="hidden" name="action" value="search">
-                                            <input type="text" name="search" class="form-control" placeholder="Search Notification by Title, Content..." 
+                                            <input type="text" name="search" class="form-control" placeholder="Tìm Kiếm Thông Báo......" 
                                                    value="${param.search}">
                                             <button class="btn btn-outline-secondary" type="submit">
                                                 <i class="fas fa-search"></i>
@@ -83,21 +83,21 @@
                                         <table class="table table-bordered table-striped table-hover">
                                             <thead class="table-dark text-center">
                                                 <tr>
-                                                    <th>ID</th>
-                                                    <th>Title</th>
-                                                    <th>Content</th>
-                                                    <th>Type</th>
-                                                    <th>Status</th>
-                                                    <th>Account ID</th>
-                                                    <th>Created At</th>
-                                                    <th>Actions</th>
+                                                    <th>Mã</th>
+                                                    <th>Tiêu Đề</th>
+                                                    <th>Nội Dung</th>
+                                                    <th>Thể Loại</th>
+                                                    <th>Trạng Thái</th>
+                                                    <th>Mã Tài Khoản</th>
+                                                    <th>Ngày Tạo</th>
+                                                    <th>Hành Động</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <c:choose>
                                                     <c:when test="${empty notifications}">
                                                         <tr>
-                                                            <td colspan="8" class="text-center text-muted">No notifications found</td>
+                                                            <td colspan="8" class="text-center text-muted">Không Có Thông Báo Khả Dụng</td>
                                                         </tr>
                                                     </c:when>
                                                     <c:otherwise>
@@ -116,14 +116,14 @@
                                                                             <button class="btn btn-link btn-sm"
                                                                                     data-bs-toggle="modal"
                                                                                     data-bs-target="#viewContentModal${notification.notificationID}">
-                                                                                View More
+                                                                                Xem Thêm
                                                                             </button>
                                                                         </c:when>
                                                                         <c:otherwise>
                                                                             <button class="btn btn-link btn-sm"
                                                                                     data-bs-toggle="modal"
                                                                                     data-bs-target="#viewContentModal${notification.notificationID}">
-                                                                                View More
+                                                                                Xem Thêm
                                                                             </button>
                                                                         </c:otherwise>
                                                                     </c:choose>
@@ -193,13 +193,13 @@
                                                             <div class="modal-dialog modal-lg">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
-                                                                        <h5 class="modal-title">Send Notification</h5>
+                                                                        <h5 class="modal-title">Gửi Thông Báo</h5>
                                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                                     </div>
                                                                     <div class="modal-body">
                                                                         <input type="hidden" id="sendNotificationID${notification.notificationID}" value="${notification.notificationID}">
                                                                         <div class="mb-3">
-                                                                            <label class="form-label">Choose Sending Option:</label>
+                                                                            <label class="form-label">Lựa Chọn Gửi:</label>
                                                                             <div>
                                                                                 <button type="button" class="btn btn-primary" onclick="sendToAllCustomers(${notification.notificationID})">
                                                                                     Gửi thông báo đến tất cả khách hàng
@@ -240,19 +240,19 @@
                                                                         <input type="hidden" name="action" value="update">
                                                                         <input type="hidden" name="notificationID" value="${notification.notificationID}">
                                                                         <div class="modal-header">
-                                                                            <h5 class="modal-title">Edit Notification</h5>
+                                                                            <h5 class="modal-title">Cập Nhật Thông Báo</h5>
                                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                                         </div>
                                                                         <div class="modal-body">
                                                                             <div class="mb-3">
-                                                                                <label class="form-label">Title</label>
+                                                                                <label class="form-label">Tiêu Đề</label>
                                                                                 <input type="text" class="form-control" name="title"
                                                                                        value="${notification.title}" required maxlength="255">
                                                                             </div>
 
                                                                             <!-- Phần content dùng Quill -->
                                                                             <div class="mb-3">
-                                                                                <label class="form-label">Content</label>
+                                                                                <label class="form-label">Nội Dung</label>
                                                                                 <!-- Quill container -->
                                                                                 <div id="editor-container-edit-${notification.notificationID}"
                                                                                      style="height: 200px; background-color: #fff;"></div>
@@ -262,24 +262,24 @@
                                                                             </div>
 
                                                                             <div class="mb-3">
-                                                                                <label class="form-label">Type</label>
+                                                                                <label class="form-label">Kiểu Loại</label>
                                                                                 <select class="form-control" name="type" required>
-                                                                                    <option value="System" ${notification.type == 'System' ? 'selected' : ''}>System</option>
-                                                                                    <option value="Promotional" ${notification.type == 'Promotional' ? 'selected' : ''}>Promotional</option>
-                                                                                    <option value="User" ${notification.type == 'User' ? 'selected' : ''}>User</option>
+                                                                                    <option value="System" ${notification.type == 'System' ? 'selected' : ''}>Hệ Thống</option>
+                                                                                    <option value="Promotional" ${notification.type == 'Promotional' ? 'selected' : ''}>Khuyến Mãi</option>
+                                                                                    <option value="User" ${notification.type == 'User' ? 'selected' : ''}>Người Dùng</option>
                                                                                 </select>
                                                                             </div>
                                                                             <div class="mb-3">
-                                                                                <label class="form-label">Status</label>
+                                                                                <label class="form-label">Trạng Thái</label>
                                                                                 <select class="form-control" name="status" required>
-                                                                                    <option value="Read" ${notification.status == 'Read' ? 'selected' : ''}>Read</option>
-                                                                                    <option value="Unread" ${notification.status == 'Unread' ? 'selected' : ''}>Unread</option>
+                                                                                    <option value="Read" ${notification.status == 'Read' ? 'selected' : ''}>Đã Đọc </option>
+                                                                                    <option value="Unread" ${notification.status == 'Unread' ? 'selected' : ''}>Chưa Đọc</option>
                                                                                 </select>
                                                                             </div>
                                                                         </div>
                                                                         <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                            <button type="submit" class="btn btn-primary">Update</button>
+                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                                                            <button type="submit" class="btn btn-primary">Cập Nhật</button>
                                                                         </div>
                                                                     </form>
                                                                 </div>
@@ -306,18 +306,18 @@
                     <form action="NotificationServlet" method="POST">
                         <input type="hidden" name="action" value="add">
                         <div class="modal-header">
-                            <h5 class="modal-title">Add New Notification</h5>
+                            <h5 class="modal-title">Thêm Thông Báo Mới</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
                             <div class="mb-3">
-                                <label for="title" class="form-label">Title</label>
+                                <label for="title" class="form-label">Tiêu Đề</label>
                                 <input type="text" class="form-control" id="title" name="title" required maxlength="255">
                             </div>
 
                             <!-- Phần content dùng Quill -->
                             <div class="mb-3">
-                                <label class="form-label">Content</label>
+                                <label class="form-label">Nội Dung</label>
                                 <!-- Quill container -->
                                 <div id="editor-container" style="height: 200px; background-color: #fff;"></div>
                                 <!-- Input ẩn để lưu nội dung -->
@@ -325,17 +325,17 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="type" class="form-label">Type</label>
+                                <label for="type" class="form-label">Thể Loại</label>
                                 <select class="form-control" id="type" name="type" required>
-                                    <option value="System">System</option>
-                                    <option value="Promotional">Promotional</option>
-                                    <option value="User">User</option>
+                                    <option value="System">Hệ Thống</option>
+                                    <option value="Promotional">Khuyến Mãi</option>
+                                    <option value="User">Người Dùng</option>
                                 </select>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Add Notification</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                            <button type="submit" class="btn btn-primary">Thêm Thông Báo</button>
                         </div>
                     </form>
                 </div>

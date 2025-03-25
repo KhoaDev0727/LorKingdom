@@ -36,7 +36,7 @@
                 <div class="dashboard-container">
                     <main>
                         <div class="container-fluid px-5 mb-3">
-                            <h1 class="mt-4">Role Management</h1>
+                            <h1 class="mt-4">Quản Lý Vai Trò</h1>
                             <!-- Add Role Form -->
                             <!--                            <form action="RoleServlet" method="POST" class="d-flex align-items-end">
                                                             <input type="hidden" name="action" value="add">
@@ -55,7 +55,7 @@
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <i class="fas fa-table me-1"></i> Role List
+                                            <i class="fas fa-table me-1"></i> Danh Sách Vai Trò
                                         </div>
                                     </div>
                                 </div>
@@ -78,9 +78,9 @@
                                         <table class="table table-bordered table-striped table-hover">
                                             <thead class="table-dark">
                                                 <tr>
-                                                    <th>Role ID</th>
-                                                    <th>Role Name</th>
-                                                    <th>Description</th>
+                                                    <th>Mã</th>
+                                                    <th>Tên Vai Trò</th>
+                                                    <th>Miêu Tả</th>
 
                                                 </tr>
                                             </thead>

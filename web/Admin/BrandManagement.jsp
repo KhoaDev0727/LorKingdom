@@ -51,20 +51,20 @@
                 <div class="dashboard-container">
                     <main>
                         <div class="container-fluid px-5">
-                            <h1 class="mt-4 mb-4">Brand Management</h1>
+                            <h1 class="mt-4 mb-4">Quản Lý Thương Hiệu</h1>
                             <!-- Form Add Brand-->
                             <form action="BrandServlet" method="POST">
                                 <input type="hidden" name="action" value="add">
-                                <label for="brandName">Brand Name</label>
+                                <label for="brandName">Tên Thương Hiệu</label>
                                 <input type="text" id="brandName" name="name" required />
                                 <!-- Submit Button -->
-                                <button class="btn btn-primary ms-2" type="submit">Add Brand</button>
+                                <button class="btn btn-primary ms-2" type="submit">Thêm Thương Hiệu</button>
                             </form>
                             <div class="card mb-3">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <i class="fas fa-table me-1"></i> Brand List
+                                            <i class="fas fa-table me-1"></i> Danh Sách Thương Hiệu
                                         </div>
                                     </div>
                                 </div>
@@ -74,7 +74,7 @@
                                     <form action="BrandServlet" method="GET" class="mb-4">
                                         <div class="input-group">
                                             <input type="hidden" name="action" value="search">
-                                            <input type="text" name="search" class="form-control" placeholder="Find Brand Name..." aria-label="Search">
+                                            <input type="text" name="search" class="form-control" placeholder="Tìm thượng hiệu" aria-label="Search">
                                             <button class="btn btn-outline-secondary" type="submit">
                                                 <i class="fas fa-search"></i>
                                             </button>
@@ -93,11 +93,11 @@
                                         <table class="table table-bordered table-striped table-hover">
                                             <thead class="table-dark">
                                                 <tr>
-                                                    <th>Brand ID</th>
-                                                    <th>Brand Name</th>
-                                                    <th>Date Created</th>
-                                                    <th>Status</th>
-                                                    <th>Actions</th>
+                                                    <th>Mã</th>
+                                                    <th>Tên Thương Hiệu</th>
+                                                    <th>Ngày Tạo</th>
+                                                    <th>Trạng Thái</th>
+                                                    <th>Hành Động</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -105,7 +105,7 @@
                                                     <c:when test="${empty brands}">
                                                         <!-- Display message if the list is empty -->
                                                         <tr>
-                                                            <td colspan="4" class="text-center text-muted">No Brand available.</td>
+                                                            <td colspan="4" class="text-center text-muted">Không Có Thương Hiệu Khả Dụng.</td>
                                                         </tr>
                                                     </c:when>
                                                     <c:otherwise>
@@ -117,10 +117,10 @@
                                                                 <td>
                                                                     <c:choose>
                                                                         <c:when test="${br.isDeleted == 1}">
-                                                                            <span class="badge bg-secondary">Deleted</span>
+                                                                            <span class="badge bg-danger">Đã Xóa</span>
                                                                         </c:when>
                                                                         <c:otherwise>
-                                                                            <span class="badge bg-success">Active</span>
+                                                                            <span class="badge bg-success">Hoạt động</span>
                                                                         </c:otherwise>
                                                                     </c:choose>
                                                                 </td>
@@ -144,7 +144,7 @@
                                                                     <c:if test="${br.isDeleted == 1}">
                                                                         <button class="btn btn-sm btn-success"
                                                                                 onclick="location.href = 'BrandServlet?action=restore&brandID=${br.brandID}'">
-                                                                            Restore
+                                                                            Khôi Phục
                                                                         </button>
                                                                         <button type="button" class="btn btn-sm btn-danger"
                                                                                 data-bs-toggle="modal"
@@ -161,20 +161,20 @@
                                                                 <div class="modal-content">
                                                                     <form method="post" action="BrandServlet">
                                                                         <div class="modal-header">
-                                                                            <h5 class="modal-title">Edit Brand</h5>
+                                                                            <h5 class="modal-title">Cập nhật thương hiệu</h5>
                                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                                         </div>
                                                                         <div class="modal-body">
                                                                             <input type="hidden" name="action" value="update">
                                                                             <input type="hidden" name="brandID" value="${br.brandID}">
                                                                             <div class="mb-3">
-                                                                                <label class="form-label">Brand Name</label>
+                                                                                <label class="form-label">Tên thương hiệu </label>
                                                                                 <input type="text" class="form-control" name="name" value="${br.name}" required>
                                                                             </div>
                                                                         </div>
                                                                         <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                            <button type="submit" class="btn btn-primary">Save changes</button>
+                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                                                            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
                                                                         </div>
                                                                     </form>
                                                                 </div>
@@ -199,14 +199,14 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header bg-danger text-white">
-                        <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                        <h5 class="modal-title" id="errorModalLabel">Thông báo lỗi</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
                         <p id="errorMessage">${sessionScope.errorMessage}</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                     </div>
                 </div>
             </div>
@@ -216,14 +216,14 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header bg-success text-white">
-                        <h5 class="modal-title" id="successModalLabel">Success</h5>
+                        <h5 class="modal-title" id="successModalLabel">Thông báo thành công</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body text-dark">
                         <p id="successMessage">${sessionScope.successMessage}</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                     </div>
                 </div>
             </div>
