@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class DBConnection {
     
-    private static String url = "jdbc:sqlserver://localhost:1433;databaseName=LorKingDom;encrypt=false;";
+    private static String url = "jdbc:sqlserver://localhost:1433;databaseName=LorKingDomMain;encrypt=false;";
     private static String user = "sa";
     private static String pass = "12345";
     
