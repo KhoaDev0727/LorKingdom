@@ -46,18 +46,18 @@
                 <div class="dashboard-container">
                     <main>
                         <div class="container-fluid px-5">
-                            <h1 class="mt-4">Super Category Management</h1>
+                            <h1 class="mt-4">Quản lý danh mục tổng</h1>
                             <form action="SuperCategoryServlet" method="POST" class="mt-4">
                                 <input type="hidden" name="action" value="add">
-                                <label>Super Category Name</label>
+                                <label>Tên nhóm danh mục tổng</label>
                                 <input type="text" name="superCategoryName" required />
-                                <button class="btn btn-primary ms-2" type="submit">Add Super Category</button>
+                                <button class="btn btn-primary ms-2" type="submit">Thêm nhóm danh mục tổng<</button>
                             </form>
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <i class="fas fa-table me-1"></i> Super Category List
+                                            <i class="fas fa-table me-1"></i> Danh sách danh mục tổng
                                         </div>
                                     </div>
                                 </div>
@@ -67,7 +67,7 @@
                                     <form action="SuperCategoryServlet" method="GET" class="mb-4">
                                         <div class="input-group">
                                             <input type="hidden" name="action" value="search">
-                                            <input type="text" name="search" class="form-control" placeholder="Find Super Category..." aria-label="Search">
+                                            <input type="text" name="search" class="form-control" placeholder="Tìm kiếm danh mục..." aria-label="Tìm Kiếm">
                                             <button class="btn btn-outline-secondary" type="submit">
                                                 <i class="fas fa-search"></i>
                                             </button>
@@ -86,11 +86,11 @@
                                         <table class="table table-bordered table-striped table-hover">
                                             <thead class="table-dark">
                                                 <tr>
-                                                    <th>Super Category ID</th>
-                                                    <th>Super Category Name</th>
-                                                    <th>Status</th>
-                                                    <th>Date Created</th>
-                                                    <th>Actions</th>
+                                                    <th>ID</th>
+                                                    <th>Danh mục tổng</th>
+                                                    <th>Trạng Thái </th>
+                                                    <th>Ngày Tạo</th>
+                                                    <th>Hành Động   </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -109,10 +109,10 @@
                                                                 <td>
                                                                     <c:choose>
                                                                         <c:when test="${category.isDeleted == 1}">
-                                                                            <span class="badge bg-secondary">Deleted</span>
+                                                                            <span class="badge bg-secondary">Đã Xóa</span>
                                                                         </c:when>
                                                                         <c:otherwise>
-                                                                            <span class="badge bg-success">Active</span>
+                                                                            <span class="badge bg-success">Hoạt Động</span>
                                                                         </c:otherwise>
                                                                     </c:choose>
                                                                 </td>
@@ -136,7 +136,7 @@
                                                                     <c:if test="${category.isDeleted == 1}">
                                                                         <button class="btn btn-sm btn-success"
                                                                                 onclick="location.href = 'SuperCategoryServlet?action=restore&superCategoryID=${category.superCategoryID}'">
-                                                                            Restore
+                                                                            Khôi phục
                                                                         </button>
                                                                         <button type="button" class="btn btn-sm btn-danger"
                                                                                 data-bs-toggle="modal"
@@ -152,20 +152,20 @@
                                                                 <div class="modal-content">
                                                                     <form method="post" action="SuperCategoryServlet">
                                                                         <div class="modal-header">
-                                                                            <h5 class="modal-title">Edit Category</h5>
+                                                                            <h5 class="modal-title">Cập nhật danh mục</h5>
                                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                                         </div>
                                                                         <div class="modal-body">
                                                                             <input type="hidden" name="action" value="update">
                                                                             <input type="hidden" name="superCategoryID" value="${category.superCategoryID}">
                                                                             <div class="mb-3">
-                                                                                <label class="form-label">Category Name</label>
+                                                                                <label class="form-label">Tên danh mục</label>
                                                                                 <input type="text" class="form-control" name="name" value="${category.name}" required>
                                                                             </div>
                                                                         </div>
                                                                         <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                            <button type="submit" class="btn btn-primary">Save changes</button>
+                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                                                            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
                                                                         </div>
                                                                     </form>
                                                                 </div>

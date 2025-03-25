@@ -193,7 +193,7 @@ public class updateProductServlet extends HttpServlet {
             String cleanedPriceStart = priceStr.replaceAll("[^\\d]", "");
             if (cleanedPriceStart.length() < 4) {
                 UpdateProductDataLoader.loadDataForUpdate(request, productID);
-                session.setAttribute("errorMessage", "Giá trị phải có ít nhất 4 chữ số.");
+                session.setAttribute("errorMessage", "Giá tiền phải có ít nhất 4 chữ số.");
                 UpdateProductDataLoader.loadDataForUpdate(request, productID);
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
@@ -243,6 +243,12 @@ public class updateProductServlet extends HttpServlet {
 
             if (stockQuantity > 200) {
                 session.setAttribute("errorMessage", "Số lượng sản phẩm không được vượt quá 200");
+                UpdateProductDataLoader.loadDataForUpdate(request, productID);
+                request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
+                return;
+            }
+             if (stockQuantity <= 0) {
+                session.setAttribute("errorMessage", "Số lượng sản phẩm không được nhỏ hơn hoặc bằng 0");
                 UpdateProductDataLoader.loadDataForUpdate(request, productID);
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;

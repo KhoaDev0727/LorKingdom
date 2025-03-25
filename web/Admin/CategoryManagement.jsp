@@ -46,30 +46,30 @@
                 <div class="dashboard-container">
                     <main>
                         <div class="container-fluid px-5">
-                            <h1 class="mt-4">Category Management</h1>
+                            <h1 class="mt-4">Quản Lý Danh Mục</h1>
 
                             <form action="CategoryServlet" method="POST" class="mt-4">
                                 <input type="hidden" name="action" value="add">
 
-                                <label>Category Name</label>
+                                <label>Tên Danh Mục</label>
                                 <input type="text" name="categoryName" required />
 
-                                <label>Category</label>
+                                <label>Danh Mục</label>
                                 <select name="superCategoryID" required>
-                                    <option value="">-- Select Category --</option>
+                                    <option value="">-- Chọn Danh Mục Tổng --</option>
                                     <c:forEach var="superCategory" items="${superCategories}">
                                         <option value="${superCategory.superCategoryID}">${superCategory.name}</option>
                                     </c:forEach>
                                 </select>
 
-                                <button class="btn btn-primary ms-2" type="submit">Add Category</button>
+                                <button class="btn btn-primary ms-2" type="submit">Thêm Danh Mục</button>
                             </form>
 
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <i class="fas fa-table me-1"></i> Category List
+                                            <i class="fas fa-table me-1"></i> Danh Sách Danh Mục
                                         </div>
                                     </div>
                                 </div>
@@ -101,12 +101,12 @@
                                         <table class="table table-bordered table-striped table-hover">
                                             <thead class="table-dark">
                                                 <tr>
-                                                    <th>Category ID</th>
-                                                    <th>Category ID</th>
-                                                    <th>Category Name</th>
-                                                    <th>Status</th>
-                                                    <th>Date Created</th>
-                                                    <th>Actions</th>
+                                                    <th>Mã Danh Mục</th>
+                                                    <th>Mã Danh Mục Tổng</th>
+                                                    <th>Tên Danh Mục</th>
+                                                    <th>Trạng Thái</th>
+                                                    <th>Ngày Tạo</th>
+                                                    <th>Hành Động</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -126,10 +126,10 @@
                                                                 <td>
                                                                     <c:choose>
                                                                         <c:when test="${category.isDeleted == 1}">
-                                                                            <span class="badge bg-secondary">Deleted</span>
+                                                                            <span class="badge bg-danger">Không còn hoạt động</span>
                                                                         </c:when>
                                                                         <c:otherwise>
-                                                                            <span class="badge bg-success">Active</span>
+                                                                            <span class="badge bg-success">Hoạt Động</span>
                                                                         </c:otherwise>
                                                                     </c:choose>
                                                                 </td>
@@ -153,7 +153,7 @@
                                                                     <c:if test="${category.isDeleted == 1}">
                                                                         <button class="btn btn-sm btn-success" 
                                                                                 onclick="location.href = 'CategoryServlet?action=restore&categoryID=${category.categoryID}'">
-                                                                            Restore
+                                                                            Khôi Phục
                                                                         </button>
                                                                         <button type="button"
                                                                                 class="btn btn-sm btn-danger"
@@ -171,18 +171,18 @@
                                                                 <div class="modal-content">
                                                                     <form method="post" action="CategoryServlet">
                                                                         <div class="modal-header">
-                                                                            <h5 class="modal-title">Edit Category</h5>
+                                                                            <h5 class="modal-title">Cập Nhật Danh Mục</h5>
                                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                                         </div>
                                                                         <div class="modal-body">
                                                                             <input type="hidden" name="action" value="update">
                                                                             <input type="hidden" name="categoryID" value="${category.categoryID}">
                                                                             <div class="mb-3">
-                                                                                <label class="form-label">Category Name</label>
+                                                                                <label class="form-label">Tên Danh Mục</label>
                                                                                 <input type="text" class="form-control" name="categoryName" value="${category.name}" required>
                                                                             </div>
                                                                             <div class="mb-3">
-                                                                                <label class="form-label">Category</label>
+                                                                                <label class="form-label">Danh Mục Tổng</label>
                                                                                 <select class="form-control" name="superCategoryID">
                                                                                     <c:forEach var="sc" items="${superCategories}">
                                                                                         <option value="${sc.superCategoryID}" <c:if test="${sc.superCategoryID == category.superCategoryID}">selected</c:if>>
@@ -193,8 +193,8 @@
                                                                             </div>
                                                                         </div>
                                                                         <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                            <button type="submit" class="btn btn-primary">Save changes</button>
+                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                                                            <button type="submit" class="btn btn-primary">Lưu Thay Đổi</button>
                                                                         </div>
                                                                     </form>
                                                                 </div>

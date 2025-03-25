@@ -29,7 +29,7 @@
                 <input type="hidden" name="productID" value="${product.productID}" />
                 <input type="hidden" name="SKU" value="${product.SKU}" />
                 <div class="row">
-                    <h2 class="text-center mb-4 fw-bold text-primary">Update Product</h2>
+                    <h2 class="text-center mb-4 fw-bold text-primary">Cập Nhật Sản Phẩm</h2>
                     <!-- Cột trái -->
                     <div class="col-md-6">
 
@@ -37,11 +37,11 @@
                         <div class="form-section">
                             <h5 class="section-title">
                                 <i class="fas fa-info-circle"></i>
-                                Basic Information
+                                Thông Tin Cơ Bản
                             </h5>
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">Product Name</label>
+                                    <label class="form-label">Tên Sản Phẩm</label>
                                     <input type="text" class="form-control" 
                                            name="productName" 
                                            value="${product.name}" 
@@ -50,7 +50,7 @@
                                            oninput="this.setCustomValidity('')" />
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Category</label>
+                                    <label class="form-label">Danh mục</label>
                                     <select class="form-select" name="category" required>
                                         <c:forEach items="${Categories}" var="cat">
                                             <option value="${cat.categoryID}"
@@ -62,7 +62,7 @@
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label class="form-label">Gender</label>
+                                    <label class="form-label">Giới Tính</label>
                                     <select class="form-select" name="gender">
                                         <c:forEach items="${sexes}" var="sex">
                                             <option value="${sex.sexID}"
@@ -74,7 +74,7 @@
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label class="form-label">Price Range</label>
+                                    <label class="form-label">Khoảng Giá</label>
                                     <select class="form-select" name="priceRange">
                                         <c:forEach items="${priceRanges}" var="pr">
                                             <option value="${pr.priceRangeID}"
@@ -86,7 +86,7 @@
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label class="form-label">Brand</label>
+                                    <label class="form-label">Thương Hiệu</label>
                                     <select class="form-select" name="brand">
                                         <c:forEach items="${brands}" var="brand">
                                             <option value="${brand.brandID}"
@@ -98,7 +98,7 @@
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label class="form-label">Age Group</label>
+                                    <label class="form-label">Khoảng Tuổi</label>
                                     <select class="form-select" name="ageGroup">
                                         <c:forEach items="${ages}" var="age">
                                             <option value="${age.ageID}"
@@ -110,7 +110,7 @@
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label class="form-label">Material</label>
+                                    <label class="form-label">Chất Liệu</label>
                                     <select class="form-select" name="material">
                                         <c:forEach items="${materials}" var="material">
                                             <option value="${material.materialID}"
@@ -121,7 +121,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label">Origin</label>
+                                    <label class="form-label">Nguồn Gốc</label>
                                     <select class="form-select" name="origin" required>
                                         <!-- Placeholder, có thể disabled nếu muốn -->
                                         <option value="" disabled>Select Origin</option>
@@ -144,7 +144,7 @@
                         <div class="form-section">
                             <h5 class="section-title">
                                 <i class="fas fa-align-left"></i>
-                                Product Description
+                                Miêu Tả Sản Phẩm
                             </h5>
                             <!-- Quill editor container -->
                             <div id="editor-container"></div>
@@ -161,11 +161,11 @@
                         <div class="form-section">
                             <h5 class="section-title">
                                 <i class="fas fa-dollar-sign"></i>
-                                Pricing & Inventory
+                                Giá cả & Số Lượng Sản Phẩm
                             </h5>
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">Price ($)</label>
+                                    <label class="form-label">Giá</label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="fas fa-tag"></i></span>
                                         <input type="text" class="form-control" name="price"
@@ -175,7 +175,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Stock Quantity</label>
+                                    <label class="form-label">Số Lượng</label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="fas fa-cubes"></i></span>
                                         <input type="number" class="form-control" min="0" 
@@ -191,24 +191,24 @@
                         <div class="form-section">
                             <h5 class="section-title">
                                 <i class="fas fa-images"></i>
-                                Product Images
+                                Ảnh Sản Phẩm
                             </h5>
                             <div class="row g-4">
                                 <div class="row">
                                     <!-- Main Image Column -->
                                     <div class="col-md-4">
-                                        <h6 class="fw-bold mb-3">Main Image</h6>
+                                        <h6 class="fw-bold mb-3">Ảnh Chính</h6>
                                         <div class="upload-container d-flex align-items-center">
                                             <div class="upload-box" onclick="document.getElementById('mainImageUpload').click()">
                                                 <input type="file" id="mainImageUpload" name="mainImageUpload" hidden accept="image/*">
                                                 <i class="fas fa-cloud-upload-alt"></i>
-                                                <span>Click to upload</span>
+                                                <span>Chọn Để Cập Nhật</span>
                                             </div>
                                         </div>
                                     </div>
                                     <!-- Preview Image Column -->
                                     <div class="col-md-8">
-                                        <h6 class="fw-bold mb-3">Preview Image</h6>
+                                        <h6 class="fw-bold mb-3">Ảnh Mẫu</h6>
                                         <div id="previewContainer" class="d-flex flex-wrap gap-2">
                                         </div>
                                     </div>
@@ -217,7 +217,7 @@
 
                             <div class="col-md-12">
                                 <div class="image-upload-section">
-                                    <h4>Detail Images (Maximum 8)</h4>
+                                    <h4>Ảnh Chi Tiết (Tối Đa 8 Ảnh)</h4>
                                     <div class="upload-container mess-error">
                                         <!-- Hidden file input -->
                                         <input type="file" id="detailImagesInput" name="detailImages" multiple accept="image/*" hidden onchange="handleFileSelect(event)">
@@ -225,8 +225,8 @@
                                         <div class="drop-zone" onclick="document.getElementById('detailImagesInput').click()" ondragover="handleDragOver(event)" ondrop="handleDrop(event)">
                                             <div class="upload-prompt">
                                                 <i class="fas fa-cloud-upload-alt"></i>
-                                                <p>Drag & drop images here or click to upload</p>
-                                                <small class="text-muted">(Maximum 8 images, JPEG/PNG/WEBP only)</small>
+                                                <p>Kéo và thả hình ảnh vào đây hoặc nhấp để tải lên</p>
+                                                <small class="text-muted">(Tối Đa 8 Ảnh, JPEG/PNG/WEBP)</small>
                                             </div>
                                         </div>
                                         <!-- Preview grid -->
@@ -242,7 +242,7 @@
                                 Trở Về
                             </a>
                             <button type="submit" class="btn btn-primary px-4">
-                                <i class="fas fa-save me-2"></i>Update Product
+                                <i class="fas fa-save me-2"></i>Cập Nhật Sản Phẩm
                             </button>
 
                         </div>
@@ -262,7 +262,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header bg-success text-white">
-                        <h5 class="modal-title" id="successModalLabel">Success</h5>
+                        <h5 class="modal-title" id="successModalLabel">Thông Báo Thành Công</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body text-dark">
@@ -280,7 +280,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header bg-danger text-white">
-                        <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                        <h5 class="modal-title" id="errorModalLabel">Thông Báo Thất Bại</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">

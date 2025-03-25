@@ -1,4 +1,4 @@
-    /*
+/*
      * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
      * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
@@ -146,7 +146,7 @@ public class ProductManagementServlet extends HttpServlet {
 
             String cleanedPriceStart = priceStartStr.replaceAll("[^\\d]", "");
             if (cleanedPriceStart.length() < 4) {
-                session.setAttribute("errorMessage", "Giá trị phải có ít nhất 4 chữ số.");
+                session.setAttribute("errorMessage", "Giá tiền phải có ít nhất 4 chữ số.");
                 request.setAttribute("enteredProductName", productName);
                 request.setAttribute("enteredPrice", priceStartStr);
                 request.setAttribute("enteredQuantity", quantityStr);
@@ -212,6 +212,15 @@ public class ProductManagementServlet extends HttpServlet {
                 return;
             }
             if (stockQuantity > 200) {
+                session.setAttribute("errorMessage", "Số lượng sản phẩm không được vượt quá 200");
+                request.setAttribute("enteredProductName", productName);
+                request.setAttribute("enteredPrice", priceStartStr);
+                request.setAttribute("enteredQuantity", quantityStr);
+                request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
+                return;
+            }
+            if (stockQuantity <= 0) {
+                session.setAttribute("errorMessage", "Số lượng sản phẩm không được nhỏ hơn hoặc bằng 0");
                 session.setAttribute("errorMessage", "Số lượng sản phẩm không được vượt quá 200");
                 request.setAttribute("enteredProductName", productName);
                 request.setAttribute("enteredPrice", priceStartStr);

@@ -29,7 +29,7 @@
                 <div class="dashboard-container">
                     <main>
                         <div class="container-fluid px-5">
-                            <h1 class="mt-4">Payment Method Management</h1>
+                            <h1 class="mt-4">Quản Lý Phương Thức Thanh Toán</h1>
 
                             <c:if test="${not empty message}">
                                 <div class="alert alert-${messageType} alert-dismissible fade show" role="alert">
@@ -41,17 +41,17 @@
                             <div class="card mb-4">
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <div>
-                                        <i class="fas fa-credit-card me-1"></i> Payment Methods List
+                                        <i class="fas fa-credit-card me-1"></i> Danh Sách Phương Thức Thanh Toán
                                     </div>
                                     <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addPaymentMethodModal">
-                                        <i class="fas fa-plus"></i> Add Payment Method
+                                        <i class="fas fa-plus"></i> Thêm Phương Thức Thanh Toán
                                     </button>
                                 </div>
                                 <div class="card-body">
                                     <form action="PaymentMethodServlet" method="GET" class="mb-4">
                                         <div class="input-group">
                                             <input type="hidden" name="action" value="search">
-                                            <input type="text" name="search" class="form-control" placeholder="Search Payment Method..." value="${param.search}">
+                                            <input type="text" name="search" class="form-control" placeholder="Tìm Kiếm Phương Thức Thanh Toán..." value="${param.search}">
                                             <button class="btn btn-outline-secondary" type="submit">
                                                 <i class="fas fa-search"></i>
                                             </button>
@@ -70,11 +70,11 @@
                                         <table class="table table-bordered table-striped table-hover">
                                             <thead class="table-dark text-center">
                                                 <tr>
-                                                    <th>ID</th>
-                                                    <th>Payment Method Name</th>
-                                                    <th>Description</th>
-                                                    <th>Status</th>
-                                                    <th>Actions</th>
+                                                    <th>Mã</th>
+                                                    <th>Tên Phương Thức Giao Hàng</th>
+                                                    <th>Miêu Tả</th>
+                                                    <th>Trạng Thái</th>
+                                                    <th>Hành Động</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -93,10 +93,10 @@
                                                                 <td>
                                                                     <c:choose>
                                                                         <c:when test="${method.isDeleted == 1}">
-                                                                            <span class="badge bg-secondary">Deleted</span>
+                                                                            <span class="badge bg-danger">Đã Xóa</span>
                                                                         </c:when>
                                                                         <c:otherwise>
-                                                                            <span class="badge bg-success">Active</span>
+                                                                            <span class="badge bg-success">Hoạt Động</span>
                                                                         </c:otherwise>
                                                                     </c:choose>
                                                                 </td>
@@ -119,7 +119,7 @@
                                                                     <c:if test="${method.isDeleted == 1}">
                                                                         <button class="btn btn-sm btn-success"
                                                                                 onclick="location.href = 'PaymentMethodServlet?action=restore&paymentMethodID=${method.paymentMethodID}'">
-                                                                            Restore
+                                                                            Khôi Phục
                                                                         </button>
                                                                         <button type="button" class="btn btn-sm btn-danger"
                                                                                 data-bs-toggle="modal"
@@ -139,22 +139,22 @@
                                                                         <input type="hidden" name="action" value="update">
                                                                         <input type="hidden" name="paymentMethodID" value="${method.paymentMethodID}">
                                                                         <div class="modal-header">
-                                                                            <h5 class="modal-title">Edit Payment Method</h5>
+                                                                            <h5 class="modal-title">Cập Nhật Phương Thanh Toán</h5>
                                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                                         </div>
                                                                         <div class="modal-body">
                                                                             <div class="mb-3">
-                                                                                <label class="form-label">Method Name</label>
+                                                                                <label class="form-label">Tên Phương Thức Thanh Toán</label>
                                                                                 <input type="text" class="form-control" name="methodName" value="${method.methodName}" required>
                                                                             </div>
                                                                             <div class="mb-3">
-                                                                                <label class="form-label">Description</label>
+                                                                                <label class="form-label">Miêu Tả</label>
                                                                                 <textarea class="form-control" name="description" rows="3">${method.description}</textarea>
                                                                             </div>
                                                                         </div>
                                                                         <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                                                            <button type="submit" class="btn btn-primary">Lưu Thay Đổi</button>
                                                                         </div>
                                                                     </form>
                                                                 </div>
@@ -181,22 +181,22 @@
                     <form action="PaymentMethodServlet" method="POST">
                         <input type="hidden" name="action" value="add">
                         <div class="modal-header">
-                            <h5 class="modal-title">Add New Payment Method</h5>
+                            <h5 class="modal-title">Thêm Phương Thức Thanh Toán</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
                             <div class="mb-3">
-                                <label for="methodName" class="form-label">Method Name</label>
+                                <label for="methodName" class="form-label">Tên Phương Thanh Toán</label>
                                 <input type="text" class="form-control" id="methodName" name="methodName" required>
                             </div>
                             <div class="mb-3">
-                                <label for="description" class="form-label">Description</label>
+                                <label for="description" class="form-label">Miêu Tả</label>
                                 <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Add Payment Method</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                            <button type="submit" class="btn btn-primary">Thêm Phương Thức Thanh Toán</button>
                         </div>
                     </form>
                 </div>
@@ -254,7 +254,7 @@
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="paymentMethodID" id="softDeletePaymentMethodID">
                             <button type="submit" class="btn btn-danger">
-                                <i class="fas fa-trash"></i>
+                               Xóa
                             </button>
                         </form>
                     </div>
@@ -273,7 +273,7 @@
                         Phương thức này sẽ bị xóa vĩnh viễn!
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                         <form method="POST" action="PaymentMethodServlet">
                             <input type="hidden" name="action" value="hardDelete">
                             <input type="hidden" name="paymentMethodID" id="hardDeletePaymentMethodID">
