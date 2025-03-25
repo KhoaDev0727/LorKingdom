@@ -72,8 +72,8 @@ public class AddPromotionServlet extends HttpServlet {
             double discountPercent = Double.parseDouble(discountPercentStr);
 
             // Kiểm tra discountPercent có hợp lệ không
-            if (discountPercent < 0 || discountPercent > 100) {
-                request.getSession().setAttribute("errorModal", "Phần trăm giảm giá phải nằm trong khoảng từ 0 đến 100!");
+            if (discountPercent < 1 || discountPercent > 100) {
+                request.getSession().setAttribute("errorModal", "Phần trăm giảm giá không được vượt quá 100");
                 response.sendRedirect("promotionController");
                 return;
             }
