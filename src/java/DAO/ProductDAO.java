@@ -472,16 +472,8 @@ public class ProductDAO {
             if (rs.next()) {
                 exists = rs.getInt(1) > 1; // true nếu đếm được > 0 dòng
             }
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (ps != null) {
-                ps.close();
-            }
-            if (conn != null) {
-                conn.close();
-            }
+        }catch(Exception e){
+            e.printStackTrace();
         }
         return exists;
     }
@@ -567,6 +559,28 @@ public class ProductDAO {
             ps.setInt(3, quantityToSubtract); // Đảm bảo số lượng còn lại không âm
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
+        }
+    }
+    
+
+    public boolean revertStockOnCancel(int productId, int quantityToAdd) throws SQLException, ClassNotFoundException {
+        String sql = "UPDATE Product SET Quantity = Quantity + ? WHERE ProductID = ?";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            conn.setAutoCommit(false); // Bắt đầu transaction
+            ps.setInt(1, quantityToAdd);
+            ps.setInt(2, productId);
+
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected > 0) {
+                conn.commit(); // Xác nhận thay đổi nếu thành công
+                return true;
+            } else {
+                conn.rollback(); // Không có hàng nào bị ảnh hưởng, rollback
+                return false;
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Lỗi khi hoàn lại số lượng sản phẩm: " + e.getMessage(), e);
         }
     }
 

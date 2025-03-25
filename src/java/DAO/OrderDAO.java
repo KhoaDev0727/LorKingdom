@@ -288,7 +288,7 @@ public class OrderDAO extends DBConnect.DBConnection {
                 + "    WHERE RowNum BETWEEN ? AND ?\n"
                 + ")\n"
                 + "SELECT po.OrderID, po.OrderDate, po.TotalAmount, po.Status,\n" // Thêm dấu phẩy sau po.Status
-                + "       d.ProductID, p.Name AS ProductName, d.Quantity, d.UnitPrice,d.Total , d.Reviewed,d.OrderDetailID, d.OrderID,\n"
+                + "       d.ProductID, p.Name AS ProductName, d.Quantity, d.UnitPrice,d.Total ,d.Discount, d.Reviewed,d.OrderDetailID, d.OrderID,\n"
                 + "       (SELECT TOP 1 Image FROM ProductImages \n"
                 + "        WHERE ProductID = d.ProductID AND IsMain = 1) AS ProductImage,\n"
                 + "       c.Name AS CategoryName\n"
@@ -349,6 +349,7 @@ public class OrderDAO extends DBConnect.DBConnection {
                     detail.setProductName(rs.getString("ProductName"));
                     detail.setQuantity(rs.getInt("Quantity"));
                     detail.setUnitPrice(rs.getDouble("UnitPrice"));
+                     detail.setDiscount(rs.getFloat("Discount"));
                     detail.setProductImage(rs.getString("ProductImage"));
                     detail.setCategoryName(rs.getString("CategoryName"));
                     detail.setTotalPrice(rs.getDouble("Total"));
@@ -366,6 +367,36 @@ public class OrderDAO extends DBConnect.DBConnection {
         return result;
     }
 
+    public static HashMap<Integer, Integer> getAllProductInOrder(int orderId) throws SQLException, ClassNotFoundException {   // HashMap để lưu ProductID và Quantity
+        HashMap<Integer, Integer> productQuantityMap = new HashMap<>();
+
+        String sql = "SELECT ProductID, Quantity\n"
+                + "FROM OrderDetails\n"
+                + "WHERE OrderID = ?;";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement stm = conn.prepareStatement(sql)) {
+
+            // Thiết lập OrderID cần truy vấn
+            stm.setInt(1, 1); // Thay số 1 bằng OrderID mong muốn
+            ResultSet rs = stm.executeQuery();
+
+            // Duyệt kết quả và lưu vào HashMap
+            while (rs.next()) {
+                int productId = rs.getInt("ProductID");
+                int quantity = rs.getInt("Quantity");
+                productQuantityMap.put(productId, quantity);
+            }
+
+            // Hiển thị kết quả
+            System.out.println("Danh sách sản phẩm và số lượng:");
+            for (Integer productId : productQuantityMap.keySet()) {
+                System.out.println("ProductID: " + productId + ", Quantity: " + productQuantityMap.get(productId));
+            }
+            return productQuantityMap;
+        }
+    }
+
+
+   
     public HashMap<String, Object> getOrderDetails(int orderId) throws SQLException, ClassNotFoundException {
         String sql = "SELECT \n"
                 + "    o.OrderID, \n"
@@ -541,4 +572,7 @@ public class OrderDAO extends DBConnect.DBConnection {
             return false;
         }
     }
+
+
+
 }

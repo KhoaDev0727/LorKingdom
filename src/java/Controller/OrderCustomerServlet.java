@@ -75,12 +75,10 @@ public class OrderCustomerServlet extends HttpServlet {
                 try {
                     page = Integer.parseInt(pageParam);
                 } catch (NumberFormatException e) {
-                    // Giữ nguyên giá trị mặc định
+                   e.printStackTrace();
                 }
             }
-
             int pageSize = 3;
-
             if (userId == null) {
                 response.getWriter().write("[]");
                 return;
@@ -106,7 +104,6 @@ public class OrderCustomerServlet extends HttpServlet {
             }
 
             Map<String, Object> result = OrderDAO.getOrdersByUser(userId, statusId, page, pageSize);
-
             Gson gson = new Gson();
             System.out.println(gson.toJson(result));
             response.getWriter().write(gson.toJson(result));
