@@ -22,7 +22,6 @@ import java.util.Map;
  *
  * @author Acer
  */
-
 public class ManageOrderServlet extends HttpServlet {
 
     /**
@@ -125,45 +124,47 @@ public class ManageOrderServlet extends HttpServlet {
         }
         if (action != null && action.equals("sort")) {
             String sortOrder = request.getParameter("sortOrder"); // Lấy giá trị từ form
-        
-        // Nếu sortOrder không hợp lệ, sử dụng giá trị mặc định là ASC
-        if (sortOrder == null || (!sortOrder.equalsIgnoreCase("ASC") && !sortOrder.equalsIgnoreCase("DESC"))) {
-            sortOrder = "ASC";
-        }
 
-        try {
-            OrderDAO dao = new OrderDAO();
-            List<Order> list = dao.sort(sortOrder); // Gọi phương thức sort trong DAO
-            request.setAttribute("listO", list); // Lưu danh sách vào request
-            request.getRequestDispatcher("OrderManagement.jsp").forward(request, response); // Chuyển tiếp đến JSP
-        } catch (Exception e) {
-            e.printStackTrace();
-            request.setAttribute("message", "Error: " + e.getMessage());
-            request.setAttribute("messageType", "danger");
-            request.getRequestDispatcher("OrderManagement.jsp").forward(request, response);
-        }
+            // Nếu sortOrder không hợp lệ, sử dụng giá trị mặc định là ASC
+            if (sortOrder == null || (!sortOrder.equalsIgnoreCase("ASC") && !sortOrder.equalsIgnoreCase("DESC"))) {
+                sortOrder = "ASC";
+            }
+
+            try {
+                OrderDAO dao = new OrderDAO();
+                List<Order> list = dao.sort(sortOrder); // Gọi phương thức sort trong DAO
+                request.setAttribute("listO", list); // Lưu danh sách vào request
+                request.getRequestDispatcher("OrderManagement.jsp").forward(request, response); // Chuyển tiếp đến JSP
+            } catch (Exception e) {
+                e.printStackTrace();
+                request.setAttribute("message", "Error: " + e.getMessage());
+                request.setAttribute("messageType", "danger");
+                request.getRequestDispatcher("OrderManagement.jsp").forward(request, response);
+            }
         }
         if (action != null && action.equals("updateStatus")) {
-    int orderId = Integer.parseInt(request.getParameter("orderId"));
-    String status = request.getParameter("status"); // "Pending", "Shipped", "Delivered"
+            int orderId = Integer.parseInt(request.getParameter("orderId"));
+            String status = request.getParameter("status"); // "Pending", "Shipped", "Delivered"
 
-    try {
-        OrderDAO dao = new OrderDAO();
-        int statusId = dao.getStatusIdByName(status); // Lấy StatusID từ bảng StatusOrder
+            try {
+                OrderDAO dao = new OrderDAO();
+                int statusId = dao.getStatusIdByName(status); // Lấy StatusID từ bảng StatusOrder
 
-        if (statusId == -1) {
-            throw new Exception("Không tìm thấy StatusID cho trạng thái: " + status);
+                if (statusId == -1) {
+                    throw new Exception("Không tìm thấy StatusID cho trạng thái: " + status);
+                }
+
+                dao.updateOrderStatus(orderId, statusId); // Truyền StatusID thay vì String
+                request.getSession().setAttribute("successModal", "Cập nhật trạng thái đơn hàng thành công.");
+                response.sendRedirect("OrderServlet");
+                return;
+            } catch (Exception e) {
+                e.printStackTrace();
+                request.setAttribute("message", "Error: " + e.getMessage());
+                request.setAttribute("messageType", "danger");
+                request.getRequestDispatcher("OrderManagement.jsp").forward(request, response);
+            }
         }
-
-        dao.updateOrderStatus(orderId, statusId); // Truyền StatusID thay vì String
-        response.sendRedirect("OrderServlet");
-    } catch (Exception e) {
-        e.printStackTrace();
-        request.setAttribute("message", "Error: " + e.getMessage());
-        request.setAttribute("messageType", "danger");
-        request.getRequestDispatcher("OrderManagement.jsp").forward(request, response);
-    }
-}
     }
 
     /**

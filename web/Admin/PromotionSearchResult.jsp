@@ -37,7 +37,7 @@
                 <h2 class="text-center text-primary mb-4">
                     <i class="fas fa-tags"></i> Promotion List
                 </h2>
-                <h5 class="text-center mb-3">Promotions with bigger discounts<strong><%= request.getAttribute("minDiscount") %>%</strong></h5>
+                <h5 class="text-center mb-3">Promotions with bigger discounts <strong><%= request.getAttribute("minDiscount") %>%</strong></h5>
 
                 <%
                     List<Promotion> promotionList = (List<Promotion>) request.getAttribute("promotionList");

@@ -222,6 +222,35 @@
                 </div>
             </div>
         </div>
+        <% 
+String successMessage = (String) session.getAttribute("successModal");
+String errorMessage = (String) session.getAttribute("errorModal");
+        %>
+        <!-- Bootstrap Modal -->
+        <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-center" id="notificationModalLabel">
+                            <%= (successMessage != null) ? "Success" : "Error" %>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <p class="<%= (successMessage != null) ? "text-success" : "text-danger" %> fw-bold">
+                            <%= (successMessage != null) ? successMessage : errorMessage %>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <%-- Xóa thông báo khỏi session để không hiển thị lại --%>
+        <% session.removeAttribute("successModal"); %>
+        <% session.removeAttribute("errorModal"); %>
+
         <!-- Script to Set Order ID for Deletion -->
         <script>
             function setDeleteOrderID(orderID) {
@@ -234,6 +263,23 @@
                 document.getElementById('updateOrderID').value = orderID;
                 document.getElementById('newStatus').value = currentStatus;
             }
+        </script>
+        <!--        script open message modal-->
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var successMessage = "<%= successMessage %>";
+                var errorMessage = "<%= errorMessage %>";
+
+                if (successMessage.trim() !== "null" || errorMessage.trim() !== "null") {
+                    var myModal = new bootstrap.Modal(document.getElementById("notificationModal"));
+                    myModal.show();
+
+                    // Tự động đóng modal sau 3 giây
+                    setTimeout(() => {
+                        myModal.hide();
+                    }, 3000);
+                }
+            });
         </script>
 
     </body>
