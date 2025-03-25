@@ -202,7 +202,7 @@ public class CategoryServlet extends HttpServlet {
         }
 
         if (superCategoryIDStr == null || superCategoryIDStr.trim().isEmpty()) {
-            request.getSession().setAttribute("errorMessage", "Vui lòng chọn Category.");
+            request.getSession().setAttribute("errorMessage", "Vui lòng chọn danh mục.");
             response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
             return;
         }
@@ -211,7 +211,7 @@ public class CategoryServlet extends HttpServlet {
         try {
             superCategoryID = Integer.parseInt(superCategoryIDStr);
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "Category ID không hợp lệ.");
+            request.getSession().setAttribute("errorMessage", "ID không hợp lệ.");
             response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
             return;
         }
@@ -231,7 +231,7 @@ public class CategoryServlet extends HttpServlet {
             request.getSession().setAttribute("successMessage", "Danh mục đã đã được đã đưa vào thùng rác thành công.");
             response.sendRedirect("CategoryServlet?action=list");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "ID danh mục không hợp lệ.");
+            request.getSession().setAttribute("errorMessage", "ID không hợp lệ.");
             response.sendRedirect("CategoryServlet?action=list");
         }
     }
@@ -244,7 +244,7 @@ public class CategoryServlet extends HttpServlet {
             request.getSession().setAttribute("successMessage", "Danh mục đã được xóa thành công.");
             response.sendRedirect("CategoryServlet?action=listDeleted");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "ID danh mục không hợp lệ.");
+            request.getSession().setAttribute("errorMessage", "ID không hợp lệ.");
             response.sendRedirect("CategoryServlet?action=listDeleted");
         }
     }
@@ -272,13 +272,13 @@ public class CategoryServlet extends HttpServlet {
         try {
             categoryID = Integer.parseInt(categoryIdStr);
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "ID danh mục không hợp lệ.");
+            request.getSession().setAttribute("errorMessage", "ID không hợp lệ.");
             response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
             return;
         }
 
         if (name == null || name.trim().isEmpty()) {
-            request.getSession().setAttribute("errorMessage", "Tên danh mục không được để trống.");
+            request.getSession().setAttribute("errorMessage", "Danh mục không được để trống.");
             response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
             return;
         }
@@ -304,7 +304,7 @@ public class CategoryServlet extends HttpServlet {
         }
 
         if (superCategoryIDStr == null || superCategoryIDStr.trim().isEmpty()) {
-            request.getSession().setAttribute("errorMessage", "Vui lòng chọn Category.");
+            request.getSession().setAttribute("errorMessage", "Vui lòng chọn danh mục.");
             response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
             return;
         }
@@ -312,7 +312,7 @@ public class CategoryServlet extends HttpServlet {
         try {
             superCategoryID = Integer.parseInt(superCategoryIDStr);
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "Category ID không hợp lệ.");
+            request.getSession().setAttribute("errorMessage", "ID không hợp lệ.");
             response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
             return;
         }
@@ -329,13 +329,13 @@ public class CategoryServlet extends HttpServlet {
         try {
             int categoryID = Integer.parseInt(request.getParameter("categoryID"));
             categoryDAO.restoreCategory(categoryID);
-            request.getSession().setAttribute("successMessage", "Category restored successfully.");
+            request.getSession().setAttribute("successMessage", "Khôi phục thành công.");
             response.sendRedirect("CategoryServlet?action=list&showSuccessModal=true");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "Invalid category ID.");
+            request.getSession().setAttribute("errorMessage", "ID không hợp lệ.");
             response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
         } catch (SQLException | ClassNotFoundException ex) {
-            request.getSession().setAttribute("errorMessage", "Error restoring category: " + ex.getMessage());
+            request.getSession().setAttribute("errorMessage", "Lỗi khôi phục: " + ex.getMessage());
             response.sendRedirect("CategoryServlet?action=list&showErrorModal=true");
         }
     }

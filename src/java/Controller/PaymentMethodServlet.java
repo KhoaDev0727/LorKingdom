@@ -173,7 +173,7 @@ public class PaymentMethodServlet extends HttpServlet {
         try {
             int paymentMethodID = Integer.parseInt(request.getParameter("paymentMethodID"));
             paymentDAO.restorePaymentMethod(paymentMethodID);
-            request.getSession().setAttribute("successMessage", "Phương thức đã được phục hồi thành công.");
+            request.getSession().setAttribute("successMessage", "Phương thức đã được khôi phục thành công.");
         } catch (NumberFormatException e) {
             request.getSession().setAttribute("errorMessage", "ID phương thức không hợp lệ.");
         }

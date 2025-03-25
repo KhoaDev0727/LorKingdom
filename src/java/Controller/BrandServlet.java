@@ -234,7 +234,7 @@ public class BrandServlet extends HttpServlet {
             request.getSession().setAttribute("successMessage", "Thương hiệu này đã được chuyển vào thùng rác!");
             response.sendRedirect("BrandServlet?action=list");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "Invalid brand ID.");
+            request.getSession().setAttribute("errorMessage", "ID không hợp lệ.");
             response.sendRedirect("BrandServlet?action=list");
         }
     }

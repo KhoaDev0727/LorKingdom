@@ -350,12 +350,12 @@ public class ProductManagementServlet extends HttpServlet {
                 session.setAttribute("successMessage", "Thêm sản phẩm thành công!");
                 response.sendRedirect("ProductServlet?&action=list");
             } else {
-                request.setAttribute("errorMessage", "Failed to add product to database.");
+                request.setAttribute("errorMessage", "Thêm sản phẩm thất bại.");
                 request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
             }
 
         } catch (Exception e) {
-            request.setAttribute("errorMessage", "Failed to add product: " + e.getMessage());
+            request.setAttribute("errorMessage", "Lỗi thêm sản phẩm: " + e.getMessage());
             request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
         }
     }

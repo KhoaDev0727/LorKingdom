@@ -92,7 +92,7 @@
                                                     <c:when test="${empty materials}">
                                                         <!-- Display message if the list is empty -->
                                                         <tr>
-                                                            <td colspan="4" class="text-center text-muted">No Material available.</td>
+                                                            <td colspan="4" class="text-center text-muted">Không có chất liệu khả dụng.</td>
                                                         </tr>
                                                     </c:when>
                                                     <c:otherwise>
@@ -189,14 +189,14 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header bg-danger text-white">
-                        <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                        <h5 class="modal-title" id="errorModalLabel">Thông báo lỗi</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
                         <p>${sessionScope.errorMessage}</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                     </div>
                 </div>
             </div>
@@ -205,14 +205,14 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header bg-success text-white">
-                        <h5 class="modal-title" id="successModalTitle">Success</h5>
+                        <h5 class="modal-title" id="successModalTitle">Thông báo thành công</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body text-dark">
                         <p id="successMessageContent">${sessionScope.successMessage}</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                     </div>
                 </div>
             </div>

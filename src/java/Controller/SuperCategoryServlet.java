@@ -237,7 +237,7 @@ public class SuperCategoryServlet extends HttpServlet {
             request.getSession().setAttribute("successMessage", "Đã cập nhật danh mục thành công.");
             response.sendRedirect("SuperCategoryServlet?action=list&showSuccessModal=true");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "Invalid ID.");
+            request.getSession().setAttribute("errorMessage", "ID không hợp lệ..");
             response.sendRedirect("SuperCategoryServlet?action=list&showErrorModal=true");
         }
     }
@@ -263,7 +263,7 @@ public class SuperCategoryServlet extends HttpServlet {
             request.getSession().setAttribute("successMessage", "Danh mục đã bị xóa vĩnh viễn.");
             response.sendRedirect("SuperCategoryServlet?action=listDeleted");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "Invalid ID.");
+            request.getSession().setAttribute("errorMessage", "ID không hợp lệ.");
             response.sendRedirect("SuperCategoryServlet?action=listDeleted");
         }
     }
