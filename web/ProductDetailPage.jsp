@@ -84,13 +84,13 @@
                             <p class="text-gray-500 text-sm">Mã sản phẩm: ${product.SKU}</p>
                             <!-- Phan gia cua loc -->
                                 <c:if test="${hasPromotion}">
-                                    <div class="flex items-center space-x-2 mt-2 text-red-600 font-bold text-xl">
+                                    <div class="flex items-center space-x-2 mt-2   text-xl">
                                         <!-- Hiển thị giá gốc có gạch ngang -->
-                                        <span style="text-decoration: line-through;">
-                                            <fmt:formatNumber value="${originalPrice}" pattern="#,###" /> VND
+                                        <span clas="text-dark" style="text-decoration: line-through;">
+                                            <small><fmt:formatNumber value="${originalPrice}" pattern="#,###" /> VND</small>
                                         </span>
                                         <!-- Hiển thị giá sau giảm -->
-                                        <span>
+                                        <span class="text-red-600 font-bold">
                                             <fmt:formatNumber value="${discountPrice}" pattern="#,###" /> VND
                                         </span>
                                     </div>

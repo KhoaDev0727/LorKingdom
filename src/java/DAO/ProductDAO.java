@@ -422,14 +422,16 @@ public class ProductDAO {
     }
 
 // (Tùy chọn) Tìm kiếm sản phẩm theo từ khóa
-    public List<Product> searchProducts(String keyword) throws SQLException, ClassNotFoundException {
+   public List<Product> searchProducts(String keyword) throws SQLException, ClassNotFoundException {
         List<Product> products = new ArrayList<>();
-        // Sử dụng hàm LOWER() để chuyển đổi cả cột Name và SKU về chữ thường, đảm bảo so sánh không phân biệt chữ hoa chữ thường
-        String query = "SELECT * FROM Product WHERE LOWER(Name) LIKE ? OR LOWER(SKU) LIKE ?";
+        String query = "SELECT p.* FROM Product p "
+                + "JOIN Category c ON p.CategoryID = c.CategoryID "
+                + "WHERE p.IsDeleted = 0 AND c.IsDeleted = 0 "
+                + "AND (LOWER(p.Name) LIKE ? OR LOWER(p.SKU) LIKE ?)";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
-            // Chuyển từ khóa thành chữ thường (nếu chưa chuyển) và thêm ký tự % cho truy vấn LIKE
-            ps.setString(1, "%" + keyword.toLowerCase() + "%");
-            ps.setString(2, "%" + keyword.toLowerCase() + "%");
+            String searchKey = "%" + keyword.toLowerCase() + "%";
+            ps.setString(1, searchKey);
+            ps.setString(2, searchKey);
             try ( ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Product product = new Product();
