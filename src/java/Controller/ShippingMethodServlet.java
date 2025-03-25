@@ -178,10 +178,10 @@ public class ShippingMethodServlet extends HttpServlet {
         try {
             int shippingMethodID = Integer.parseInt(request.getParameter("shippingMethodID"));
             shippingDAO.hardDeleteShippingMethod(shippingMethodID);
-            request.getSession().setAttribute("successMessage", "Phuong thức đã bị xóa vĩnh viễn.");
+            request.getSession().setAttribute("successMessage", "Phương thức đã bị xóa vĩnh viễn.");
             response.sendRedirect("ShippingMethodServlet?action=listDeleted");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "Phuong thức không hợp lệ.");
+            request.getSession().setAttribute("errorMessage", "Phương thức không hợp lệ.");
             response.sendRedirect("ShippingMethodServlet?action=listDeleted");
         }
     }
@@ -193,7 +193,7 @@ public class ShippingMethodServlet extends HttpServlet {
             shippingDAO.restoreShippingMethod(shippingMethodID);
             request.getSession().setAttribute("successMessage", "Phương thức đã được phục hồi thành công.");
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorMessage", "ID phuong thức không hợp lệ.");
+            request.getSession().setAttribute("errorMessage", "ID phương thức không hợp lệ.");
         }
         response.sendRedirect("ShippingMethodServlet?action=list");
     }

@@ -75,7 +75,7 @@ public class NotificationServlet extends HttpServlet {
             }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
-            request.getSession().setAttribute("errorMessage", "Error: " + e.getMessage());
+            request.getSession().setAttribute("errorMessage", "Lỗi: " + e.getMessage());
             response.sendRedirect("NotificationServlet?action=list&showErrorModal=true");
         }
     }

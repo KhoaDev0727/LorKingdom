@@ -137,7 +137,7 @@ public class MaterialServlet extends HttpServlet {
             }
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
-            session.setAttribute("errorMessage", "Error: " + ex.getMessage());
+            session.setAttribute("errorMessage", "Lỗi: " + ex.getMessage());
             response.sendRedirect("MaterialServlet?action=list&showErrorModal=true");
         }
     }
@@ -162,7 +162,7 @@ public class MaterialServlet extends HttpServlet {
         String description = request.getParameter("description");
 
         if (name == null || name.trim().isEmpty()) {
-            request.getSession().setAttribute("errorMessage", "Tên chất vật liệu không được để trống.");
+            request.getSession().setAttribute("errorMessage", "Tên vật liệu không được để trống.");
             response.sendRedirect("MaterialServlet?action=list&showErrorModal=true");
             return;
         }
@@ -213,7 +213,7 @@ public class MaterialServlet extends HttpServlet {
 
             Material material = new Material(materialID, name, description, 0);
             materialDAO.updateMaterial(material);
-            request.getSession().setAttribute("successMessage", "Chất liệu đã được cập nhật thành công");
+            request.getSession().setAttribute("successMessage", "Cập nhật thành công");
         } catch (NumberFormatException e) {
             request.getSession().setAttribute("errorMessage", "ID không hợp lệ.");
         }
@@ -225,7 +225,7 @@ public class MaterialServlet extends HttpServlet {
         try {
             int materialID = Integer.parseInt(request.getParameter("materialID"));
             materialDAO.softDeleteMaterial(materialID);
-            request.getSession().setAttribute("successMessage", "Bạn có muốn đưa chất liệu này vào thùng rác không");
+            request.getSession().setAttribute("successMessage", "Vật liệu này sẽ được đưa vào thùng rác!");
             response.sendRedirect("MaterialServlet?action=list");
         } catch (NumberFormatException e) {
             request.getSession().setAttribute("errorMessage", "Invalid material ID.");

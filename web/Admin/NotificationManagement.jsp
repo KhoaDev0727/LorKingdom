@@ -202,10 +202,10 @@
                                                                             <label class="form-label">Choose Sending Option:</label>
                                                                             <div>
                                                                                 <button type="button" class="btn btn-primary" onclick="sendToAllCustomers(${notification.notificationID})">
-                                                                                    Send to All Customers (RoleID = 3)
+                                                                                    Gửi thông báo đến tất cả khách hàng
                                                                                 </button>
                                                                                 <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#selectCustomers${notification.notificationID}">
-                                                                                    Select Specific Customers
+                                                                                    Chọn khach hàng nhận thông báo
                                                                                 </button>
                                                                             </div>
                                                                         </div>
@@ -221,12 +221,12 @@
                                                                                         </c:if>
                                                                                     </c:forEach>
                                                                                 </select>
-                                                                                <button type="submit" class="btn btn-primary mt-2">Send to Selected Customers</button>
+                                                                                <button type="submit" class="btn btn-primary mt-2">Gửi</button>
                                                                             </form>
                                                                         </div>
                                                                     </div>
                                                                     <div class="modal-footer">
-                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -394,14 +394,14 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Confirm Deletion</h5>
+                        <h5 class="modal-title">Xác nhận xóa</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        This notification will be moved to trash!
+                        Thông báo này sẽ được chuyển vào thùng rác!
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                         <form method="POST" action="NotificationServlet">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="notificationID" id="softDeleteNotificationID">
@@ -419,14 +419,14 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Confirm Permanent Deletion</h5>
+                        <h5 class="modal-title">Xác nhận xóa vĩnh viễn</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        This notification will be permanently deleted!
+                        Thông báo này sẽ được xóa vĩnh viễn!
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                         <form method="POST" action="NotificationServlet">
                             <input type="hidden" name="action" value="hardDelete">
                             <input type="hidden" name="notificationID" id="hardDeleteNotificationID">
@@ -444,14 +444,14 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header bg-danger text-white">
-                        <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                        <h5 class="modal-title" id="errorModalLabel">Thông báo lỗi</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body text-dark">
                         ${sessionScope.errorMessage}
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                     </div>
                 </div>
             </div>
@@ -462,14 +462,14 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header bg-success text-white">
-                        <h5 class="modal-title" id="successModalLabel">Success</h5>
+                        <h5 class="modal-title" id="successModalLabel">Thông báo thành công</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body text-dark">
                         ${sessionScope.successMessage}
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                     </div>
                 </div>
             </div>
