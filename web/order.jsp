@@ -52,6 +52,144 @@
             .remove-voucher:hover {
                 color: darkred;
             }
+
+
+            /* Phương thức vận chuyển theo phong cách Shopee */
+            .shipping-methods {
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+                padding: 10px;
+                background: #fff;
+                margin-top: 10px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .form-check {
+                display: flex;
+                align-items: center;
+                padding: 8px 12px;
+                border-bottom: 1px solid #f3f3f3;
+                transition: background-color 0.2s ease-in-out;
+                cursor: pointer;
+                border-radius: 6px;
+            }
+
+            .form-check:hover {
+                background-color: #fafafa;
+            }
+
+            .form-check:last-child {
+                border-bottom: none;
+            }
+
+            .form-check-input {
+                margin-right: 10px;
+                accent-color: #ee4d2d;
+                width: 18px;
+                height: 18px;
+            }
+
+            .form-check-label {
+                font-size: 14px;
+                font-weight: 500;
+                color: #222;
+                flex-grow: 1;
+            }
+
+            .form-check-label small {
+                display: block;
+                font-size: 12px;
+                color: #777;
+            }
+
+            .shipping-info {
+                font-size: 13px;
+                color: #ee4d2d;
+                font-weight: 600;
+            }
+
+            .form-check-input:checked + .form-check-label {
+                color: #ee4d2d;
+            }
+
+            .form-check .form-check-input {
+                float: left;
+                margin-left: 0 !important;
+            }
+            .payment-methods {
+                margin-top: 10px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px; /* Khoảng cách giữa các thẻ */
+            }
+
+            .payment-card {
+                display: flex;
+                align-items: center;
+                padding: 12px 15px;
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+                background: #fff;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            }
+
+            .payment-card:hover {
+                background: #f8f9fa;
+                box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            }
+
+            .payment-card.selected {
+                border-color: #007bff; /* Màu viền khi được chọn */
+                box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2); /* Hiệu ứng bóng khi được chọn */
+                background: #f0f7ff; /* Nền nhẹ khi được chọn */
+            }
+
+            .payment-card .payment-icon {
+                width: 40px;
+                height: 40px;
+                margin-right: 15px;
+                object-fit: contain;
+            }
+
+            .payment-card .payment-info {
+                flex-grow: 1;
+            }
+
+            .payment-card .payment-info .method-name {
+                font-size: 15px;
+                font-weight: 500;
+                color: #333;
+                margin-bottom: 3px;
+            }
+
+            .payment-card .payment-info .method-description {
+                font-size: 12px;
+                color: #777;
+            }
+
+            /* Style cho nút Thanh toán (giữ nguyên) */
+            .btn-primary {
+                background-color: #ee4d2d;
+                border-color: #ee4d2d;
+                font-size: 16px;
+                font-weight: 500;
+                padding: 10px;
+                border-radius: 6px;
+                transition: background-color 0.2s ease-in-out;
+            }
+
+            .btn-primary:hover {
+                background-color: #d43f21;
+                border-color: #d43f21;
+            }
+
+            .btn-primary:disabled {
+                background-color: #cccccc;
+                border-color: #cccccc;
+                cursor: not-allowed;
+            }
         </style>
     </head>
     <body>
@@ -118,22 +256,26 @@
                         </div>
                     </div>
 
-                    <div class="payment-methods row">                       
-                        <div class="col-6">
-                            <button type="submit" name="paymentMethod" value="vnpay" class="payment-button vnpay">
-                                <img src="assets/img/vnpay.png" alt="VNPay" class="payment-icon"> Thanh toán bằng VNPay
-                            </button>
-                        </div>     
-                        <div class="col-6">
-                            <button type="submit" name="paymentMethod" value="momo" class="payment-button momo">
-                                <img src="assets/img/momo.png" alt="MoMo" class="payment-icon"> Thanh toán bằng MoMo
-                            </button>
+                    <div class="form-group">
+                        <p class="fs-4 fw-bold">Phương thức vận chuyển</p>
+                        <div class="shipping-methods" id="shippingMethodsContainer">
+                            <!-- Danh sách phương thức vận chuyển sẽ được thêm động bằng JavaScript -->
                         </div>
-                        <div class="col-6">
-                            <button type="submit" name="paymentMethod" value="cash" class="payment-button cash">
-                                <img src="assets/img/cash.png" alt="Cash" class="payment-icon"> Thanh toán tiền mặt
-                            </button>
-                        </div>   
+                        <div class="error-message">${sessionScope.validationErrors.shippingMethod}</div>
+                    </div>
+
+                    <div class="form-group">
+                        <p class="fs-4 fw-bold">Phương thức thanh toán</p>
+                        <div class="payment-methods" id="paymentMethodsContainer">
+                            <!-- Danh sách phương thức thanh toán sẽ được thêm động bằng JavaScript -->
+                        </div>
+                        <input type="hidden" name="paymentMethod" id="selectedPaymentMethod">
+                        <div class="error-message">${sessionScope.validationErrors.paymentMethod}</div>
+                    </div>
+
+                    <!-- Nút Thanh toán -->
+                    <div class="form-group mt-3">
+                        <button type="button" id="submitOrderBtn" class="btn btn-primary w-100">Thanh toán</button>
                     </div>
                 </form>
             </div>
@@ -143,7 +285,7 @@
                 <h3 class="title-order">Đơn hàng</h3>
                 <c:forEach items="${listCart}" var="item">
                     <div class="product">
-                        <img src="http://localhost:8080/LorKingdom/${item.product.mainImageUrl}" alt="${item.product.name}">
+                        <img src="${pageContext.request.contextPath}/${item.product.mainImageUrl}" alt="${item.product.name}">
                         <div>
                             <p>${item.product.name}</p>
                             <p><fmt:formatNumber value="${item.price * item.quantity}" pattern="#,###" /> VND</p>
@@ -308,6 +450,175 @@
             function formatNumber(num) {
                 return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
+
+            function loadShippingMethods() {
+                $.ajax({
+                    url: "GetShippingMethodsServlet",
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        console.log("Dữ liệu từ server (chi tiết):", JSON.stringify(data));
+                        const container = $("#shippingMethodsContainer");
+                        container.empty();
+
+                        if (!Array.isArray(data) || data.length === 0) {
+                            container.append("<p>Không có phương thức vận chuyển nào khả dụng.</p>");
+                            return;
+                        }
+
+                        data.forEach((method, index) => {
+                            if (typeof method !== "object" || method === null) {
+                                console.error("Phương thức không hợp lệ tại index", index, ":", method);
+                                return;
+                            }
+
+                            const methodName = method.name || "Không có tên";
+                            const methodDescription = method.description || "Không có mô tả";
+                            const methodId = method.id || index;
+                            const isChecked = index === 0 ? "checked" : "";
+
+                            const $div = $("<div>").addClass("form-check");
+                            const $input = $("<input>")
+                                    .addClass("form-check-input")
+                                    .attr("type", "radio")
+                                    .attr("name", "shippingMethod")
+                                    .attr("id", `shipping_${methodId}`)
+                                    .attr("value", methodId)
+                                    .prop("checked", isChecked === "checked");
+                            const $label = $("<label>")
+                                    .addClass("form-check-label")
+                                    .attr("for", `shipping_${methodId}`)
+                                    .text(methodName);
+                            const $small = $("<small>").text(methodDescription);
+
+                            $label.append("<br>", $small);
+                            $div.append($input, $label);
+                            container.append($div);
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Lỗi Ajax:", status, error);
+                        $("#shippingMethodsContainer").html("<p>Có lỗi khi tải phương thức vận chuyển.</p>");
+                    }
+                });
+            }
+
+            $(document).ready(function () {
+                loadShippingMethods(); // Gọi hàm khi trang đã sẵn sàng
+            });
+        </script>
+        <script>
+            function loadPaymentMethods() {
+                $.ajax({
+                    url: "GetPaymentMethodsServlet",
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        console.log("Dữ liệu phương thức thanh toán từ server:", JSON.stringify(data));
+                        const container = $("#paymentMethodsContainer");
+                        container.empty();
+
+                        if (!Array.isArray(data) || data.length === 0) {
+                            container.append("<p>Không có phương thức thanh toán nào khả dụng.</p>");
+                            return;
+                        }
+
+                        data.forEach((method, index) => {
+                            if (typeof method !== "object" || method === null) {
+                                console.error("Phương thức không hợp lệ tại index", index, ":", method);
+                                return;
+                            }
+
+                            const methodName = method.name || "Không có tên";
+                            const methodDescription = method.description || "Không có mô tả";
+                            const methodId = method.id || index;
+
+                            // Normalize methodValue để khớp với OrderServlet
+                            let methodValue;
+                            switch (methodName) {
+                                case "Tiền mặt khi nhận hàng":
+                                    methodValue = "cash";
+                                    break;
+                                case "Ví điện tử MOMO":
+                                    methodValue = "momo";
+                                    break;
+                                case "Ví điện tử VNPAY":
+                                    methodValue = "vnpay";
+                                    break;
+                                default:
+                                    methodValue = methodName.toLowerCase().replace(/\s/g, '');
+                            }
+
+                            // Xác định đường dẫn hình ảnh dựa trên methodValue
+                            let iconPath = "assets/img/cash.png";
+                            if (methodValue === "vnpay") {
+                                iconPath = "assets/img/vnpay.png";
+                            } else if (methodValue === "momo") {
+                                iconPath = "assets/img/momo.png";
+                            }
+
+                            const $card = $("<div>")
+                                    .addClass("payment-card")
+                                    .attr("data-value", methodValue)
+                                    .attr("data-id", methodId);
+
+                            const $icon = $("<img>")
+                                    .addClass("payment-icon")
+                                    .attr("src", iconPath)
+                                    .attr("alt", methodName);
+
+                            const $info = $("<div>").addClass("payment-info");
+                            const $name = $("<div>")
+                                    .addClass("method-name")
+                                    .text(methodName);
+                            const $description = $("<div>")
+                                    .addClass("method-description")
+                                    .text(methodDescription);
+
+                            $info.append($name, $description);
+                            $card.append($icon, $info);
+                            container.append($card);
+
+                            // Nếu là phương thức đầu tiên, chọn mặc định
+                            if (index === 0) {
+                                $card.addClass("selected");
+                                $("#selectedPaymentMethod").val(methodValue);
+                            }
+                        });
+
+                        // Thêm sự kiện click cho các thẻ
+                        $(".payment-card").on("click", function () {
+                            $(".payment-card").removeClass("selected");
+                            $(this).addClass("selected");
+                            const selectedValue = $(this).attr("data-value");
+                            $("#selectedPaymentMethod").val(selectedValue);
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Lỗi Ajax:", status, error);
+                        $("#paymentMethodsContainer").html("<p>Có lỗi khi tải phương thức thanh toán.</p>");
+                    }
+                });
+            }
+
+            $(document).ready(function () {
+                loadPaymentMethods();
+
+                // Xử lý sự kiện khi nhấn nút Thanh toán
+                $("#submitOrderBtn").on("click", function () {
+                    const paymentMethod = $("#selectedPaymentMethod").val();
+                    const formData = $("#orderForm").serialize();
+
+                    if (!paymentMethod) {
+                        alert("Vui lòng chọn phương thức thanh toán!");
+                        return;
+                    }
+
+                    // Gửi form đến OrderServlet mà không kiểm tra lỗi ở đây
+                    $("#orderForm").attr("action", "OrderServlet");
+                    $("#orderForm").submit();
+                });
+            });
         </script>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"

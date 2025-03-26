@@ -141,7 +141,7 @@
         </div>
 
         <!-- Nút tiếp tục mua sắm -->
-        <a href="cart.jsp" class="btn-continue">Tiếp Tục Mua Sắm</a>
+        <a href="${pageContext.request.contextPath}/getList" class="btn-continue">Tiếp Tục Mua Sắm</a>
     </div>
 
     <!-- Bootstrap JS -->

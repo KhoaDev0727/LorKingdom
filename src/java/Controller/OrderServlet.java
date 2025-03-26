@@ -3,10 +3,12 @@ package Controller;
 import DAO.OrderDAO;
 import DAO.CartDAO;
 import DAO.ProductDAO;
+import DAO.ShippingDAO;
 import Model.CartItems;
 import Model.Order;
 import Model.OrderDetail;
 import Model.Promotion;
+import Model.Shipping;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -121,16 +123,55 @@ public class OrderServlet extends HttpServlet {
         }
         String finalAddress = fullAddress.toString().replaceAll(",\\s*$", "");
 
+        String shippingMethodId = request.getParameter("shippingMethod");
+        ShippingDAO shippingDAO = new ShippingDAO();
+        Shipping shippingMethod = null;
+        try {
+            List<Shipping> shippingMethods = shippingDAO.getAllShippingMethods();
+            shippingMethod = shippingMethods.stream()
+                    .filter(m -> m.getShippingMethodID() == Integer.parseInt(shippingMethodId))
+                    .findFirst()
+                    .orElse(null);
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
         // Xử lý các phương thức thanh toán
         if ("vnpay".equals(paymentMethod)) {
+            // Lưu thông tin vào session trước khi chuyển hướng
+            session.setAttribute("email", email);
+            session.setAttribute("fullName", fullName);
+            session.setAttribute("phone", phone);
+            session.setAttribute("address", finalAddress);
+            session.setAttribute("provinceCode", provinceCode);
+            session.setAttribute("districtCode", districtCode);
+            session.setAttribute("wardCode", wardCode);
+            session.setAttribute("wardName", wardName);
+            session.setAttribute("districtName", districtName);
+            session.setAttribute("provinceName", provinceName);
+            session.setAttribute("shippingMethod", shippingMethodId);
+
             response.sendRedirect("VNPayPaymentServlet?totalMoney=" + finalTotal);
         } else if ("momo".equals(paymentMethod)) {
+            // Lưu thông tin vào session trước khi chuyển hướng
+            session.setAttribute("email", email);
+            session.setAttribute("fullName", fullName);
+            session.setAttribute("phone", phone);
+            session.setAttribute("address", finalAddress);
+            session.setAttribute("provinceCode", provinceCode);
+            session.setAttribute("districtCode", districtCode);
+            session.setAttribute("wardCode", wardCode);
+            session.setAttribute("wardName", wardName);
+            session.setAttribute("districtName", districtName);
+            session.setAttribute("provinceName", provinceName);
+            session.setAttribute("shippingMethod", shippingMethodId);
+
             response.sendRedirect("MoMoPaymentServlet?totalMoney=" + finalTotal);
         } else if ("cash".equals(paymentMethod)) {
             Order order = new Order();
             order.setAccountName(fullName);
             order.setPayMentMethodName("Tiền mặt khi nhận hàng");
-            order.setShipingMethodName("Giao hàng tiêu chuẩn");
+            order.setShipingMethodName(shippingMethod != null ? shippingMethod.getMethodName() : "Unknown");
             order.setOrderDate(new Timestamp(System.currentTimeMillis()));
             order.setStatus("Pending");
             order.setTotalAmount(finalTotal);
