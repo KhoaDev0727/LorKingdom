@@ -24,7 +24,7 @@
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-5">
-                        <h1 class="mt-4">Quản lý khuyến mãi</h1>
+                        <h1 class="mt-4">Quản Lí Khuyến mãi</h1>
 
                         <!-- Success/Error Messages -->
                         <c:if test="${not empty message}">

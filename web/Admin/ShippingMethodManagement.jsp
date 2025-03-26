@@ -32,7 +32,7 @@
                     <!-- Table -->
                     <main>
                         <div class="container-fluid px-5">
-                            <h1 class="mt-4">Quản Lý Phương Thức Giao Hàng</h1>
+                            <h1 class="mt-4">Quản Lí Phương Thức Giao Hàng</h1>
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
@@ -122,7 +122,7 @@
                                                                     <c:if test="${method.isDeleted == 1}">
                                                                         <button class="btn btn-sm btn-success"
                                                                                 onclick="location.href = 'ShippingMethodServlet?action=restore&shippingMethodID=${method.shippingMethodID}'">
-                                                                            Restore
+                                                                            Khôi Phục
                                                                         </button>
                                                                         <button type="button" class="btn btn-sm btn-danger"
                                                                                 data-bs-toggle="modal"

@@ -46,7 +46,7 @@
                 <div class="dashboard-container">
                     <main>
                         <div class="container-fluid px-5">
-                            <h1 class="mt-4">Quản Lý Danh Mục</h1>
+                            <h1 class="mt-4">Quản Lí Danh Mục</h1>
 
                             <form action="CategoryServlet" method="POST" class="mt-4">
                                 <input type="hidden" name="action" value="add">
@@ -114,7 +114,7 @@
                                                     <c:when test="${empty categories}">
                                                         <!-- Display message if the list is empty -->
                                                         <tr>
-                                                            <td colspan="4" class="text-center text-muted">No categories available.</td>
+                                                            <td colspan="4" class="text-center text-muted"> Hiện không có danh mục nào.</td>
                                                         </tr>
                                                     </c:when>
                                                     <c:otherwise>
@@ -227,7 +227,7 @@
                         <p id="errorMessage">${sessionScope.errorMessage}</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                     </div>
                 </div>
             </div>

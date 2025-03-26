@@ -29,7 +29,7 @@
                 <div class="dashboard-container">
                     <main>
                         <div class="container-fluid px-5">
-                            <h1 class="mt-4">Quản Lý Phương Thức Thanh Toán</h1>
+                            <h1 class="mt-4">Quản Lí Phương Thức Thanh Toán</h1>
 
                             <c:if test="${not empty message}">
                                 <div class="alert alert-${messageType} alert-dismissible fade show" role="alert">
@@ -81,7 +81,7 @@
                                                 <c:choose>
                                                     <c:when test="${empty paymentMethods}">
                                                         <tr>
-                                                            <td colspan="5" class="text-center text-muted">No payment methods found</td>
+                                                            <td colspan="5" class="text-center text-muted">Không Tìm Thấy Phương Thức Thanh Toán.</td>
                                                         </tr>
                                                     </c:when>
                                                     <c:otherwise>

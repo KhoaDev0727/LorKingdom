@@ -46,18 +46,18 @@
                 <div class="dashboard-container">
                     <main>
                         <div class="container-fluid px-5">
-                            <h1 class="mt-4">Quản lý danh mục tổng</h1>
+                            <h1 class="mt-4">Quản Lí Danh Mục Tổng</h1>
                             <form action="SuperCategoryServlet" method="POST" class="mt-4">
                                 <input type="hidden" name="action" value="add">
-                                <label>Tên nhóm danh mục tổng</label>
+                                <label>Tên Nhóm Danh Mục Dổng</label>
                                 <input type="text" name="superCategoryName" required />
-                                <button class="btn btn-primary ms-2" type="submit">Thêm nhóm danh mục tổng<</button>
+                                <button class="btn btn-primary ms-2" type="submit">Thêm Nhóm Danh Mục Tổng</button>
                             </form>
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <i class="fas fa-table me-1"></i> Danh sách danh mục tổng
+                                            <i class="fas fa-table me-1"></i> Danh Sách Danh Mục Tổng
                                         </div>
                                     </div>
                                 </div>
@@ -98,7 +98,7 @@
                                                     <c:when test="${empty superCategories}">
                                                         <!-- Display message if the list is empty -->
                                                         <tr>
-                                                            <td colspan="4" class="text-center text-muted">No categories available.</td>
+                                                            <td colspan="4" class="text-center text-muted">Không Có Nhóm Danh Mục Nào.</td>
                                                         </tr>
                                                     </c:when>
                                                     <c:otherwise>
@@ -136,7 +136,7 @@
                                                                     <c:if test="${category.isDeleted == 1}">
                                                                         <button class="btn btn-sm btn-success"
                                                                                 onclick="location.href = 'SuperCategoryServlet?action=restore&superCategoryID=${category.superCategoryID}'">
-                                                                            Khôi phục
+                                                                            Khôi Phục
                                                                         </button>
                                                                         <button type="button" class="btn btn-sm btn-danger"
                                                                                 data-bs-toggle="modal"

@@ -46,7 +46,7 @@
                 <div class="dashboard-container">
                     <main>
                         <div class="container-fluid px-5">
-                            <h1 class="mt-4">Quản lý xuất xứ</h1>
+                            <h1 class="mt-4">Quản Lí Xuất Xứ</h1>
                             <!-- Add Origin Form -->
                             <form action="OriginServlet" method="POST">
                                 <input type="hidden" name="action" value="add">
@@ -87,11 +87,11 @@
                                         <table class="table table-bordered table-striped table-hover">
                                             <thead class="table-dark">
                                                 <tr>
-                                                    <th>Mã xuất sứ</th>
-                                                    <th>Tên xuất xứ</th>
-                                                    <th>Ngày tạo</th>
-                                                    <th>Trạng thái</th>
-                                                    <th>Thao tác</th>
+                                                    <th>Mã Xuất Xứ</th>
+                                                    <th>Tên Xuất Xứ</th>
+                                                    <th>Ngày Tạo</th>
+                                                    <th>Trạng Thái</th>
+                                                    <th>Hành Động</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -99,7 +99,7 @@
                                                     <c:when test="${empty origins}">
                                                         <!-- Display message if the list is empty -->
                                                         <tr>
-                                                            <td colspan="4" class="text-center text-muted">Không có xuất xứ nào.</td>
+                                                            <td colspan="4" class="text-center text-muted">Không Có Xuất Xứ Nào.</td>
                                                         </tr>
                                                     </c:when>
                                                     <c:otherwise>
@@ -153,20 +153,20 @@
                                                                 <div class="modal-content">
                                                                     <form method="POST" action="OriginServlet">
                                                                         <div class="modal-header">
-                                                                            <h5 class="modal-title">Chỉnh sửa xuất xứ</h5>
+                                                                            <h5 class="modal-title">Chỉnh Sửa Xuất Xứ</h5>
                                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                                         </div>
                                                                         <div class="modal-body">
                                                                             <input type="hidden" name="action" value="update">
                                                                             <input type="hidden" name="originID" value="${origin.originID}">
                                                                             <div class="mb-3">
-                                                                                <label class="form-label">Tên xuất xứ</label>
+                                                                                <label class="form-label">Tên Xuất Xứ</label>
                                                                                 <input type="text" class="form-control" name="name" value="${origin.name}" required>
                                                                             </div>
                                                                         </div>
                                                                         <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                                                            <button type="submit" class="btn btn-primary">Lưu Thay Đổi</button>
                                                                         </div>
                                                                     </form>
                                                                 </div>
@@ -261,7 +261,7 @@
                         <p id="successMessageContent">${sessionScope.successMessage}</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                     </div>
                 </div>
             </div>

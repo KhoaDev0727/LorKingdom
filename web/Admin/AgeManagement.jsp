@@ -47,7 +47,7 @@
                 <div class="dashboard-container">
                     <main>
                         <div class="container-fluid px-5">
-                            <h1 class="mt-4">Quản Lý Khoảng Tuổi</h1>
+                            <h1 class="mt-4">Quản Lí Khoảng Tuổi</h1>
 
 
                             <div class="card mb-4">

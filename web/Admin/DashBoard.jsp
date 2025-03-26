@@ -75,14 +75,14 @@
                 <div class="row mt-4 g-4">
                     <div class="col-lg-6">
                         <div class="chart-container card p-3 shadow">
-                            <h5 class="card-header">Column Chart</h5>
+                            <h5 class="card-header">Biểu đồ cột</h5>
                             <div id="chart_column" style="width: 100%; height: 300px;"></div>
                         </div>
                     </div>
 
                     <div class="col-lg-6">
                         <div class="chart-container card p-3 shadow">
-                            <h5 class="card-header">Line Chart</h5>
+                            <h5 class="card-header">Biểu đồ đường</h5>
                             <div id="chart_line" style="width: 100%; height: 300px;"></div>
                         </div>
                     </div>

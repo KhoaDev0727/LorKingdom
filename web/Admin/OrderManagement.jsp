@@ -31,7 +31,7 @@
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-5">
-                        <h1 class="mt-4">Quản lý đơn hàng</h1>
+                        <h1 class="mt-4">Quản Lí Đơn Hàng</h1>
 
                         <!-- Thông báo Thành công/Lỗi -->
                         <c:if test="${not empty message}">
@@ -182,18 +182,18 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Deletion</h5>
+                        <h5 class="modal-title" id="confirmDeleteModalLabel">Xác Nhận Xóa</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Are you sure you want to delete this order?
+                        Bạn có chắc chắn muốn xóa đơn hàng này không?
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                         <form id="deleteForm" method="POST" action="OrderServlet">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="orderId" id="deleteOrderID">
-                            <button type="submit" class="btn btn-danger">Delete</button>
+                            <button type="submit" class="btn btn-danger">Xóa</button>
                         </form>
                     </div>
                 </div>
