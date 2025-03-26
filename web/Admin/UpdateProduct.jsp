@@ -50,7 +50,7 @@
                                            oninput="this.setCustomValidity('')" />
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Danh Mục</label>
+                                    <label class="form-label">Danh mục</label>
                                     <select class="form-select" name="category" required>
                                         <c:forEach items="${Categories}" var="cat">
                                             <option value="${cat.categoryID}"
@@ -128,8 +128,8 @@
 
                                         <c:forEach items="${listOrigin}" var="origin" varStatus="st">
                                             <option value="${origin.originID}"
-                                                    <c:if test="${st.first}">selected</c:if>
-                                                ${origin.name}>
+                                                    <c:if test="${st.first}">selected</c:if>>
+                                                ${origin.name}
                                             </option>
                                         </c:forEach>
                                     </select>
