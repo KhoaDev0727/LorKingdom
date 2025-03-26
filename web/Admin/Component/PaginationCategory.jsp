@@ -9,7 +9,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Phân trang thông báo/title>
+        <title>JSP Page</title>
     </head>
     <body>
         <c:choose>
@@ -18,18 +18,18 @@
                     <c:if test="${currentPage > 1}">
                         <a href="${forward}&page=${currentPage - 1}"
                            style="padding: 5px 10px; border: 1px solid #ccc; border-radius: 4px; text-decoration: none; color: #333; margin-right: 10px;">
-                            Quay Lại
+                            Về trước
                         </a>
                     </c:if>
 
                     <span style="font-weight: bold; color: #555;">
-                        Trang ${currentPage} Trên ${totalPages}
+                        Trang ${currentPage} of ${totalPages}
                     </span>
 
                     <c:if test="${currentPage < totalPages}">
                         <a href="${forward}&page=${currentPage + 1}"
                            style="padding: 5px 10px; border: 1px solid #ccc; border-radius: 4px; text-decoration: none; color: #333; margin-left: 10px;">
-                            Tiếp Theo
+                            Kế tiếp
                         </a>
                     </c:if>
                 </div>
@@ -40,3 +40,6 @@
         </c:choose>
     </body>
 </html>
+
+
+
