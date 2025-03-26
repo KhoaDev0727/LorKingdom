@@ -103,14 +103,23 @@ public class ManageOrderServlet extends HttpServlet {
         String action = request.getParameter("action");
 
         if (action != null && action.equals("delete")) {
-            int orderId = Integer.parseInt(request.getParameter("orderId"));
-            try {
-                OrderDAO dao = new OrderDAO();
+        int orderId = Integer.parseInt(request.getParameter("orderId"));
+        try {
+            OrderDAO dao = new OrderDAO();
+            // Kiểm tra trạng thái đơn hàng trước khi xóa
+            Order order = dao.getOrderById(orderId);
+            if (order != null && "Cancelled".equalsIgnoreCase(order.getStatus())) {
                 dao.deleteOrder(orderId);
-                response.sendRedirect("OrderServlet");
-            } catch (Exception e) {
+                 request.getSession().setAttribute("successModal", "Xóa đơn hàng thành công.");
+            } else {
+                request.getSession().setAttribute("errorModal", "Chỉ có thể xóa đơn hàng ở trạng thái 'Hủy'");
             }
+            response.sendRedirect("OrderServlet");
+        } catch (Exception e) {
+            request.getSession().setAttribute("errorModal", "Lỗi khi xóa đơn hàng: ");
+            response.sendRedirect("OrderServlet");
         }
+    }
         if (action != null && action.equals("search")) {
             String customerName = request.getParameter("customerName"); // Lấy tên khách hàng từ input
             try {

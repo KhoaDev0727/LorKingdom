@@ -61,7 +61,7 @@
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <c:if test="${roleID eq 1 || roleID eq 2}"><li><a class="dropdown-item" href="CustomerManagementServlet">Quản lí khách hàng</a></li> </c:if> 
                                         <c:if test="${roleID eq 1}">  <li><a class="dropdown-item" href="StaffManagementServlet">Quản lí nhân viên</a></li></c:if> 
-                                        <c:if test="${roleID eq 1}"> <li><a class="dropdown-item" href="NotificationServlet?&action=list">Quản lí thông báo</a></li></c:if> 
+                                        <c:if test="${roleID eq 1 || roleID eq 2 }"> <li><a class="dropdown-item" href="NotificationServlet?&action=list">Quản lí thông báo</a></li></c:if> 
                                         <c:if test="${roleID eq 1}"> <li><a class="dropdown-item" href="RoleServlet">Chức vụ</a></li></c:if> 
                                         </ul>
                                     </div>

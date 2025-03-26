@@ -118,7 +118,48 @@ public class OrderDAO extends DBConnect.DBConnection {
         }
         return list;
     }
-
+public Order getOrderById(int orderId) throws SQLException, ClassNotFoundException {
+    String sql = "SELECT \n"
+            + "    o.*, \n"
+            + "    a.AccountName, \n"
+            + "    p.MethodName AS PaymentMethodName, \n"
+            + "    s.MethodName AS ShippingMethodName, \n"
+            + "    k.Status\n"
+            + "FROM \n"
+            + "    [dbo].[Orders] o\n"
+            + "INNER JOIN \n"
+            + "    [dbo].[Account] a ON o.AccountID = a.AccountID\n"
+            + "INNER JOIN \n"
+            + "    [dbo].[PaymentMethods] p ON o.PaymentMethodID = p.PaymentMethodID\n"
+            + "INNER JOIN \n"
+            + "    [dbo].[ShippingMethods] s ON o.ShippingMethodID = s.ShippingMethodID\n"
+            + "INNER JOIN \n"
+            + "    [dbo].[StatusOrder] k ON o.StatusID = k.StatusID\n"
+            + "WHERE \n"
+            + "    o.OrderID = ?";
+    
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement st = conn.prepareStatement(sql)) {
+        
+        st.setInt(1, orderId);
+        ResultSet rs = st.executeQuery();
+        
+        if (rs.next()) {
+            Order order = new Order();
+            order.setOrderId(rs.getInt("OrderID"));
+            order.setAccountName(rs.getString("AccountName"));
+            order.setPayMentMethodName(rs.getString("PaymentMethodName"));
+            order.setShipingMethodName(rs.getString("ShippingMethodName"));
+            order.setOrderDate(rs.getDate("OrderDate"));
+            order.setStatus(rs.getString("Status"));
+            order.setTotalAmount(rs.getFloat("TotalAmount"));
+            order.setCreatedAt(rs.getDate("CreatedAt"));
+            order.setUpdatedAt(rs.getDate("UpdatedAt"));
+            return order;
+        }
+    }
+    return null;
+}
     public int getTotalOrders() throws SQLException, ClassNotFoundException {
         int total = 0;
         String query = "select count(*) from [dbo].[Orders]";

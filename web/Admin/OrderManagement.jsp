@@ -129,8 +129,8 @@
                                                             <td>${o.orderDate}</td>
                                                             <td>
                                                                 <c:choose>
-                                                                    <c:when test='${o.status == "Pending"}'>Chờ xử lý</c:when>
-                                                                    <c:when test='${o.status == "Shipped"}'>Đã giao</c:when>
+                                                                    <c:when test='${o.status == "Pending"}'>Đang xử lý</c:when>
+                                                                    <c:when test='${o.status == "Shipped"}'>Chờ giao hàng</c:when>
                                                                     <c:when test='${o.status == "Delivered"}'>Đã nhận hàng</c:when>
                                                                     <c:when test='${o.status == "Cancelled"}'>Đã hủy</c:when>
                                                                     <c:otherwise>${o.status}</c:otherwise> 
