@@ -203,7 +203,7 @@ public class updateProductServlet extends HttpServlet {
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
-            if (ProductDAO.isProductNameExists(productName, 0)) {
+            if (ProductDAO.isProductNameExists(productName, productID)) {
                 session.setAttribute("errorMessage", "Tên sản phẩm đã tồn tại trong hệ thống!");
                 UpdateProductDataLoader.loadDataForUpdate(request, productID);
                 request.setAttribute("priceTruncated", priceStr); // thêm dòng này!

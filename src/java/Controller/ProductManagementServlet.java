@@ -216,15 +216,26 @@ public class ProductManagementServlet extends HttpServlet {
                 request.setAttribute("enteredProductName", productName);
                 request.setAttribute("enteredPrice", priceStartStr);
                 request.setAttribute("enteredQuantity", quantityStr);
+                request.setAttribute("enteredGender", request.getParameter("gender"));
+                request.setAttribute("enteredPriceRange", request.getParameter("priceRange"));
+                request.setAttribute("enteredBrand", request.getParameter("brand"));
+                request.setAttribute("enteredAgeGroup", request.getParameter("ageGroup"));
+                request.setAttribute("enteredMaterial", request.getParameter("material"));
+                request.setAttribute("enteredOrigin", request.getParameter("origin"));
                 request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
                 return;
             }
             if (stockQuantity <= 0) {
                 session.setAttribute("errorMessage", "Số lượng sản phẩm không được nhỏ hơn hoặc bằng 0");
-                session.setAttribute("errorMessage", "Số lượng sản phẩm không được vượt quá 200");
                 request.setAttribute("enteredProductName", productName);
                 request.setAttribute("enteredPrice", priceStartStr);
                 request.setAttribute("enteredQuantity", quantityStr);
+                request.setAttribute("enteredGender", request.getParameter("gender"));
+                request.setAttribute("enteredPriceRange", request.getParameter("priceRange"));
+                request.setAttribute("enteredBrand", request.getParameter("brand"));
+                request.setAttribute("enteredAgeGroup", request.getParameter("ageGroup"));
+                request.setAttribute("enteredMaterial", request.getParameter("material"));
+                request.setAttribute("enteredOrigin", request.getParameter("origin"));
                 request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
                 return;
             }
