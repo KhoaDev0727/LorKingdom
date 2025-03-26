@@ -422,7 +422,7 @@ public class ProductDAO {
     }
 
 // (Tùy chọn) Tìm kiếm sản phẩm theo từ khóa
-   public List<Product> searchProducts(String keyword) throws SQLException, ClassNotFoundException {
+    public List<Product> searchProducts(String keyword) throws SQLException, ClassNotFoundException {
         List<Product> products = new ArrayList<>();
         String query = "SELECT p.* FROM Product p "
                 + "JOIN Category c ON p.CategoryID = c.CategoryID "
@@ -524,18 +524,68 @@ public class ProductDAO {
         return products;
     }
 
+//    public List<Product> getRelatedProductsByCategory(int categoryID, int excludeProductID, int limit) throws ClassNotFoundException {
+//        List<Product> products = new ArrayList<>();
+//        String sql = "SELECT TOP (?) * FROM Product "
+//                + "WHERE IsDeleted = 0 "
+//                + "  AND CategoryID = ? "
+//                + "  AND ProductID <> ? " // để không lấy chính sản phẩm đang xem
+//                + "ORDER BY NEWID()";       // random, hoặc ORDER BY CreatedAt DESC tuỳ ý
+//
+//        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
+//            ps.setInt(1, limit);         // TOP (limit)
+//            ps.setInt(2, categoryID);
+//            ps.setInt(3, excludeProductID);
+//            try ( ResultSet rs = ps.executeQuery()) {
+//                while (rs.next()) {
+//                    Product p = new Product();
+//                    p.setProductID(rs.getInt("ProductID"));
+//                    p.setSKU(rs.getString("SKU"));
+//                    p.setName(rs.getString("Name"));
+//                    p.setPrice(rs.getDouble("Price"));
+//                    // ... map các cột khác nếu cần
+//                    products.add(p);
+//                }
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return products;
+//    }
     public List<Product> getRelatedProductsByCategory(int categoryID, int excludeProductID, int limit) throws ClassNotFoundException {
         List<Product> products = new ArrayList<>();
-        String sql = "SELECT TOP (?) * FROM Product "
-                + "WHERE IsDeleted = 0 "
-                + "  AND CategoryID = ? "
-                + "  AND ProductID <> ? " // để không lấy chính sản phẩm đang xem
-                + "ORDER BY NEWID()";       // random, hoặc ORDER BY CreatedAt DESC tuỳ ý
 
-        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
+        StringBuilder query = new StringBuilder(
+                "SELECT TOP (?) p.* "
+                + "FROM Product p "
+                + "JOIN Category c ON p.CategoryID = c.CategoryID "
+                + "JOIN SuperCategory sc ON c.SuperCategoryID = sc.SuperCategoryID "
+                + "JOIN Age a ON p.AgeID = a.AgeID "
+                + "JOIN Brand b ON p.BrandID = b.BrandID "
+                + "JOIN Material m ON p.MaterialID = m.MaterialID "
+                + "JOIN PriceRange pr ON p.PriceRangeID = pr.PriceRangeID "
+                + "JOIN Sex s ON p.SexID = s.SexID "
+                + "JOIN Origin o ON p.OriginID = o.OriginID "
+                + "WHERE p.IsDeleted = 0 "
+                + "  AND c.IsDeleted = 0 "
+                + "  AND sc.IsDeleted = 0 "
+                + "  AND a.IsDeleted = 0 "
+                + "  AND b.IsDeleted = 0 "
+                + "  AND m.IsDeleted = 0 "
+                + "  AND pr.IsDeleted = 0 "
+                + "  AND s.IsDeleted = 0 "
+                + "  AND o.IsDeleted = 0 "
+                + "  AND p.Quantity > 0 "
+                + "  AND p.CategoryID = ? "
+                + "  AND p.ProductID <> ? "
+                + "ORDER BY NEWID()" // random, hoặc đổi thành ORDER BY p.CreatedAt DESC nếu muốn mới nhất
+        );
+
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query.toString())) {
             ps.setInt(1, limit);         // TOP (limit)
             ps.setInt(2, categoryID);
             ps.setInt(3, excludeProductID);
+
             try ( ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Product p = new Product();
@@ -543,13 +593,14 @@ public class ProductDAO {
                     p.setSKU(rs.getString("SKU"));
                     p.setName(rs.getString("Name"));
                     p.setPrice(rs.getDouble("Price"));
-                    // ... map các cột khác nếu cần
+                    // Map thêm các cột khác nếu cần
                     products.add(p);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return products;
     }
 

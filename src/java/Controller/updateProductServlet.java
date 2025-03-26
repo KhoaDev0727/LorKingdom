@@ -167,12 +167,14 @@ public class updateProductServlet extends HttpServlet {
 
                 session.setAttribute("errorMessage", "Vui lòng nhập đầy đủ thông tin bắt buộc!");
                 UpdateProductDataLoader.loadDataForUpdate(request, productID);
+                request.setAttribute("priceTruncated", priceStr); // thêm dòng này!
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
             if (productName.length() > 250) {
                 session.setAttribute("errorMessage", "Tên sản phẩm chỉ không được dài quá 250 kí tự");
                 UpdateProductDataLoader.loadDataForUpdate(request, productID);
+                request.setAttribute("priceTruncated", priceStr); // thêm dòng này!
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
@@ -180,6 +182,7 @@ public class updateProductServlet extends HttpServlet {
             if (plainTextContent == null || plainTextContent.trim().isEmpty()) {
                 request.getSession().setAttribute("errorMessage", "Miêu tả không được để trống.");
                 UpdateProductDataLoader.loadDataForUpdate(request, productID);
+                request.setAttribute("priceTruncated", priceStr); // thêm dòng này!
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
@@ -187,6 +190,7 @@ public class updateProductServlet extends HttpServlet {
             if (!productName.matches(namePattern)) {
                 session.setAttribute("errorMessage", "Tên sản phẩm chỉ được chứa chữ cái (có dấu) và khoảng trắng và số.");
                 UpdateProductDataLoader.loadDataForUpdate(request, productID);
+                request.setAttribute("priceTruncated", priceStr); // thêm dòng này!
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
@@ -195,12 +199,14 @@ public class updateProductServlet extends HttpServlet {
                 UpdateProductDataLoader.loadDataForUpdate(request, productID);
                 session.setAttribute("errorMessage", "Giá tiền phải có ít nhất 4 chữ số.");
                 UpdateProductDataLoader.loadDataForUpdate(request, productID);
+                request.setAttribute("priceTruncated", priceStr); // thêm dòng này!
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
             if (ProductDAO.isProductNameExists(productName, 0)) {
                 session.setAttribute("errorMessage", "Tên sản phẩm đã tồn tại trong hệ thống!");
                 UpdateProductDataLoader.loadDataForUpdate(request, productID);
+                request.setAttribute("priceTruncated", priceStr); // thêm dòng này!
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
@@ -208,12 +214,14 @@ public class updateProductServlet extends HttpServlet {
             if (!priceStr.matches("^\\d+(\\.\\d+)?$")) {
                 session.setAttribute("errorMessage", "Giá sản phẩm phải là số.");
                 UpdateProductDataLoader.loadDataForUpdate(request, productID);
+                request.setAttribute("priceTruncated", priceStr); // thêm dòng này!
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
             if (!stockQuantityStr.matches("^\\d+$")) {
                 session.setAttribute("errorMessage", "Số lượng sản phẩm phải là số nguyên.");
                 UpdateProductDataLoader.loadDataForUpdate(request, productID);
+                request.setAttribute("priceTruncated", priceStr); // thêm dòng này!
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
@@ -237,6 +245,7 @@ public class updateProductServlet extends HttpServlet {
             if (price > 50000000) {
                 session.setAttribute("errorMessage", "Giá sản phẩm không được vượt quá 50,000,000.");
                 UpdateProductDataLoader.loadDataForUpdate(request, productID);
+                request.setAttribute("priceTruncated", priceStr); // thêm dòng này!
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
@@ -244,12 +253,14 @@ public class updateProductServlet extends HttpServlet {
             if (stockQuantity > 200) {
                 session.setAttribute("errorMessage", "Số lượng sản phẩm không được vượt quá 200");
                 UpdateProductDataLoader.loadDataForUpdate(request, productID);
+                request.setAttribute("priceTruncated", priceStr); // thêm dòng này!
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
-             if (stockQuantity <= 0) {
+            if (stockQuantity <= 0) {
                 session.setAttribute("errorMessage", "Số lượng sản phẩm không được nhỏ hơn hoặc bằng 0");
                 UpdateProductDataLoader.loadDataForUpdate(request, productID);
+                request.setAttribute("priceTruncated", priceStr); // thêm dòng này!
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
@@ -315,6 +326,7 @@ public class updateProductServlet extends HttpServlet {
                 response.sendRedirect("ProductServlet?action=list");
             } else {
                 session.setAttribute("errorMessage", "Có lỗi xảy ra khi cập nhật sản phẩm (DB update fail).");
+                request.setAttribute("priceTruncated", priceStr); // thêm dòng này!
                 UpdateProductDataLoader.loadDataForUpdate(request, productID);
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
             }
