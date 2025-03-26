@@ -18,7 +18,7 @@ public class VNPayPaymentServlet extends HttpServlet {
     private static final String vnp_TmnCode = "F7363RA1";
     private static final String vnp_HashSecret = "VL2ZFM15UPSSC2KGEU3X80VG7O23A3XV";
     private static final String vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    private static final String vnp_ReturnUrl = "http://localhost:9090/LorKingdom/orderVNPay-success.jsp";
+    private static final String vnp_ReturnUrl = "http://localhost:8080/LorKingdom/orderVNPay-success.jsp";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
