@@ -116,6 +116,7 @@ public class ProductManagementServlet extends HttpServlet {
                 request.setAttribute("enteredMaterial", request.getParameter("material"));
                 request.setAttribute("enteredOrigin", request.getParameter("origin"));
                 request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
+
                 return;
             }
 
