@@ -63,7 +63,7 @@
             <p><strong>Email:</strong> ${sessionScope.email}</p>
 <!--            <p><strong>Tổng tiền:</strong> <fmt:formatNumber value="${sessionScope.order.totalAmount}" pattern="#,###" /> VND</p>-->
         </div>
-        <a href="${pageContext.request.contextPath}/getList" class="btn btn-momo mt-3">Quay lại trang chủ</a>
+        <a href="getList" class="btn btn-momo mt-3">Quay lại trang chủ</a>
     </div>
 </body>
 </html>
