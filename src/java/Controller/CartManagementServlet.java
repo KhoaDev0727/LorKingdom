@@ -71,6 +71,8 @@ public class CartManagementServlet extends HttpServlet {
                     break;
                 case "getTotalCart":
                     getTotalCart(request, response);
+                case "checkOut":
+                    fowardCheckOut(request, response);
                     break;
                 default:
                     addItem(request, response);
@@ -334,4 +336,39 @@ public class CartManagementServlet extends HttpServlet {
     public String getServletInfo() {
         return "Cart Management Servlet";
     }
+    
+private void fowardCheckOut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    HttpSession session = request.getSession();
+    List<CartItems> cartList = (List<CartItems>) session.getAttribute("listCart");
+    
+    if (cartList != null && !cartList.isEmpty()) {
+        double totalPrice = 0.0;
+        
+        // Tính tổng giá tiền
+        for (CartItems item : cartList) {
+            totalPrice += item.getPrice() * item.getQuantity();
+        }
+        
+        // Kiểm tra giá tiền
+        if (totalPrice <= 0) {
+            request.setAttribute("errorMessage", "Tổng giá tiền không hợp lệ, phải lớn hơn 0");
+            request.getRequestDispatcher("cart.jsp").forward(request, response);
+            return;
+        }
+        
+        // Kiểm tra giới hạn tối đa (ví dụ: 100 triệu)
+        if (totalPrice > 49999999) {
+            request.setAttribute("errorMessage", "Tổng giá tiền vượt quá giới hạn cho phép (490 triệu)");
+            request.getRequestDispatcher("cart.jsp").forward(request, response);
+            return;
+        }
+        
+        // Nếu hợp lệ, chuyển tiếp sang trang thanh toán
+        request.setAttribute("totalPrice", totalPrice);
+        request.getRequestDispatcher("checkout.jsp").forward(request, response);
+    } else {
+        request.setAttribute("errorMessage", "Giỏ hàng trống, không thể thanh toán");
+        request.getRequestDispatcher("cart.jsp").forward(request, response);
+    }
+}
 }

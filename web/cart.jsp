@@ -125,7 +125,8 @@
                     </p>
                 </div>
                 <c:if test="${not empty listCart}">
-                    <form action="CheckOutServlet" method="POST" class="pay">
+                    <form action="CartManagementServlet?&action=checkOut" "method="POST" class="pay">
+                      <input type="number" name="name">
                         <button type="submit">Thanh Toán</button>
                     </form>
                 </c:if>
@@ -133,6 +134,8 @@
         </div>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="assets/js/cartJs.js"></script>
-    
+        <script>
+            
+        </script>
     </body>
 </html>

@@ -137,7 +137,7 @@
                                                             <td>                                                          
                                                                 <c:choose>
                                                                     <c:when test="${s.isDeleted eq 1}">
-                                                                        <span class="badge bg-secondary">Deleted</span>
+                                                                        <span class="badge bg-secondary">Ðã Xóa</span>
                                                                     </c:when>
                                                                     <c:otherwise>
                                                                         <c:choose>

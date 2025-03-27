@@ -53,7 +53,9 @@
                             <h5 class="card-header">Tổng Doanh Thu</h5>
                             <div class="card-body">
                                 <h3 id="totalRevenue">
-                                    <fmt:formatNumber value="${totalrevenues}" type="currency" currencyCode="VND" />
+                         <fmt:setLocale value="vi_VN"/>
+<fmt:formatNumber value="${totalrevenues}" type="currency" currencyCode="VND"/>
+
                                 </h3>
                             </div>
                         </div>

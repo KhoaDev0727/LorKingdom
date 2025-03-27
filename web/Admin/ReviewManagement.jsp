@@ -14,6 +14,14 @@
         <link rel="stylesheet" href="CSS/style.css" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <style>
+            .form-select {
+                font-size: 13px !important;
+            }
+            .form-control {
+                font-size: 13px !important;
+            }
+        </style>
         <script src="JS/SideBarToggle.js"></script> 
     </head>
     <body class="sb-nav-fixed">
@@ -61,11 +69,11 @@
                                             <!-- Rating Filter -->
                                             <div class="col-6 col-md-3 col-lg-2">
                                                 <div class="input-group">
-                                                    <span class="input-group-text">
+                                                    <span class="input-group-text" >
                                                         <i class="fas fa-star"></i>
                                                     </span>
                                                     <select class="form-select" name="filterRating">
-                                                        <option value="0">Tất cả đánh giá</option>
+                                                        <option value="0">Tất Cả đánh giá</option>
                                                         <option value="5">★★★★★ (5 sao)</option>
                                                         <option value="4">★★★★☆ (4 sao)</option>
                                                         <option value="3">★★★☆☆ (3 sao)</option>
@@ -82,7 +90,7 @@
                                                         <i class="fas fa-filter"></i>
                                                     </span>
                                                     <select class="form-select" name="filterStatus">
-                                                        <option value="-1">Tất Cả Trạng hái</option>
+                                                        <option value="-1">Trạng Thái</option>
                                                         <option value="0">Đã Phê Duyệt</option>
                                                         <option value="1">Đang Chờ Duyệt</option>
                                                         <option value="2">Bị Từ Chối</option>
@@ -127,7 +135,7 @@
                                             <thead class="table-dark text-center">
                                                 <tr>
                                                     <th>Mã</th>
-                                                    <th>Khách Hàng</th>
+                                                    <th>Mã Khách Hàng</th>
                                                     <th>Mã Sản Phẩm</th>
                                                     <th>IMG</th>
                                                     <th>Xếp hạng</th>
@@ -158,9 +166,11 @@
                                                                              style="width: 100%; height: 100%; object-fit: cover;">
                                                                     </c:if>
                                                                 </td>
-                                                                <td>
+                                                                <td style="
+                                                                    width: 125px;
+                                                                    ">
                                                                     <c:forEach var="i" begin="1" end="${s.rating}">
-                                                                        <i class="fas fa-star text-warning"></i>
+                                                                        <i  class="fas fa-star text-warning "></i>
                                                                     </c:forEach>
                                                                     <c:forEach var="i" begin="${s.rating + 1}" end="5">
                                                                         <i class="far fa-star text-secondary"></i>
@@ -230,7 +240,7 @@
                                                                         <input type="hidden" name="reviewID" value="${s.reviewID}">
                                                                         <div class="modal-header">
                                                                             <h5 class="modal-title">Chỉnh sửa trạng thái đánh giá</h5>
-                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal">Đ</button>
+                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                                         </div>
                                                                         <div class="modal-body">
                                                                             <div class="mb-3">
@@ -286,7 +296,7 @@
                     <div class="modal-content">
                         <div class="modal-header bg-success text-white">
                             <h5 class="modal-title" id="successModalLabel">Trạng Thái Thành Công</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close">Đóng</button>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body text-dark">
                             ${sessionScope.successMessage}
@@ -327,7 +337,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">Xác nhận xóa vĩnh viễn</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal">Đóng</button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
                             Bạn có chắc chắn muốn xóa vĩnh viễn đánh giá này !
