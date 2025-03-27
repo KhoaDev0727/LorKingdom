@@ -16,6 +16,10 @@
                 font-size: 0.9em;
                 margin-top: 5px;
             }
+            .continue-shopping a {
+                text-decoration: none;
+                color: #2196f3;
+            }
             .voucher-container {
                 position: relative;
                 display: flex;
@@ -201,8 +205,11 @@
         <div class="container">
             <!-- Left content -->
             <div class="order-form">
+                <div class="continue-shopping">
+                    <a href="cart.jsp" style="color: orange;">← Quay lại giỏ hàng</a>
+                </div>
                 <div class="logo-box-order-detailts">
-                    <img src="./assets/img/logo-login.png" alt="logo" class="logo-order-details">
+                    <img src="./assets/img/logo-login.png" alt="logo" style="margin-top: 10px;" class="logo-order-details">
                 </div>
 
                 <form action="OrderServlet" method="POST" id="orderForm">

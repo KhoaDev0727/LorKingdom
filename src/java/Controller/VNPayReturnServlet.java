@@ -109,7 +109,7 @@ public class VNPayReturnServlet extends HttpServlet {
             order.setPayMentMethodName("Ví điện tử VNPAY");
             order.setShipingMethodName(shippingMethod != null ? shippingMethod.getMethodName() : "Unknown");
             order.setOrderDate(new Timestamp(System.currentTimeMillis()));
-            order.setStatus("Paid"); // Đã thanh toán
+            order.setStatus("Pending"); // Đã thanh toán
             order.setTotalAmount(finalTotal);
             order.setCreatedAt(new Timestamp(System.currentTimeMillis()));
 

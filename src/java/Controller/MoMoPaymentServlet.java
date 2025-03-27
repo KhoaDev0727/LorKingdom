@@ -38,8 +38,8 @@ public class MoMoPaymentServlet extends HttpServlet {
     private static final String PARTNER_CODE = "MOMOBKUN20180529";
     private static final String ACCESS_KEY = "klm05TvNBzhg7h7j";
     private static final String SECRET_KEY = "at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa";
-    private static final String REDIRECT_URL = "http://localhost:9090/LorKingdom/orderMomo-success.jsp";
-    private static final String IPN_URL = "http://localhost:9090/LorKingdom/orderMomo-success.jsp";
+    private static final String REDIRECT_URL = "http://localhost:8080/LorKingdom/orderMomo-success.jsp";
+    private static final String IPN_URL = "http://localhost:8080/LorKingdom/orderMomo-success.jsp";
 
     private OrderDAO orderDAO;
     private CartDAO cartDAO;
@@ -189,7 +189,7 @@ public class MoMoPaymentServlet extends HttpServlet {
                 order.setPayMentMethodName("Ví điện tử MOMO");
                 order.setShipingMethodName(shippingMethod != null ? shippingMethod.getMethodName() : "Unknown");
                 order.setOrderDate(new Timestamp(System.currentTimeMillis()));
-                order.setStatus("Paid"); // Đã thanh toán
+                order.setStatus("Pending"); // Đã thanh toán
                 order.setTotalAmount(finalTotal);
                 order.setCreatedAt(new Timestamp(System.currentTimeMillis()));
 

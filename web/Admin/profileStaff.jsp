@@ -54,7 +54,17 @@
                 <nav class="nav">
                     <ul>
                         <li><a href="#" id="profile-link"><i class="fas fa-user"></i> Quản lý hồ sơ</a></li>
-                        <li><a href="FinancialDashboardServlet" id="profile-link"><i class="fas fa-chart-line"></i> Chuyển đến dashboard</a></li>
+                        <li>
+                            <a href="
+                               <c:choose>
+                                   <c:when test='${sessionScope.roleID eq 2}'>${pageContext.request.contextPath}/Admin/CustomerManagementServlet</c:when>
+                                   <c:when test='${sessionScope.roleID eq 4}'>${pageContext.request.contextPath}/Admin/ProductServlet?&action=list</c:when>
+                                   <c:otherwise>FinancialDashboardServlet</c:otherwise>
+                               </c:choose>" 
+                               id="profile-link">
+                                <i class="fas fa-chart-line"></i> Chuyển đến Dashboard
+                            </a>
+                        </li>
                         <li><a href="LogoutPage" id="orders-link"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a></li>
                     </ul>
                 </nav>
