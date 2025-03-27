@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package Controller;
 
 import DAO.OrderDAO;
@@ -9,179 +5,277 @@ import DAO.OrderDetailDAO;
 import Model.Order;
 import Model.OrderDetail;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-/**
- *
- * @author Acer
- */
 public class ManageOrderServlet extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+    private static final Logger LOGGER = Logger.getLogger(ManageOrderServlet.class.getName());
+    private static final int DEFAULT_PAGE = 1;
+    private static final int ORDERS_PER_PAGE = 10;
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
         try {
-
-            // Lấy chỉ số trang hiện tại từ request
+            // Pagination handling
             String indexString = request.getParameter("index");
-            if (indexString == null) {
-                indexString = "1"; // Nếu không có trang hiện tại, mặc định là trang 1
-            }
-
-            int index = Integer.parseInt(indexString);
-
-            // Số lượng sản phẩm trên mỗi trang
-            int ordersPerPage = 10;
+            int index = parsePageIndex(indexString);
 
             OrderDAO dao = new OrderDAO();
-
-            // Lấy tổng số lượng sản phẩm
             int totalOrders = dao.getTotalOrders();
+            int endPage = calculateEndPage(totalOrders, ORDERS_PER_PAGE);
 
-            // Tính toán tổng số trang
-            int endPage = totalOrders / ordersPerPage;
-            if (totalOrders % ordersPerPage != 0) {
-                endPage++;
-            }
-
-            List<Order> listO = dao.getOrdersByPage(index, ordersPerPage);
+            List<Order> listO = dao.getOrdersByPage(index, ORDERS_PER_PAGE);
 
             request.setAttribute("listO", listO);
-
             request.setAttribute("endPage", endPage);
             request.setAttribute("currentPage", index);
 
             request.getRequestDispatcher("OrderManagement.jsp").forward(request, response);
 
+        } catch (NumberFormatException e) {
+            LOGGER.log(Level.WARNING, "Invalid page number format", e);
+            request.getSession().setAttribute("errorModal", "Số trang không hợp lệ");
+            response.sendRedirect("OrderServlet?index=1");
         } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error processing order management request", e);
+            request.getSession().setAttribute("errorModal", "Lỗi hệ thống khi xử lý yêu cầu");
+            response.sendRedirect("OrderServlet?index=1");
         }
-
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit this template.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
 
-        if (action != null && action.equals("delete")) {
-        int orderId = Integer.parseInt(request.getParameter("orderId"));
-        try {
-            OrderDAO dao = new OrderDAO();
-            // Kiểm tra trạng thái đơn hàng trước khi xóa
-            Order order = dao.getOrderByDelete(orderId);
-            if (order != null && "Cancelled".equalsIgnoreCase(order.getStatus())) {
-                dao.deleteOrder(orderId);
-                 request.getSession().setAttribute("successModal", "Xóa đơn hàng thành công.");
-            } else {
-                request.getSession().setAttribute("errorModal", "Chỉ có thể xóa đơn hàng ở trạng thái 'Hủy'");
-            }
+        if (action == null) {
+            request.getSession().setAttribute("errorModal", "Thiếu thông tin hành động");
             response.sendRedirect("OrderServlet");
+            return;
+        }
+
+        try {
+            switch (action) {
+                case "delete":
+                    handleDeleteOrder(request, response);
+                    break;
+                case "search":
+                    handleSearchOrder(request, response);
+                    break;
+                case "sort":
+                    handleSortOrder(request, response);
+                    break;
+                case "updateStatus":
+                    handleUpdateStatus(request, response);
+                    break;
+                default:
+                    request.getSession().setAttribute("errorModal", "Hành động không hợp lệ");
+                    response.sendRedirect("OrderServlet");
+            }
         } catch (Exception e) {
-            request.getSession().setAttribute("errorModal", "Lỗi khi xóa đơn hàng: ");
+            LOGGER.log(Level.SEVERE, "Error processing order action: " + action, e);
+            request.getSession().setAttribute("errorModal", "Lỗi hệ thống: " + e.getMessage());
             response.sendRedirect("OrderServlet");
         }
     }
-        if (action != null && action.equals("search")) {
-            String customerName = request.getParameter("customerName"); // Lấy tên khách hàng từ input
-            try {
-                OrderDAO dao = new OrderDAO();
-                List<Order> listO = dao.searchByCustomerName(customerName); // Gọi phương thức tìm kiếm
-                request.setAttribute("listO", listO);
-                request.getRequestDispatcher("OrderManagement.jsp").forward(request, response); // Hiển thị kết quả
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+
+    private void handleDeleteOrder(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        String orderIdStr = request.getParameter("orderId");
+        if (orderIdStr == null || orderIdStr.isEmpty()) {
+            request.getSession().setAttribute("errorModal", "Thiếu ID đơn hàng");
+            response.sendRedirect("OrderServlet");
+            return;
         }
-        if (action != null && action.equals("sort")) {
-            String sortOrder = request.getParameter("sortOrder"); // Lấy giá trị từ form
 
-            // Nếu sortOrder không hợp lệ, sử dụng giá trị mặc định là ASC
-            if (sortOrder == null || (!sortOrder.equalsIgnoreCase("ASC") && !sortOrder.equalsIgnoreCase("DESC"))) {
-                sortOrder = "ASC";
-            }
+        try {
+            int orderId = Integer.parseInt(orderIdStr);
+            OrderDAO dao = new OrderDAO();
+            Order order = dao.getOrderByDelete(orderId);
 
-            try {
-                OrderDAO dao = new OrderDAO();
-                List<Order> list = dao.sort(sortOrder); // Gọi phương thức sort trong DAO
-                request.setAttribute("listO", list); // Lưu danh sách vào request
-                request.getRequestDispatcher("OrderManagement.jsp").forward(request, response); // Chuyển tiếp đến JSP
-            } catch (Exception e) {
-                e.printStackTrace();
-                request.getSession().setAttribute("errorModal", "Loi Khi Load ");
-                request.getRequestDispatcher("OrderManagement.jsp").forward(request, response);
-            }
-        }
-        if (action != null && action.equals("updateStatus")) {
-            int orderId = Integer.parseInt(request.getParameter("orderId"));
-            String status = request.getParameter("status"); // "Pending", "Shipped", "Delivered"
-
-            try {
-                OrderDAO dao = new OrderDAO();
-                int statusId = dao.getStatusIdByName(status); // Lấy StatusID từ bảng StatusOrder
-
-                if (statusId == -1) {
-                    throw new Exception("Không tìm thấy StatusID cho trạng thái: " + status);
-                }
-
-                dao.updateOrderStatus(orderId, statusId); // Truyền StatusID thay vì String
-                request.getSession().setAttribute("successModal", "Cập nhật trạng thái đơn hàng thành công.");
+            if (order == null) {
+                request.getSession().setAttribute("errorModal", "Không tìm thấy đơn hàng");
                 response.sendRedirect("OrderServlet");
                 return;
-            } catch (Exception e) {
-                e.printStackTrace();
-                request.getSession().setAttribute("errorModal", "Error");
-                request.getRequestDispatcher("OrderManagement.jsp").forward(request, response);
             }
+
+            if ("Cancelled".equalsIgnoreCase(order.getStatus())) {
+                dao.deleteOrder(orderId);
+                request.getSession().setAttribute("successModal", "Xóa đơn hàng thành công.");
+            } else {
+                request.getSession().setAttribute("errorModal",
+                        "Chỉ có thể xóa đơn hàng ở trạng thái 'Hủy'. Trạng thái hiện tại: " + order.getStatus());
+            }
+            response.sendRedirect("OrderServlet");
+
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorModal", "ID đơn hàng không hợp lệ");
+            response.sendRedirect("OrderServlet");
         }
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
+    private void handleSearchOrder(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        String customerName = request.getParameter("customerName");
+
+        if (customerName == null || customerName.trim().isEmpty()) {
+            request.getSession().setAttribute("errorModal", "Vui lòng nhập tên khách hàng để tìm kiếm");
+            response.sendRedirect("OrderServlet");
+            return;
+        }
+
+        if (customerName.length() > 100) {
+            request.getSession().setAttribute("errorModal", "Tên khách hàng quá dài");
+            response.sendRedirect("OrderServlet");
+            return;
+        }
+
+        OrderDAO dao = new OrderDAO();
+        List<Order> listO = dao.searchByCustomerName(customerName.trim());
+
+        if (listO.isEmpty()) {
+            request.setAttribute("searchMessage", "Không tìm thấy đơn hàng nào cho '" + customerName + "'");
+        }
+
+        request.setAttribute("listO", listO);
+        request.setAttribute("searchedName", customerName);
+        request.getRequestDispatcher("OrderManagement.jsp").forward(request, response);
+    }
+
+    private void handleSortOrder(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        String sortOrder = request.getParameter("sortOrder");
+
+        // Default to ASC if invalid value
+        if (sortOrder == null || (!sortOrder.equalsIgnoreCase("ASC") && !sortOrder.equalsIgnoreCase("DESC"))) {
+            sortOrder = "ASC";
+        }
+
+        OrderDAO dao = new OrderDAO();
+        List<Order> list = dao.sort(sortOrder);
+
+        request.setAttribute("listO", list);
+        request.setAttribute("currentSort", sortOrder);
+        request.getRequestDispatcher("OrderManagement.jsp").forward(request, response);
+    }
+
+    private void handleUpdateStatus(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        String orderIdStr = request.getParameter("orderId");
+        String status = request.getParameter("status");
+
+        // Validate required parameters
+        if (orderIdStr == null || orderIdStr.trim().isEmpty()) {
+            request.getSession().setAttribute("errorModal", "Thiếu ID đơn hàng");
+            response.sendRedirect("OrderServlet");
+            return;
+        }
+
+        if (status == null || status.trim().isEmpty()) {
+            request.getSession().setAttribute("errorModal", "Thiếu trạng thái cập nhật");
+            response.sendRedirect("OrderServlet");
+            return;
+        }
+
+        try {
+            int orderId = Integer.parseInt(orderIdStr);
+            OrderDAO dao = new OrderDAO();
+
+            // First get the current order to validate
+            Order currentOrder = dao.getOrderByIdUpdate(orderId);
+            if (currentOrder == null) {
+                request.getSession().setAttribute("errorModal", "Không tìm thấy đơn hàng với ID: " + orderId);
+                response.sendRedirect("OrderServlet");
+                return;
+            }
+
+            // Get status ID from database
+            int statusId = dao.getStatusIdByName(status.trim());
+            if (statusId == -1) {
+                request.getSession().setAttribute("errorModal", "Trạng thái không hợp lệ: " + status);
+                response.sendRedirect("OrderServlet");
+                return;
+            }
+
+            // Validate status transition
+            if (!isValidStatusTransition(currentOrder.getStatus(), status)) {
+                request.getSession().setAttribute("errorModal",
+                        "Không thể chuyển từ trạng thái " + currentOrder.getStatus() + " sang " + status);
+                response.sendRedirect("OrderServlet");
+                return;
+            }
+
+            // Perform the update
+            boolean success = dao.updateOrderStatus(orderId, statusId);
+            if (success) {
+                request.getSession().setAttribute("successModal", "Cập nhật trạng thái thành công");
+            } else {
+                request.getSession().setAttribute("errorModal", "Cập nhật trạng thái thất bại");
+            }
+            response.sendRedirect("OrderServlet");
+
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorModal", "ID đơn hàng phải là số");
+            response.sendRedirect("OrderServlet");
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error updating order status", e);
+            request.getSession().setAttribute("errorModal", "Lỗi hệ thống khi cập nhật trạng thái");
+            response.sendRedirect("OrderServlet");
+        }
+    }
+
+    private boolean isValidStatusTransition(String currentStatus, String newStatus) {
+
+        if (currentStatus.equalsIgnoreCase(newStatus)) {
+            return true; // Allow staying in same status
+        }
+
+        switch (currentStatus.toLowerCase()) {
+            case "pending":
+                return newStatus.equalsIgnoreCase("Shipped")
+                        || newStatus.equalsIgnoreCase("Cancelled");
+            case "shipped":
+                return newStatus.equalsIgnoreCase("Delivered");
+            case "delivered":
+            case "cancelled":
+                return false; // No transitions allowed from these states
+            default:
+                return false;
+        }
+    }
+
+    private int parsePageIndex(String indexString) {
+        if (indexString == null || indexString.isEmpty()) {
+            return DEFAULT_PAGE;
+        }
+        try {
+            return Integer.parseInt(indexString);
+        } catch (NumberFormatException e) {
+            return DEFAULT_PAGE;
+        }
+    }
+
+    private int calculateEndPage(int totalItems, int itemsPerPage) {
+        if (totalItems <= 0) {
+            return 1;
+        }
+        return (totalItems + itemsPerPage - 1) / itemsPerPage;
+    }
+
     @Override
     public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+        return "Order Management Servlet";
+    }
 }

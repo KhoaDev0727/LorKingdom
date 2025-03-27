@@ -44,6 +44,7 @@ public class AddPromotionServlet extends HttpServlet {
         request.getRequestDispatcher("PromotionController.jsp").forward(request, response);
     }
 
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -67,25 +68,40 @@ public class AddPromotionServlet extends HttpServlet {
                 return;
             }
 
+            // Validate date format first
+            if (!isValidDate(startDateStr) || !isValidDate(endDateStr)) {
+                request.getSession().setAttribute("errorModal", "Định dạng ngày không hợp lệ. Vui lòng sử dụng định dạng yyyy-MM-dd");
+                response.sendRedirect("promotionController");
+                return;
+            }
+
             // Chuyển đổi dữ liệu
             int productID = Integer.parseInt(productIDStr);
             double discountPercent = Double.parseDouble(discountPercentStr);
 
             // Kiểm tra discountPercent có hợp lệ không
             if (discountPercent < 1 || discountPercent > 100) {
-                request.getSession().setAttribute("errorModal", "Phần trăm giảm giá không được vượt quá 100");
+                request.getSession().setAttribute("errorModal", "Phần trăm giảm giá phải từ 1 đến 100");
                 response.sendRedirect("promotionController");
                 return;
             }
 
             Date startDate = Date.valueOf(startDateStr);
             Date endDate = Date.valueOf(endDateStr);
-            Date createdAt = new Date(System.currentTimeMillis());
-            Date updatedAt = new Date(System.currentTimeMillis());
+            Date currentDate = new Date(System.currentTimeMillis());
+            Date createdAt = currentDate;
+            Date updatedAt = currentDate;
 
             // Kiểm tra ngày bắt đầu không lớn hơn ngày kết thúc
             if (startDate.after(endDate)) {
                 request.getSession().setAttribute("errorModal", "Ngày bắt đầu không thể lớn hơn ngày kết thúc!");
+                response.sendRedirect("promotionController");
+                return;
+            }
+
+            // Kiểm tra ngày bắt đầu không nhỏ hơn ngày hiện tại
+            if (startDate.before(currentDate)) {
+                request.getSession().setAttribute("errorModal", "Ngày bắt đầu không thể nhỏ hơn ngày hiện tại!");
                 response.sendRedirect("promotionController");
                 return;
             }
@@ -107,7 +123,7 @@ public class AddPromotionServlet extends HttpServlet {
             pro.setStatus(status);
             pro.setCreatedAt(createdAt);
             pro.setUpdatedAt(updatedAt);
-            pro.setPromotionCode(promotionCode); // **Thêm mã khuyến mãi vào đối tượng**
+            pro.setPromotionCode(promotionCode);
 
             // Gọi DAO để thêm vào database
             PromotionDAO promotionDAO = new PromotionDAO();
@@ -121,8 +137,8 @@ public class AddPromotionServlet extends HttpServlet {
                 request.getSession().setAttribute("successModal", "Thêm khuyến mãi thành công!");
                 response.sendRedirect("promotionController");
             }
-        } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorModal", "Dữ liệu không hợp lệ! Hãy kiểm tra lại số và ngày.");
+        } catch (IllegalArgumentException e) {
+            request.getSession().setAttribute("errorModal", "Định dạng ngày không hợp lệ. Vui lòng sử dụng định dạng yyyy-MM-dd");
             response.sendRedirect("promotionController");
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -148,6 +164,21 @@ public class AddPromotionServlet extends HttpServlet {
         }
 
         return code.toString();
+    }
+
+    private boolean isValidDate(String dateStr) {
+        try {
+            // Simple date format validation (yyyy-MM-dd)
+            if (!dateStr.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                return false;
+            }
+
+            // Try to parse the date
+            Date.valueOf(dateStr);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
     /**

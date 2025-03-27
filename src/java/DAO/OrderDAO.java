@@ -309,6 +309,40 @@ public class OrderDAO extends DBConnect.DBConnection {
         }
         return list;
     }
+    public Order getOrderByIdUpdate(int orderId) throws SQLException, ClassNotFoundException {
+    String sql = "SELECT o.*, a.AccountName, "
+            + "p.MethodName AS PaymentMethodName, "
+            + "s.MethodName AS ShippingMethodName, "
+            + "st.Status "
+            + "FROM [dbo].[Orders] o "
+            + "INNER JOIN [dbo].[Account] a ON o.AccountID = a.AccountID "
+            + "INNER JOIN [dbo].[PaymentMethods] p ON o.PaymentMethodID = p.PaymentMethodID "
+            + "INNER JOIN [dbo].[ShippingMethods] s ON o.ShippingMethodID = s.ShippingMethodID "
+            + "INNER JOIN [dbo].[StatusOrder] st ON o.StatusID = st.StatusID "
+            + "WHERE o.OrderID = ?";
+    
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        
+        ps.setInt(1, orderId);
+        ResultSet rs = ps.executeQuery();
+        
+        if (rs.next()) {
+            Order order = new Order();
+            order.setOrderId(rs.getInt("OrderID"));
+            order.setAccountName(rs.getString("AccountName"));
+            order.setPayMentMethodName(rs.getString("PaymentMethodName"));
+            order.setShipingMethodName(rs.getString("ShippingMethodName"));
+            order.setOrderDate(rs.getTimestamp("OrderDate"));
+            order.setStatus(rs.getString("Status")); // This now comes from StatusOrder table
+            order.setTotalAmount(rs.getDouble("TotalAmount"));
+            order.setCreatedAt(rs.getTimestamp("CreatedAt"));
+            order.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
+            return order;
+        }
+    }
+    return null;
+}
 
 //    Creator by Khang
     public static Map<String, Object> getOrdersByUser(int accountId, int status, int page, int pageSize) {
@@ -514,7 +548,7 @@ public class OrderDAO extends DBConnect.DBConnection {
 
     //Create by Khoa
     public boolean updateOrderStatus(int orderId, int statusId) throws SQLException, ClassNotFoundException {
-        String query = "UPDATE Orders SET StatusID = ? WHERE OrderID = ?";
+        String query = "UPDATE Orders SET StatusID = ?, UpdatedAt = GETDATE() WHERE OrderID = ?";
         boolean rowUpdate = false;
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, statusId);
