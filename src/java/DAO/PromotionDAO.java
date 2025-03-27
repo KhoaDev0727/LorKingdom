@@ -147,7 +147,7 @@ public class PromotionDAO extends DBConnect.DBConnection {
 
     public List<Product> getAllProducts() throws SQLException, ClassNotFoundException {
         List<Product> list = new ArrayList<>();
-        String sql = "SELECT ProductID, name FROM Product";
+        String sql = "SELECT ProductID, name FROM Product WHERE IsDeleted = 0";
 
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(sql);  ResultSet rs = ps.executeQuery()) {
 
