@@ -202,8 +202,8 @@
             <!-- Left content -->
             <div class="order-form">
                 <div class="continue-shopping">
-                        <a href="getList">← Quay lại giỏ hàng</a>
-                    </div>
+                    <a href="getList">← Quay lại giỏ hàng</a>
+                </div>
                 <div class="logo-box-order-detailts">
                     <img src="./assets/img/logo-login.png" alt="logo" class="logo-order-details">
                 </div>
@@ -526,6 +526,10 @@
                             return;
                         }
 
+                        // Lấy tổng số tiền từ biến totalMoney
+                        const totalMoney = ${totalMoney}; // Giá trị totalMoney từ JSP
+                        const limit = 45000000; // Giới hạn 45 triệu
+
                         data.forEach((method, index) => {
                             if (typeof method !== "object" || method === null) {
                                 console.error("Phương thức không hợp lệ tại index", index, ":", method);
@@ -550,6 +554,11 @@
                                     break;
                                 default:
                                     methodValue = methodName.toLowerCase().replace(/\s/g, '');
+                            }
+
+                            // Kiểm tra điều kiện tổng tiền
+                            if (totalMoney > limit && (methodValue === "vnpay" || methodValue === "momo")) {
+                                return; // Bỏ qua VNPAY và MOMO nếu tổng tiền > 45 triệu
                             }
 
                             // Xác định đường dẫn hình ảnh dựa trên methodValue
