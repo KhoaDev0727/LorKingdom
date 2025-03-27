@@ -32,7 +32,7 @@
 
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="profileStaff.jsp">Cài đặt</a></li>
+                        <li><a class="dropdown-item" href="profileStaff.jsp">Hồ Sơ</a></li>
 <!--                        <li><a class="dropdown-item" href="#!">Activity Log</a></li>-->
                         <li>
                             <hr class="dropdown-divider" />

@@ -124,7 +124,7 @@
             <h3>Chi Tiết Đơn Hàng</h3>
             <c:forEach items="${sessionScope.order.orderDetails}" var="detail">
                 <div class="product-item">
-                    <img src="${detail.productImage}" alt="${detail.productName}">
+                    <img src="${pageContext.request.contextPath}/${detail.productImage}" alt="${detail.productName}">
                     <div class="product-info">
                         <p><strong>${detail.productName}</strong></p>
                         <p>Số lượng: ${detail.quantity}</p>

@@ -202,7 +202,7 @@
             <!-- Left content -->
             <div class="order-form">
                 <div class="continue-shopping">
-                    <a href="getList">← Quay lại giỏ hàng</a>
+                    <a href="cart.jsp" style="text-decoration:none;">← Quay lại giỏ hàng</a>
                 </div>
                 <div class="logo-box-order-detailts">
                     <img src="./assets/img/logo-login.png" alt="logo" class="logo-order-details">

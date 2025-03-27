@@ -135,7 +135,7 @@
         <header class="header">
             <div class="header_first">
                 <div class="header-left d-flex align-items-center gap-3">
-                    <a href="home.jsp" class="logo">
+                    <a href="getList" class="logo">
                         <img src="assets/img/logo-login.png" alt="Lor Logo">
                     </a>
                     <form action="getList" method="post">
@@ -151,8 +151,7 @@
 
                 <div class="header-right">
                     <a href="getList" >Sản Phẩm </a>
-                    <a href="aboutus.jsp" data-key="aboutUs">Giới Thiệu</a>
-                    <a href="#" data-key="help">Trợ giúp</a>
+                    <a href="aboutus.jsp" data-key="aboutUs">Giới Thiệu</a>   
 
                     <!-- Icon notification here -->
                     <div class="notification-container">

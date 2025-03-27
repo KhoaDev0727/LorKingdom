@@ -446,13 +446,13 @@ public class OrderDAO extends DBConnect.DBConnection {
     public static HashMap<Integer, Integer> getAllProductInOrder(int orderId) throws SQLException, ClassNotFoundException {   // HashMap để lưu ProductID và Quantity
         HashMap<Integer, Integer> productQuantityMap = new HashMap<>();
 
-        String sql = "SELECT ProductID, Quantity\n"
-                + "FROM OrderDetails\n"
+        String sql = "SELECT ProductID, Quantity "
+                + "FROM OrderDetails "
                 + "WHERE OrderID = ?;";
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement stm = conn.prepareStatement(sql)) {
 
             // Thiết lập OrderID cần truy vấn
-            stm.setInt(1, 1); // Thay số 1 bằng OrderID mong muốn
+            stm.setInt(1, orderId); // Thay số 1 bằng OrderID mong muốn
             ResultSet rs = stm.executeQuery();
 
             // Duyệt kết quả và lưu vào HashMap
