@@ -433,6 +433,43 @@ public class ProductDAO {
         return product;
     }
 
+    public List<Product> searchAllProducts(String keyword) throws SQLException, ClassNotFoundException {
+        List<Product> products = new ArrayList<>();
+        // Truy vấn chỉ trên bảng Product, tìm theo tên và SKU (không lọc theo IsDeleted hay Quantity)
+        String query = "SELECT * FROM Product WHERE LOWER(Name) LIKE ? OR LOWER(SKU) LIKE ?";
+
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+
+            String searchKey = "%" + keyword.toLowerCase() + "%";
+            ps.setString(1, searchKey);
+            ps.setString(2, searchKey);
+
+            try ( ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Product product = new Product();
+                    product.setProductID(rs.getInt("ProductID"));
+                    product.setSKU(rs.getString("SKU"));
+                    product.setCategoryID(rs.getObject("CategoryID") != null ? rs.getInt("CategoryID") : null);
+                    product.setMaterialID(rs.getObject("MaterialID") != null ? rs.getInt("MaterialID") : null);
+                    product.setAgeID(rs.getObject("AgeID") != null ? rs.getInt("AgeID") : null);
+                    product.setSexID(rs.getObject("SexID") != null ? rs.getInt("SexID") : null);
+                    product.setPriceRangeID(rs.getObject("PriceRangeID") != null ? rs.getInt("PriceRangeID") : null);
+                    product.setBrandID(rs.getObject("BrandID") != null ? rs.getInt("BrandID") : null);
+                    product.setOriginID(rs.getObject("OriginID") != null ? rs.getInt("OriginID") : null);
+                    product.setName(rs.getString("Name"));
+                    product.setPrice(rs.getDouble("Price"));
+                    product.setQuantity(rs.getInt("Quantity"));
+                    product.setStatus(rs.getString("Status"));
+                    product.setDescription(rs.getString("Description"));
+                    product.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                    product.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
+                    products.add(product);
+                }
+            }
+        }
+        return products;
+    }
+
     public List<Product> searchProducts(String keyword) throws SQLException, ClassNotFoundException {
         List<Product> products = new ArrayList<>();
         // Truy vấn JOIN đầy đủ các bảng và điều kiện lọc

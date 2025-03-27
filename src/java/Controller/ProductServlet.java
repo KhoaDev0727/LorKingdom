@@ -226,7 +226,7 @@ public class ProductServlet extends HttpServlet {
         List<ProductImage> mainImages = ProductImageDAO.getMainProductImages();
         request.setAttribute("mainImages", mainImages);
 
-        List<Product> products = productDAO.searchProducts(keyword.trim().toLowerCase());
+        List<Product> products = productDAO.searchAllProducts(keyword.trim().toLowerCase());
         request.setAttribute("products", products);
         request.getRequestDispatcher("ProductManagement.jsp").forward(request, response);
     }
