@@ -268,6 +268,12 @@ public class CartManagementServlet extends HttpServlet {
             }
 
             int productId = Integer.parseInt(request.getParameter("productID"));
+            Product product = ProductDAO.getAvailableProductById(productId);
+            if (product == null) {
+                // Nếu sản phẩm không khả dụng, đặt thông báo và chuyển hướng về trang home
+                response.sendRedirect(request.getContextPath() + "/getList");
+                return;
+            }
             double price = Double.parseDouble(request.getParameter("price"));
             int quantity = Integer.parseInt(request.getParameter("quantity"));
 
@@ -372,3 +378,6 @@ private void fowardCheckOut(HttpServletRequest request, HttpServletResponse resp
     }
 }
 }
+
+
+

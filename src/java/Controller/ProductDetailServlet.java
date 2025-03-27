@@ -109,9 +109,10 @@ public class ProductDetailServlet extends HttpServlet {
             }
 
             // Lấy thông tin sản phẩm
-            Product product = ProductDAO.getProductById(productId);
+            Product product = ProductDAO.getAvailableProductById(productId);
             if (product == null) {
-                response.sendRedirect("home.jsp");
+                // Sản phẩm không khả dụng (ví dụ: chất liệu đã bị xóa mềm), chuyển hướng về trang home
+                response.sendRedirect(request.getContextPath() + "/getList");
                 return;
             }
 
@@ -191,7 +192,7 @@ public class ProductDetailServlet extends HttpServlet {
             request.setAttribute("listReviews", listReviews);
             request.setAttribute("totalComment", totalComment);
             request.setAttribute("totalImage", totalImage);
-             // LOC CODE KHONG LOI DAU
+            // LOC CODE KHONG LOI DAU
             List<Promotion> promotions = promotion.getPromotionsByProductId(productId);
             double discountPrice = product.getPrice();  // Giá gốc
             boolean hasPromotion = false;
@@ -211,19 +212,13 @@ public class ProductDetailServlet extends HttpServlet {
 
             // Điều hướng đến trang chi tiết sản phẩm
             request.getRequestDispatcher("ProductDetailPage.jsp").forward(request, response);
-
         } catch (NumberFormatException e) {
-            // Log lỗi và chuyển hướng đến danh sách sản phẩm nếu có lỗi định dạng số
             System.err.println("Lỗi chuyển đổi số: " + e.getMessage());
-            response.sendRedirect(request.getContextPath() + "/getList");
-
+            response.sendRedirect(request.getContextPath() + "getList");
         } catch (ClassNotFoundException e) {
-            // Log lỗi nếu thiếu class
             System.err.println("Lỗi không tìm thấy class: " + e.getMessage());
-            response.sendRedirect(request.getContextPath() + "/getList");
-
+            response.sendRedirect(request.getContextPath() + "getList");
         } catch (Exception e) {
-            // Log lỗi chi tiết
             e.printStackTrace();
             request.setAttribute("errorMessage", "Đã xảy ra lỗi! Vui lòng thử lại sau.");
             request.getRequestDispatcher("error.jsp").forward(request, response);
@@ -282,7 +277,8 @@ public class ProductDetailServlet extends HttpServlet {
             response.getWriter().write(jsonResponse.toString());
         }
     }
-        private double calculateDiscountedPrice(double originalPrice, List<Promotion> promotions) {
+
+    private double calculateDiscountedPrice(double originalPrice, List<Promotion> promotions) {
         double discountPrice = originalPrice;  // Giá gốc
 
         if (promotions != null && !promotions.isEmpty()) {
@@ -308,3 +304,6 @@ public class ProductDetailServlet extends HttpServlet {
     }// </editor-fold>
 
 }
+
+
+

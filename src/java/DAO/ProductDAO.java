@@ -655,4 +655,55 @@ public class ProductDAO {
         return null;
     }
 
+    public static Product getAvailableProductById(int productId) throws ClassNotFoundException {
+        Product product = null;
+        try {
+            conn = DBConnection.getConnection();
+            String sql = "SELECT p.* "
+                    + "FROM Product p "
+                    + "JOIN Category c ON p.CategoryID = c.CategoryID "
+                    + "JOIN SuperCategory sc ON c.SuperCategoryID = sc.SuperCategoryID "
+                    + "JOIN Age a ON p.AgeID = a.AgeID "
+                    + "JOIN Brand b ON p.BrandID = b.BrandID "
+                    + "JOIN Material m ON p.MaterialID = m.MaterialID "
+                    + "JOIN PriceRange pr ON p.PriceRangeID = pr.PriceRangeID "
+                    + "JOIN Sex s ON p.SexID = s.SexID "
+                    + "JOIN Origin o ON p.OriginID = o.OriginID "
+                    + "WHERE p.ProductID = ? "
+                    + "  AND p.IsDeleted = 0 "
+                    + "  AND c.IsDeleted = 0 "
+                    + "  AND sc.IsDeleted = 0 "
+                    + "  AND a.IsDeleted = 0 "
+                    + "  AND b.IsDeleted = 0 "
+                    + "  AND m.IsDeleted = 0 "
+                    + "  AND pr.IsDeleted = 0 "
+                    + "  AND s.IsDeleted = 0 "
+                    + "  AND o.IsDeleted = 0 "
+                    + "  AND p.Quantity > 0";
+            stm = conn.prepareStatement(sql);
+            stm.setInt(1, productId);
+            rs = stm.executeQuery();
+            if (rs.next()) {
+                product = new Product(
+                        rs.getString("SKU"),
+                        rs.getInt("CategoryID"),
+                        rs.getInt("MaterialID"),
+                        rs.getInt("AgeID"),
+                        rs.getInt("SexID"),
+                        rs.getInt("PriceRangeID"),
+                        rs.getInt("BrandID"),
+                        rs.getInt("OriginID"),
+                        rs.getString("Name"),
+                        rs.getDouble("Price"),
+                        rs.getInt("Quantity"),
+                        rs.getString("Description")
+                );
+                product.setProductID(rs.getInt("ProductID"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return product;
+    }
+
 }

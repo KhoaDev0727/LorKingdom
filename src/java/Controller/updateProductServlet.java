@@ -257,13 +257,13 @@ public class updateProductServlet extends HttpServlet {
                 request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
                 return;
             }
-            if (stockQuantity <= 0) {
-                session.setAttribute("errorMessage", "Số lượng sản phẩm không được nhỏ hơn hoặc bằng 0");
-                UpdateProductDataLoader.loadDataForUpdate(request, productID);
-                request.setAttribute("priceTruncated", priceStr); // thêm dòng này!
-                request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
-                return;
-            }
+//            if (stockQuantity <= 0) {
+//                session.setAttribute("errorMessage", "Số lượng sản phẩm không được nhỏ hơn hoặc bằng 0");
+//                UpdateProductDataLoader.loadDataForUpdate(request, productID);
+//                request.setAttribute("priceTruncated", priceStr); // thêm dòng này!
+//                request.getRequestDispatcher("UpdateProduct.jsp").forward(request, response);
+//                return;
+//            }
             UploadImageProduct handleImageProduct = new UploadImageProduct();
             String uploadPath = getServletContext().getRealPath("/uploads");
             File uploadDir = new File(uploadPath);

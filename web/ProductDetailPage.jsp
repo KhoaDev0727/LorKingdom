@@ -288,7 +288,7 @@
                     <div class="modal-content">
                         <!-- Tiêu đề modal -->
                         <div class="modal-header bg-danger text-white">
-                            <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                            <h5 class="modal-title" id="errorModalLabel">Thông báo</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <!-- Nội dung modal -->
