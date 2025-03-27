@@ -14,6 +14,7 @@
         <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="./assets/js/script.js"></script>
         <style>
@@ -255,8 +256,8 @@
                                     onclick="resetFilter()">
                                 Xoá bộ lọc
                             </button>
-<!-- Thêm phần tử mốc vào nơi bạn muốn cuộn đến -->
-<div class="your-class" id="scroll-marker"></div>
+                            <!-- Thêm phần tử mốc vào nơi bạn muốn cuộn đến -->
+                            <div class="your-class" id="scroll-marker"></div>
                         </div>
                         <div class="flex items-center text-xl">
                             <span class="mr-2">
@@ -283,7 +284,7 @@
         <button id="back-to-top" class="hidden fixed bottom-35 right-5 shopee-back-to-top">
             <i class="bi bi-arrow-up"></i>
         </button>
-
+        <%@include file="assets/Component/footer.jsp" %>
         <!-- Vendor JS Files -->
         <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 

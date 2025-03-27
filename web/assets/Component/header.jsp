@@ -209,18 +209,18 @@
                             <c:choose>
                                 <c:when test="${not empty sessionScope.imgePath}">                                 
                                     <a href="Setting.jsp" class="menu-item-avatar text-dark p-3">
-                                        <i class="fas fa-gear"></i> Setting
+                                        <i class="fas fa-gear"></i> Cài đặt
                                     </a>
                                     <a href="LogoutServlet" class="menu-item-avatar text-dark p-3">
-                                        <i class="fas fa-sign-out-alt"></i> Logout
+                                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
                                     </a>
                                 </c:when>
                                 <c:otherwise>
                                     <a href="login.jsp" class="menu-item-avatar text-dark p-3">
-                                        <i class="fas fa-sign-in-alt"></i> Login
+                                        <i class="fas fa-sign-in-alt"></i> Đăng nhập
                                     </a>
                                     <a href="register.jsp" class="menu-item-avatar text-dark p-3">
-                                        <i class="fas fa-user-plus"></i> Register
+                                        <i class="fas fa-user-plus"></i> Đăng ký
                                     </a>
                                 </c:otherwise>
                             </c:choose>
