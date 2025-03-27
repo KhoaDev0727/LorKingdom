@@ -245,8 +245,20 @@ public class ProductDAO {
     // 2. Lấy danh sách sản phẩm đã bị xóa mềm (IsDeleted = 1)
     public List<Product> getDeletedProducts() throws SQLException, ClassNotFoundException {
         List<Product> products = new ArrayList<>();
-        String query = "SELECT * FROM Product WHERE IsDeleted = 1";
-        try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
+        String query = "SELECT p.* "
+                + "FROM Product p "
+                + "JOIN Category c ON p.CategoryID = c.CategoryID "
+                + "JOIN SuperCategory sc ON c.SuperCategoryID = sc.SuperCategoryID "
+                + "JOIN Age a ON p.AgeID = a.AgeID "
+                + "JOIN Brand b ON p.BrandID = b.BrandID "
+                + "JOIN Material m ON p.MaterialID = m.MaterialID "
+                + "JOIN PriceRange pr ON p.PriceRangeID = pr.PriceRangeID "
+                + "JOIN Sex s ON p.SexID = s.SexID "
+                + "JOIN Origin o ON p.OriginID = o.OriginID "
+                + "WHERE (p.IsDeleted = 1 OR c.IsDeleted = 1 OR sc.IsDeleted = 1 OR "
+                + "       a.IsDeleted = 1 OR b.IsDeleted = 1 OR m.IsDeleted = 1 OR "
+                + "       pr.IsDeleted = 1 OR s.IsDeleted = 1 OR o.IsDeleted = 1)";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query);  ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 Product product = new Product();
                 product.setProductID(rs.getInt("ProductID"));
