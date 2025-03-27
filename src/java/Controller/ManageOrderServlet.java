@@ -107,7 +107,7 @@ public class ManageOrderServlet extends HttpServlet {
         try {
             OrderDAO dao = new OrderDAO();
             // Kiểm tra trạng thái đơn hàng trước khi xóa
-            Order order = dao.getOrderById(orderId);
+            Order order = dao.getOrderByDelete(orderId);
             if (order != null && "Cancelled".equalsIgnoreCase(order.getStatus())) {
                 dao.deleteOrder(orderId);
                  request.getSession().setAttribute("successModal", "Xóa đơn hàng thành công.");
