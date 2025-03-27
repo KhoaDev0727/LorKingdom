@@ -433,17 +433,37 @@ public class ProductDAO {
         return product;
     }
 
-// (Tùy chọn) Tìm kiếm sản phẩm theo từ khóa
     public List<Product> searchProducts(String keyword) throws SQLException, ClassNotFoundException {
         List<Product> products = new ArrayList<>();
-        String query = "SELECT p.* FROM Product p "
+        // Truy vấn JOIN đầy đủ các bảng và điều kiện lọc
+        String query = "SELECT p.* "
+                + "FROM Product p "
                 + "JOIN Category c ON p.CategoryID = c.CategoryID "
-                + "WHERE p.IsDeleted = 0 AND c.IsDeleted = 0 "
-                + "AND (LOWER(p.Name) LIKE ? OR LOWER(p.SKU) LIKE ?)";
+                + "JOIN SuperCategory sc ON c.SuperCategoryID = sc.SuperCategoryID "
+                + "JOIN Age a ON p.AgeID = a.AgeID "
+                + "JOIN Brand b ON p.BrandID = b.BrandID "
+                + "JOIN Material m ON p.MaterialID = m.MaterialID "
+                + "JOIN PriceRange pr ON p.PriceRangeID = pr.PriceRangeID "
+                + "JOIN Sex s ON p.SexID = s.SexID "
+                + "JOIN Origin o ON p.OriginID = o.OriginID "
+                + "WHERE p.IsDeleted = 0 "
+                + "  AND c.IsDeleted = 0 "
+                + "  AND sc.IsDeleted = 0 "
+                + "  AND a.IsDeleted = 0 "
+                + "  AND b.IsDeleted = 0 "
+                + "  AND m.IsDeleted = 0 "
+                + "  AND pr.IsDeleted = 0 "
+                + "  AND s.IsDeleted = 0 "
+                + "  AND o.IsDeleted = 0 "
+                + "  AND p.Quantity > 0 "
+                + "  AND (LOWER(p.Name) LIKE ? OR LOWER(p.SKU) LIKE ?)";
+
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+
             String searchKey = "%" + keyword.toLowerCase() + "%";
             ps.setString(1, searchKey);
             ps.setString(2, searchKey);
+
             try ( ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Product product = new Product();
