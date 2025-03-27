@@ -215,7 +215,7 @@
                             <div class="mb-3">
                                 <label for="newStatus" class="form-label">Chọn trạng thái mới</label>
                                 <select class="form-select" name="status" id="newStatus" required>
-                                    <option value="Pending">Chờ xử lý</option>
+                                    <option value="Pending">Chờ giao hàng</option>
                                     <option value="Shipped">Đã giao</option>
                                     <option value="Delivered">Đã nhận hàng</option>
                                     <option value="Cancelled">Đã hủy</option>

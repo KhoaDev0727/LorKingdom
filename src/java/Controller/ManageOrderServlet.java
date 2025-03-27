@@ -146,8 +146,7 @@ public class ManageOrderServlet extends HttpServlet {
                 request.getRequestDispatcher("OrderManagement.jsp").forward(request, response); // Chuyển tiếp đến JSP
             } catch (Exception e) {
                 e.printStackTrace();
-                request.setAttribute("message", "Error: " + e.getMessage());
-                request.setAttribute("messageType", "danger");
+                request.getSession().setAttribute("errorModal", "Loi Khi Load ");
                 request.getRequestDispatcher("OrderManagement.jsp").forward(request, response);
             }
         }
@@ -169,8 +168,7 @@ public class ManageOrderServlet extends HttpServlet {
                 return;
             } catch (Exception e) {
                 e.printStackTrace();
-                request.setAttribute("message", "Error: " + e.getMessage());
-                request.setAttribute("messageType", "danger");
+                request.getSession().setAttribute("errorModal", "Error");
                 request.getRequestDispatcher("OrderManagement.jsp").forward(request, response);
             }
         }
