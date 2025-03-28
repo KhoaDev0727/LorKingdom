@@ -47,7 +47,6 @@
                     <main>
                         <div class="container-fluid px-5">
                             <h1 class="mt-4">Quản Lí Danh Mục</h1>
-
                             <form action="CategoryServlet" method="POST" class="mt-4">
                                 <input type="hidden" name="action" value="add">
 

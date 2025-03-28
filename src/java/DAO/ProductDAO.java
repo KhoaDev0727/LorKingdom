@@ -543,7 +543,6 @@ public class ProductDAO {
             if (rs.next()) {
                 exists = rs.getInt(1) > 0;
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -593,35 +592,6 @@ public class ProductDAO {
         }
         return products;
     }
-
-//    public List<Product> getRelatedProductsByCategory(int categoryID, int excludeProductID, int limit) throws ClassNotFoundException {
-//        List<Product> products = new ArrayList<>();
-//        String sql = "SELECT TOP (?) * FROM Product "
-//                + "WHERE IsDeleted = 0 "
-//                + "  AND CategoryID = ? "
-//                + "  AND ProductID <> ? " // để không lấy chính sản phẩm đang xem
-//                + "ORDER BY NEWID()";       // random, hoặc ORDER BY CreatedAt DESC tuỳ ý
-//
-//        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
-//            ps.setInt(1, limit);         // TOP (limit)
-//            ps.setInt(2, categoryID);
-//            ps.setInt(3, excludeProductID);
-//            try ( ResultSet rs = ps.executeQuery()) {
-//                while (rs.next()) {
-//                    Product p = new Product();
-//                    p.setProductID(rs.getInt("ProductID"));
-//                    p.setSKU(rs.getString("SKU"));
-//                    p.setName(rs.getString("Name"));
-//                    p.setPrice(rs.getDouble("Price"));
-//                    // ... map các cột khác nếu cần
-//                    products.add(p);
-//                }
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return products;
-//    }
     public List<Product> getRelatedProductsByCategory(int categoryID, int excludeProductID, int limit) throws ClassNotFoundException {
         List<Product> products = new ArrayList<>();
 

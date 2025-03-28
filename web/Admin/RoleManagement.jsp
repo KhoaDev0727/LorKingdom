@@ -71,50 +71,7 @@
                                                                 <td>${role.name}</td>
                                                                 <td>${role.description}</td>
 
-                                                                <!-- Edit Button -->
-                                                                <!--                                                                    <button class="btn btn-sm btn-warning" 
-                                                                                                                                            data-bs-toggle="modal" 
-                                                                                                                                            data-bs-target="#editRoleModal-${role.roleID}">
-                                                                                                                                        <i class="fas fa-edit"></i>
-                                                                                                                                    </button>
-                                                                                                                                     Delete Button 
-                                                                                                                                    <button class="btn btn-sm btn-danger"
-                                                                                                                                            data-bs-toggle="modal"
-                                                                                                                                            data-bs-target="#confirmDeleteModal"
-                                                                                                                                            onclick="setDeleteRoleID(${role.roleID})">
-                                                                                                                                        <i class="fas fa-trash"></i>
-                                                                                                                                    </button>
-                                                                                                                                </td>
-                                                                                                                            </tr>-->
-                                                                <!-- Edit Role Modal -->
-    <!--                                                        <div class="modal fade" id="editRoleModal-${role.roleID}" tabindex="-1">
-                                                                <div class="modal-dialog">
-                                                                    <div class="modal-content">
-                                                                        <form method="post" action="RoleServlet">
-                                                                            <div class="modal-header">
-                                                                                <h5 class="modal-title">Edit Role</h5>
-                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                                            </div>
-                                                                            <div class="modal-body">
-                                                                                <input type="hidden" name="action" value="update">
-                                                                                <input type="hidden" name="roleID" value="${role.roleID}">
-                                                                                <div class="mb-3">
-                                                                                    <label class="form-label">Role Name</label>
-                                                                                    <input type="text" class="form-control" name="name" value="${role.name}" required>
-                                                                                </div>
-                                                                                <div class="mb-3">
-                                                                                    <label class="form-label">Description</label>
-                                                                                    <input type="text" class="form-control" name="description" value="${role.description}">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="modal-footer">
-                                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                                <button type="submit" class="btn btn-primary">Save changes</button>
-                                                                            </div>
-                                                                        </form>
-                                                                    </div>
-                                                                </div>
-                                                            </div>-->
+                                                         
                                                             </c:forEach>
                                                         </c:otherwise>
                                                     </c:choose>

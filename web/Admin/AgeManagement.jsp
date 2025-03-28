@@ -48,20 +48,12 @@
                     <main>
                         <div class="container-fluid px-5">
                             <h1 class="mt-4">Quản Lí Khoảng Tuổi</h1>
-
-
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <i class="fas fa-table me-1"></i> Danh Sách Khoảng Tuổi
                                         </div>
-<!--                                        <div>
-                                             Nút mở modal Add Notification 
-                                            <button class="btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#addAgeModal">
-                                                <i class="fas fa-plus"></i> Add Age
-                                            </button>
-                                        </div>-->
                                     </div>
                                 </div>
 
@@ -69,11 +61,6 @@
                                     <!-- Search Form -->
                                     <form action="AgeServlet" method="GET" class="mb-4">
                                         <div class="input-group">
-<!--                                            <input type="hidden" name="action" value="search">
-                                            <input type="text" name="search" class="form-control" placeholder="Find Age..." aria-label="Search">
-                                            <button class="btn btn-outline-secondary" type="submit">
-                                                <i class="fas fa-search"></i>
-                                            </button>-->
                                            
                                         </div>
                                     </form>
@@ -135,129 +122,6 @@
                 </div>
             </div>
         </div>
-<!--         Modal Error 
-        <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header bg-danger text-white">
-                        <h5 class="modal-title" id="errorModalLabel">Error</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p id="errorMessage">${sessionScope.errorMessage}</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-         Delete Confirmation Modal 
-        <div class="modal fade" id="successModalLabel" tabindex="-1" aria-labelledby="successModalTitle" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header bg-success text-white">
-                        <h5 class="modal-title" id="successModalTitle">Success</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body text-dark">
-                        <p id="successMessageContent">${sessionScope.successMessage}</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-         Modal XÓA MỀM 
-        <div class="modal fade" id="confirmSoftDeleteModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Xác nhận xóa </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        Bạn có chắc chắn muốn đưa khoảng tuổi này vào thùng rác không?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <form method="POST" action="AgeServlet">
-                            <input type="hidden" name="action" value="delete">
-                            <input type="hidden" name="ageID" id="softDeleteAgeID">
-                            <button type="submit" class="btn btn-danger">Xóa</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-         Modal XÓA CỨNG 
-        <div class="modal fade" id="confirmHardDeleteModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Xác nhận xóa </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        Bạn có chắc chắn muốn xóa khoảng tuổi vĩnh viễn  này không?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <form method="POST" action="AgeServlet">
-                            <input type="hidden" name="action" value="hardDelete">
-                            <input type="hidden" name="ageID" id="hardDeleteAgeID">
-                            <button type="submit" class="btn btn-danger">Xóa</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-</div>
- Modal thêm độ tuổi 
-<div class="modal fade" id="addAgeModal" tabindex="-1" aria-labelledby="addAgeModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addAgeModalLabel">Thêm khoảng tuổi</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="addAgeForm" action="AgeServlet" method="POST">
-                    <input type="hidden" name="action" value="add">
-
-                    <div class="mb-3">
-                        <label for="ageStart" class="form-label">Khoảng tuổi bắt đầu</label>
-                        <input type="number" class="form-control" id="ageStart" name="ageStart" min="0" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="ageEnd" class="form-label">Khoảng tuổi kết thúc</label>
-                        <input type="number" class="form-control" id="ageEnd" name="ageEnd" min="0" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="unit" class="form-label">Đơn vị</label>
-                        <select class="form-select" id="unit" name="unit">
-                            <option value="tháng">Tháng</option>
-                            <option value="tuổi">Tuổi</option>
-                        </select>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Save</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
- Modal Cập Nhật Tuổi -->
-
 
 <script>
     function setSoftDeleteAgeID(id) {

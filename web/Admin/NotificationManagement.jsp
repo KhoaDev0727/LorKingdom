@@ -39,8 +39,8 @@
                 <div class="dashboard-container">
                     <main>
                         <div class="container-fluid px-5">
-                            <h1 class="mt-4">Quản Lí Thông Báo</h1>
 
+                            <h1 class="mt-4">Quản Lí Thông Báo</h1>
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">

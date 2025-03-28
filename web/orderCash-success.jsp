@@ -138,7 +138,6 @@
             <div class="total-amount">
                 Tổng Tiền: <fmt:formatNumber value="${sessionScope.order.totalAmount}" pattern="#,###" /> VND
             </div>
-            
             <!-- Nút tiếp tục mua sắm -->
             <a href="getList" class="btn-continue">Tiếp Tục Mua Sắm</a>
         </div>

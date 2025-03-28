@@ -46,6 +46,7 @@
                 <div class="dashboard-container">
                     <main>
                         <div class="container-fluid px-5">
+
                             <h1 class="mt-4">Quản Lí Danh Mục Tổng</h1>
                             <form action="SuperCategoryServlet" method="POST" class="mt-4">
                                 <input type="hidden" name="action" value="add">

@@ -240,6 +240,15 @@ public class ProductManagementServlet extends HttpServlet {
                 request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
                 return;
             }
+            if (stockQuantity <= 0) {
+                session.setAttribute("errorMessage", "Số lượng sản phẩm không được nhỏ hơn hoặc bằng 0");
+                session.setAttribute("errorMessage", "Số lượng sản phẩm không được vượt quá 200");
+                request.setAttribute("enteredProductName", productName);
+                request.setAttribute("enteredPrice", priceStartStr);
+                request.setAttribute("enteredQuantity", quantityStr);
+                request.getRequestDispatcher("AddNewProduct.jsp").forward(request, response);
+                return;
+            }
             String namePattern = "^[\\p{L}\\d\\s]+$";
 
             if (!productName.matches(namePattern)) {

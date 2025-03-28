@@ -30,7 +30,6 @@
                     <main>
                         <div class="container-fluid px-5">
                             <h1 class="mt-4">Quản Lí Phương Thức Thanh Toán</h1>
-
                             <c:if test="${not empty message}">
                                 <div class="alert alert-${messageType} alert-dismissible fade show" role="alert">
                                     ${message}
