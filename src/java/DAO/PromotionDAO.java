@@ -68,7 +68,7 @@ public class PromotionDAO extends DBConnect.DBConnection {
         return total;
     }
 
-    public void deleteOrder(int proId) throws SQLException, ClassNotFoundException {
+    public void deletePromotion(int proId) throws SQLException, ClassNotFoundException {
         String query = "DELETE FROM [dbo].[Promotions]\n"
                 + "WHERE PromotionID = ?;";
 
@@ -147,7 +147,7 @@ public class PromotionDAO extends DBConnect.DBConnection {
 
     public List<Product> getAllProducts() throws SQLException, ClassNotFoundException {
         List<Product> list = new ArrayList<>();
-        String sql = "SELECT ProductID, name FROM Product";
+        String sql = "SELECT ProductID, name FROM Product WHERE IsDeleted = 0";
 
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(sql);  ResultSet rs = ps.executeQuery()) {
 
@@ -309,105 +309,66 @@ public class PromotionDAO extends DBConnect.DBConnection {
         }
         return list;
     }
+    public void updateExpiredPromotions() throws SQLException, ClassNotFoundException {
+    String query = "UPDATE [dbo].[Promotions] SET Status = 'Expired' WHERE Status = 'Active' AND EndDate < ?";
 
-//      public static void main(String[] args) {
-//        PromotionDAO promotionDAO = new PromotionDAO(); // Tạo đối tượng DAO
-//
-//        try {
-//            int testId = 19; // ID khuyến mãi cần kiểm tra (đảm bảo ID này có trong database)
-//            Promotion promotion = promotionDAO.getById(testId);
-//
-//            if (promotion != null) {
-//                System.out.println("Promotion Found:");
-//                System.out.println("ID: " + promotion.getPromotionID());
-//                System.out.println("Product ID: " + promotion.getProductID());
-//                System.out.println("Name: " + promotion.getName());
-//                System.out.println("Description: " + promotion.getDescription());
-//                System.out.println("Discount: " + promotion.getDiscountPercent() + "%");
-//                System.out.println("Start Date: " + promotion.getStartDate());
-//                System.out.println("End Date: " + promotion.getEndDate());
-//                System.out.println("Status: " + promotion.getStatus());
-//                System.out.println("Created At: " + promotion.getCreatedAt());
-//                System.out.println("Updated At: " + promotion.getUpdatedAt());
-//            } else {
-//                System.out.println("No promotion found with ID: " + testId);
-//            }
-//        } catch (SQLException | ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//    }
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        try {
-            PromotionDAO dao = new PromotionDAO();
-            List<Promotion> list = dao.getAllPromotionsPerPage(0, 5);
-            for (Promotion P : list) {
-                System.out.println(P);
-            }
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+        // Lấy ngày hiện tại
+        java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
+
+        // Đặt giá trị cho tham số
+        pstmt.setDate(1, currentDate);
+
+        // Thực thi câu lệnh UPDATE
+        int rowsUpdated = pstmt.executeUpdate();
+        System.out.println("Rows updated to Expired: " + rowsUpdated);
+    } catch (SQLException e) {
+        e.printStackTrace();
+        throw new SQLException("Lỗi khi cập nhật trạng thái khuyến mãi: " + e.getMessage());
+    }
+}
+    
+        public void updatePromotionStatusForDeletedProducts() throws SQLException, ClassNotFoundException {
+        String query = "UPDATE [dbo].[Promotions] "
+                + "SET Status = 'Expired', UpdatedAt = ? "
+                + "WHERE ProductID IN (SELECT ProductID FROM Product WHERE IsDeleted = 1) "
+                + "AND Status != 'Expired'";
+
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            // Set the current date as the UpdatedAt value
+            pstmt.setDate(1, new java.sql.Date(System.currentTimeMillis()));
+
+            int rowsUpdated = pstmt.executeUpdate();
+            System.out.println("Rows updated to Expired for deleted products: " + rowsUpdated);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new SQLException("Error updating promotion status for deleted products: " + e.getMessage());
         }
     }
-//    public static void main(String[] args) {
-//        try {
-//            // Tạo đối tượng Promotion với dữ liệu mẫu
-//            Promotion pro = new Promotion();
-//            pro.setProductID(3);
-//            pro.setName("Giảm giá Tết");
-//            pro.setDescription("Chương trình khuyến mãi dịp Tết Nguyên Đán");
-//            pro.setDiscountPercent(15.0);
-//            pro.setStartDate(Date.valueOf("2025-02-01"));
-//            pro.setEndDate(Date.valueOf("2025-02-15"));
-//            pro.setStatus("Active");
-//            pro.setCreatedAt(new Date(System.currentTimeMillis()));
-//            pro.setUpdatedAt(new Date(System.currentTimeMillis()));
-//
-//            // Tạo đối tượng DAO và gọi phương thức addPromotion để thêm vào DB
-//            PromotionDAO promotionDAO = new PromotionDAO();
-//            promotionDAO.addPromotion(pro);
-//
-//            System.out.println("Thêm khuyến mãi thành công!");
-//        } catch (SQLException | ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//        
-//            public static void main(String[] args) {
-//        try {
-//            PromotionDAO promotionDAO = new PromotionDAO();
-//            
-//            // Chọn ID của một khuyến mãi có sẵn trong cơ sở dữ liệu
-//            int promotionId = 3; // Thay đổi ID phù hợp với dữ liệu thực tế
-//
-//            // Lấy thông tin khuyến mãi hiện tại
-//            Promotion existingPromotion = promotionDAO.getById(promotionId);
-//            
-//            if (existingPromotion != null) {
-//                System.out.println("Trước khi cập nhật:");
-//                System.out.println(existingPromotion);
-//                
-//                // Cập nhật thông tin khuyến mãi
-//                existingPromotion.setName("Khuyến mãi mùa hè");
-//                existingPromotion.setDescription("Giảm giá đặc biệt mùa hè 2025");
-//                existingPromotion.setDiscountPercent(20.0);
-//                existingPromotion.setStartDate(Date.valueOf("2025-06-01"));
-//                existingPromotion.setEndDate(Date.valueOf("2025-06-30"));
-//                existingPromotion.setStatus("Active");
-//                existingPromotion.setUpdatedAt(new Date(System.currentTimeMillis()));
-//
-//                // Gọi phương thức update
-//                promotionDAO.updatePromotion(existingPromotion);
-//                
-//                // Lấy lại dữ liệu sau cập nhật để kiểm tra
-//                Promotion updatedPromotion = promotionDAO.getById(promotionId);
-//                
-//                System.out.println("Sau khi cập nhật:");
-//                System.out.println(updatedPromotion);
-//                
-//            } else {
-//                System.out.println("Không tìm thấy khuyến mãi có ID: " + promotionId);
-//            }
-//        } catch (SQLException | ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//    }
+
+    public void updatePromotionStatusForRestoredProducts() throws SQLException, ClassNotFoundException {
+        String query = "UPDATE [dbo].[Promotions] "
+                + "SET Status = 'Active', UpdatedAt = ? "
+                + "WHERE ProductID IN (SELECT ProductID FROM Product WHERE IsDeleted = 0) "
+                + "AND Status = 'Expired' "
+                + "AND EndDate >= ?";
+
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
+
+            pstmt.setDate(1, currentDate); // UpdatedAt = ngày hiện tại
+            pstmt.setDate(2, currentDate); // EndDate >= ngày hiện tại
+
+            int rowsUpdated = pstmt.executeUpdate();
+            System.out.println("Rows updated to Active for restored products: " + rowsUpdated);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new SQLException("Error updating promotion status for restored products: " + e.getMessage());
+        }
+    }
+
 }

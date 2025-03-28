@@ -235,6 +235,26 @@
         <servlet-name>HandleStatusOrderOfCustomer</servlet-name>
         <servlet-class>Controller.HandleStatusOrderOfCustomer</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>MoMoPaymentServlet</servlet-name>
+        <servlet-class>Controller.MoMoPaymentServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>VNPayPaymentServlet</servlet-name>
+        <servlet-class>Controller.VNPayPaymentServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>VNPayReturnServlet</servlet-name>
+        <servlet-class>Controller.VNPayReturnServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GetPaymentMethodsServlet</servlet-name>
+        <servlet-class>Controller.GetPaymentMethodsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GetShippingMethodsServlet</servlet-name>
+        <servlet-class>Controller.GetShippingMethodsServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>VerifyCodeServlet</servlet-name>
         <url-pattern>/VerifyCodeServlet</url-pattern>
@@ -465,6 +485,26 @@
     <servlet-mapping>
         <servlet-name>HandleStatusOrderOfCustomer</servlet-name>
         <url-pattern>/CancelOrder</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MoMoPaymentServlet</servlet-name>
+        <url-pattern>/MoMoPaymentServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VNPayPaymentServlet</servlet-name>
+        <url-pattern>/VNPayPaymentServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VNPayReturnServlet</servlet-name>
+        <url-pattern>/VNPayReturnServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetPaymentMethodsServlet</servlet-name>
+        <url-pattern>/GetPaymentMethodsServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetShippingMethodsServlet</servlet-name>
+        <url-pattern>/GetShippingMethodsServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

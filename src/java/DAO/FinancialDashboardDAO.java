@@ -25,7 +25,7 @@ public class FinancialDashboardDAO {
     protected static Connection conn = null;
 
     private static String SELECT_TOTALSOLD = "SELECT SUM(Quantity) AS TotalSold FROM OrderDetails;";
-    private static String  SELECET_TOTALREVENUE= "SELECT SUM(Total) AS TotalRevenue FROM OrderDetails ;";
+    private static String SELECET_TOTALREVENUE = "SELECT SUM(Total) AS TotalRevenue FROM OrderDetails ;";
     private static String SELECT_TOTAL_CUSTOMER = "SELECT COUNT(*) AS TotalCustomers FROM Account WHERE RoleID = 3;";
     private static final String SELECT_REVENUE_DATA = "SELECT FORMAT(OrderDate, 'MM/yyyy') AS MonthYear, "
             + "SUM(TotalAmount) AS Revenue FROM Orders WHERE IsDeleted = 0 "
@@ -37,6 +37,16 @@ public class FinancialDashboardDAO {
             + "JOIN Category c ON p.CategoryID = c.CategoryID "
             + "WHERE p.IsDeleted = 0 AND od.IsDeleted = 0 "
             + "GROUP BY c.Name;";
+    private static final String SELECT_LAST_NMONTHS_REVENUE
+            = "SELECT TOP (?) "
+            + "    FORMAT(OrderDate, 'MM/yyyy') AS MonthYear, "
+            + "    SUM(TotalAmount) AS Revenue "
+            + "FROM Orders "
+            + "WHERE IsDeleted = 0 "
+            + "    AND OrderDate >= DATEADD(MONTH, -(? - 1), DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1)) "
+            + "    AND OrderDate < DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1) "
+            + "GROUP BY FORMAT(OrderDate, 'MM/yyyy') "
+            + "ORDER BY MAX(OrderDate) DESC";
 
     public static List<RevenueData> getRevenueData() throws SQLException, ClassNotFoundException {
         List<RevenueData> data = new ArrayList<>();
@@ -116,6 +126,32 @@ public class FinancialDashboardDAO {
             e.printStackTrace();
         }
         return totalCustomer;
+    }
+
+    public static List<RevenueData> getLastMonthsRevenue(int months) throws SQLException, ClassNotFoundException {
+        if (months <= 0) {
+            throw new IllegalArgumentException("Số tháng phải lớn hơn 0");
+        }
+
+        List<RevenueData> data = new ArrayList<>();
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement stm = conn.prepareStatement(SELECT_LAST_NMONTHS_REVENUE)) {
+
+            stm.setInt(1, months); // Tham số cho TOP
+            stm.setInt(2, months); // Tham số cho DATEADD
+
+            try ( ResultSet rs = stm.executeQuery()) {
+                while (rs.next()) {
+                    RevenueData item = new RevenueData();
+                    item.setMonthYear(rs.getString("MonthYear"));
+                    item.setRevenue(rs.getDouble("Revenue"));
+                    data.add(item);
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
+        return data;
     }
 
 }

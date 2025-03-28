@@ -47,6 +47,7 @@
                     <main>
                         <div class="container-fluid px-5">
                             <h1 class="mt-4">Quản Lí Danh Mục</h1>
+
                             <form action="CategoryServlet" method="POST" class="mt-4">
                                 <input type="hidden" name="action" value="add">
 
@@ -78,7 +79,7 @@
                                     <form action="CategoryServlet" method="GET" class="mb-4">
                                         <div class="input-group">
                                             <input type="hidden" name="action" value="search">
-                                            <input type="text" name="search" class="form-control" placeholder="Tìm Kiếm Danh Mục Tên " aria-label="Search">
+                                            <input type="text" name="search" class="form-control" placeholder="Find category..." aria-label="Search">
                                             <button class="btn btn-outline-secondary" type="submit">
                                                 <i class="fas fa-search"></i>
                                             </button>
@@ -113,7 +114,7 @@
                                                     <c:when test="${empty categories}">
                                                         <!-- Display message if the list is empty -->
                                                         <tr>
-                                                            <td colspan="4" class="text-center text-muted">Không có danh mục nào trong danh sách.</td>
+                                                            <td colspan="4" class="text-center text-muted">No categories available.</td>
                                                         </tr>
                                                     </c:when>
                                                     <c:otherwise>

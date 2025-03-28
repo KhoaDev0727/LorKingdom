@@ -35,9 +35,9 @@
         <div class="container">
             <div class="card shadow p-4">
                 <h2 class="text-center text-primary mb-4">
-                    <i class="fas fa-tags"></i> Promotion List
+                    <i class="fas fa-tags"></i> Danh Sách Mã Giảm Giá
                 </h2>
-                <h5 class="text-center mb-3">Promotions with bigger discounts<strong><%= request.getAttribute("minDiscount") %>%</strong></h5>
+                <h5 class="text-center mb-3">Khuyến mãi có mức giảm giá cao hơn <strong><%= request.getAttribute("minDiscount") %>%</strong></h5>
 
                 <%
                     List<Promotion> promotionList = (List<Promotion>) request.getAttribute("promotionList");
@@ -47,13 +47,13 @@
                     <table class="table table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Promotion Name</th>
-                                <th>Description</th>
-                                <th>% DiscountPercent</th>
-                                <th>StartDate</th>
-                                <th>EndDate</th>
-                                <th>Status</th>
+                                <th>Mã</th>
+                                <th>Tên Mã Giảm Giá</th>
+                                <th>Mô Tả</th>
+                                <th>% Giảm giá</th>
+                                <th>Ngày Bắt Đầu</th>
+                                <th>Ngày Hết Hạng</th>
+                                <th>Trạng Thái</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -83,7 +83,7 @@
                     } else {
                 %>
                 <div class="alert alert-warning text-center">
-                    <i class="fas fa-exclamation-circle"></i> No promotion found with bigger discount <strong><%= request.getAttribute("minDiscount") %>%</strong>.
+                    <i class="fas fa-exclamation-circle"></i> Không tìm thấy khuyến mãi nào có mức giảm giá cao hơn. <strong><%= request.getAttribute("minDiscount") %>%</strong>.
                 </div>
                 <%
                     }
@@ -91,7 +91,7 @@
 
                 <div class="text-center mt-4">
                     <a href="${pageContext.request.contextPath}/Admin/promotionController" class="btn btn-outline-primary">
-                        <i class="fas fa-arrow-left"></i> Back To Home
+                        <i class="fas fa-arrow-left"></i> Quay lại trang chủ
                     </a>
                 </div>
             </div>

@@ -124,7 +124,7 @@
             <h3>Chi Tiết Đơn Hàng</h3>
             <c:forEach items="${sessionScope.order.orderDetails}" var="detail">
                 <div class="product-item">
-                    <img src="${detail.productImage}" alt="${detail.productName}">
+                    <img src="${pageContext.request.contextPath}/${detail.productImage}" alt="${detail.productName}">
                     <div class="product-info">
                         <p><strong>${detail.productName}</strong></p>
                         <p>Số lượng: ${detail.quantity}</p>
@@ -138,13 +138,11 @@
             <div class="total-amount">
                 Tổng Tiền: <fmt:formatNumber value="${sessionScope.order.totalAmount}" pattern="#,###" /> VND
             </div>
+            <!-- Nút tiếp tục mua sắm -->
+            <a href="getList" class="btn-continue">Tiếp Tục Mua Sắm</a>
         </div>
 
-        <!-- Nút tiếp tục mua sắm -->
-        <a href="cart.jsp" class="btn-continue">Tiếp Tục Mua Sắm</a>
-    </div>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
 </html>

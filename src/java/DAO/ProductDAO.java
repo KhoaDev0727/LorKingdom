@@ -245,8 +245,20 @@ public class ProductDAO {
     // 2. Lấy danh sách sản phẩm đã bị xóa mềm (IsDeleted = 1)
     public List<Product> getDeletedProducts() throws SQLException, ClassNotFoundException {
         List<Product> products = new ArrayList<>();
-        String query = "SELECT * FROM Product WHERE IsDeleted = 1";
-        try ( Connection conn = DBConnection.getConnection();  Statement stmt = conn.createStatement();  ResultSet rs = stmt.executeQuery(query)) {
+        String query = "SELECT p.* "
+                + "FROM Product p "
+                + "JOIN Category c ON p.CategoryID = c.CategoryID "
+                + "JOIN SuperCategory sc ON c.SuperCategoryID = sc.SuperCategoryID "
+                + "JOIN Age a ON p.AgeID = a.AgeID "
+                + "JOIN Brand b ON p.BrandID = b.BrandID "
+                + "JOIN Material m ON p.MaterialID = m.MaterialID "
+                + "JOIN PriceRange pr ON p.PriceRangeID = pr.PriceRangeID "
+                + "JOIN Sex s ON p.SexID = s.SexID "
+                + "JOIN Origin o ON p.OriginID = o.OriginID "
+                + "WHERE (p.IsDeleted = 1 OR c.IsDeleted = 1 OR sc.IsDeleted = 1 OR "
+                + "       a.IsDeleted = 1 OR b.IsDeleted = 1 OR m.IsDeleted = 1 OR "
+                + "       pr.IsDeleted = 1 OR s.IsDeleted = 1 OR o.IsDeleted = 1)";
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query);  ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 Product product = new Product();
                 product.setProductID(rs.getInt("ProductID"));
@@ -421,16 +433,74 @@ public class ProductDAO {
         return product;
     }
 
-    public List<Product> searchProducts(String keyword) throws SQLException, ClassNotFoundException {
+    public List<Product> searchAllProducts(String keyword) throws SQLException, ClassNotFoundException {
         List<Product> products = new ArrayList<>();
-        String query = "SELECT p.* FROM Product p "
-                + "JOIN Category c ON p.CategoryID = c.CategoryID "
-                + "WHERE p.IsDeleted = 0 AND c.IsDeleted = 0 "
-                + "AND (LOWER(p.Name) LIKE ? OR LOWER(p.SKU) LIKE ?)";
+        // Truy vấn chỉ trên bảng Product, tìm theo tên và SKU (không lọc theo IsDeleted hay Quantity)
+        String query = "SELECT * FROM Product WHERE LOWER(Name) LIKE ? OR LOWER(SKU) LIKE ?";
+
         try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+
             String searchKey = "%" + keyword.toLowerCase() + "%";
             ps.setString(1, searchKey);
             ps.setString(2, searchKey);
+
+            try ( ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Product product = new Product();
+                    product.setProductID(rs.getInt("ProductID"));
+                    product.setSKU(rs.getString("SKU"));
+                    product.setCategoryID(rs.getObject("CategoryID") != null ? rs.getInt("CategoryID") : null);
+                    product.setMaterialID(rs.getObject("MaterialID") != null ? rs.getInt("MaterialID") : null);
+                    product.setAgeID(rs.getObject("AgeID") != null ? rs.getInt("AgeID") : null);
+                    product.setSexID(rs.getObject("SexID") != null ? rs.getInt("SexID") : null);
+                    product.setPriceRangeID(rs.getObject("PriceRangeID") != null ? rs.getInt("PriceRangeID") : null);
+                    product.setBrandID(rs.getObject("BrandID") != null ? rs.getInt("BrandID") : null);
+                    product.setOriginID(rs.getObject("OriginID") != null ? rs.getInt("OriginID") : null);
+                    product.setName(rs.getString("Name"));
+                    product.setPrice(rs.getDouble("Price"));
+                    product.setQuantity(rs.getInt("Quantity"));
+                    product.setStatus(rs.getString("Status"));
+                    product.setDescription(rs.getString("Description"));
+                    product.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                    product.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
+                    products.add(product);
+                }
+            }
+        }
+        return products;
+    }
+
+    public List<Product> searchProducts(String keyword) throws SQLException, ClassNotFoundException {
+        List<Product> products = new ArrayList<>();
+        // Truy vấn JOIN đầy đủ các bảng và điều kiện lọc
+        String query = "SELECT p.* "
+                + "FROM Product p "
+                + "JOIN Category c ON p.CategoryID = c.CategoryID "
+                + "JOIN SuperCategory sc ON c.SuperCategoryID = sc.SuperCategoryID "
+                + "JOIN Age a ON p.AgeID = a.AgeID "
+                + "JOIN Brand b ON p.BrandID = b.BrandID "
+                + "JOIN Material m ON p.MaterialID = m.MaterialID "
+                + "JOIN PriceRange pr ON p.PriceRangeID = pr.PriceRangeID "
+                + "JOIN Sex s ON p.SexID = s.SexID "
+                + "JOIN Origin o ON p.OriginID = o.OriginID "
+                + "WHERE p.IsDeleted = 0 "
+                + "  AND c.IsDeleted = 0 "
+                + "  AND sc.IsDeleted = 0 "
+                + "  AND a.IsDeleted = 0 "
+                + "  AND b.IsDeleted = 0 "
+                + "  AND m.IsDeleted = 0 "
+                + "  AND pr.IsDeleted = 0 "
+                + "  AND s.IsDeleted = 0 "
+                + "  AND o.IsDeleted = 0 "
+                + "  AND p.Quantity > 0 "
+                + "  AND (LOWER(p.Name) LIKE ? OR LOWER(p.SKU) LIKE ?)";
+
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+
+            String searchKey = "%" + keyword.toLowerCase() + "%";
+            ps.setString(1, searchKey);
+            ps.setString(2, searchKey);
+
             try ( ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Product product = new Product();
@@ -471,7 +541,7 @@ public class ProductDAO {
             ps.setInt(2, excludeProductID);
             rs = ps.executeQuery();
             if (rs.next()) {
-                exists = rs.getInt(1) > 1; // true nếu đếm được > 0 dòng
+                exists = rs.getInt(1) > 0;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -522,19 +592,40 @@ public class ProductDAO {
         }
         return products;
     }
-
     public List<Product> getRelatedProductsByCategory(int categoryID, int excludeProductID, int limit) throws ClassNotFoundException {
         List<Product> products = new ArrayList<>();
-        String sql = "SELECT TOP (?) * FROM Product "
-                + "WHERE IsDeleted = 0 "
-                + "  AND CategoryID = ? "
-                + "  AND ProductID <> ? " // để không lấy chính sản phẩm đang xem
-                + "ORDER BY NEWID()";       // random, hoặc ORDER BY CreatedAt DESC tuỳ ý
 
-        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
+        StringBuilder query = new StringBuilder(
+                "SELECT TOP (?) p.* "
+                + "FROM Product p "
+                + "JOIN Category c ON p.CategoryID = c.CategoryID "
+                + "JOIN SuperCategory sc ON c.SuperCategoryID = sc.SuperCategoryID "
+                + "JOIN Age a ON p.AgeID = a.AgeID "
+                + "JOIN Brand b ON p.BrandID = b.BrandID "
+                + "JOIN Material m ON p.MaterialID = m.MaterialID "
+                + "JOIN PriceRange pr ON p.PriceRangeID = pr.PriceRangeID "
+                + "JOIN Sex s ON p.SexID = s.SexID "
+                + "JOIN Origin o ON p.OriginID = o.OriginID "
+                + "WHERE p.IsDeleted = 0 "
+                + "  AND c.IsDeleted = 0 "
+                + "  AND sc.IsDeleted = 0 "
+                + "  AND a.IsDeleted = 0 "
+                + "  AND b.IsDeleted = 0 "
+                + "  AND m.IsDeleted = 0 "
+                + "  AND pr.IsDeleted = 0 "
+                + "  AND s.IsDeleted = 0 "
+                + "  AND o.IsDeleted = 0 "
+                + "  AND p.Quantity > 0 "
+                + "  AND p.CategoryID = ? "
+                + "  AND p.ProductID <> ? "
+                + "ORDER BY NEWID()" // random, hoặc đổi thành ORDER BY p.CreatedAt DESC nếu muốn mới nhất
+        );
+
+        try ( Connection conn = DBConnection.getConnection();  PreparedStatement ps = conn.prepareStatement(query.toString())) {
             ps.setInt(1, limit);         // TOP (limit)
             ps.setInt(2, categoryID);
             ps.setInt(3, excludeProductID);
+
             try ( ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Product p = new Product();
@@ -542,13 +633,14 @@ public class ProductDAO {
                     p.setSKU(rs.getString("SKU"));
                     p.setName(rs.getString("Name"));
                     p.setPrice(rs.getDouble("Price"));
-                    // ... map các cột khác nếu cần
+                    // Map thêm các cột khác nếu cần
                     products.add(p);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return products;
     }
 
@@ -600,6 +692,57 @@ public class ProductDAO {
             }
         }
         return null;
+    }
+
+    public static Product getAvailableProductById(int productId) throws ClassNotFoundException {
+        Product product = null;
+        try {
+            conn = DBConnection.getConnection();
+            String sql = "SELECT p.* "
+                    + "FROM Product p "
+                    + "JOIN Category c ON p.CategoryID = c.CategoryID "
+                    + "JOIN SuperCategory sc ON c.SuperCategoryID = sc.SuperCategoryID "
+                    + "JOIN Age a ON p.AgeID = a.AgeID "
+                    + "JOIN Brand b ON p.BrandID = b.BrandID "
+                    + "JOIN Material m ON p.MaterialID = m.MaterialID "
+                    + "JOIN PriceRange pr ON p.PriceRangeID = pr.PriceRangeID "
+                    + "JOIN Sex s ON p.SexID = s.SexID "
+                    + "JOIN Origin o ON p.OriginID = o.OriginID "
+                    + "WHERE p.ProductID = ? "
+                    + "  AND p.IsDeleted = 0 "
+                    + "  AND c.IsDeleted = 0 "
+                    + "  AND sc.IsDeleted = 0 "
+                    + "  AND a.IsDeleted = 0 "
+                    + "  AND b.IsDeleted = 0 "
+                    + "  AND m.IsDeleted = 0 "
+                    + "  AND pr.IsDeleted = 0 "
+                    + "  AND s.IsDeleted = 0 "
+                    + "  AND o.IsDeleted = 0 "
+                    + "  AND p.Quantity > 0";
+            stm = conn.prepareStatement(sql);
+            stm.setInt(1, productId);
+            rs = stm.executeQuery();
+            if (rs.next()) {
+                product = new Product(
+                        rs.getString("SKU"),
+                        rs.getInt("CategoryID"),
+                        rs.getInt("MaterialID"),
+                        rs.getInt("AgeID"),
+                        rs.getInt("SexID"),
+                        rs.getInt("PriceRangeID"),
+                        rs.getInt("BrandID"),
+                        rs.getInt("OriginID"),
+                        rs.getString("Name"),
+                        rs.getDouble("Price"),
+                        rs.getInt("Quantity"),
+                        rs.getString("Description")
+                );
+                product.setProductID(rs.getInt("ProductID"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return product;
     }
 
 }

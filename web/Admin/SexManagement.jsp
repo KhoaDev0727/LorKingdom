@@ -34,7 +34,7 @@
                 <div class="dashboard-container mt-10 ml-5">
                     <main>
                         <div class="container-fluid px-5">
-                            <h1 style="font-size: calc(1.375rem + 1.5vw); font-weight: 600">Quản Lý Giới Tính</h1>
+                            <h1 style="font-size: calc(1.375rem + 1.5vw); font-weight: 600">Quản Lí Giới Tính</h1>
                             <div class="card mt-4">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">

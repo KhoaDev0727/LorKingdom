@@ -37,33 +37,28 @@
         </style>
     </head>
     <body class="sb-nav-fixed">
-        <c:choose>
-            <c:when test="${empty sessionScope.roleID || sessionScope.roleID eq 2}">
-                <c:redirect url="/Admin/loginPage.jsp"/>
-            </c:when>
-            <c:when test="${sessionScope.roleID eq 3}">
-                <c:redirect url="/LogoutServlet"/>
-            </c:when>
-        </c:choose>
+        <c:if test="${empty sessionScope.roleID}">
+            <c:redirect url="/Admin/loginPage.jsp"/>
+        </c:if>
         <div id="layoutSidenav">
             <div id="layoutSidenav_content">
                 <%@ include file="Component/SideBar.jsp" %>
                 <div class="dashboard-container">
                     <main>
                         <div class="container-fluid px-5">
-                            <h1 class="mt-4">Origin Management</h1>
+                            <h1 class="mt-4">Quản Lí Xuất Xứ</h1>
                             <!-- Add Origin Form -->
                             <form action="OriginServlet" method="POST">
                                 <input type="hidden" name="action" value="add">
-                                <label for="originName">Origin Name</label>
+                                <label for="originName">Tên xuất xứ</label>
                                 <input type="text" id="originName" name="name" required />
-                                <button class="btn btn-primary ms-2" type="submit">Add Origin</button>
+                                <button class="btn btn-primary ms-2" type="submit">Thêm xuất xứ</button>
                             </form>
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <i class="fas fa-table me-1"></i> Origin List
+                                            <i class="fas fa-table me-1"></i> Danh sách xuất xứ
                                         </div>
                                     </div>
                                 </div>
@@ -73,7 +68,7 @@
                                     <form action="OriginServlet" method="GET" class="mb-4">
                                         <div class="input-group">
                                             <input type="hidden" name="action" value="search">
-                                            <input type="text" name="search" class="form-control" placeholder="Find Origin Name..." aria-label="Search">
+                                            <input type="text" name="search" class="form-control" placeholder="Tìm kiếm tên xuất xứ..." aria-label="Search">
                                             <button class="btn btn-outline-secondary" type="submit">
                                                 <i class="fas fa-search"></i>
                                             </button>
@@ -92,11 +87,11 @@
                                         <table class="table table-bordered table-striped table-hover">
                                             <thead class="table-dark">
                                                 <tr>
-                                                    <th>Origin ID</th>
-                                                    <th>Origin Name</th>
-                                                    <th>Date Created</th>
-                                                    <th>Status</th>
-                                                    <th>Actions</th>
+                                                    <th>Mã Xuất Xứ</th>
+                                                    <th>Tên Xuất Xứ</th>
+                                                    <th>Ngày Tạo</th>
+                                                    <th>Trạng Thái</th>
+                                                    <th>Hành Động</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -104,7 +99,7 @@
                                                     <c:when test="${empty origins}">
                                                         <!-- Display message if the list is empty -->
                                                         <tr>
-                                                            <td colspan="4" class="text-center text-muted">No Origin available.</td>
+                                                            <td colspan="4" class="text-center text-muted">Không Có Xuất Xứ Nào.</td>
                                                         </tr>
                                                     </c:when>
                                                     <c:otherwise>
@@ -116,10 +111,10 @@
                                                                 <td>
                                                                     <c:choose>
                                                                         <c:when test="${origin.isDeleted == 1}">
-                                                                            <span class="badge bg-secondary">Deleted</span>
+                                                                            <span class="badge bg-secondary">Đã xóa</span>
                                                                         </c:when>
                                                                         <c:otherwise>
-                                                                            <span class="badge bg-success">Active</span>
+                                                                            <span class="badge bg-success">Hoạt động</span>
                                                                         </c:otherwise>
                                                                     </c:choose>
                                                                 </td>
@@ -141,7 +136,7 @@
                                                                     <c:if test="${origin.isDeleted == 1}">
                                                                         <button class="btn btn-sm btn-success"
                                                                                 onclick="location.href = 'OriginServlet?action=restore&originID=${origin.originID}'">
-                                                                            Restore
+                                                                            Khôi phục
                                                                         </button>
                                                                         <button type="button" class="btn btn-sm btn-danger"
                                                                                 data-bs-toggle="modal"
@@ -158,20 +153,20 @@
                                                                 <div class="modal-content">
                                                                     <form method="POST" action="OriginServlet">
                                                                         <div class="modal-header">
-                                                                            <h5 class="modal-title">Edit Origin</h5>
+                                                                            <h5 class="modal-title">Chỉnh Sửa Xuất Xứ</h5>
                                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                                         </div>
                                                                         <div class="modal-body">
                                                                             <input type="hidden" name="action" value="update">
                                                                             <input type="hidden" name="originID" value="${origin.originID}">
                                                                             <div class="mb-3">
-                                                                                <label class="form-label">Origin Name</label>
-                                                                                <input type="text" class="form-control" name="originName" value="${origin.name}" required>
+                                                                                <label class="form-label">Tên Xuất Xứ</label>
+                                                                                <input type="text" class="form-control" name="name" value="${origin.name}" required>
                                                                             </div>
                                                                         </div>
                                                                         <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                            <button type="submit" class="btn btn-primary">Save changes</button>
+                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                                                            <button type="submit" class="btn btn-primary">Lưu Thay Đổi</button>
                                                                         </div>
                                                                     </form>
                                                                 </div>
@@ -197,14 +192,14 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header bg-danger text-white">
-                        <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                        <h5 class="modal-title" id="errorModalLabel">Lỗi</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
                         <p>${sessionScope.errorMessage}</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                     </div>
                 </div>
             </div>
@@ -226,7 +221,7 @@
                         <form method="POST" action="OriginServlet">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="originID" id="softDeleteOriginID">
-                            <button type="submit" class="btn btn-danger">Xóa</button>
+                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
                         </form>
                     </div>
                 </div>
@@ -249,7 +244,7 @@
                         <form method="POST" action="OriginServlet">
                             <input type="hidden" name="action" value="hardDelete">
                             <input type="hidden" name="originID" id="hardDeleteOriginID">
-                            <button type="submit" class="btn btn-danger">Xóa</button>
+                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
                         </form>
                     </div>
                 </div>
@@ -259,14 +254,14 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header bg-success text-white">
-                        <h5 class="modal-title" id="successModalLabel">Success</h5>
+                        <h5 class="modal-title" id="successModalLabel">Thành công</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body text-dark">
                         <p id="successMessageContent">${sessionScope.successMessage}</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                     </div>
                 </div>
             </div>

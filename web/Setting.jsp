@@ -156,8 +156,6 @@
                     <ul>
                         <li><a href="#" id="profile-link"><i class="fas fa-user"></i> Quản lý hồ sơ</a></li>
                         <li><a href="#" id="orders-link"><i class="fas fa-box"></i> Đơn hàng</a></li>
-                        <li><a href="#"><i class="fas fa-gift"></i> Mã ưu đãi</a></li>
-                        <li><a href="#"><i class="fas fa-heart"></i> Yêu thích</a></li>
                     </ul>
                 </nav>
             </div>
@@ -232,7 +230,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="review-comment" class="form-label">Nhận xét:</label>
-                                <textarea class="form-control" id="review-comment" rows="3" required></textarea>
+                                <textarea class="form-control" id="review-comment" rows="3" ></textarea>
                             </div>
                             <!-- Thêm trường upload ảnh -->
                             <div class="mb-3">

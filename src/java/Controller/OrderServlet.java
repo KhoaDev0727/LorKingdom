@@ -3,10 +3,12 @@ package Controller;
 import DAO.OrderDAO;
 import DAO.CartDAO;
 import DAO.ProductDAO;
+import DAO.ShippingDAO;
 import Model.CartItems;
 import Model.Order;
 import Model.OrderDetail;
 import Model.Promotion;
+import Model.Shipping;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -121,16 +123,25 @@ public class OrderServlet extends HttpServlet {
         }
         String finalAddress = fullAddress.toString().replaceAll(",\\s*$", "");
 
+        String shippingMethodId = request.getParameter("shippingMethod");
+        ShippingDAO shippingDAO = new ShippingDAO();
+        Shipping shippingMethod = null;
+        try {
+            List<Shipping> shippingMethods = shippingDAO.getAllShippingMethods();
+            shippingMethod = shippingMethods.stream()
+                    .filter(m -> m.getShippingMethodID() == Integer.parseInt(shippingMethodId))
+                    .findFirst()
+                    .orElse(null);
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
         // Xử lý các phương thức thanh toán
         if ("vnpay".equals(paymentMethod)) {
-            response.sendRedirect("VNPayPaymentServlet?totalMoney=" + finalTotal);
-        } else if ("momo".equals(paymentMethod)) {
-            response.sendRedirect("MoMoPaymentServlet?totalMoney=" + finalTotal);
-        } else if ("cash".equals(paymentMethod)) {
             Order order = new Order();
             order.setAccountName(fullName);
-            order.setPayMentMethodName("Tiền mặt khi nhận hàng");
-            order.setShipingMethodName("Giao hàng tiêu chuẩn");
+            order.setPayMentMethodName("Ví điện tử VNPAY");
+            order.setShipingMethodName(shippingMethod != null ? shippingMethod.getMethodName() : "Unknown");
             order.setOrderDate(new Timestamp(System.currentTimeMillis()));
             order.setStatus("Pending");
             order.setTotalAmount(finalTotal);
@@ -141,6 +152,182 @@ public class OrderServlet extends HttpServlet {
                 OrderDetail detail = new OrderDetail();
                 detail.setProductID(item.getProduct().getProductID());
                 detail.setProductName(item.getProduct().getName());
+                detail.setQuantity(item.getQuantity());
+                detail.setUnitPrice((float) item.getPrice());
+
+                float discountPercent = 0.0f;
+                if (appliedVoucher != null && item.getProduct().getProductID() == appliedVoucher.getProductID()) {
+                    discountPercent = appliedVoucher.getDiscountPercent().floatValue();
+                }
+                detail.setDiscount(discountPercent);
+
+                orderDetails.add(detail);
+            }
+            order.setOrderDetails(orderDetails);
+
+            boolean success = orderDAO.saveOrder(order, userId, finalAddress, phone, email,
+                    provinceCode, districtCode, wardCode);
+            if (success) {
+                // Trừ số lượng sản phẩm trong bảng Product
+                try {
+                    for (CartItems item : listCart) {
+                        int productId = item.getProduct().getProductID();
+                        int quantity = item.getQuantity();
+                        boolean updated = productDAO.updateProductQuantity(productId, quantity);
+                        if (!updated) {
+                            session.setAttribute("errorMessage", "Không đủ số lượng sản phẩm trong kho!");
+                            response.sendRedirect("order.jsp");
+                            return;
+                        }
+                    }
+                } catch (SQLException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                    session.setAttribute("errorMessage", "Có lỗi xảy ra khi cập nhật số lượng sản phẩm!");
+                    response.sendRedirect("order.jsp");
+                    return;
+                }
+
+                // Xóa giỏ hàng
+                try {
+                    cartDAO.removeAll(userId);
+                } catch (SQLException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                    session.setAttribute("errorMessage", "Có lỗi khi xóa giỏ hàng!");
+                    response.sendRedirect("order.jsp");
+                    return;
+                }
+
+                // Lưu thông tin vào session trước khi chuyển hướng
+                session.setAttribute("pendingOrderId", order.getOrderId());
+                session.setAttribute("email", email);
+                session.setAttribute("fullName", fullName);
+                session.setAttribute("phone", phone);
+                session.setAttribute("address", finalAddress);
+                session.setAttribute("provinceCode", provinceCode);
+                session.setAttribute("districtCode", districtCode);
+                session.setAttribute("wardCode", wardCode);
+                session.setAttribute("wardName", wardName);
+                session.setAttribute("districtName", districtName);
+                session.setAttribute("provinceName", provinceName);
+                session.setAttribute("shippingMethod", shippingMethodId);
+
+                session.removeAttribute("listCart");
+                session.removeAttribute("totalMoney");
+                session.removeAttribute("discount");
+                session.removeAttribute("appliedVoucher");
+                session.removeAttribute("validationErrors");
+                session.removeAttribute("formDataJson");
+
+                response.sendRedirect("VNPayPaymentServlet?totalMoney=" + finalTotal + "&orderId=" + order.getOrderId());
+            } else {
+                session.setAttribute("errorMessage", "Có lỗi xảy ra khi lưu đơn hàng!");
+                response.sendRedirect("order.jsp");
+            }
+        } else if ("momo".equals(paymentMethod)) {
+            Order order = new Order();
+            order.setAccountName(fullName);
+            order.setPayMentMethodName("Ví điện tử MoMo"); // Tên phương thức thanh toán
+            order.setShipingMethodName(shippingMethod != null ? shippingMethod.getMethodName() : "Unknown");
+            order.setOrderDate(new Timestamp(System.currentTimeMillis()));
+            order.setStatus("Pending"); // Trạng thái ban đầu là Pending
+            order.setTotalAmount(finalTotal);
+            order.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+
+            List<OrderDetail> orderDetails = new ArrayList<>();
+            for (CartItems item : listCart) {
+                OrderDetail detail = new OrderDetail();
+                detail.setProductID(item.getProduct().getProductID());
+                detail.setProductName(item.getProduct().getName());
+                detail.setQuantity(item.getQuantity());
+                detail.setUnitPrice((float) item.getPrice());
+
+                float discountPercent = 0.0f;
+                if (appliedVoucher != null && item.getProduct().getProductID() == appliedVoucher.getProductID()) {
+                    discountPercent = appliedVoucher.getDiscountPercent().floatValue();
+                }
+                detail.setDiscount(discountPercent);
+
+                orderDetails.add(detail);
+            }
+            order.setOrderDetails(orderDetails);
+
+            // Lưu đơn hàng vào cơ sở dữ liệu
+            boolean success = orderDAO.saveOrder(order, userId, finalAddress, phone, email,
+                    provinceCode, districtCode, wardCode);
+            if (success) {
+                // Trừ số lượng sản phẩm trong bảng Product
+                try {
+                    for (CartItems item : listCart) {
+                        int productId = item.getProduct().getProductID();
+                        int quantity = item.getQuantity();
+                        boolean updated = productDAO.updateProductQuantity(productId, quantity);
+                        if (!updated) {
+                            session.setAttribute("errorMessage", "Không đủ số lượng sản phẩm trong kho!");
+                            response.sendRedirect("order.jsp");
+                            return;
+                        }
+                    }
+                } catch (SQLException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                    session.setAttribute("errorMessage", "Có lỗi xảy ra khi cập nhật số lượng sản phẩm!");
+                    response.sendRedirect("order.jsp");
+                    return;
+                }
+
+                // Xóa giỏ hàng
+                try {
+                    cartDAO.removeAll(userId);
+                } catch (SQLException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                    session.setAttribute("errorMessage", "Có lỗi khi xóa giỏ hàng!");
+                    response.sendRedirect("order.jsp");
+                    return;
+                }
+
+                // Lưu thông tin vào session trước khi chuyển hướng
+                session.setAttribute("pendingOrderId", order.getOrderId());
+                session.setAttribute("email", email);
+                session.setAttribute("fullName", fullName);
+                session.setAttribute("phone", phone);
+                session.setAttribute("address", finalAddress);
+                session.setAttribute("provinceCode", provinceCode);
+                session.setAttribute("districtCode", districtCode);
+                session.setAttribute("wardCode", wardCode);
+                session.setAttribute("wardName", wardName);
+                session.setAttribute("districtName", districtName);
+                session.setAttribute("provinceName", provinceName);
+                session.setAttribute("shippingMethod", shippingMethodId);
+
+                // Xóa dữ liệu không cần thiết khỏi session
+                session.removeAttribute("listCart");
+                session.removeAttribute("totalMoney");
+                session.removeAttribute("discount");
+                session.removeAttribute("appliedVoucher");
+                session.removeAttribute("validationErrors");
+                session.removeAttribute("formDataJson");
+
+                // Chuyển hướng đến MoMoPaymentServlet với tổng tiền và orderId
+                response.sendRedirect("MoMoPaymentServlet?totalMoney=" + finalTotal + "&orderId=" + order.getOrderId());
+            } else {
+                session.setAttribute("errorMessage", "Có lỗi xảy ra khi lưu đơn hàng!");
+                response.sendRedirect("order.jsp");
+            }
+        } else if ("cash".equals(paymentMethod)) {
+            Order order = new Order();
+            order.setAccountName(fullName);
+            order.setPayMentMethodName("Tiền mặt khi nhận hàng");
+            order.setShipingMethodName(shippingMethod != null ? shippingMethod.getMethodName() : "Unknown");
+            order.setOrderDate(new Timestamp(System.currentTimeMillis()));
+            order.setStatus("Pending");
+            order.setTotalAmount(finalTotal);
+            order.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+
+            List<OrderDetail> orderDetails = new ArrayList<>();
+            for (CartItems item : listCart) {
+                OrderDetail detail = new OrderDetail();
+                detail.setProductID(item.getProduct().getProductID());
+                detail.setProductName(item.getProduct().getName());
+                detail.setProductImage(item.getProduct().getMainImageUrl());
                 detail.setQuantity(item.getQuantity());
                 detail.setUnitPrice((float) item.getPrice());
 
@@ -162,6 +349,7 @@ public class OrderServlet extends HttpServlet {
                 try {
                     for (CartItems item : listCart) {
                         int productId = item.getProduct().getProductID();
+     
                         int quantity = item.getQuantity();
                         boolean updated = productDAO.updateProductQuantity(productId, quantity);
                         if (!updated) {

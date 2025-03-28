@@ -6,11 +6,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%-- 
-    Document   : ProductManagement
-    Created on : Feb 28, 2025, 12:01:21 PM
-    Author     : admin1
---%>
+
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -47,8 +44,7 @@
                 <div class="dashboard-container">
                     <main>
                         <div class="container-fluid px-5">
-                            <h1 class="mt-4">Quản Lý Sản Phẩm</h1>
-
+                            <h1 class="mt-4">Quản Lí Sản Phẩm</h1>
                             <div class="card mb-4 mt-3">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
@@ -171,7 +167,7 @@
                                                                     <c:if test="${prod.isDeleted == 1}">
                                                                         <button class="btn btn-sm btn-success"
                                                                                 onclick="location.href = 'ProductServlet?action=restore&productID=${prod.productID}'">
-                                                                            Restore
+                                                                            Khôi Phục
                                                                         </button>
                                                                         <button type="button" class="btn btn-sm btn-danger"
                                                                                 data-bs-toggle="modal"

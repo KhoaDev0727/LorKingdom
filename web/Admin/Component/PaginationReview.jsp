@@ -19,16 +19,16 @@
                 <c:if test="${currentPage > 1}">
                     <a href="${forward}?action=${action}&page=${currentPage - 1}&filterUserProduct=${filterUserProduct}&filterRating=${filterRating}&filterStatus=${filterStatus}" 
                        style="padding: 5px 10px; border: 1px solid #ccc; border-radius: 4px; text-decoration: none; color: #333; margin-right: 10px;">
-                        Previous
+                        Quay Lại
                     </a>
                 </c:if>
                 <span style="font-weight: bold; color: #555;">
-                    Page ${currentPage} of ${totalPages}
+                    Trang ${currentPage} Trên ${totalPages}
                 </span>
                 <c:if test="${currentPage < totalPages}">
                     <a href="${forward}?action=${action}&page=${currentPage + 1}&filterUserProduct=${filterUserProduct}&filterRating=${filterRating}&filterStatus=${filterStatus}" 
                        style="padding: 5px 10px; border: 1px solid #ccc; border-radius: 4px; text-decoration: none; color: #333; margin-left: 10px;">
-                        Next
+                        Tiếp Theo
                     </a>
                 </c:if>
             </div>
@@ -39,18 +39,18 @@
                 <c:if test="${currentPage > 1}">
                     <a href="${forward}?page=${currentPage - 1}"
                        style="padding: 5px 10px; border: 1px solid #ccc; border-radius: 4px; text-decoration: none; color: #333; margin-right: 10px;">
-                        Previous
+                        Quay Lại
                     </a>
                 </c:if>
 
                 <span style="font-weight: bold; color: #555;">
-                    Page ${currentPage} of ${totalPages}
+                    Trang ${currentPage} Trên ${totalPages}
                 </span>
 
                 <c:if test="${currentPage < totalPages}">
                     <a href="${forward}?page=${currentPage + 1}"
                        style="padding: 5px 10px; border: 1px solid #ccc; border-radius: 4px; text-decoration: none; color: #333; margin-left: 10px;">
-                        Next
+                        Tiếp Theo
                     </a>
                 </c:if>
             </div>

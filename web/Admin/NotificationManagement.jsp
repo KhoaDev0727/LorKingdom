@@ -39,8 +39,8 @@
                 <div class="dashboard-container">
                     <main>
                         <div class="container-fluid px-5">
-                            <h1 class="mt-4">Quản Lý Thông Báo</h1>
 
+                            <h1 class="mt-4">Quản Lí Thông Báo</h1>
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
@@ -175,7 +175,7 @@
                                                             <div class="modal-dialog modal-lg">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
-                                                                        <h5 class="modal-title">Notification Content</h5>
+                                                                        <h5 class="modal-title">Nội Dung Thông Báo</h5>
                                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                                     </div>
                                                                     <div class="modal-body">
@@ -201,9 +201,9 @@
                                                                         <div class="mb-3">
                                                                             <label class="form-label">Lựa Chọn Gửi:</label>
                                                                             <div>
-                                                                                <button type="button" class="btn btn-primary" onclick="sendToAllCustomers(${notification.notificationID})">
+<!--                                                                                <button type="button" class="btn btn-primary" onclick="sendToAllCustomers(${notification.notificationID})">
                                                                                     Gửi thông báo đến tất cả khách hàng
-                                                                                </button>
+                                                                                </button>-->
                                                                                 <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#selectCustomers${notification.notificationID}">
                                                                                     Chọn khach hàng nhận thông báo
                                                                                 </button>

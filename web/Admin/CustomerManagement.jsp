@@ -46,12 +46,12 @@
                     <!-- Table -->
                     <main>
                         <div class="container-fluid px-5">
-                            <h1 class="mt-4">Customer Management</h1>
+                            <h1 class="mt-4">Quản Lí Khách Hàng</h1>
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <i class="fa-solid fa-user"></i> Customer List
+                                            <i class="fa-solid fa-user"></i> Danh Sách Khách Hàng
                                         </div>
                                     </div>
                                 </div>
@@ -61,7 +61,7 @@
                                     <form action="CustomerManagementServlet" method="GET" class="mb-4">
                                         <div class="input-group">
                                             <input type="hidden" name="action" value="search">
-                                            <input type="text" name="search" class="form-control" placeholder="Search Customer by (ID, Phone Number, Name, Email)..." 
+                                            <input type="text" name="search" class="form-control" placeholder="Tìm Kiếm Theo Tên, Email, Số Điện Thoại..." 
                                                    value="${param.search}">
                                             <button class="btn btn-outline-secondary" type="submit">
                                                 <i class="fas fa-search"></i>
@@ -79,18 +79,17 @@
                                         <table class="table table-bordered table-striped table-hover">
                                             <thead class="table-dark">
                                                 <tr>
-                                                    <th>ID</th>
-                                                    <th>Link IMG</th>
-                                                    <th>Name</th>
-                                                    <th>Phone Number</th>
+                                                    <th>Mã</th>
+                                                    <th>Đường dẫn</th>
+                                                    <th>Tên</th>
+                                                    <th>Số Điện Thoại</th>
                                                     <th>Email</th>
-                                                    <th>Password</th>
-                                                    <th>Address</th>
-                                                    <th>Balance</th>
-                                                    <th>Created At</th>
-                                                    <th>Updated At</th>
-                                                    <th>Status</th>
-                                                    <th>Actions</th>
+                                                    <th>Mật Khẩu</th>
+                                                    <th>Địa Chỉ</th>
+                                                    <th>Ngày Tạo</th>
+                                                    <th>Ngày Cập Nhật</th>
+                                                    <th>Trạng Thái</th>
+                                                    <th>Hành Động</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -113,9 +112,6 @@
                                                                 </td>
                                                                 <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis" >${customer.address}</td>
                                                                 <td>
-                                                                    <fmt:formatNumber value="${customer.balance}" type="currency" />
-                                                                </td>
-                                                                <td>
                                                                     <fmt:formatDate value="${customer.createdAt}" pattern="dd-MM-yyyy" />
                                                                 </td>
                                                                 <td>
@@ -124,16 +120,16 @@
                                                                 <td>
                                                                     <c:choose>
                                                                         <c:when test="${customer.isDeleted eq 1}">
-                                                                            <span class="badge bg-secondary">Deleted</span>
+                                                                            <span class="badge bg-secondary">Đã Xóa</span>
                                                                         </c:when>
                                                                         <c:when test="${customer.status eq 'Inactive'}">
-                                                                            <span class="badge bg-danger">Inactive</span>
+                                                                            <span class="badge bg-danger">Không Hoạt Động</span>
                                                                         </c:when>
                                                                         <c:when test="${customer.status eq 'Blocked'}">
-                                                                            <span class="badge bg-warning">Blocked</span>
+                                                                            <span class="badge bg-warning">Bị Khóa</span>
                                                                         </c:when>
                                                                         <c:otherwise>
-                                                                            <span class="badge bg-success">Active</span>
+                                                                            <span class="badge bg-success">Hoạt Động</span>
                                                                         </c:otherwise>
                                                                     </c:choose>
                                                                 </td>
@@ -160,13 +156,13 @@
                                                                         <input type="hidden" name="page" value="${currentPage}">
                                                                         <input type="hidden" name="accountId" value="${customer.accountId}">
                                                                         <div class="modal-header">
-                                                                            <h5 class="modal-title">Edit Customer</h5>
+                                                                            <h5 class="modal-title">Cập Nhật Khách Hàng</h5>
                                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                                         </div>
                                                                         <div class="modal-body">
                                                                             <div class="row g-3">
                                                                                 <div class="col-12">
-                                                                                    <label class="form-label">Upload Profile Image</label>
+                                                                                    <label class="form-label"> Tải lên ảnh đại diện</label>
                                                                                     <input type="file" class="form-control" name="image" accept="image/*">
                                                                                     <input type="hidden" name="currentImage" value="${customer.image}">
                                                                                     <c:if test="${not empty customer.image}">
@@ -174,11 +170,11 @@
                                                                                     </c:if>
                                                                                 </div>
                                                                                 <div class="col-md-6">
-                                                                                    <label class="form-label">Full Name</label>
+                                                                                    <label class="form-label">Họ Và Tên</label>
                                                                                     <input type="text" class="form-control" name="userName" value="${customer.userName}" required>
                                                                                 </div>
                                                                                 <div class="col-md-6">
-                                                                                    <label class="form-label">Phone Number</label>
+                                                                                    <label class="form-label">Số Điện Thoại</label>
                                                                                     <input type="tel" class="form-control" name="phoneNumber" value="${customer.phoneNumber}" pattern="[0-9]{10}" required>
                                                                                 </div>
                                                                                 <div class="col-md-6">
@@ -186,43 +182,38 @@
                                                                                     <input type="email" class="form-control" name="email" id="email" value="${customer.email}" required>
                                                                                 </div>      
                                                                                 <div class="col-md-6">
-                                                                                    <label class="form-label">Password</label>
+                                                                                    <label class="form-label">Mật Khẩu</label>
                                                                                     <input type="password" class="form-control" id="password" name="password" 
                                                                                            value="${customer.password}" onblur="checkPassword(this)" required>
                                                                                     <span id="error-Pass" class="error-message"></span>
                                                                                 </div>
                                                                                 <div class="col-12">
-                                                                                    <label class="form-label">Address</label>
+                                                                                    <label class="form-label">Địa Chỉ</label>
                                                                                     <textarea class="form-control" name="address" rows="2">${customer.address}</textarea>
                                                                                 </div>
                                                                                 <div class="col-md-4">
-                                                                                    <label class="form-label">Balance</label>
-                                                                                    <div class="input-group">
-                                                                                        <span class="input-group-text">$</span>
-                                                                                        <input type="number" class="form-control" name="balance" value="${customer.balance}" step="0.01"  disabled>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="col-md-4">
-                                                                                    <label class="form-label">Status</label>
+                                                                                    <label class="form-label">Trạng Thái</label>
                                                                                     <select class="form-select" name="status">
-                                                                                        <option value="Active" ${customer.status == 'Active' ? 'selected' : ''}>Active</option>
-                                                                                        <option value="Inactive" ${customer.status == 'Inactive' ? 'selected' : ''}>Inactive</option>
-                                                                                        <option value="Blocked" ${customer.status == 'Blocked' ? 'selected' : ''}>Blocked</option>
+                                                                                        <option value="Active" ${customer.status == 'Active' ? 'selected' : ''}> Hoạt Động</option>
+                                                                                        <option value="Inactive" ${customer.status == 'Inactive' ? 'selected' : ''}>Không hoạt động</option>
+                                                                                        <option value="Blocked" ${customer.status == 'Blocked' ? 'selected' : ''}>Bị khóa</option>
                                                                                     </select>
                                                                                 </div>
                                                                                 <div class="col-md-4">
-                                                                                    <label class="form-label">Role</label>
+                                                                                    <label class="form-label">Vai Trò</label>
                                                                                     <select class="form-select" name="roleID">
                                                                                         <c:forEach var="r" items="${roles}" >
-                                                                                            <option value="${r.roleID}" ${r.roleID == customer.roleID ? 'selected' : ''} >${r.name}</option>
+                                                                                            <c:if test="${r.roleID != 1}">
+                                                                                                <option value="${r.roleID}" ${r.roleID == customer.roleID ? 'selected' : ''} >${r.name}</option>
+                                                                                            </c:if>
                                                                                         </c:forEach>
                                                                                     </select>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
                                                                         <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                            <button type="submit" id="submitBtn-Cus" class="btn btn-primary" disable>Save Changes</button>
+                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                                                            <button type="submit" id="submitBtn-Cus" class="btn btn-primary" disable>Lưu</button>
                                                                         </div>
                                                                     </form>
                                                                 </div>
@@ -234,18 +225,18 @@
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
-                                                                        <h5 class="modal-title">Confirm Delete</h5>
+                                                                        <h5 class="modal-title">Xác Nhận Xóa</h5>
                                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                                     </div>
                                                                     <div class="modal-body">
-                                                                        Are you sure you want to delete customer: <strong>${customer.userName}</strong>?
+                                                                        Bạn có chắc muốn xóa khách hàng: <strong>${customer.userName}</strong>?
                                                                     </div>
                                                                     <div class="modal-footer">
-                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                                                                         <form action="CustomerManagementServlet" method="GET" class="d-inline">
                                                                             <input type="hidden" name="action" value="delete">
                                                                             <input type="hidden" name="accountId" value="${customer.accountId}">
-                                                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                                                            <button type="submit" class="btn btn-danger">Xóa</button>
                                                                         </form>
                                                                     </div>
                                                                 </div>
@@ -269,14 +260,14 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header bg-danger text-white">
-                        <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                        <h5 class="modal-title" id="errorModalLabel">Thông Báo Lỗi</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
                         <p>${sessionScope.errorMessage}</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                     </div>
                 </div>
             </div>
@@ -287,14 +278,14 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title" id="successModalLabel">Thành Công</h5>
+                    <h5 class="modal-title" id="successModalLabel">Thông Báo Thành Công</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-dark">
                     ${sessionScope.successMessage}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                 </div>
             </div>
         </div>

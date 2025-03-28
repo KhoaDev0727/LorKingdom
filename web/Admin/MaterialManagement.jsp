@@ -32,7 +32,7 @@
                 <div class="dashboard-container">
                     <main>
                         <div class="container-fluid px-5">
-                            <h1 class="mt-4">Quản Lý Chất Liệu</h1>
+                            <h1 class="mt-4">Quản Lí Chất Liệu</h1>
                             <!-- Add Material Form -->
                             <form action="MaterialServlet" method="POST" class="d-flex align-items-end">
                                 <input type="hidden" name="action" value="add">

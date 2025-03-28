@@ -64,23 +64,37 @@ public class FinancialDashboardServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-               Gson gson = new Gson();
-            
+            Gson gson = new Gson();
+
             request.setAttribute("totalsolds", FinancialDashboardDAO.showTotalSold());
             request.setAttribute("totalrevenues", FinancialDashboardDAO.showTotalRevenue());
             request.setAttribute("totalcustomers", FinancialDashboardDAO.showTotalCustomer());
 
-//            // Truy vấn doanh thu
-            List<RevenueData> revenueData = getRevenueData();
-            List<CategorySales> categorySales = getCategorySales();
+            // Kiểm tra nếu có tham số filter
+            String filter = request.getParameter("filter");
+
+            List<RevenueData> revenueData;
+            if ("3months".equals(filter)) {
+                revenueData = FinancialDashboardDAO.getLastMonthsRevenue(3);
+            } else if ("6months".equals(filter)) {
+                revenueData = FinancialDashboardDAO.getLastMonthsRevenue(6);
+            } else if ("12months".equals(filter)) {
+                revenueData = FinancialDashboardDAO.getLastMonthsRevenue(12);
+            } else {
+                revenueData = FinancialDashboardDAO.getRevenueData();
+            }
+
+            List<CategorySales> categorySales = FinancialDashboardDAO.getCategorySales();
             String categorySalesJson = gson.toJson(categorySales);
             String revenueDataJson = gson.toJson(revenueData);
+
             request.setAttribute("categorySalesJson", categorySalesJson);
             request.setAttribute("revenueDataJson", revenueDataJson);
+            request.setAttribute("currentFilter", filter);
 
             request.getRequestDispatcher("DashBoard.jsp").forward(request, response);
         } catch (Exception e) {
-            e.printStackTrace();
+            response.sendRedirect(request.getContextPath() + "/error.jsp");
         }
     }
 

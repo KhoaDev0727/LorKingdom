@@ -350,3 +350,6 @@ public class CategoryServlet extends HttpServlet {
         request.getRequestDispatcher("CategoryManagement.jsp").forward(request, response);
     }
 }
+
+
+

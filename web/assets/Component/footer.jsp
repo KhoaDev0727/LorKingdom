@@ -37,21 +37,27 @@
                 </div>
                 <div class="footer-section">
                     <h4>THANH TOÁN</h4>
-                    <div class="payment-methods">
+                    <div class="payment-methods" style="display: flex;">
+                        <div style="flex-direction: column;">
                         <img src="./assets/img/logomomo.jpg" alt="momo">
                         <img src="./assets/img/pay2.png" alt="Mastercard">
                         <img src="./assets/img/pay3.png" alt="JCB">
-                        <br>
+                        </div>
+                        <div style="flex-direction: column;">
                         <img src="./assets/img/pay4.png" alt="AE">
-                        <img src="./assets/img/pay5.png" alt="tra_gop">       
+                        <img src="./assets/img/pay5.png" alt="tra_gop">   
+                        </div>
                     </div>
                     <h4>ĐƠN VỊ VẬN CHUYỂN</h4>
-                    <div class="shipping-partners">
+                    <div class="shipping-partners" style="display: flex;">
+                        <div style="flex-direction: column;">
                         <img src="./assets/img/ship1.png" alt="Giao Hàng Nhanh">
                         <img src="./assets/img/ship2.png" alt="Viettel Post">
-                        <br>
+                        </div>
+                        <div style="flex-direction: column;">
                         <img src="./assets/img/ship3.png" alt="J&T Express">
-                        <img src="./assets/img/ship4.png" alt="J&T Express">        
+                        <img src="./assets/img/ship4.png" alt="J&T Express">   
+                        </div>
                     </div>
                 </div>
                 <div class="footer-section">
