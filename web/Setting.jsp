@@ -230,7 +230,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="review-comment" class="form-label">Nhận xét:</label>
-                                <textarea class="form-control" id="review-comment" rows="3" required></textarea>
+                                <textarea class="form-control" id="review-comment" rows="3" ></textarea>
                             </div>
                             <!-- Thêm trường upload ảnh -->
                             <div class="mb-3">

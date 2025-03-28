@@ -61,7 +61,7 @@
                                     <form action="CustomerManagementServlet" method="GET" class="mb-4">
                                         <div class="input-group">
                                             <input type="hidden" name="action" value="search">
-                                            <input type="text" name="search" class="form-control" placeholder="Search Customer by (ID, Phone Number, Name, Email)..." 
+                                            <input type="text" name="search" class="form-control" placeholder="Tìm Kiếm Theo Tên, Email, Số Điện Thoại..." 
                                                    value="${param.search}">
                                             <button class="btn btn-outline-secondary" type="submit">
                                                 <i class="fas fa-search"></i>

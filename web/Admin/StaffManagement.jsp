@@ -157,13 +157,14 @@
                                                             <td>
 
                                                                 <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editCustomerModal${s.accountId}"
-                                                                        ${s.isDeleted eq 1 ? 'disabled' : ''}>
+                                                                        ${s.isDeleted eq 1 || s.roleID eq 1 ? 'disabled' : ''}>
                                                                     <i class="fas fa-edit"></i>
                                                                 </button>
                                                                 <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal${s.accountId}"
-                                                                        ${s.isDeleted eq 1 ? 'disabled' : ''}>
+                                                                        ${s.isDeleted eq 1 || s.roleID eq 1 ? 'disabled' : ''}>
                                                                     <i class="fas fa-trash"></i>
                                                                 </button>
+
 
                                                             </td>
                                                         </tr>

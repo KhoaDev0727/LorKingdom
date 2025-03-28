@@ -52,7 +52,7 @@
                                     <form action="ShippingMethodServlet" method="GET" class="mb-4">
                                         <div class="input-group">
                                             <input type="hidden" name="action" value="search">
-                                            <input type="text" name="search" class="form-control" placeholder="Search Shipping Method by Name, Description..." 
+                                            <input type="text" name="search" class="form-control" placeholder="Tìm Kiếm Phương Thức Vận Chuyển Theo Tên" 
                                                    value="${param.search}">
                                             <button class="btn btn-outline-secondary" type="submit">
                                                 <i class="fas fa-search"></i>

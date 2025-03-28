@@ -24,6 +24,8 @@ public class PromotionController extends HttpServlet {
         try {
             PromotionDAO dao = new PromotionDAO();
             dao.updateExpiredPromotions();
+            dao.updatePromotionStatusForDeletedProducts();
+            dao.updatePromotionStatusForRestoredProducts();
 
             String indexString = request.getParameter("index");
             if (indexString == null) {

@@ -28,12 +28,12 @@ public class UpdatePromotion extends HttpServlet {
         if (dateStr == null || dateStr.isEmpty()) {
             return null;
         }
-        
+
         // First validate the format
         if (!isValidDateFormat(dateStr)) {
             throw new IllegalArgumentException("Định dạng ngày không hợp lệ. Vui lòng sử dụng định dạng yyyy-MM-dd");
         }
-        
+
         // Then parse the date
         try {
             return Date.valueOf(LocalDate.parse(dateStr));
@@ -101,13 +101,13 @@ public class UpdatePromotion extends HttpServlet {
             int promotionID;
             int productID;
             double discountPercent;
-            
+
             try {
                 promotionID = Integer.parseInt(promotionIDStr);
                 productID = Integer.parseInt(productIDStr);
                 discountPercent = Double.parseDouble(discountPercentStr);
             } catch (NumberFormatException e) {
-                request.getSession().setAttribute("errorModal", "ID sản phẩm và phần trăm giảm giá phải là số");
+                request.getSession().setAttribute("errorModal", "Mã sản phẩm và phần trăm giảm giá phải là số");
                 response.sendRedirect("promotionController");
                 return;
             }
@@ -142,6 +142,12 @@ public class UpdatePromotion extends HttpServlet {
             // Kiểm tra ngày bắt đầu không lớn hơn ngày kết thúc
             if (startDate.after(endDate)) {
                 request.getSession().setAttribute("errorModal", "Ngày bắt đầu không thể lớn hơn ngày kết thúc!");
+                response.sendRedirect("promotionController");
+                return;
+            }
+
+            if (startDate.before(currentDate)) {
+                request.getSession().setAttribute("errorModal", "Ngày bắt đầu không thể nhỏ hơn ngày hiện tại!");
                 response.sendRedirect("promotionController");
                 return;
             }

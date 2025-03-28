@@ -74,7 +74,7 @@
                                     <form action="BrandServlet" method="GET" class="mb-4">
                                         <div class="input-group">
                                             <input type="hidden" name="action" value="search">
-                                            <input type="text" name="search" class="form-control" placeholder="Tìm thượng hiệu" aria-label="Search">
+                                            <input type="text" name="search" class="form-control" placeholder="Tìm thương hiệu" aria-label="Search">
                                             <button class="btn btn-outline-secondary" type="submit">
                                                 <i class="fas fa-search"></i>
                                             </button>

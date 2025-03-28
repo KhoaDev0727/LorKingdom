@@ -201,9 +201,9 @@
                                                                         <div class="mb-3">
                                                                             <label class="form-label">Lựa Chọn Gửi:</label>
                                                                             <div>
-                                                                                <button type="button" class="btn btn-primary" onclick="sendToAllCustomers(${notification.notificationID})">
+<!--                                                                                <button type="button" class="btn btn-primary" onclick="sendToAllCustomers(${notification.notificationID})">
                                                                                     Gửi thông báo đến tất cả khách hàng
-                                                                                </button>
+                                                                                </button>-->
                                                                                 <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#selectCustomers${notification.notificationID}">
                                                                                     Chọn khach hàng nhận thông báo
                                                                                 </button>

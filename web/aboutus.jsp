@@ -27,7 +27,7 @@
 
         <div class="image-banner">
             <div class="image-banner">
-                <img src="./img/banneraboutus.png" alt="LorKingdom Banner">
+                <img src="./assets/img/bannerHome.jpg" alt="LorKingdom Banner">
             </div>
         </div> 
 
@@ -35,7 +35,7 @@
         <section>
             <div class="section-2">
                 <div class="header-section2">
-                    <img src="./img/logo.png" alt="LorTravel Logo" />
+                    <img src="./assets/img/logo-login.png" alt="LorTravel Logo" />
                     <h3>Hành Trình </h3>
                     <h2>Chặng Đường Phát Triển Của LorKingdom</h2>
                 </div>
@@ -48,7 +48,7 @@
                         <div class="swiper-slide">
                             <div class="time-line-item">
                                 <div class="time-line-img">
-                                    <img src="./img/slide1.png" alt="Our Fashion Site Launch" />
+                                    <img src="./assets/img/banneraboutus1.jpg" alt="Our Fashion Site Launch" />
                                 </div>
                                 <div class="time-line-content">
                                     <h4>2015</h4>
@@ -61,7 +61,7 @@
                         <div class="swiper-slide">
                             <div class="time-line-item">
                                 <div class="time-line-img">
-                                    <img src="./img/slide2.png" alt="Our Fashion Mission" />
+                                    <img src="./assets/img/banneraboutus2.jpg" alt="Our Fashion Mission" />
                                 </div>
                                 <div class="time-line-content">
                                     <h4>2016</h4>
@@ -74,7 +74,7 @@
                         <div class="swiper-slide">
                             <div class="time-line-item">
                                 <div class="time-line-img">
-                                    <img src="./img/slide3.png" alt="Expansion" />
+                                    <img src="./assets/img/banneraboutus1.jpg" alt="Expansion" />
                                 </div>
                                 <div class="time-line-content">
                                     <h4>2020</h4>
@@ -87,7 +87,7 @@
                         <div class="swiper-slide">
                             <div class="time-line-item">
                                 <div class="time-line-img">
-                                    <img src="./img/slide4.png" alt="Today and Beyond" />
+                                    <img src="./assets/img/banneraboutus2.jpg" alt="Today and Beyond" />
                                 </div>
                                 <div class="time-line-content">
                                     <h4>Hiện Tại</h4>

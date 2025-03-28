@@ -20,6 +20,18 @@
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="JS/SideBarToggle.js"></script>
+        <style>
+            .filter-buttons {
+                margin-bottom: 20px;
+                text-align: right;
+            }
+
+            .filter-buttons .btn {
+                margin-left: 10px;
+                min-width: 120px;
+            }
+        </style>
+
     </head>
     <body class="sb-nav-fixed">
         <c:choose>
@@ -53,8 +65,8 @@
                             <h5 class="card-header">Tổng Doanh Thu</h5>
                             <div class="card-body">
                                 <h3 id="totalRevenue">
-                         <fmt:setLocale value="vi_VN"/>
-<fmt:formatNumber value="${totalrevenues}" type="currency" currencyCode="VND"/>
+                                    <fmt:setLocale value="vi_VN"/>
+                                    <fmt:formatNumber value="${totalrevenues}" type="currency" currencyCode="VND"/>
 
                                 </h3>
                             </div>
@@ -75,6 +87,15 @@
                 </div>
 
                 <div class="row mt-4 g-4">
+                    <div class="col-12">
+                        <div class="filter-buttons">
+                            <a href="FinancialDashboardServlet" class="btn ${empty currentFilter ? 'btn-primary' : 'btn-outline-primary'}">Tất cả</a>
+                            <a href="FinancialDashboardServlet?filter=3months" class="btn ${currentFilter eq '3months' ? 'btn-primary' : 'btn-outline-primary'}">3 Tháng gần nhất</a>
+                            <a href="FinancialDashboardServlet?filter=6months" class="btn ${currentFilter eq '6months' ? 'btn-primary' : 'btn-outline-primary'}">6 Tháng gần nhất</a>
+                            <a href="FinancialDashboardServlet?filter=12months" class="btn ${currentFilter eq '12months' ? 'btn-primary' : 'btn-outline-primary'}">12 Tháng gần nhất</a>
+                        </div>
+                    </div>
+
                     <div class="col-lg-6">
                         <div class="chart-container card p-3 shadow">
                             <h5 class="card-header">Biểu đồ cột</h5>
@@ -161,6 +182,13 @@
                     document.getElementById('chart_line').innerHTML = "Lỗi khi vẽ biểu đồ";
                 }
             }
+            document.addEventListener('DOMContentLoaded', function () {
+                google.charts.load('current', {'packages': ['corechart']});
+                google.charts.setOnLoadCallback(function () {
+                    drawColumnChart();
+                    drawLineChart();
+                });
+            });
         </script>
     </body>
 </html>

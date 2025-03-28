@@ -95,7 +95,7 @@ public class ManageOrderServlet extends HttpServlet {
             throws Exception {
         String orderIdStr = request.getParameter("orderId");
         if (orderIdStr == null || orderIdStr.isEmpty()) {
-            request.getSession().setAttribute("errorModal", "Thiếu ID đơn hàng");
+            request.getSession().setAttribute("errorModal", "Thiếu mã đơn hàng");
             response.sendRedirect("OrderServlet");
             return;
         }
@@ -116,12 +116,12 @@ public class ManageOrderServlet extends HttpServlet {
                 request.getSession().setAttribute("successModal", "Xóa đơn hàng thành công.");
             } else {
                 request.getSession().setAttribute("errorModal",
-                        "Chỉ có thể xóa đơn hàng ở trạng thái 'Hủy'. Trạng thái hiện tại: " + order.getStatus());
+                        "Chỉ có thể xóa đơn hàng ở trạng thái ' Đã Hủy'");
             }
             response.sendRedirect("OrderServlet");
 
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorModal", "ID đơn hàng không hợp lệ");
+            request.getSession().setAttribute("errorModal", "Mã đơn hàng không hợp lệ");
             response.sendRedirect("OrderServlet");
         }
     }
@@ -178,7 +178,7 @@ public class ManageOrderServlet extends HttpServlet {
 
         // Validate required parameters
         if (orderIdStr == null || orderIdStr.trim().isEmpty()) {
-            request.getSession().setAttribute("errorModal", "Thiếu ID đơn hàng");
+            request.getSession().setAttribute("errorModal", "Thiếu mã đơn hàng");
             response.sendRedirect("OrderServlet");
             return;
         }
@@ -196,7 +196,7 @@ public class ManageOrderServlet extends HttpServlet {
             // First get the current order to validate
             Order currentOrder = dao.getOrderByIdUpdate(orderId);
             if (currentOrder == null) {
-                request.getSession().setAttribute("errorModal", "Không tìm thấy đơn hàng với ID: " + orderId);
+                request.getSession().setAttribute("errorModal", "Không tìm thấy đơn hàng với mã: " + orderId);
                 response.sendRedirect("OrderServlet");
                 return;
             }
@@ -211,8 +211,10 @@ public class ManageOrderServlet extends HttpServlet {
 
             // Validate status transition
             if (!isValidStatusTransition(currentOrder.getStatus(), status)) {
+                String currentStatusVN = translateStatusToVietnamese(currentOrder.getStatus());
+                String newStatusVN = translateStatusToVietnamese(status);
                 request.getSession().setAttribute("errorModal",
-                        "Không thể chuyển từ trạng thái " + currentOrder.getStatus() + " sang " + status);
+                        "Không thể chuyển từ trạng thái " + currentStatusVN + " sang " + newStatusVN);
                 response.sendRedirect("OrderServlet");
                 return;
             }
@@ -227,7 +229,7 @@ public class ManageOrderServlet extends HttpServlet {
             response.sendRedirect("OrderServlet");
 
         } catch (NumberFormatException e) {
-            request.getSession().setAttribute("errorModal", "ID đơn hàng phải là số");
+            request.getSession().setAttribute("errorModal", "Mã đơn hàng phải là số");
             response.sendRedirect("OrderServlet");
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error updating order status", e);
@@ -237,7 +239,6 @@ public class ManageOrderServlet extends HttpServlet {
     }
 
     private boolean isValidStatusTransition(String currentStatus, String newStatus) {
-
         if (currentStatus.equalsIgnoreCase(newStatus)) {
             return true; // Allow staying in same status
         }
@@ -253,6 +254,25 @@ public class ManageOrderServlet extends HttpServlet {
                 return false; // No transitions allowed from these states
             default:
                 return false;
+        }
+    }
+
+    private String translateStatusToVietnamese(String englishStatus) {
+        if (englishStatus == null) {
+            return "Không xác định";
+        }
+
+        switch (englishStatus.toLowerCase()) {
+            case "pending":
+                return "Đang xác nhận";
+            case "shipped":
+                return "Chờ giao hàng";
+            case "delivered":
+                return "Đã nhận hàng";
+            case "cancelled":
+                return "Đã hủy";
+            default:
+                return englishStatus; // Trả về nguyên bản nếu không khớp
         }
     }
 

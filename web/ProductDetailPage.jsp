@@ -277,9 +277,7 @@
             </div>
 
             <footer class="bg-white shadow-sm mt-10">
-                <div class="mx-auto px-4 py-4" style="width: 1380px; margin: 50 auto;">
-                    <p class="text-sm text-gray-500">© 2023 - Cửa Hàng Đồ Chơi</p>
-                </div>
+                <jsp:include page="assets/Component/footer.jsp"/>
             </footer>
             <!-- Modal Error -->
             <!-- Modal Lỗi -->

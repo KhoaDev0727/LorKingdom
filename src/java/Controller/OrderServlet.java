@@ -327,6 +327,7 @@ public class OrderServlet extends HttpServlet {
                 OrderDetail detail = new OrderDetail();
                 detail.setProductID(item.getProduct().getProductID());
                 detail.setProductName(item.getProduct().getName());
+                detail.setProductImage(item.getProduct().getMainImageUrl());
                 detail.setQuantity(item.getQuantity());
                 detail.setUnitPrice((float) item.getPrice());
 
@@ -348,6 +349,7 @@ public class OrderServlet extends HttpServlet {
                 try {
                     for (CartItems item : listCart) {
                         int productId = item.getProduct().getProductID();
+     
                         int quantity = item.getQuantity();
                         boolean updated = productDAO.updateProductQuantity(productId, quantity);
                         if (!updated) {
