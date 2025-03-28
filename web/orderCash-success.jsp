@@ -138,39 +138,7 @@
             <div class="total-amount">
                 Tổng Tiền: <fmt:formatNumber value="${sessionScope.order.totalAmount}" pattern="#,###" /> VND
             </div>
-
-            <!-- Thông tin khách hàng -->
-            <div class="customer-info">
-                <h3>Thông Tin Giao Hàng</h3>
-                <p><span class="info-label">Họ và Tên:</span> ${sessionScope.order.accountName}</p>
-                <p><span class="info-label">Số Điện Thoại:</span> ${sessionScope.phone}</p>
-                <p><span class="info-label">Email:</span> ${sessionScope.email}</p>
-                <p><span class="info-label">Địa Chỉ:</span> ${sessionScope.address}</p>
-                <p><span class="info-label">Phương Thức Thanh Toán:</span> ${sessionScope.order.payMentMethodName}</p>
-                <p><span class="info-label">Phương Thức Giao Hàng:</span> ${sessionScope.order.shipingMethodName}</p>
-            </div>
-
-            <!-- Chi tiết đơn hàng -->
-            <div class="order-details">
-                <h3>Chi Tiết Đơn Hàng</h3>
-                <c:forEach items="${sessionScope.order.orderDetails}" var="detail">
-                    <div class="product-item">
-                        <img src="${pageContext.request.contextPath}${detail.productImage}" alt="${detail.productName}">
-                        <div class="product-info">
-                            <p><strong>${detail.productName}</strong></p>
-                            <p>Số lượng: ${detail.quantity}</p>
-                            <p>Đơn giá: <fmt:formatNumber value="${detail.unitPrice}" pattern="#,###" /> VND</p>
-                            <c:if test="${detail.discount > 0}">
-                                <p>Giảm giá: ${detail.discount}%</p>
-                            </c:if>
-                        </div>
-                    </div>
-                </c:forEach>
-                <div class="total-amount">
-                    Tổng Tiền: <fmt:formatNumber value="${sessionScope.order.totalAmount}" pattern="#,###" /> VND
-                </div>
-            </div>
-
+            
             <!-- Nút tiếp tục mua sắm -->
             <a href="getList" class="btn-continue">Tiếp Tục Mua Sắm</a>
         </div>
